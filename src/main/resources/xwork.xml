@@ -1,0 +1,31 @@
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.0//EN" "http://www.opensymphony.com/xwork/xwork-1.0.dtd">
+  <xwork>
+   <include file="webwork-default.xml"/>
+
+   <package name="default" extends="webwork-default">
+     <!-- Include webwork defaults (from WebWork JAR). -->
+     <default-interceptor-ref name="completeStack"/>
+
+      <action name="initialise"
+         class="uk.co.unclealex.rokta.actions.InitialiseAction">
+         <result name="success">/WEB-INF/pages/initialise.jsp</result>
+      </action>
+      
+      <action name="start"
+         class="uk.co.unclealex.rokta.actions.StartAction">
+         <result name="success">/WEB-INF/pages/game.jsp</result>
+      </action>
+
+      <action name="round"
+         class="uk.co.unclealex.rokta.actions.RoundAction">
+         <result name="next">/WEB-INF/pages/game.jsp</result>
+         <result name="finished">/WEB-INF/pages/finished.jsp</result>
+      </action>
+
+      <action name="league"
+         class="uk.co.unclealex.rokta.actions.LeagueAction">
+         <result name="success">/WEB-INF/pages/league.jsp</result>
+      </action>
+   </package>
+  </xwork>
+
