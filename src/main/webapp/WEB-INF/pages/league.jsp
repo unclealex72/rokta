@@ -17,6 +17,8 @@
 				<th>Games</th>
 				<th>Rounds</th>
 				<th>Lost</th>
+				<th>Losses per Game</th>
+				<th>Losses per Round</th>
 			</tr>
 			<ww:iterator id="row" value="league">
 				<tr>
@@ -24,6 +26,9 @@
 					<td><ww:property value="gamesPlayed"/></td>
 					<td><ww:property value="roundsPlayed"/></td>
 					<td><ww:property value="gamesLost"/></td>
+					<td><ww:property value="lossesPerGame"/></td>
+					<td><ww:property value="lossesPerRound"/></td>
+				</tr>
 			</ww:iterator>
 		</table>
 	</div>

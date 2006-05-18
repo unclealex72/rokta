@@ -8,12 +8,12 @@ public class LeagueRow {
 	private int i_gamesLost;
 	private int i_totalGamesPlayed;
 	
-	public double getLostToPlayedRatio() {
+	public double getLossesPerGame() {
 		return getGamesLost() / (double) getGamesPlayed();
 	}
 	
-	public double getLostToTotalRatio() {
-		return getGamesLost() / (double) getTotalGamesPlayed();
+	public double getLossesPerRound() {
+		return getGamesLost() / (double) getRoundsPlayed();
 	}
 	
 	public int getGamesLost() {
