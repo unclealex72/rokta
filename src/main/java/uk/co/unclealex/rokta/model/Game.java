@@ -23,13 +23,13 @@ import org.hibernate.annotations.SortType;
 @Entity
 @NamedQueries(value={
 		@NamedQuery(name="game.getAll", query="select g from Game g"),
-		@NamedQuery(name="game.getAllSince", query="select g from Game g where g.date >= :date")
+		@NamedQuery(name="game.getAllSince", query="select g from Game g where g.datePlayed >= :datePlayed")
 		})
 public class Game extends Identity<Game> {
 
 	private Person i_Instigator;
 	private SortedSet<Round> i_rounds;
-	private Date i_date;
+	private Date i_datePlayed;
 	
 	@Transient
 	public SortedSet<Person> getParticipants() {
@@ -56,11 +56,11 @@ public class Game extends Identity<Game> {
 	}
 	
 	@Column(nullable=false)
-	public Date getDate() {
-		return i_date;
+	public Date getDatePlayed() {
+		return i_datePlayed;
 	}
-	public void setDate(Date date) {
-		i_date = date;
+	public void setDatePlayed(Date date) {
+		i_datePlayed = date;
 	}
 	
 	@ManyToOne
