@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.commons.lang.StringUtils;
+
 import uk.co.unclealex.rokta.exceptions.InvalidRoundException;
 import uk.co.unclealex.rokta.model.Game;
 import uk.co.unclealex.rokta.model.Hand;
@@ -30,7 +32,7 @@ public class DefaultGameManager implements GameManager {
 		setRounds(0);
 		setFinished(false);
 		Game game = new Game();
-		game.setDate(date);
+		game.setDatePlayed(date);
 		game.setInstigator(instigator);
 		game.setRounds(new TreeSet<Round>());
 		setGame(game);
@@ -41,15 +43,16 @@ public class DefaultGameManager implements GameManager {
 	 */
 	public void nextRound(Map<Person,Hand> plays, Person counter, int roundPlayed) throws InvalidRoundException {
 		if (roundPlayed != getRounds() + 1) {
-			throw new IllegalStateException("The wrong round has been played. Got " + roundPlayed + " but expected " + (getRounds() + 1));
+			throw new InvalidRoundException("The wrong round has been played. Got " + roundPlayed + " but expected " + (getRounds() + 1));
 		}
 		if (i_finished) {
 			throw new IllegalStateException("You cannot play a round after the game has finished.");
 		}
 		// Validation: check the players are the same as the current participants.
-		if (!plays.keySet().equals(getParticipants())) {
-			// TODO Throw a nice message.
-			throw new InvalidRoundException();			
+		SortedSet<Person> currentPlayers = new TreeSet<Person>(plays.keySet());
+		if (!currentPlayers.equals(getParticipants())) {
+			throw new InvalidRoundException(
+					"The current players in the game are " + printPlayers(getParticipants()) + " but in the last round the players were " + printPlayers(currentPlayers) + ".");	
 		}
 		
 		Round round = new Round();
@@ -71,12 +74,23 @@ public class DefaultGameManager implements GameManager {
 		setFinished(getGame().getLoser() != null);
 	}
 	
+	private String printPlayers(SortedSet<Person> currentPlayers) {
+		if (currentPlayers.size() == 0) {
+			return "nobody";
+		}
+		Person lastPlayer = currentPlayers.last();
+		if (currentPlayers.size() == 1) {
+			return lastPlayer.toString();
+		}
+		return StringUtils.join(currentPlayers.headSet(lastPlayer).iterator(), ", ") + " and " + lastPlayer;
+	}
+
 	/* (non-Javadoc)
 	 * @see uk.co.unclealex.rokta.process.GameManager#finishGame()
 	 */
-	public final void finishGame() throws IllegalStateException {
+	public final void finishGame() throws InvalidRoundException {
 		if (!isFinished()) {
-			throw new IllegalStateException("This game is not finished.");
+			throw new InvalidRoundException("This game is not finished.");
 		}
 		finishGameInternal();
 	}

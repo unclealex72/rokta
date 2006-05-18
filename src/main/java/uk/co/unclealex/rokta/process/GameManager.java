@@ -17,7 +17,7 @@ public interface GameManager {
 	public void nextRound(Map<Person, Hand> plays, Person counter, int round)
 			throws InvalidRoundException;
 
-	public void finishGame() throws IllegalStateException;
+	public void finishGame() throws InvalidRoundException;
 
 	public Game getGame();
 

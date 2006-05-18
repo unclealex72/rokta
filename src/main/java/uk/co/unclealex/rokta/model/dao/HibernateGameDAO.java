@@ -7,7 +7,6 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 
 import uk.co.unclealex.rokta.model.Game;
-import uk.co.unclealex.rokta.util.HibernateUtils;
 
 public class HibernateGameDAO extends HibernateDAO implements GameDAO {
 
