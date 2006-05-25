@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.commons.collections15.comparators.ComparatorChain;
+
 import uk.co.unclealex.rokta.model.Game;
 import uk.co.unclealex.rokta.model.LeagueRow;
 import uk.co.unclealex.rokta.model.Person;
@@ -58,25 +60,50 @@ public class LeagueManager {
 		}
 		return cnt;
 	}
-	/**
-	 * Comparator for a league where the least lost games is better. Next, the most played games is better,
-	 * then most played rounds. In the event of a tie, go alphabetically by person. 
-	 * @return
-	 */
-	public Comparator<LeagueRow> getCompareByLostGames() {
-		return new Comparator<LeagueRow>() {
+	
+	private static Comparator<LeagueRow> s_atomicCompareByLossesPerGame =
+		new Comparator<LeagueRow>() {
 			public int compare(LeagueRow o1, LeagueRow o2) {
-				int cmpLostGames =  new Integer(o1.getGamesLost()).compareTo(o2.getGamesLost());
-				if (cmpLostGames != 0) {
-					return -cmpLostGames;
-				}
-				int cmpPlayedGames = new Integer(o1.getGamesPlayed()).compareTo(o2.getGamesPlayed());
-				if (cmpPlayedGames != 0) {
-					return cmpPlayedGames;
-				}
-				int cmpPlayedRounds = new Integer(o1.getRoundsPlayed()).compareTo(o2.getRoundsPlayed());
-				return cmpPlayedRounds==0?o1.getPerson().compareTo(o2.getPerson()):cmpPlayedRounds;
+				return new Double(o1.getLossesPerGame()).compareTo(o2.getLossesPerGame());
 			}
 		};
+		
+	private static Comparator<LeagueRow> s_atomicCompareByLossesPerRound =
+		new Comparator<LeagueRow>() {
+			public int compare(LeagueRow o1, LeagueRow o2) {
+				return new Double(o1.getLossesPerRound()).compareTo(o2.getLossesPerRound());
+			}
+		};
+					
+	private static Comparator<LeagueRow> s_atomicCompareByGamesPlayed =
+		new Comparator<LeagueRow>() {
+			public int compare(LeagueRow o1, LeagueRow o2) {
+				return new Integer(o2.getGamesPlayed()).compareTo(o1.getGamesPlayed());
+			}
+		};
+
+	private static Comparator<LeagueRow> s_atomicCompareByRoundsPlayed =
+		new Comparator<LeagueRow>() {
+			public int compare(LeagueRow o1, LeagueRow o2) {
+				return new Integer(o2.getRoundsPlayed()).compareTo(o1.getRoundsPlayed());
+			}
+		};
+
+	private static Comparator<LeagueRow> s_atomicCompareByPerson =
+		new Comparator<LeagueRow>() {
+			public int compare(LeagueRow o1, LeagueRow o2) {
+				return o1.getPerson().compareTo(o2.getPerson());
+			}
+		};
+	
+	public Comparator<LeagueRow> getCompareByLossesPerGame() {
+		ComparatorChain<LeagueRow> chain = new ComparatorChain<LeagueRow>();
+		
+		chain.addComparator(s_atomicCompareByLossesPerGame);
+		chain.addComparator(s_atomicCompareByLossesPerRound);
+		chain.addComparator(s_atomicCompareByGamesPlayed);
+		chain.addComparator(s_atomicCompareByRoundsPlayed);
+		chain.addComparator(s_atomicCompareByPerson);
+		return chain;
 	}
 }

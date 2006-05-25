@@ -19,7 +19,7 @@ public class LeagueAction extends ActionSupport {
 	public String execute() {
 		LeagueManager manager = new LeagueManager();
 		Collection<Game> games = getGameDAO().getAllGames();
-		SortedSet<LeagueRow> league = manager.generateLeague(games, manager.getCompareByLostGames());
+		SortedSet<LeagueRow> league = manager.generateLeague(games, manager.getCompareByLossesPerGame());
 		setLeague(league);
 		return SUCCESS;
 	}
