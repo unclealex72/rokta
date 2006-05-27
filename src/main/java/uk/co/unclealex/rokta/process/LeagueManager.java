@@ -9,6 +9,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.collections15.comparators.ComparatorChain;
 
+import uk.co.unclealex.rokta.model.Delta;
 import uk.co.unclealex.rokta.model.Game;
 import uk.co.unclealex.rokta.model.LeagueRow;
 import uk.co.unclealex.rokta.model.Person;
@@ -16,7 +17,48 @@ import uk.co.unclealex.rokta.model.Round;
 
 public class LeagueManager {
 
-	public SortedSet<LeagueRow> generateLeague(Collection<Game> games, Comparator<LeagueRow> comparator) {
+	private Collection<Game> i_currentGames;
+	private Collection<Game> i_previousGames;
+	private Comparator<LeagueRow> i_comparator;
+	
+	public SortedSet<LeagueRow> generateLeague() {
+		SortedSet<LeagueRow> currentLeague = generateLeague(getCurrentGames());
+		SortedSet<LeagueRow> previousLeague = generateLeague(getPreviousGames());
+		
+		Map<Person,Integer> oldPositions = new HashMap<Person, Integer>();
+		Map<Person,Integer> newPositions = new HashMap<Person, Integer>();
+				
+		for (
+				IndexingIterator<LeagueRow> iter = new IndexingIterator<LeagueRow>(currentLeague.iterator());
+				iter.hasNext(); ) {
+			LeagueRow row = iter.next();
+			newPositions.put(row.getPerson(), iter.getIndex());
+		}
+		for (
+				IndexingIterator<LeagueRow> iter = new IndexingIterator<LeagueRow>(previousLeague.iterator());
+				iter.hasNext(); ) {
+			LeagueRow row = iter.next();
+			oldPositions.put(row.getPerson(), iter.getIndex());
+		}
+		
+		for (LeagueRow row : currentLeague) {
+			Person person = row.getPerson();
+			Integer currentPosition = newPositions.get(person);
+			Integer previousPosition = oldPositions.get(person);
+			if (previousPosition != null) {
+				if (currentPosition < previousPosition) {
+					row.setDelta(Delta.UP);
+				}
+				if (previousPosition < currentPosition) {
+					row.setDelta(Delta.DOWN);
+				}
+			}
+		}
+		
+		return currentLeague;
+	}
+	
+	private SortedSet<LeagueRow> generateLeague(Collection<Game> games) {
 		int totalGames = 0;
 		Map<Person, LeagueRow> rowMap = new HashMap<Person, LeagueRow>();
 		
@@ -39,14 +81,15 @@ public class LeagueManager {
 			}
 		}
 		
-		// Now enter the total number of games ever played
+		// Now enter the total number of games ever played and initialise the deltas.
 		for (LeagueRow leagueRow : rowMap.values()) {
 			leagueRow.setTotalGamesPlayed(totalGames);
+			leagueRow.setDelta(Delta.NONE);
 		}
 		
 		// Populate the number of rounds played by each person
 		
-		SortedSet<LeagueRow> league = new TreeSet<LeagueRow>(comparator);
+		SortedSet<LeagueRow> league = new TreeSet<LeagueRow>(getComparator());
 		league.addAll(rowMap.values());
 		return league;
 	}
@@ -105,5 +148,23 @@ public class LeagueManager {
 		chain.addComparator(s_atomicCompareByRoundsPlayed);
 		chain.addComparator(s_atomicCompareByPerson);
 		return chain;
+	}
+	public Comparator<LeagueRow> getComparator() {
+		return i_comparator;
+	}
+	public void setComparator(Comparator<LeagueRow> comparator) {
+		i_comparator = comparator;
+	}
+	public Collection<Game> getCurrentGames() {
+		return i_currentGames;
+	}
+	public void setCurrentGames(Collection<Game> currentGames) {
+		i_currentGames = currentGames;
+	}
+	public Collection<Game> getPreviousGames() {
+		return i_previousGames;
+	}
+	public void setPreviousGames(Collection<Game> previousGames) {
+		i_previousGames = previousGames;
 	}
 }

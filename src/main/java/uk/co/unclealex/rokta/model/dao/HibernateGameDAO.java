@@ -1,7 +1,9 @@
 package uk.co.unclealex.rokta.model.dao;
 
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -21,15 +23,23 @@ public class HibernateGameDAO extends HibernateDAO implements GameDAO {
 		session.getTransaction().commit();
 	}
 	
-	public List<Game> getAllGames() {
+	public SortedSet<Game> getAllGames() {
 		Session session = getSession();
 		Query q = session.getNamedQuery("game.getAll");
-		return q.list();
+		return sortGames(q.list());
 	}
 
-	public List<Game> getAllGamesSince(Date date) {
+	public SortedSet<Game> getAllGamesSince(Date date) {
 		Session session = getSession();
 		Query q = session.getNamedQuery("game.getAllSince").setDate("date", date);
-		return q.list();
+		return sortGames(q.list());
 	}
+	
+	private SortedSet<Game> sortGames(Collection<Game> games) {
+		SortedSet<Game> sortedGames = new TreeSet<Game>();
+		sortedGames.addAll(games);
+		return sortedGames;
+	}
+
+
 }

@@ -15,6 +15,7 @@
 	<div id="content">
 		<table>
 			<tr>
+				<th/>
 				<th>Player</th>
 				<th>Games</th>
 				<th>Rounds</th>
@@ -24,6 +25,7 @@
 			</tr>
 			<ww:iterator id="row" value="league">
 				<tr>
+					<td><ww:property value="delta"/></td>
 					<td><ww:property value="person"/></td>
 					<td><ww:property value="gamesPlayed"/></td>
 					<td><ww:property value="roundsPlayed"/></td>
