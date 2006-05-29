@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="/webwork" prefix="ww" %>
-<%@ taglib uri="http://java.sun.com/jstl/fmt" prefix="fmt" %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
@@ -31,14 +30,14 @@
 					<td><ww:property value="roundsPlayed"/></td>
 					<td><ww:property value="gamesLost"/></td>
 					<td>
-						<fmt:formatNumber pattern="#0.##%">
-							<ww:property value="lossesPerRound"/>
-						</fmt:formatNumber>
+						<ww:text name="format.percent"> 
+						    <ww:param value="lossesPerRound * 100"/>
+						</ww:text>
 					</td>
 					<td>
-						<fmt:formatNumber pattern="#0.##%">
-							<ww:property value="lossesPerGame"/>
-						</fmt:formatNumber>
+						<ww:text name="format.percent"> 
+						    <ww:param value="lossesPerGame * 100"/>
+						</ww:text>
 					</td>
 				</tr>
 			</ww:iterator>

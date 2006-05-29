@@ -1,7 +1,7 @@
 package uk.co.unclealex.rokta.actions;
 
-import java.util.Collection;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import uk.co.unclealex.rokta.model.Game;
 import uk.co.unclealex.rokta.model.LeagueRow;
@@ -18,8 +18,19 @@ public class LeagueAction extends ActionSupport {
 	@Override
 	public String execute() {
 		LeagueManager manager = new LeagueManager();
-		Collection<Game> games = getGameDAO().getAllGames();
-		SortedSet<LeagueRow> league = manager.generateLeague(games, manager.getCompareByLossesPerGame());
+		SortedSet<Game> games = getGameDAO().getAllGames();
+		SortedSet<Game> previousGames = new TreeSet<Game>();
+		previousGames.addAll(games);
+		Game lastGame = previousGames.last();
+		if (lastGame != null) {
+			previousGames.remove(lastGame);
+		}
+		
+		manager.setComparator(manager.getCompareByLossesPerGame());
+		manager.setCurrentGames(games);
+		manager.setPreviousGames(previousGames);
+		
+		SortedSet<LeagueRow> league = manager.generateLeague();
 		setLeague(league);
 		return SUCCESS;
 	}

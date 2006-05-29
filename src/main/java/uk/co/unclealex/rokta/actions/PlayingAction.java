@@ -5,7 +5,7 @@ import uk.co.unclealex.rokta.model.Hand;
 import uk.co.unclealex.rokta.model.Person;
 import uk.co.unclealex.rokta.process.GameManager;
 
-public abstract class GameAction extends BasicAction {
+public abstract class PlayingAction extends BasicAction {
 
 	private GameManager i_gameManager;
 	private Person[] i_participants;

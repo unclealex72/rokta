@@ -5,7 +5,7 @@
 	<groupId>unclealex</groupId>
 	<artifactId>rokta</artifactId>
 	<packaging>war</packaging>
-	<version>1.0</version>
+	<version>${db}-1.0</version>
 	<name>Maven Quick Start Archetype</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>
@@ -81,16 +81,6 @@
 			<groupId>tomcat</groupId>
 			<artifactId>jasper-compiler</artifactId>
 			<version>5.5.15</version>
-		</dependency>
-		<dependency>
-			<groupId>taglibs</groupId>
-			<artifactId>standard</artifactId>
-			<version>1.1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-			<version>1.1.2</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>

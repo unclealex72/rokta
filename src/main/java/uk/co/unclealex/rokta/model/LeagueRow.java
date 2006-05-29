@@ -7,6 +7,7 @@ public class LeagueRow {
 	private int i_roundsPlayed;
 	private int i_gamesLost;
 	private int i_totalGamesPlayed;
+	private Delta i_delta;
 	
 	public double getLossesPerGame() {
 		return getGamesLost() / (double) getGamesPlayed();
@@ -60,5 +61,13 @@ public class LeagueRow {
 
 	public void setRoundsPlayed(int roundsPlayed) {
 		i_roundsPlayed = roundsPlayed;
+	}
+
+	public Delta getDelta() {
+		return i_delta;
+	}
+
+	public void setDelta(Delta delta) {
+		i_delta = delta;
 	}
 }

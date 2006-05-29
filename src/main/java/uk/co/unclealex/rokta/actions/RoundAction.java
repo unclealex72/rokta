@@ -8,7 +8,7 @@ import uk.co.unclealex.rokta.model.Hand;
 import uk.co.unclealex.rokta.model.Person;
 import uk.co.unclealex.rokta.process.GameManager;
 
-public class RoundAction extends GameAction {
+public class RoundAction extends PlayingAction {
 
 	private Person i_loser;
 	private Hand[] i_hands;

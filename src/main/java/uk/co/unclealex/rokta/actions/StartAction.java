@@ -6,7 +6,7 @@ import java.util.Date;
 import uk.co.unclealex.rokta.model.Person;
 import uk.co.unclealex.rokta.process.GameManager;
 
-public class StartAction extends GameAction {
+public class StartAction extends PlayingAction {
 
 	private Person i_instigator;
 	private Person[] i_participants;
