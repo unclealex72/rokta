@@ -89,4 +89,9 @@ public class Game extends Identity<Game> {
 		return super.getId();
 	}
 
+	@Override
+	public int compareTo(Game o) {
+		int cmp = getDatePlayed().compareTo(o.getDatePlayed());
+		return cmp!=0?cmp:super.compareTo(o);
+	}
 }

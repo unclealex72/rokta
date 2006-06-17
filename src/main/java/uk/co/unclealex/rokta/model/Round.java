@@ -30,7 +30,6 @@ public class Round extends Identity<Round> {
 
 	private Set<Play> i_plays;
 	private Person i_counter;
-	private Game i_game;
 	private Integer i_round;
 	
 	@Transient

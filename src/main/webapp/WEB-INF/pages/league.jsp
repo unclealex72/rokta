@@ -12,6 +12,19 @@
 <body>
 	<div id="header"></div>
 	<div id="content">
+		<p>
+			<ww:if test="selectedWeek != null">
+				League for <ww:property value="selectedWeek"/>.
+				<a href="league.action">(Full league)</a>
+			</ww:if>
+			<ww:elseif test="selectedMonth != null">
+				League for <ww:property value="selectedMonth"/>.
+				<a href="league.action">(Full league)</a>
+			</ww:elseif>
+			<ww:else>
+				Full league.
+			</ww:else>
+		</p>
 		<table>
 			<tr>
 				<th/>
@@ -19,8 +32,8 @@
 				<th>Games</th>
 				<th>Rounds</th>
 				<th>Lost</th>
-				<th>Losses per Round</th>
-				<th>Losses per Game</th>
+				<th>L/R</th>
+				<th>L/G</th>
 			</tr>
 			<ww:iterator id="row" value="league">
 				<tr>
@@ -42,6 +55,28 @@
 				</tr>
 			</ww:iterator>
 		</table>
+		<form action="league.action">
+			<p>
+				Show league for
+				<select name="selectedWeek">
+					<ww:iterator id="selection" value="selectableWeeks">
+						<option><ww:property/></option>
+					</ww:iterator>
+				</select>
+				<input type="submit" value="Select Week"/>
+			</p>
+		</form>
+		<form action="league.action">
+			<p>
+				Show league for
+				<select name="selectedMonth">
+					<ww:iterator id="selection" value="selectableMonths">
+						<option><ww:property/></option>
+					</ww:iterator>
+				</select>
+				<input type="submit" value="Select Month"/>
+			</p>
+		</form>
 	</div>
 </body>
 </html>
