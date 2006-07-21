@@ -40,7 +40,7 @@
 				</ww:iterator>
 				<tr>
 					<td/>
-					<td><input type="submit"/></td>
+					<td><input type="submit" value="Next"/></td>
 				</tr>
 			</table>
 			<ww:iterator id="participant" value="participants">
