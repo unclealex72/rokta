@@ -31,7 +31,7 @@
 				        required="false"/>
 				<tr>
 					<td/>
-					<td><input type="submit"/></td>
+					<td><input type="submit" value="Go!"/></td>
 				</tr>
 			</table>
 		</form>
