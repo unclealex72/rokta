@@ -4,7 +4,7 @@ import java.util.SortedSet;
 
 import uk.co.unclealex.rokta.model.Person;
 
-public interface PersonDAO {
+public interface PersonDao {
 
 	public Person getPersonByName(String name);
 

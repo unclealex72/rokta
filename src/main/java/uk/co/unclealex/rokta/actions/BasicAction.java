@@ -4,18 +4,18 @@ import java.util.SortedSet;
 
 import uk.co.unclealex.rokta.exceptions.InvalidRoundException;
 import uk.co.unclealex.rokta.model.Person;
-import uk.co.unclealex.rokta.model.dao.PersonDAO;
+import uk.co.unclealex.rokta.model.dao.PersonDao;
 
 import com.opensymphony.xwork.ActionSupport;
 
 public abstract class BasicAction extends ActionSupport {
 
 	private SortedSet<Person> i_everybody;
-	private PersonDAO i_personDAO;
+	private PersonDao i_personDao;
 	
 	@Override
 	public String execute() throws InvalidRoundException {
-		setEverybody(getPersonDAO().getEverybody());
+		setEverybody(getPersonDao().getEverybody());
 		return executeInternal();
 	}
 
@@ -29,11 +29,11 @@ public abstract class BasicAction extends ActionSupport {
 		i_everybody = everybody;
 	}
 
-	public PersonDAO getPersonDAO() {
-		return i_personDAO;
+	public PersonDao getPersonDao() {
+		return i_personDao;
 	}
 
-	public void setPersonDAO(PersonDAO personDAO) {
-		i_personDAO = personDAO;
+	public void setPersonDao(PersonDao personDao) {
+		i_personDao = personDao;
 	}
 }

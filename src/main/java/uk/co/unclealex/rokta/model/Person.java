@@ -35,6 +35,7 @@ public class Person extends Identity<Person> {
 		i_name = name;
 	}
 	
+	@Override
 	@Id @GeneratedValue
 	public Long getId() {
 		return super.getId();

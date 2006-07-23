@@ -32,6 +32,7 @@ public class Play extends Identity<Play> {
 		i_person = person;
 	}
 	
+	@Override
 	@Id @GeneratedValue
 	public Long getId() {
 		return super.getId();

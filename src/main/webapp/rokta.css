@@ -13,6 +13,15 @@ th {
 	font-weight: bold;
 	border: 1px solid #333333;
 }
+
+.exempt {
+	background-color: lime;
+}
+
+.notPlaying {
+	background-color: silver;
+}
+
 td {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: x-small;

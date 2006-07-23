@@ -1,5 +1,5 @@
 <jsp:root
-  xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:ww="/webwork"
+  xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:ww="/ww"
   xmlns:decorator="http://www.opensymphony.com/sitemesh/decorator"
   version="2.0">
 
@@ -11,12 +11,17 @@
   <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Finished...</title>
+    <link rel="stylesheet" type="text/css" href="rokta.css" />
+    <title>ROKTA <decorator:title/></title>
   </head>
 
   <body>
-	<p><ww:property value="loser"/> has lost.</p>
-    <p><a href="league.action">View the league</a></p>
+    <div id="header">&#160;</div>
+    <div id="content">
+      <decorator:body/>
+    </div>
+    <div></div>
   </body>
+
   </html>
 </jsp:root>

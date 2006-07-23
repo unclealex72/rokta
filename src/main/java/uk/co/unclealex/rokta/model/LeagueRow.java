@@ -7,14 +7,17 @@ public class LeagueRow {
 	private int i_roundsPlayed;
 	private int i_gamesLost;
 	private int i_totalGamesPlayed;
+	private boolean i_exempt = false;
+	private boolean i_playingToday = true;
+	private Integer i_gap;
 	private Delta i_delta;
 	
 	public double getLossesPerGame() {
 		return getGamesLost() / (double) getGamesPlayed();
 	}
 	
-	public double getLossesPerRound() {
-		return getGamesLost() / (double) getRoundsPlayed();
+	public double getRoundsPerGame() {
+		return getRoundsPlayed() / (double) getGamesPlayed();
 	}
 	
 	public int getGamesLost() {
@@ -69,5 +72,47 @@ public class LeagueRow {
 
 	public void setDelta(Delta delta) {
 		i_delta = delta;
+	}
+
+	/**
+	 * @return the exempt
+	 */
+	public boolean isExempt() {
+		return i_exempt;
+	}
+
+	/**
+	 * @param exempt the exempt to set
+	 */
+	public void setExempt(boolean exempt) {
+		i_exempt = exempt;
+	}
+
+	/**
+	 * @return the playingToday
+	 */
+	public boolean isPlayingToday() {
+		return i_playingToday;
+	}
+
+	/**
+	 * @param playingToday the playingToday to set
+	 */
+	public void setPlayingToday(boolean playingToday) {
+		i_playingToday = playingToday;
+	}
+
+	/**
+	 * @return the gap
+	 */
+	public Integer getGap() {
+		return i_gap;
+	}
+
+	/**
+	 * @param gap the gap to set
+	 */
+	public void setGap(Integer gap) {
+		i_gap = gap;
 	}
 }

@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import uk.co.unclealex.rokta.model.Game;
-import uk.co.unclealex.rokta.model.dao.GameDAO;
+import uk.co.unclealex.rokta.model.dao.GameDao;
 import uk.co.unclealex.rokta.views.GameView;
 
 import com.opensymphony.xwork.ActionSupport;
@@ -13,13 +13,13 @@ import com.opensymphony.xwork.ActionSupport;
 public class GamesAction extends ActionSupport {
 
 	private List<GameView> i_gameViews;
-	private GameDAO i_gameDAO;
+	private GameDao i_gameDao;
 	
 	@Override
 	public String execute() {
 		List<GameView> gameViews = new ArrayList<GameView>();
 		List<Game> games = new ArrayList<Game>();
-		games.addAll(getGameDAO().getAllGames());
+		games.addAll(getGameDao().getAllGames());
 		Collections.reverse(games);
 		
 		for (Game game : games) {
@@ -38,11 +38,11 @@ public class GamesAction extends ActionSupport {
 		i_gameViews = gameViews;
 	}
 
-	public GameDAO getGameDAO() {
-		return i_gameDAO;
+	public GameDao getGameDao() {
+		return i_gameDao;
 	}
 
-	public void setGameDAO(GameDAO gameDAO) {
-		i_gameDAO = gameDAO;
+	public void setGameDao(GameDao gameDao) {
+		i_gameDao = gameDao;
 	}
 }

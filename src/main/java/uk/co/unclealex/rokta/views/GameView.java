@@ -15,11 +15,13 @@ public class GameView {
 	private List<RoundView> i_rounds;
 	private SortedSet<Person> i_participants;
 	private Person i_instigator;
+	private Person i_loser;
 	
 	public GameView(Game game) {
 		setDatePlayed(game.getDatePlayed());
 		setParticipants(game.getParticipants());
 		setInstigator(game.getInstigator());
+		setLoser(game.getLoser());
 		
 		List<RoundView> rounds = new ArrayList<RoundView>();
 		for (Round round : game.getRounds()) {
@@ -58,6 +60,20 @@ public class GameView {
 
 	protected void setInstigator(Person instigator) {
 		i_instigator = instigator;
+	}
+
+	/**
+	 * @return the loser
+	 */
+	public Person getLoser() {
+		return i_loser;
+	}
+
+	/**
+	 * @param loser the loser to set
+	 */
+	public void setLoser(Person loser) {
+		i_loser = loser;
 	}
 	
 }

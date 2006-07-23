@@ -26,10 +26,12 @@ public class StartAction extends PlayingAction {
 		i_instigator = instigator;
 	}
 
+	@Override
 	public Person[] getParticipants() {
 		return i_participants;
 	}
 
+	@Override
 	public void setParticipants(Person[] participants) {
 		i_participants = participants;
 	}

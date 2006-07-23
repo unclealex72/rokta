@@ -3,17 +3,17 @@ package uk.co.unclealex.rokta.model.convertors;
 import java.util.Map;
 
 import uk.co.unclealex.rokta.model.Person;
-import uk.co.unclealex.rokta.model.dao.PersonDAO;
+import uk.co.unclealex.rokta.model.dao.PersonDao;
 
 import com.opensymphony.webwork.util.WebWorkTypeConverter;
 
 public class PersonConverter extends WebWorkTypeConverter {
 
-	private PersonDAO i_personDAO;
+	private PersonDao i_personDao;
 	
 	@Override
 	public Object convertFromString(Map context, String[] values, Class toClass) {
-		return getPersonDAO().getPersonByName(values[0]);
+		return getPersonDao().getPersonByName(values[0]);
 	}
 
 	@Override
@@ -21,12 +21,12 @@ public class PersonConverter extends WebWorkTypeConverter {
 		return ((Person) o).getName();
 	}
 
-	public PersonDAO getPersonDAO() {
-		return i_personDAO;
+	public PersonDao getPersonDao() {
+		return i_personDao;
 	}
 
-	public void setPersonDAO(PersonDAO personDAO) {
-		i_personDAO = personDAO;
+	public void setPersonDao(PersonDao personDao) {
+		i_personDao = personDao;
 	}
 
 }

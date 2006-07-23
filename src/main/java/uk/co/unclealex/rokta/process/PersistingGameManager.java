@@ -1,21 +1,21 @@
 package uk.co.unclealex.rokta.process;
 
-import uk.co.unclealex.rokta.model.dao.GameDAO;
+import uk.co.unclealex.rokta.model.dao.GameDao;
 
 public class PersistingGameManager extends DefaultGameManager {
 
-	private GameDAO i_GameDAO;
+	private GameDao i_GameDao;
 	
 	@Override
 	protected void finishGameInternal() {
-		getGameDAO().store(getGame());
+		getGameDao().store(getGame());
 	}
 
-	public GameDAO getGameDAO() {
-		return i_GameDAO;
+	public GameDao getGameDao() {
+		return i_GameDao;
 	}
 
-	public void setGameDAO(GameDAO gameDAO) {
-		i_GameDAO = gameDAO;
+	public void setGameDao(GameDao gameDao) {
+		i_GameDao = gameDao;
 	}
 }

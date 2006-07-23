@@ -119,6 +119,7 @@ public class Round extends Identity<Round> {
 		return cmpRound==0?super.compareTo(o):cmpRound;
 	}	
 	
+	@Override
 	@Id @GeneratedValue
 	public Long getId() {
 		return super.getId();

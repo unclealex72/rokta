@@ -20,10 +20,14 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
 
-@Entity
+@Entity()
 @NamedQueries(value={
-		@NamedQuery(name="game.getAll", query="select g from Game g"),
-		@NamedQuery(name="game.getAllSince", query="select g from Game g where g.datePlayed >= :datePlayed")
+		@NamedQuery(name="game.getAll", query="from Game"),
+		@NamedQuery(name="game.getAllSince", query="from Game g where g.datePlayed >= :datePlayed"),
+		@NamedQuery(name="game.getLast", query="from Game g order by datePlayed desc"),
+		@NamedQuery(
+				name="game.getLastForPerson",
+				query="select game from Game game join game.rounds round join round.plays play with play.person = :person order by datePlayed desc")
 		})
 public class Game extends Identity<Game> {
 
@@ -84,6 +88,7 @@ public class Game extends Identity<Game> {
 		i_rounds = rounds;
 	}
 	
+	@Override
 	@Id @GeneratedValue
 	public Long getId() {
 		return super.getId();

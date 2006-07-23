@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+  default-autowire="byName">
+
+  <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager"/>
+    
+  <bean id="gameDaoTarget"
+    class="uk.co.unclealex.rokta.model.dao.HibernateGameDao"/>
+
+  <bean id="personDaoTarget"
+    class="uk.co.unclealex.rokta.model.dao.HibernatePersonDao"/>
+
+  <bean id="gameDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <property name="target">
+      <ref bean="gameDaoTarget"/>
+    </property>
+    <property name="transactionAttributes">
+      <props>
+        <prop key="store*">PROPAGATION_REQUIRED</prop>
+        <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
+      </props>
+    </property>
+  </bean>
+  
+  <bean id="personDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <property name="target">
+      <ref bean="personDaoTarget"/>
+    </property>
+    <property name="transactionAttributes">
+      <props>
+        <prop key="store*">PROPAGATION_REQUIRED</prop>
+        <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
+      </props>
+    </property>
+  </bean>
+
+  <bean id="dateUtil" class="uk.co.unclealex.rokta.util.DateUtilImpl"/>
+  <bean id="personManager" class="uk.co.unclealex.rokta.process.DefaultPersonManager" singleton="true"/>
+  
+  <bean id="gameManager"
+    class="uk.co.unclealex.rokta.process.PersistingGameManager"
+    scope="session">
+  </bean>
+
+  <bean id="leagueManager"
+    class="uk.co.unclealex.rokta.process.LeagueManagerImpl">
+  </bean>
+
+  <bean id="sessionFactory"
+    class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+    <property name="configLocation">
+      <value>classpath:hibernate.cfg.xml</value>
+    </property>
+    <property name="configurationClass">
+      <value>org.hibernate.cfg.AnnotationConfiguration</value>
+    </property>
+  </bean>
+</beans>
+

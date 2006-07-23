@@ -2,6 +2,7 @@ package uk.co.unclealex.rokta.actions;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedSet;
@@ -11,8 +12,8 @@ import org.apache.commons.collections15.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import uk.co.unclealex.rokta.model.Game;
-import uk.co.unclealex.rokta.model.LeagueRow;
-import uk.co.unclealex.rokta.model.dao.GameDAO;
+import uk.co.unclealex.rokta.model.League;
+import uk.co.unclealex.rokta.model.dao.GameDao;
 import uk.co.unclealex.rokta.process.DateFilterPredicate;
 import uk.co.unclealex.rokta.process.LeagueManager;
 
@@ -23,8 +24,10 @@ public class LeagueAction extends ActionSupport {
 	private static final String DATE_FORMAT_WEEK = "'Week 'ww, yyyy";
 	private static final String DATE_FORMAT_MONTH = "MMMMM, yyyy";
 	
-	private GameDAO i_gameDAO;
-	private SortedSet<LeagueRow> i_league;
+	private GameDao i_gameDao;
+	private LeagueManager i_leagueManager;
+	
+	private League i_league;
 
 	private String i_selectedWeek;
 	private String i_selectedMonth;
@@ -34,8 +37,8 @@ public class LeagueAction extends ActionSupport {
 	
 	@Override
 	public String execute() {
-		LeagueManager manager = new LeagueManager();
-		SortedSet<Game> games = getGameDAO().getAllGames();
+		LeagueManager manager = getLeagueManager();
+		SortedSet<Game> games = getGameDao().getAllGames();
 		
 		DateFormat dfByWeek = new SimpleDateFormat(DATE_FORMAT_WEEK);
 		DateFormat dfByMonth = new SimpleDateFormat(DATE_FORMAT_MONTH);
@@ -61,7 +64,7 @@ public class LeagueAction extends ActionSupport {
 		manager.setCurrentGames(games);
 		manager.setPreviousGames(previousGames);
 		
-		SortedSet<LeagueRow> league = manager.generateLeague();
+		League league = manager.generateLeague(new Date());
 		setLeague(league);
 		return SUCCESS;
 	}
@@ -82,19 +85,19 @@ public class LeagueAction extends ActionSupport {
 		return dates;
 	}
 
-	public GameDAO getGameDAO() {
-		return i_gameDAO;
+	public GameDao getGameDao() {
+		return i_gameDao;
 	}
 
-	public void setGameDAO(GameDAO gameDAO) {
-		i_gameDAO = gameDAO;
+	public void setGameDao(GameDao gameDao) {
+		i_gameDao = gameDao;
 	}
 
-	public SortedSet<LeagueRow> getLeague() {
+	public League getLeague() {
 		return i_league;
 	}
 
-	public void setLeague(SortedSet<LeagueRow> league) {
+	public void setLeague(League league) {
 		i_league = league;
 	}
 
@@ -152,5 +155,19 @@ public class LeagueAction extends ActionSupport {
 	 */
 	public void setSelectedWeek(String selectedWeek) {
 		i_selectedWeek = selectedWeek;
+	}
+
+	/**
+	 * @return the leagueManager
+	 */
+	public LeagueManager getLeagueManager() {
+		return i_leagueManager;
+	}
+
+	/**
+	 * @param leagueManager the leagueManager to set
+	 */
+	public void setLeagueManager(LeagueManager leagueManager) {
+		i_leagueManager = leagueManager;
 	}
 }
