@@ -16,7 +16,9 @@
   </head>
 
   <body>
-    <div id="header">&#160;</div>
+    <div id="header">
+    <p></p>
+		</div>
     <div id="content">
       <decorator:body/>
     </div>

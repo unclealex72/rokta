@@ -2,6 +2,7 @@ package uk.co.unclealex.rokta.model.dao;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -31,7 +32,8 @@ public class HibernateGameDao extends HibernateDaoSupport implements GameDao {
 		return (Game) getHibernateTemplate().execute(
 				new HibernateCallback() {
 					public Object doInHibernate(Session session) throws HibernateException, SQLException {
-						return session.getNamedQuery("game.getLast").setMaxResults(1).uniqueResult();
+						List<Game> games = session.getNamedQuery("game.getLast").list();
+            return games.iterator().next();
 					}
 				});
 	}
@@ -40,7 +42,8 @@ public class HibernateGameDao extends HibernateDaoSupport implements GameDao {
 		return (Game) getHibernateTemplate().execute(
 				new HibernateCallback() {
 					public Object doInHibernate(Session session) throws HibernateException, SQLException {
-						return session.getNamedQuery("game.getLastForPerson").setEntity("person", person).setMaxResults(1).uniqueResult();
+            List<Game> games = session.getNamedQuery("game.getLastForPerson").setEntity("person", person).list(); 
+						return games.iterator().next();
 					}
 				});
 	}
