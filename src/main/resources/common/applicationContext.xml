@@ -4,21 +4,21 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
   default-autowire="byName">
 
-  <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager"/>
+  <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager" scope="session"/>
     
   <bean id="gameDaoTarget"
-    class="uk.co.unclealex.rokta.model.dao.HibernateGameDao"/>
+    class="uk.co.unclealex.rokta.model.dao.HibernateGameDao" scope="session"/>
 
   <bean id="personDaoTarget"
-    class="uk.co.unclealex.rokta.model.dao.HibernatePersonDao"/>
+    class="uk.co.unclealex.rokta.model.dao.HibernatePersonDao" scope="session"/>
 
   <bean id="roundDaoTarget"
-    class="uk.co.unclealex.rokta.model.dao.HibernateRoundDao"/>
+    class="uk.co.unclealex.rokta.model.dao.HibernateRoundDao" scope="session"/>
 
   <bean id="playDaoTarget"
-    class="uk.co.unclealex.rokta.model.dao.HibernatePlayDao"/>
+    class="uk.co.unclealex.rokta.model.dao.HibernatePlayDao" scope="session"/>
 
-  <bean id="gameDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+  <bean id="gameDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="session">
     <property name="target">
       <ref bean="gameDaoTarget"/>
     </property>
@@ -30,7 +30,7 @@
     </property>
   </bean>
   
-  <bean id="personDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+  <bean id="personDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="session">
     <property name="target">
       <ref bean="personDaoTarget"/>
     </property>
@@ -42,7 +42,7 @@
     </property>
   </bean>
 
-  <bean id="roundDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+  <bean id="roundDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="session">
     <property name="target">
       <ref bean="roundDaoTarget"/>
     </property>
@@ -54,7 +54,7 @@
     </property>
   </bean>
 
-  <bean id="playDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+  <bean id="playDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="session">
     <property name="target">
       <ref bean="playDaoTarget"/>
     </property>
@@ -67,7 +67,7 @@
   </bean>
 
   <bean id="dateUtil" class="uk.co.unclealex.rokta.util.DateUtilImpl"/>
-  <bean id="personManager" class="uk.co.unclealex.rokta.process.PersonManagerImpl" scope="singleton"/>
+  <bean id="personManager" class="uk.co.unclealex.rokta.process.PersonManagerImpl" scope="prototype"/>
   <bean id="gameManager"
     class="uk.co.unclealex.rokta.process.PersistingGameManager"
     scope="session">
