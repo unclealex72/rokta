@@ -14,6 +14,7 @@ public class Streak implements Serializable {
 
 	private Person i_person;
 	private SortedSet<Game> i_games;
+	private boolean i_current;
 	
 	/**
 	 * 
@@ -27,10 +28,11 @@ public class Streak implements Serializable {
 	 * @param person
 	 * @param games
 	 */
-	public Streak(Person person, SortedSet<Game> games) {
+	public Streak(Person person, SortedSet<Game> games, boolean current) {
 		super();
 		i_person = person;
 		i_games = games;
+		i_current = current;
 	}
 	
 	/**
@@ -57,6 +59,20 @@ public class Streak implements Serializable {
 	 */
 	public void setPerson(Person person) {
 		i_person = person;
+	}
+
+	/**
+	 * @return the current
+	 */
+	public boolean isCurrent() {
+		return i_current;
+	}
+
+	/**
+	 * @param current the current to set
+	 */
+	public void setCurrent(boolean current) {
+		i_current = current;
 	}
 	
 	

@@ -21,6 +21,7 @@ public class StreakView implements Comparable<StreakView> {
 	private Game i_firstGame;
 	private Game i_lastGame;
 	private int i_length;
+	private boolean i_current;
 	
 	public int compareTo(StreakView o) {
 		int cmp = -(new Integer(getLength()).compareTo(o.getLength()));
@@ -39,6 +40,7 @@ public class StreakView implements Comparable<StreakView> {
 				result.setFirstGame(games.first());
 				result.setLastGame(games.last());
 				result.setLength(games.size());
+				result.setCurrent(streak.isCurrent());
 				return result;				
 			}
 		};
@@ -93,6 +95,18 @@ public class StreakView implements Comparable<StreakView> {
 	 */
 	public void setPerson(Person person) {
 		i_person = person;
+	}
+	/**
+	 * @return the current
+	 */
+	public boolean isCurrent() {
+		return i_current;
+	}
+	/**
+	 * @param current the current to set
+	 */
+	public void setCurrent(boolean current) {
+		i_current = current;
 	}
 	
 	

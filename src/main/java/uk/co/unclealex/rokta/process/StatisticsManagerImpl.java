@@ -90,14 +90,7 @@ public class StatisticsManagerImpl implements StatisticsManager {
 					// If this person is the loser then we add their current streak to the list
 					// of streaks
 					SortedSet<Game> currentStreak = currentStreaksByPerson.get(person);
-					if (currentStreak != null && currentStreak.size() > 1) {
-						Streak streak = new Streak(person, currentStreak);
-						if (streaksByPerson.get(person) == null) {
-							streaksByPerson.put(person, new LinkedList<Streak>());
-						}
-						streaksByPerson.get(person).add(streak);
-						currentStreaksByPerson.remove(person);
-					}
+					addStreak(streaksByPerson, currentStreaksByPerson, currentStreak, person, false);
 				}
 				else {
 					// Otherwise, add this game to the current streak.
@@ -108,7 +101,36 @@ public class StatisticsManagerImpl implements StatisticsManager {
 				}
 			}
 		}
+		
+		// Now add the current streaks as they won't have been picked up by checking the losers.
+		for (Map.Entry<Person, SortedSet<Game>> entry : currentStreaksByPerson.entrySet()) {
+			Person person = entry.getKey();
+			SortedSet<Game> currentStreak = entry.getValue();
+			addStreak(streaksByPerson, currentStreaksByPerson, currentStreak, person, true);
+		}
 		return streaksByPerson;
+	}
+
+	/**
+	 * @param streaksByPerson
+	 * @param currentStreaksByPerson 
+	 * @param currentStreak
+	 * @param person
+	 * @param b
+	 */
+	private void addStreak(
+			Map<Person, List<Streak>> streaksByPerson, Map<Person, SortedSet<Game>> currentStreaksByPerson,
+			SortedSet<Game> currentStreak, Person person, boolean current) {
+		if (currentStreak != null && currentStreak.size() > 1) {
+			Streak streak = new Streak(person, currentStreak, current);
+			if (streaksByPerson.get(person) == null) {
+				streaksByPerson.put(person, new LinkedList<Streak>());
+			}
+			streaksByPerson.get(person).add(streak);
+			if (!current) {
+				currentStreaksByPerson.remove(person);
+			}
+		}
 	}
 
 	/**

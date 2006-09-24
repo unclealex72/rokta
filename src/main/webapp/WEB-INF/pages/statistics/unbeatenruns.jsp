@@ -30,7 +30,7 @@
         <th>To</th>
       </tr>
       <ww:set name="previousLength" value="0"/>
-      <ww:iterator id="view" value="streakViews" status="status">
+      <ww:iterator id="view" value="topStreakViews" status="status">
         <tr>
           <td>
             <ww:if test="#previousLength == view.length">
@@ -48,7 +48,24 @@
         <ww:set name="previousLength" value="view.length"/>
       </ww:iterator>
     </table>
-    
+
+  <h1>Current runs</h1>    
+    <table>
+      <tr>
+        <th>Player</th>
+        <th>Games</th>
+        <th>From</th>
+        <th>To</th>
+      </tr>
+      <ww:iterator id="view" value="currentStreakViews">
+        <tr>
+          <td><ww:property value="person.name"/></td>
+          <td><ww:property value="length"/></td>
+          <td><ww:date name="firstGame.datePlayed" format="dd/MM/yyyy hh:mm"/></td>
+          <td><ww:date name="lastGame.datePlayed" format="dd/MM/yyyy hh:mm"/></td>
+        </tr>
+      </ww:iterator>
+    </table>
   </body>
   </html>
 </jsp:root>

@@ -22,6 +22,9 @@
     <!-- **** Colour Scheme Stylesheet **** -->
     <link rel="stylesheet" type="text/css" href="style/colour2.css" />
   
+    <!-- **** rokta specific Stylesheet **** -->
+    <link rel="stylesheet" type="text/css" href="style/rokta.css" />
+
   </head>
   
   <body>
