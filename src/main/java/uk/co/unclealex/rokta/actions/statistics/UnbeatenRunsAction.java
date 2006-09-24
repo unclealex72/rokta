@@ -46,8 +46,14 @@ public class UnbeatenRunsAction extends BasicAction {
 	
 		int itemCount = Math.min(MAX_ITEMS, streakViewArray.length);
 		streakViews = new ArrayList<StreakView>(itemCount);
-		for (int idx = 0; idx < itemCount; idx++) {
+		int previousLength = -1;
+		for (
+				int idx = 0;
+				idx < streakViewArray.length &&
+					(idx < itemCount || streakViewArray[idx].getLength() == previousLength);
+				idx++) {
 			streakViews.add(streakViewArray[idx]);
+			previousLength = streakViewArray[idx].getLength();
 		}
 		setTopStreakViews(streakViews);
 		
