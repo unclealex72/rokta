@@ -19,7 +19,7 @@ public class InitialiseAction extends BasicAction {
 	protected String executeInternal() {
 		Person exempt = getPersonManager().getExemptPlayer(new Date());
 		SortedSet<Person> availablePlayers = new TreeSet<Person>();
-		availablePlayers.addAll(getEverybody());
+		availablePlayers.addAll(getPersonDao().getEverybody());
 		if (exempt != null) {
 			availablePlayers.remove(exempt);
 		}

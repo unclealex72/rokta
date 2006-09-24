@@ -4,6 +4,7 @@
 package uk.co.unclealex.rokta.model;
 
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * @author alex
@@ -12,8 +13,34 @@ import java.util.SortedSet;
 public class League {
 
 	private boolean i_current;
-	private SortedSet<LeagueRow> i_rows;
+	private SortedSet<LeagueRow> i_rows = new TreeSet<LeagueRow>();
+	private int i_totalGames;
+	private int i_totalPlayers;
 	
+	/**
+	 * @return the totalGames
+	 */
+	public int getTotalGames() {
+		return i_totalGames;
+	}
+	/**
+	 * @param totalGames the totalGames to set
+	 */
+	public void setTotalGames(int totalGames) {
+		i_totalGames = totalGames;
+	}
+	/**
+	 * @return the totalPlayers
+	 */
+	public int getTotalPlayers() {
+		return i_totalPlayers;
+	}
+	/**
+	 * @param totalPlayers the totalPlayers to set
+	 */
+	public void setTotalPlayers(int totalPlayers) {
+		i_totalPlayers = totalPlayers;
+	}
 	/**
 	 * @return the current
 	 */

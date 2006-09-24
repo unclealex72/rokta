@@ -23,6 +23,7 @@ import org.hibernate.annotations.SortType;
 @Entity()
 @NamedQueries(value={
 		@NamedQuery(name="game.getAll", query="from Game"),
+		@NamedQuery(name="game.fetchAll", query="from Game fetch all properties"),
 		@NamedQuery(name="game.getAllSince", query="from Game g where g.datePlayed >= :datePlayed"),
 		@NamedQuery(name="game.getLast", query="from Game g order by datePlayed desc"),
 		@NamedQuery(

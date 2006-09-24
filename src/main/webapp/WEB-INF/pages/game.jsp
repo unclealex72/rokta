@@ -10,39 +10,49 @@
   <jsp:directive.page contentType="text/html" />
   <html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Rounds</title>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+    <title>Round <ww:property value="currentRound"/></title>
   </head>
 
   <body>
-    <form action="round.action" method="post">
+    <h1>Round <ww:property value="currentRound"/></h1>
+    <form action="round.html" method="post">
       <ww:hidden name="currentRound" value="%{currentRound}"/>
       <table>
         <tr>
-          <td colspan="2">Round <ww:property value="currentRound"/></td>
-        </tr>
-        <ww:select
-              label="Counter"
-              name="counter"
-              value="%{counter.name}"
-              list="everybody"
-              listKey="name"
-              listValue="name"
-              multiple="false"
-              required="false"/>
+          <td>
+            Counter
+          </td>
+          <td>
+            <ww:select
+                  label="Counter"
+                  name="counter"
+                  value="%{counter.name}"
+                  list="everybody"
+                  listKey="name"
+                  listValue="name"
+                  multiple="false"
+                  required="false"/>
+          </td>
+        </tr> 
         <ww:iterator id="participant" value="participants">
-          <ww:select
-                label="%{participant}"
-                name="hands"
-                value="ROCK"
-                list="allHands"
-                listValue="description"
-                multiple="false"
-                required="false"/>
+          <tr>
+            <td>
+              <ww:property/>
+            </td>
+            <td>
+              <ww:select
+                    name="hands"
+                    value="ROCK"
+                    list="allHands"
+                    listValue="description"
+                    multiple="false"
+                    required="false"/>
+            </td>
+          </tr>
         </ww:iterator>
         <tr>
-          <td/>
-          <td><input type="submit"/></td>
+          <td colspan="2"><input type="submit" value="Next"/></td>
         </tr>
       </table>
       <ww:iterator id="participant" value="participants">

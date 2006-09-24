@@ -24,7 +24,10 @@ import org.apache.commons.collections15.Predicate;
 @NamedQueries({
 	@NamedQuery(
 			name="round.countByPerson",
-			query="select count(*) from Round as round left join round.plays as plays with plays.person = :person")
+			query="select count(*) from Round as round join round.plays as plays where plays.person = :person"),
+			@NamedQuery(
+					name="round.countOpeningGambitsByPersonAndHand",
+					query="select count(*) from Round as r join r.plays as p where p.person = :person and p.hand = :hand and r.round = 1")
 })
 public class Round extends Identity<Round> {
 

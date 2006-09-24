@@ -1,6 +1,7 @@
 <jsp:root
   xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:ww="/webwork"
   xmlns:decorator="http://www.opensymphony.com/sitemesh/decorator"
+  xmlns:cewolf="http://cewolf.sourceforge.net/taglib/cewolf.tld"
   version="2.0">
 
   <jsp:output doctype-root-element="html" omit-xml-declaration="false"
@@ -11,12 +12,23 @@
   <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-    <title>Finished...</title>
+    <title>Weekly results</title>
   </head>
 
   <body>
-    <h1>Loser!</h1>
-	<p><ww:property value="loser"/> has lost.</p>
+    <h1>Weekly results</h1>
+    <ww:set name="leagueGraphProducer" scope="page" value="leagueGraphDatasetProducer"/>
+    
+    <cewolf:chart 
+      id="leagueGraph"
+      title="Weekly Results" 
+      type="line">
+      <cewolf:data>
+          <cewolf:producer id="leagueGraphProducer"/>
+      </cewolf:data>
+    </cewolf:chart>
+
+    <cewolf:img chartid="leagueGraph" renderer="cewolf" width="500" height="300"/>
   </body>
   </html>
 </jsp:root>

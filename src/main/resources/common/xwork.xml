@@ -31,6 +31,31 @@
          class="uk.co.unclealex.rokta.actions.GamesAction">
          <result name="success">/WEB-INF/pages/games.jsp</result>
       </action>
+
+      <action name="games"
+         class="uk.co.unclealex.rokta.actions.GamesAction">
+         <result name="success">/WEB-INF/pages/games.jsp</result>
+      </action>
+
+      <action name="profile"
+         class="uk.co.unclealex.rokta.actions.ProfileAction">
+         <result name="success">/WEB-INF/pages/profile.jsp</result>
+      </action>
+      
+      <action name="unbeatenruns"
+         class="uk.co.unclealex.rokta.actions.statistics.UnbeatenRunsAction">
+         <result name="success">/WEB-INF/pages/statistics/unbeatenruns.jsp</result>
+      </action>
+
+      <action name="leaguegraph"
+         class="uk.co.unclealex.rokta.actions.statistics.LeagueGraphAction">
+         <result name="success">/WEB-INF/pages/statistics/leaguegraph.jsp</result>
+      </action>
+
+      <action name="handsplayed"
+         class="uk.co.unclealex.rokta.actions.statistics.HandsPlayedAction">
+         <result name="success">/WEB-INF/pages/statistics/handsplayed.jsp</result>
+      </action>
    </package>
   </xwork>
 

@@ -12,6 +12,8 @@ public interface GameDao {
 
 	public SortedSet<Game> getAllGames();
 	
+	public SortedSet<Game> fetchAllGames();
+
 	public SortedSet<Game> getAllGamesSince(Date date);
 	
 	public Game getLastGame();

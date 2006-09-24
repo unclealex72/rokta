@@ -10,6 +10,7 @@ import javax.persistence.NamedQuery;
 @Entity
 @NamedQueries(value={
 		@NamedQuery(name="person.getAll", query="select p from Person p"),
+		@NamedQuery(name="person.getPlayers", query="select distinct p.person from Play p"),
 		@NamedQuery(name="person.findByName", query="select p from Person p where p.name=:name")
 		})
 public class Person extends Identity<Person> {

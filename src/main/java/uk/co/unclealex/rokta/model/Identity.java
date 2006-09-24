@@ -20,7 +20,10 @@ public abstract class Identity<I extends Identity> implements Serializable, Comp
 
 	@Override
 	public boolean equals(Object obj) {
-		return obj != null && getClass().isAssignableFrom(obj.getClass()) && getId().equals((Identity) obj);
+		return
+			obj != null &&
+			getClass().isAssignableFrom(obj.getClass()) &&
+			getId().equals(((Identity) obj).getId());
 	}
 	
 }

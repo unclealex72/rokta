@@ -9,6 +9,7 @@ import org.hibernate.Session;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
+import uk.co.unclealex.rokta.model.Hand;
 import uk.co.unclealex.rokta.model.Person;
 
 public class HibernatePersonDao extends HibernateDaoSupport implements PersonDao {
@@ -30,5 +31,24 @@ public class HibernatePersonDao extends HibernateDaoSupport implements PersonDao
 	 */
 	public SortedSet<Person> getEverybody() {
 		return new TreeSet<Person>(getHibernateTemplate().findByNamedQuery("person.getAll"));
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.co.unclealex.rokta.model.dao.PersonDao#countHandForPlayer(uk.co.unclealex.rokta.model.Person, uk.co.unclealex.rokta.model.Hand)
+	 */
+	public int countHandForPlayer(final Person person, final Hand hand) {
+		return (Integer) getHibernateTemplate().execute(
+				new HibernateCallback() {
+					public Object doInHibernate(Session session) throws HibernateException, SQLException {
+						return session.getNamedQuery("person.countHand").
+						setEntity("person", person).
+						setParameter("hand", hand).
+						uniqueResult();
+					}
+				});
+	}
+
+	public SortedSet<Person> getPlayers() {
+		return new TreeSet<Person>(getHibernateTemplate().findByNamedQuery("person.getPlayers"));
 	}
 }

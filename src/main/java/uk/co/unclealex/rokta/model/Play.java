@@ -7,8 +7,16 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 @Entity
+@NamedQueries({
+	@NamedQuery(
+			name="play.countByPersonAndHand",
+			query="select count(p) from Play p where p.person = :person and p.hand = :hand")
+})
+
 public class Play extends Identity<Play> {
 
 	private Person i_person;

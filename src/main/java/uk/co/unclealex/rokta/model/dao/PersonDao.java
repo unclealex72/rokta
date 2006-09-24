@@ -9,5 +9,6 @@ public interface PersonDao {
 	public Person getPersonByName(String name);
 
 	public SortedSet<Person> getEverybody();
-
+	
+	public SortedSet<Person> getPlayers();
 }

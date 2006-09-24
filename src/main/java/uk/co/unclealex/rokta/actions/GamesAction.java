@@ -5,18 +5,14 @@ import java.util.Collections;
 import java.util.List;
 
 import uk.co.unclealex.rokta.model.Game;
-import uk.co.unclealex.rokta.model.dao.GameDao;
 import uk.co.unclealex.rokta.views.GameView;
 
-import com.opensymphony.xwork.ActionSupport;
-
-public class GamesAction extends ActionSupport {
+public class GamesAction extends BasicAction {
 
 	private List<GameView> i_gameViews;
-	private GameDao i_gameDao;
 	
 	@Override
-	public String execute() {
+	public String executeInternal() {
 		List<GameView> gameViews = new ArrayList<GameView>();
 		List<Game> games = new ArrayList<Game>();
 		games.addAll(getGameDao().getAllGames());
@@ -36,13 +32,5 @@ public class GamesAction extends ActionSupport {
 
 	public void setGameViews(List<GameView> gameViews) {
 		i_gameViews = gameViews;
-	}
-
-	public GameDao getGameDao() {
-		return i_gameDao;
-	}
-
-	public void setGameDao(GameDao gameDao) {
-		i_gameDao = gameDao;
 	}
 }

@@ -1,9 +1,20 @@
 package uk.co.unclealex.rokta.model;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
-public  enum Hand {
+
+public enum Hand implements Comparable<Hand> {
 	ROCK(1, "Rock"), SCISSORS(2, "Scissors"), PAPER(3, "Paper");
 
+	private static Hand[] s_allHands = { ROCK, SCISSORS, PAPER };
+	private static List<Hand> s_allHandsList = Collections.unmodifiableList(Arrays.asList(s_allHands));
+	
+	public static List<Hand> getAllHands() {
+		return s_allHandsList;
+	}
+	
 	private int i_internalRepresentation;
 	private String i_description;
 	

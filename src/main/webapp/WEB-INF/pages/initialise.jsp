@@ -10,12 +10,13 @@
   <jsp:directive.page contentType="text/html" />
   <html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
     <title>Get Ready To Play</title>
   </head>
 
   <body>
-    <form action="start.action" method="post">
+    <h1>Select the players</h1>
+    <form action="start.html" method="post">
       <p>
         <ww:if test="exempt != null">
           <ww:property value="exempt"/>
@@ -26,13 +27,28 @@
         is exempt.
       </p>
       <table>
-        <ww:select label="Instigator" name="instigator" list="everybody"
-            listKey="name" listValue="name" multiple="false" required="false" />
-        <ww:select label="Participants" name="participants" list="availablePlayers"
-            listKey="name" listValue="name" multiple="true" required="false" />
         <tr>
-          <td />
-          <td><input type="submit" /></td>
+          <td>
+            Instigator
+          </td>
+          <td>
+            <ww:select name="instigator" list="everybody"
+                listKey="name" listValue="name" multiple="false" required="false" />
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Participants
+          </td>
+          <td>
+            <ww:select label="Participants" name="participants" list="availablePlayers"
+                listKey="name" listValue="name" multiple="true" required="false" />
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <input type="submit" value="Play"/>
+          </td>
         </tr>
       </table>
     </form>

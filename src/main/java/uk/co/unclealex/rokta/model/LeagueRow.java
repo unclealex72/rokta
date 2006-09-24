@@ -1,6 +1,8 @@
 package uk.co.unclealex.rokta.model;
 
-public class LeagueRow {
+import java.io.Serializable;
+
+public class LeagueRow implements Serializable {
 
 	private Person i_person;
 	private int i_gamesPlayed;
@@ -9,9 +11,39 @@ public class LeagueRow {
 	private int i_totalGamesPlayed;
 	private boolean i_exempt = false;
 	private boolean i_playingToday = true;
-	private Integer i_gap;
+	private InfiniteInteger i_gap;
 	private Delta i_delta;
 	
+	public LeagueRow() {
+	}
+	
+	/**
+	 * @param person
+	 * @param gamesPlayed
+	 * @param roundsPlayed
+	 * @param gamesLost
+	 * @param totalGamesPlayed
+	 * @param exempt
+	 * @param playingToday
+	 * @param gap
+	 * @param delta
+	 */
+	public LeagueRow(Person person, int gamesPlayed, int roundsPlayed, int gamesLost, int totalGamesPlayed, boolean exempt, boolean playingToday, InfiniteInteger gap, Delta delta) {
+		super();
+		i_person = person;
+		i_gamesPlayed = gamesPlayed;
+		i_roundsPlayed = roundsPlayed;
+		i_gamesLost = gamesLost;
+		i_totalGamesPlayed = totalGamesPlayed;
+		i_exempt = exempt;
+		i_playingToday = playingToday;
+		i_gap = gap;
+		i_delta = delta;
+	}
+
+	public LeagueRow copy() {
+		return new LeagueRow(getPerson(), getGamesPlayed(), getRoundsPlayed(), getGamesLost(), getTotalGamesPlayed(), isExempt(), isPlayingToday(), getGap(), getDelta());
+	}
 	public double getLossesPerGame() {
 		return getGamesLost() / (double) getGamesPlayed();
 	}
@@ -105,14 +137,14 @@ public class LeagueRow {
 	/**
 	 * @return the gap
 	 */
-	public Integer getGap() {
+	public InfiniteInteger getGap() {
 		return i_gap;
 	}
 
 	/**
 	 * @param gap the gap to set
 	 */
-	public void setGap(Integer gap) {
+	public void setGap(InfiniteInteger gap) {
 		i_gap = gap;
 	}
 }

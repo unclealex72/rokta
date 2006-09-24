@@ -24,6 +24,10 @@ public class HibernateGameDao extends HibernateDaoSupport implements GameDao {
 		return new TreeSet<Game>(getHibernateTemplate().findByNamedQuery("game.getAll"));
 	}
 
+	public SortedSet<Game> fetchAllGames() {
+		return new TreeSet<Game>(getHibernateTemplate().findByNamedQuery("game.fetchAll"));
+	}
+
 	public SortedSet<Game> getAllGamesSince(Date date) {
 		return new TreeSet<Game>(getHibernateTemplate().findByNamedQueryAndNamedParam("game.getAllSince", "date", date));
 	}

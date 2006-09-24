@@ -4,7 +4,7 @@
   <artifactId>rokta</artifactId>
   <packaging>war</packaging>
   <name>Maven Quick Start Archetype</name>
-  <version>${db}-1.1</version>
+  <version>${db}-2.0</version>
   <url>http://maven.apache.org</url>
   <build>
     <resources>
@@ -21,28 +21,6 @@
         <configuration>
           <source>1.5</source>
           <target>1.5</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>jspc-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>jspc</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <configuration>
-              <source>1.5</source>
-              <target>1.5</target>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-war-plugin</artifactId>
-        <configuration>
-          <webXml>${basedir}/target/jspweb.xml</webXml>
         </configuration>
       </plugin>
     </plugins>
@@ -136,16 +114,6 @@
       <version>1.0</version>
     </dependency>
     <dependency>
-      <groupId>tomcat</groupId>
-      <artifactId>jasper-runtime</artifactId>
-      <version>5.5.15</version>
-    </dependency>
-    <dependency>
-      <groupId>tomcat</groupId>
-      <artifactId>jasper-compiler</artifactId>
-      <version>5.5.15</version>
-    </dependency>
-    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jsp-api</artifactId>
       <version>2.0</version>
@@ -157,15 +125,24 @@
       <version>2.1</version>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.13</version>
     </dependency>
     <dependency>
       <groupId>opensymphony</groupId>
       <artifactId>sitemesh</artifactId>
       <version>2.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>cewolf</groupId>
+      <artifactId>cewolf</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>taglibs</groupId>
+      <artifactId>standard</artifactId>
+      <version>1.1.2</version>
     </dependency>
   </dependencies>
 </project>

@@ -1,6 +1,7 @@
 <jsp:root
   xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:ww="/webwork"
   xmlns:decorator="http://www.opensymphony.com/sitemesh/decorator"
+  xmlns:cewolf="http://cewolf.sourceforge.net/taglib/cewolf.tld"
   version="2.0">
 
   <jsp:output doctype-root-element="html" omit-xml-declaration="false"
@@ -10,24 +11,32 @@
   <jsp:directive.page contentType="text/html" />
   <html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>League</title>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+    <title>
+      <ww:if test="selectedWeek != null">
+        League for <ww:property value="selectedWeek" />.
+      </ww:if>
+      <ww:elseif test="selectedMonth != null">
+        League for <ww:property value="selectedMonth" />.
+      </ww:elseif>
+      <ww:else>
+        Full league.
+      </ww:else>    
+    </title>
   </head>
 
   <body>
-    <p>
+    <h1>
       <ww:if test="selectedWeek != null">
 		League for <ww:property value="selectedWeek" />.
-		<a href="league.action">(Full league)</a>
       </ww:if>
       <ww:elseif test="selectedMonth != null">
 		League for <ww:property value="selectedMonth" />.
-		<a href="league.action">(Full league)</a>
       </ww:elseif>
       <ww:else>
 		Full league.
       </ww:else>
-    </p>
+    </h1>
     <table>
       <tr>
         <th />
@@ -68,34 +77,22 @@
             </ww:text>
           </td>
           <ww:if test="league.current">
-            <td><ww:property value="gap"/></td>
+            <td>
+              <ww:if test="gap != null">
+                <ww:push value="gap">
+                  <ww:if test="infinite">
+                    &#8734;
+                  </ww:if>
+                  <ww:else>                
+                    <ww:property value="value"/>
+                  </ww:else>
+                </ww:push>
+              </ww:if>
+            </td>
           </ww:if>
         </tr>
       </ww:iterator>
-    </table>
-    
-    <form action="league.action">
-      <p>
-        Show league for
-        <select name="selectedWeek">
-          <ww:iterator id="selection" value="selectableWeeks">
-            <option><ww:property /></option>
-          </ww:iterator>
-        </select>
-        <input type="submit" value="Select Week" />
-      </p>
-    </form>
-    <form action="league.action">
-      <p>
-        Show league for
-        <select name="selectedMonth">
-          <ww:iterator id="selection" value="selectableMonths">
-            <option><ww:property /></option>
-          </ww:iterator>
-        </select>
-        <input type="submit" value="Select Month" />
-      </p>
-    </form>
+    </table>    
   </body>
   </html>
 </jsp:root>
