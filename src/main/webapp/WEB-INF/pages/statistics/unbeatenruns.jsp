@@ -19,7 +19,7 @@
 
   <body>
     <h1>
-      Top <ww:property value="streakViews.size"/> unbeaten runs
+      Top <ww:property value="topStreakViews.size"/> unbeaten runs
     </h1>
     <table>
       <tr>
