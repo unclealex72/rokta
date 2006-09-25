@@ -66,21 +66,21 @@
                   <a href="league.html">Full league</a>
                 </li>
                 <li>
-                  <ww:form action="league" method="post">
+                  <ww:form name="weeklyForm" action="league" method="post">
                     <ww:select name="selectedWeek" list="selectableWeeks"/>
-                    <ww:submit value="Go"/>
+                    <a href="#" onclick="document.forms['weeklyForm'].submit();return false;">Go</a>
                   </ww:form>
                 </li>
                 <li>
-                  <ww:form action="league" method="post">
+                  <ww:form name="monthlyForm" action="league" method="post">
                     <ww:select name="selectedMonth" list="selectableMonths"/>
-                    <ww:submit value="Go"/>
+                    <a href="#" onclick="document.forms['monthlyForm'].submit();return false;">Go</a>
                   </ww:form>
                 </li>
                 <li>
-                  <ww:form action="league" method="post">
+                  <ww:form name="yearlyForm" action="league" method="post">
                     <ww:select name="selectedYear" list="selectableYears"/>
-                    <ww:submit value="Go"/>
+                    <a href="#" onclick="document.forms['yearlyForm'].submit();return false;">Go</a>
                   </ww:form>
                 </li>
               </ul>
