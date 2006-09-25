@@ -80,13 +80,22 @@ public class StatisticsManagerImpl implements StatisticsManager {
 		}
 		return personMap;
 	}
-	public Map<Person, List<Streak>> getStreaksByPerson() {
+
+	public Map<Person, List<Streak>> getWinningStreakListsByPerson() {
+		return getStreakListsByPerson(true);
+	}
+
+	public Map<Person, List<Streak>> getLosingStreakListsByPerson() {
+		return getStreakListsByPerson(false);
+	}
+
+	protected Map<Person, List<Streak>> getStreakListsByPerson(boolean losingEndsStreak) {
 		Map<Person, List<Streak>> streaksByPerson = new HashMap<Person, List<Streak>>();
 		Map<Person, SortedSet<Game>> currentStreaksByPerson = new HashMap<Person, SortedSet<Game>>();
 		
 		for (Game game : getGameDao().getAllGames()) {
 			for (Person person : game.getParticipants()) {
-				if (person.equals(game.getLoser())) {
+				if (person.equals(game.getLoser()) == losingEndsStreak) {
 					// If this person is the loser then we add their current streak to the list
 					// of streaks
 					SortedSet<Game> currentStreak = currentStreaksByPerson.get(person);

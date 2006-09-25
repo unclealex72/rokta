@@ -13,13 +13,15 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
     <title>
-      Unbeaten runs
+      <ww:text name="title"/>
     </title>
   </head>
 
   <body>
     <h1>
-      Top <ww:property value="topStreakViews.size"/> unbeaten runs
+      <ww:text name="top">
+        <ww:param name="size" value="topStreakViews.size"/>
+      </ww:text>
     </h1>
     <table>
       <tr>
@@ -49,7 +51,7 @@
       </ww:iterator>
     </table>
 
-  <h1>Current runs</h1>    
+  <h1><ww:text name="current"/></h1>    
     <table>
       <tr>
         <th>Player</th>

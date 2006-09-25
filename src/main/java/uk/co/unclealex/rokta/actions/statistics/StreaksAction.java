@@ -25,7 +25,7 @@ import uk.co.unclealex.rokta.views.StreakView;
  * @author alex
  *
  */
-public class UnbeatenRunsAction extends BasicAction {
+public abstract class StreaksAction extends BasicAction {
 
 	private static final int MAX_ITEMS = 10;
 	
@@ -33,9 +33,11 @@ public class UnbeatenRunsAction extends BasicAction {
 	private List<StreakView> i_topStreakViews;
 	private List<StreakView> i_currentStreakViews;
 	
+	public abstract Map<Person, List<Streak>> getStreakListsByPerson();
+	
 	@Override
 	public String executeInternal() {
-		Map<Person, List<Streak>> streakListsByPerson = getStatisticsManager().getStreaksByPerson();
+		Map<Person, List<Streak>> streakListsByPerson = getStreakListsByPerson();
 		List<StreakView> streakViews = new ArrayList<StreakView>();
 		for (List<Streak> streakList : streakListsByPerson.values()) {
 			CollectionUtils.collect(streakList, StreakView.getStreakViewTransformer(), streakViews);

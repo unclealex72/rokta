@@ -16,7 +16,8 @@
   </head>
 
   <body>
-    <p><a href="unbeatenruns.html">Unbeaten runs</a></p>
+    <p><a href="winningstreaks.html">Winning Streaks</a></p>
+    <p><a href="losingstreaks.html">Losing Streaks</a></p>
     <p><a href="leaguegraph.html">League Graph</a></p>
   </body>
   </html>

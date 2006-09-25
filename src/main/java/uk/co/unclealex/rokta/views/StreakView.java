@@ -26,7 +26,7 @@ public class StreakView implements Comparable<StreakView> {
 	public int compareTo(StreakView o) {
 		int cmp = -(new Integer(getLength()).compareTo(o.getLength()));
 		if (cmp != 0) { return cmp; }
-		cmp = getFirstGame().compareTo(o.getFirstGame());
+		cmp = -getFirstGame().compareTo(o.getFirstGame());
 		if (cmp != 0) { return cmp; }
 		return getPerson().compareTo(o.getPerson());
 	}

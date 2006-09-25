@@ -23,5 +23,8 @@ public interface StatisticsManager {
 
 	public SortedMap<Person, SortedMap<Hand, Integer>> countOpeningGambitsByPlayer();
 
-	public Map<Person, List<Streak>> getStreaksByPerson();
+	public Map<Person, List<Streak>> getWinningStreakListsByPerson();
+	
+	public Map<Person, List<Streak>> getLosingStreakListsByPerson();
+
 }

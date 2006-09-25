@@ -42,9 +42,14 @@
          <result name="success">/WEB-INF/pages/statistics/statistics.jsp</result>
       </action>
       
-      <action name="unbeatenruns"
-         class="uk.co.unclealex.rokta.actions.statistics.UnbeatenRunsAction">
-         <result name="success">/WEB-INF/pages/statistics/unbeatenruns.jsp</result>
+      <action name="winningstreaks"
+         class="uk.co.unclealex.rokta.actions.statistics.WinningStreaksAction">
+         <result name="success">/WEB-INF/pages/statistics/streaks.jsp</result>
+      </action>
+
+      <action name="losingstreaks"
+         class="uk.co.unclealex.rokta.actions.statistics.LosingStreaksAction">
+         <result name="success">/WEB-INF/pages/statistics/streaks.jsp</result>
       </action>
 
       <action name="leaguegraph"
