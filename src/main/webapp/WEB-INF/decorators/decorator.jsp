@@ -20,7 +20,8 @@
     <link rel="stylesheet" type="text/css" href="style/style104_left.css" />
   
     <!-- **** Colour Scheme Stylesheet **** -->
-    <link rel="stylesheet" type="text/css" href="style/colour2.css" />
+    <ww:set name="colour" value="colour" scope="page"/>
+    <link rel="stylesheet" type="text/css" href="style/colour${colour}.css" />
   
     <!-- **** rokta specific Stylesheet **** -->
     <link rel="stylesheet" type="text/css" href="style/rokta.css" />

@@ -20,11 +20,15 @@ public class BasicAction extends ActionSupport {
 	protected static final String DATE_FORMAT_WEEK = "'Week 'ww, yyyy";
 	protected static final String DATE_FORMAT_MONTH = "MMMMM, yyyy";
 	protected static final String DATE_FORMAT_YEAR = "yyyy";
+	private static final int DEFAULT_COLOUR = 2;
+
+	private int i_colour;
 
 	private PersonDao i_personDao;
 	private GameDao i_gameDao;
 	private PlayDao i_playDao;
 	private RoundDao i_roundDao;
+	
 	private String i_selectedWeek;
 	private String i_selectedMonth;
 	private String i_selectedYear;
@@ -34,6 +38,11 @@ public class BasicAction extends ActionSupport {
 	
 	@Override
 	public final String execute() throws InvalidRoundException {
+		int colour = getColour();
+		if (colour < 1 || colour > 8) {
+			colour = DEFAULT_COLOUR;
+		}
+		setColour(colour);
 		populateLeagueNavigation();
 		populateProfileNavigation();
 		return executeInternal();
@@ -209,5 +218,19 @@ public class BasicAction extends ActionSupport {
 	 */
 	public void setSelectedYear(String selectedYear) {
 		i_selectedYear = selectedYear;
+	}
+
+	/**
+	 * @return the colour
+	 */
+	public int getColour() {
+		return i_colour;
+	}
+
+	/**
+	 * @param colour the colour to set
+	 */
+	public void setColour(int colour) {
+		i_colour = colour;
 	}
 }
