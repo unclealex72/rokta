@@ -1,5 +1,7 @@
 package uk.co.unclealex.rokta.actions;
 
+import java.util.SortedSet;
+
 import uk.co.unclealex.rokta.exceptions.InvalidRoundException;
 import uk.co.unclealex.rokta.model.Hand;
 import uk.co.unclealex.rokta.model.Person;
@@ -11,9 +13,11 @@ public abstract class PlayingAction extends BasicAction {
 	private Person[] i_participants;
 	private Person i_counter;
 	private int i_currentRound;
-	
+	private SortedSet<Person> i_everybody;
+  
 	@Override
 	protected String executeInternal() throws InvalidRoundException {
+    setEverybody(getPersonDao().getEverybody());
 		String retval = prepareGameManager();
 		GameManager gameManager = getGameManager();
 		setParticipants(gameManager.getParticipants().toArray(new Person[0]));
@@ -59,4 +63,18 @@ public abstract class PlayingAction extends BasicAction {
 	public void setParticipants(Person[] participants) {
 		i_participants = participants;
 	}
+
+  /**
+   * @return the everybody
+   */
+  public SortedSet<Person> getEverybody() {
+    return i_everybody;
+  }
+
+  /**
+   * @param everybody the everybody to set
+   */
+  public void setEverybody(SortedSet<Person> everybody) {
+    i_everybody = everybody;
+  }
 }
