@@ -3,7 +3,7 @@
   xmlns:decorator="http://www.opensymphony.com/sitemesh/decorator"
   version="2.0">
 
-  <jsp:output doctype-root-element="html" omit-xml-declaration="false"
+  <jsp:output doctype-root-element="html" omit-xml-declaration="true"
     doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
     doctype-system="http://www.w3c.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
 

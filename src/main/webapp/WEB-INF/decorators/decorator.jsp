@@ -5,7 +5,7 @@
   xmlns:c="http://java.sun.com/jsp/jstl/core"
   version="2.0">
 
-  <jsp:output doctype-root-element="html" omit-xml-declaration="false"
+  <jsp:output doctype-root-element="html" omit-xml-declaration="true"
     doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
     doctype-system="http://www.w3c.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
 
@@ -29,11 +29,9 @@
   
   <body>
     <div id="main">
-      <!--
       <div id="links">
         <a href="#">another link</a> | <a href="#">another link</a> | <a href="#">another link</a> | <a href="#">another link</a>
       </div>
-      -->
       <div id="logo"><h1>ROKTA - <decorator:title/></h1></div>
       <div id="content">
         <div id="column1">
