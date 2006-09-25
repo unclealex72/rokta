@@ -15,7 +15,7 @@ import uk.co.unclealex.rokta.model.dao.RoundDao;
 
 import com.opensymphony.xwork.ActionSupport;
 
-public abstract class BasicAction extends ActionSupport {
+public class BasicAction extends ActionSupport {
 
 	protected static final String DATE_FORMAT_WEEK = "'Week 'ww, yyyy";
 	protected static final String DATE_FORMAT_MONTH = "MMMMM, yyyy";
