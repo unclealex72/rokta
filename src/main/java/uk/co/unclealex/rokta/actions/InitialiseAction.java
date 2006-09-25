@@ -11,6 +11,7 @@ import uk.co.unclealex.rokta.process.PersonManager;
 public class InitialiseAction extends BasicAction {
 
 	private SortedSet<Person> i_availablePlayers;
+  private SortedSet<Person> i_everybody;
 	private Person i_exempt;
 	
 	private PersonManager i_personManager;
@@ -25,6 +26,7 @@ public class InitialiseAction extends BasicAction {
 		}
 		setExempt(exempt);
 		setAvailablePlayers(availablePlayers);
+    setEverybody(getPersonDao().getEverybody());
 		return SUCCESS;
 	}
 
@@ -69,4 +71,18 @@ public class InitialiseAction extends BasicAction {
 	public void setPersonManager(PersonManager personManager) {
 		i_personManager = personManager;
 	}
+
+  /**
+   * @return the everybody
+   */
+  public SortedSet<Person> getEverybody() {
+    return i_everybody;
+  }
+
+  /**
+   * @param everybody the everybody to set
+   */
+  public void setEverybody(SortedSet<Person> everybody) {
+    i_everybody = everybody;
+  }
 }
