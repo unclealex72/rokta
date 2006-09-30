@@ -60,7 +60,11 @@ public class ThemeTag extends TagSupport {
 	 */
 	private String findColourFromCookies() {
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-		Cookie cookie =
+		Cookie[] cookies = request.getCookies();
+		if (cookies == null) {
+			return null;
+		}
+		Cookie cookie = 
 			CollectionUtils.find(
 					Arrays.asList(request.getCookies()),
 					new Predicate<Cookie>() {
