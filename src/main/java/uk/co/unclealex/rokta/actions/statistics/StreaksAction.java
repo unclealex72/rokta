@@ -15,21 +15,18 @@ import org.apache.commons.collections15.CollectionUtils;
 import org.apache.commons.collections15.ComparatorUtils;
 import org.apache.commons.collections15.Predicate;
 
-import uk.co.unclealex.rokta.actions.BasicAction;
 import uk.co.unclealex.rokta.model.Person;
 import uk.co.unclealex.rokta.model.Streak;
-import uk.co.unclealex.rokta.process.StatisticsManager;
 import uk.co.unclealex.rokta.views.StreakView;
 
 /**
  * @author alex
  *
  */
-public abstract class StreaksAction extends BasicAction {
+public abstract class StreaksAction extends StatisticsAction {
 
 	private static final int MAX_ITEMS = 10;
 	
-	private StatisticsManager i_statisticsManager;
 	private List<StreakView> i_topStreakViews;
 	private List<StreakView> i_currentStreakViews;
 	
@@ -77,20 +74,6 @@ public abstract class StreaksAction extends BasicAction {
 		currentStreakViews.addAll(currentStreakViewsByPerson.values());
 		setCurrentStreakViews(currentStreakViews);
 		return SUCCESS;
-	}
-
-	/**
-	 * @return the statisticsManager
-	 */
-	public StatisticsManager getStatisticsManager() {
-		return i_statisticsManager;
-	}
-
-	/**
-	 * @param statisticsManager the statisticsManager to set
-	 */
-	public void setStatisticsManager(StatisticsManager statisticsManager) {
-		i_statisticsManager = statisticsManager;
 	}
 
 	/**
