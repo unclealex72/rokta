@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.SortedSet;
 
 import uk.co.unclealex.rokta.model.Game;
+import uk.co.unclealex.rokta.model.Person;
 import uk.co.unclealex.rokta.model.dao.GameDao;
 import uk.co.unclealex.rokta.model.dao.PersonDao;
 import uk.co.unclealex.rokta.model.dao.PlayDao;
@@ -19,10 +20,6 @@ public class BasicAction extends ActionSupport {
 	protected static final String DATE_FORMAT_WEEK = "'Week 'ww, yyyy";
 	protected static final String DATE_FORMAT_MONTH = "MMMMM, yyyy";
 	protected static final String DATE_FORMAT_YEAR = "yyyy";
-	private static final int DEFAULT_COLOUR = 2;
-
-	private int i_colour;
-
 	private PersonDao i_personDao;
 	private GameDao i_gameDao;
 	private PlayDao i_playDao;
@@ -35,21 +32,17 @@ public class BasicAction extends ActionSupport {
 	private List<String> i_selectableMonths;
 	private List<String> i_selectableYears;
 	
+	private SortedSet<Person> i_players;
+	
 	@Override
 	public final String execute() throws Exception {
-		int colour = getColour();
-		if (colour < 1 || colour > 8) {
-			colour = DEFAULT_COLOUR;
-		}
-		setColour(colour);
 		populateLeagueNavigation();
 		populateProfileNavigation();
 		return executeInternal();
 	}
 
 	private void populateProfileNavigation() {
-		// TODO Auto-generated method stub
-		
+		setPlayers(getPersonDao().getPlayers());
 	}
 
 	private void populateLeagueNavigation() {
@@ -220,16 +213,16 @@ public class BasicAction extends ActionSupport {
 	}
 
 	/**
-	 * @return the colour
+	 * @return the players
 	 */
-	public int getColour() {
-		return i_colour;
+	public SortedSet<Person> getPlayers() {
+		return i_players;
 	}
 
 	/**
-	 * @param colour the colour to set
+	 * @param players the players to set
 	 */
-	public void setColour(int colour) {
-		i_colour = colour;
+	public void setPlayers(SortedSet<Person> players) {
+		i_players = players;
 	}
 }

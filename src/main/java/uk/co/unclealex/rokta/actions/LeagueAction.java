@@ -93,4 +93,7 @@ public class LeagueAction extends BasicAction {
 		i_leagueManager = leagueManager;
 	}
 
+	public boolean isShowLeague() {
+		return true;
+	}
 }
