@@ -4,7 +4,7 @@
   <artifactId>rokta</artifactId>
   <packaging>war</packaging>
   <name>Maven Quick Start Archetype</name>
-  <version>${db}-2.0</version>
+  <version>${db}-2.0b1</version>
   <url>http://maven.apache.org</url>
   <build>
     <resources>
