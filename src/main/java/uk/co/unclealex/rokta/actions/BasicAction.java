@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedSet;
 
-import uk.co.unclealex.rokta.exceptions.InvalidRoundException;
 import uk.co.unclealex.rokta.model.Game;
 import uk.co.unclealex.rokta.model.dao.GameDao;
 import uk.co.unclealex.rokta.model.dao.PersonDao;
@@ -37,7 +36,7 @@ public class BasicAction extends ActionSupport {
 	private List<String> i_selectableYears;
 	
 	@Override
-	public final String execute() throws InvalidRoundException {
+	public final String execute() throws Exception {
 		int colour = getColour();
 		if (colour < 1 || colour > 8) {
 			colour = DEFAULT_COLOUR;
@@ -82,7 +81,7 @@ public class BasicAction extends ActionSupport {
 		return dates;
 	}
 
-	protected String executeInternal() throws InvalidRoundException {
+	protected String executeInternal() throws Exception {
 		return SUCCESS;
 	}
 
