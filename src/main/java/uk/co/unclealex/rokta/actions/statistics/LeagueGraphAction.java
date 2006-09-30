@@ -6,7 +6,6 @@ package uk.co.unclealex.rokta.actions.statistics;
 import java.util.Calendar;
 import java.util.SortedSet;
 
-import uk.co.unclealex.rokta.actions.BasicAction;
 import uk.co.unclealex.rokta.model.Game;
 import uk.co.unclealex.rokta.model.Person;
 import uk.co.unclealex.rokta.process.CalendarFieldTransformer;
@@ -19,7 +18,7 @@ import uk.co.unclealex.rokta.process.dataset.LeagueGraphDatasetProducer;
  * @author alex
  *
  */
-public class LeagueGraphAction extends BasicAction {
+public class LeagueGraphAction extends LeagueAction {
 
 	private LeagueGraphDatasetProducer i_leagueGraphDatasetProducer;
 	

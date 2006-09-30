@@ -12,13 +12,14 @@ import java.util.TreeSet;
 import org.apache.commons.collections15.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
+import uk.co.unclealex.rokta.actions.statistics.LeagueAction;
 import uk.co.unclealex.rokta.model.Game;
 import uk.co.unclealex.rokta.model.League;
 import uk.co.unclealex.rokta.process.DateFilterPredicate;
 import uk.co.unclealex.rokta.process.GamesLeagueMilestonePredicate;
 import uk.co.unclealex.rokta.process.LeagueManager;
 
-public class LeagueAction extends BasicAction {
+public class LeagueTableAction extends LeagueAction {
 
 	private LeagueManager i_leagueManager;
 	
@@ -91,9 +92,5 @@ public class LeagueAction extends BasicAction {
 	 */
 	public void setLeagueManager(LeagueManager leagueManager) {
 		i_leagueManager = leagueManager;
-	}
-
-	public boolean isShowLeague() {
-		return true;
 	}
 }

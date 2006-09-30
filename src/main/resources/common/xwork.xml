@@ -23,7 +23,7 @@
       </action>
 
       <action name="league"
-         class="uk.co.unclealex.rokta.actions.LeagueAction">
+         class="uk.co.unclealex.rokta.actions.LeagueTableAction">
          <result name="success">/WEB-INF/pages/league.jsp</result>
       </action>
 
