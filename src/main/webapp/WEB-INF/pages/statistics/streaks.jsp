@@ -35,7 +35,7 @@
       <ww:iterator id="view" value="topStreakViews" status="status">
         <tr>
           <td>
-            <ww:if test="#previousLength == view.length">
+            <ww:if test="#previousLength == length">
               =
             </ww:if>
             <ww:else>
@@ -47,7 +47,7 @@
           <td><ww:date name="firstGame.datePlayed" format="dd/MM/yyyy hh:mm"/></td>
           <td><ww:date name="lastGame.datePlayed" format="dd/MM/yyyy hh:mm"/></td>
         </tr>
-        <ww:set name="previousLength" value="view.length"/>
+        <ww:set name="previousLength" value="length"/>
       </ww:iterator>
     </table>
 
