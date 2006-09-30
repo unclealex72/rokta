@@ -28,7 +28,7 @@ import org.hibernate.annotations.SortType;
 		@NamedQuery(name="game.getLast", query="from Game g order by datePlayed desc"),
 		@NamedQuery(
 				name="game.getLastForPerson",
-				query="select game from Game game join game.rounds round join round.plays play with play.person = :person order by datePlayed desc")
+				query="select game from Game game join game.rounds round join round.plays play where play.person = :person order by datePlayed desc")
 		})
 public class Game extends Identity<Game> {
 
@@ -99,5 +99,10 @@ public class Game extends Identity<Game> {
 	public int compareTo(Game o) {
 		int cmp = getDatePlayed().compareTo(o.getDatePlayed());
 		return cmp!=0?cmp:super.compareTo(o);
+	}
+	
+	@Override
+	public String toString() {
+		return "[Game " + getId() + " @ " + getDatePlayed() + "]";
 	}
 }

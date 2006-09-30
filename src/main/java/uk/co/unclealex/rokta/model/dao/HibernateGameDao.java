@@ -51,5 +51,4 @@ public class HibernateGameDao extends HibernateDaoSupport implements GameDao {
 					}
 				});
 	}
-	
 }

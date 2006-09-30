@@ -4,12 +4,11 @@
 package uk.co.unclealex.rokta.process;
 
 import java.util.List;
-import java.util.Map;
 import java.util.SortedMap;
 
-import uk.co.unclealex.rokta.model.Hand;
 import uk.co.unclealex.rokta.model.Person;
 import uk.co.unclealex.rokta.model.Streak;
+import uk.co.unclealex.rokta.model.WinLoseCounter;
 
 /**
  * @author alex
@@ -17,14 +16,11 @@ import uk.co.unclealex.rokta.model.Streak;
  */
 public interface StatisticsManager {
 
-	public Map<Person, Integer> countGamesLostByPlayer();
+	public SortedMap<Person, Integer> countGamesLostByPlayer();
 
-	public SortedMap<Person, SortedMap<Hand, Integer>> countHandsByPlayer();
-
-	public SortedMap<Person, SortedMap<Hand, Integer>> countOpeningGambitsByPlayer();
-
-	public Map<Person, List<Streak>> getWinningStreakListsByPerson();
+	public SortedMap<Person, List<Streak>> getWinningStreakListsByPerson();
 	
-	public Map<Person, List<Streak>> getLosingStreakListsByPerson();
+	public SortedMap<Person, List<Streak>> getLosingStreakListsByPerson();
 
+	public SortedMap<Person, SortedMap<Person, WinLoseCounter>> getHeadToHeadResultsByPerson();
 }

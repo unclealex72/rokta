@@ -4,19 +4,20 @@
 package uk.co.unclealex.rokta.process;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
 import uk.co.unclealex.rokta.model.Game;
-import uk.co.unclealex.rokta.model.Hand;
 import uk.co.unclealex.rokta.model.Person;
+import uk.co.unclealex.rokta.model.Round;
 import uk.co.unclealex.rokta.model.Streak;
+import uk.co.unclealex.rokta.model.WinLoseCounter;
 import uk.co.unclealex.rokta.model.dao.GameDao;
 import uk.co.unclealex.rokta.model.dao.PersonDao;
 import uk.co.unclealex.rokta.model.dao.PlayDao;
@@ -33,9 +34,9 @@ public class StatisticsManagerImpl implements StatisticsManager {
 	private PlayDao i_playDao;
 	private RoundDao i_roundDao;
 	
-	public Map<Person, Integer> countGamesLostByPlayer() {
+	public SortedMap<Person, Integer> countGamesLostByPlayer() {
 		Collection<Game> allGames = getGameDao().getAllGames();
-		Map<Person,Integer> gamesLostByPerson = new HashMap<Person, Integer>();
+		SortedMap<Person,Integer> gamesLostByPerson = new TreeMap<Person, Integer>();
 		for (Game game : allGames) {
 			Person loser = game.getLoser();
 			Integer gamesLost = gamesLostByPerson.get(loser);
@@ -47,51 +48,17 @@ public class StatisticsManagerImpl implements StatisticsManager {
 		return gamesLostByPerson;
 	}
 
-	public SortedMap<Person, SortedMap<Hand, Integer>> countHandsByPlayer() {
-		CountHandPersonOperation operation = new CountHandPersonOperation() {
-			public int count(Person person, Hand hand) {
-				return getPlayDao().countByPersonAndHand(person, hand);
-			}
-		};
-		return countOperation(operation);
-	}
-	
-	public SortedMap<Person, SortedMap<Hand, Integer>> countOpeningGambitsByPlayer() {
-		CountHandPersonOperation operation = new CountHandPersonOperation() {
-			public int count(Person person, Hand hand) {
-				return getRoundDao().countOpeningGambitsByPersonAndHand(person, hand);
-			}			
-		};
-		return countOperation(operation);
-	}
-
-	protected interface CountHandPersonOperation {
-		public int count(Person person, Hand hand);
-	}
-	
-	protected SortedMap<Person, SortedMap<Hand, Integer>> countOperation(CountHandPersonOperation operation) {
-		SortedMap<Person, SortedMap<Hand, Integer>> personMap = new TreeMap<Person, SortedMap<Hand,Integer>>();
-		for (Person person : getPersonDao().getPlayers()) {
-			SortedMap<Hand, Integer> handMap = new TreeMap<Hand , Integer>();
-			personMap.put(person, handMap);
-			for (Hand hand : Hand.getAllHands()) {
-				handMap.put(hand, operation.count(person, hand));
-			}
-		}
-		return personMap;
-	}
-
-	public Map<Person, List<Streak>> getWinningStreakListsByPerson() {
+	public SortedMap<Person, List<Streak>> getWinningStreakListsByPerson() {
 		return getStreakListsByPerson(true);
 	}
 
-	public Map<Person, List<Streak>> getLosingStreakListsByPerson() {
+	public SortedMap<Person, List<Streak>> getLosingStreakListsByPerson() {
 		return getStreakListsByPerson(false);
 	}
 
-	protected Map<Person, List<Streak>> getStreakListsByPerson(boolean losingEndsStreak) {
-		Map<Person, List<Streak>> streaksByPerson = new HashMap<Person, List<Streak>>();
-		Map<Person, SortedSet<Game>> currentStreaksByPerson = new HashMap<Person, SortedSet<Game>>();
+	protected SortedMap<Person, List<Streak>> getStreakListsByPerson(boolean losingEndsStreak) {
+		SortedMap<Person, List<Streak>> streaksByPerson = new TreeMap<Person, List<Streak>>();
+		SortedMap<Person, SortedSet<Game>> currentStreaksByPerson = new TreeMap<Person, SortedSet<Game>>();
 		
 		for (Game game : getGameDao().getAllGames()) {
 			for (Person person : game.getParticipants()) {
@@ -100,6 +67,8 @@ public class StatisticsManagerImpl implements StatisticsManager {
 					// of streaks
 					SortedSet<Game> currentStreak = currentStreaksByPerson.get(person);
 					addStreak(streaksByPerson, currentStreaksByPerson, currentStreak, person, false);
+					currentStreaksByPerson.remove(person);
+
 				}
 				else {
 					// Otherwise, add this game to the current streak.
@@ -136,10 +105,42 @@ public class StatisticsManagerImpl implements StatisticsManager {
 				streaksByPerson.put(person, new LinkedList<Streak>());
 			}
 			streaksByPerson.get(person).add(streak);
-			if (!current) {
-				currentStreaksByPerson.remove(person);
+		}
+	}
+
+	public SortedMap<Person, SortedMap<Person, WinLoseCounter>> getHeadToHeadResultsByPerson() {
+		SortedMap<Person, SortedMap<Person, WinLoseCounter>> headToHeadResultsByPerson =
+			new TreeMap<Person, SortedMap<Person,WinLoseCounter>>();
+		for (Round round : getRoundDao().getFinalRounds()) {
+			Set<Person> participants = round.getParticipants();
+			if (participants.size() == 2) {
+				Person first = round.getParticipants().first();
+				Person second = round.getParticipants().last();
+				Person loser = round.getLosers().first();
+				Person winner = first.equals(loser)?second:first;
+				getWinLoseCounter(headToHeadResultsByPerson, winner, loser).addWin();
+				getWinLoseCounter(headToHeadResultsByPerson, loser, winner).addLoss();
 			}
 		}
+		return headToHeadResultsByPerson;
+	}
+
+	/**
+	 * @param headToHeadResultsByPerson
+	 * @param winner
+	 * @param loser
+	 * @return
+	 */
+	private WinLoseCounter getWinLoseCounter(
+			SortedMap<Person, SortedMap<Person, WinLoseCounter>> headToHeadResultsByPerson, Person first, Person second) {
+		if (headToHeadResultsByPerson.get(first) == null) {
+			headToHeadResultsByPerson.put(first, new TreeMap<Person, WinLoseCounter>());
+		}
+		SortedMap<Person, WinLoseCounter> results = headToHeadResultsByPerson.get(first);
+		if (results.get(second) == null) {
+			results.put(second, new WinLoseCounter());
+		}
+		return results.get(second);
 	}
 
 	/**
