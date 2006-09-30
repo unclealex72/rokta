@@ -51,23 +51,25 @@
       </ww:iterator>
     </table>
 
-  <h1><ww:text name="current"/></h1>    
-    <table>
-      <tr>
-        <th>Player</th>
-        <th>Games</th>
-        <th>From</th>
-        <th>To</th>
-      </tr>
-      <ww:iterator id="view" value="currentStreakViews">
+    <ww:if test="!currentStreakViews.empty">
+      <h1><ww:text name="current"/></h1>    
+      <table>
         <tr>
-          <td><ww:property value="person.name"/></td>
-          <td><ww:property value="length"/></td>
-          <td><ww:date name="firstGame.datePlayed" format="dd/MM/yyyy hh:mm"/></td>
-          <td><ww:date name="lastGame.datePlayed" format="dd/MM/yyyy hh:mm"/></td>
+          <th>Player</th>
+          <th>Games</th>
+          <th>From</th>
+          <th>To</th>
         </tr>
-      </ww:iterator>
-    </table>
+        <ww:iterator id="view" value="currentStreakViews">
+          <tr>
+            <td><ww:property value="person.name"/></td>
+            <td><ww:property value="length"/></td>
+            <td><ww:date name="firstGame.datePlayed" format="dd/MM/yyyy hh:mm"/></td>
+            <td><ww:date name="lastGame.datePlayed" format="dd/MM/yyyy hh:mm"/></td>
+          </tr>
+        </ww:iterator>
+      </table>
+    </ww:if>
   </body>
   </html>
 </jsp:root>
