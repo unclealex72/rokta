@@ -32,4 +32,8 @@ public abstract class StatisticsAction extends BasicAction {
 	public void setStatisticsManager(StatisticsManager statisticsManager) {
 		i_statisticsManager = statisticsManager;
 	}
+	
+	public boolean isShowStatistics() {
+		return true;
+	}
 }
