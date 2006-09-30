@@ -5,7 +5,8 @@ package uk.co.unclealex.rokta.actions.statistics;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -34,6 +35,7 @@ public abstract class StreaksAction extends StatisticsAction {
 	
 	@Override
 	public String executeInternal() {
+		getStatisticsManager().setGames(getGameDao().getAllGames());
 		Map<Person, List<Streak>> streakListsByPerson = getStreakListsByPerson();
 		List<StreakView> streakViews = new ArrayList<StreakView>();
 		for (List<Streak> streakList : streakListsByPerson.values()) {
@@ -70,8 +72,10 @@ public abstract class StreaksAction extends StatisticsAction {
 				currentStreakViewsByPerson.put(person, StreakView.getStreakViewTransformer().transform(currentStreak));
 			}
 		}
-		List<StreakView> currentStreakViews = new LinkedList<StreakView>();
-		currentStreakViews.addAll(currentStreakViewsByPerson.values());
+		Collection<StreakView> values = currentStreakViewsByPerson.values();
+		List<StreakView> currentStreakViews = new ArrayList<StreakView>(values.size());
+		currentStreakViews.addAll(values);
+		Collections.sort(currentStreakViews);
 		setCurrentStreakViews(currentStreakViews);
 		return SUCCESS;
 	}
