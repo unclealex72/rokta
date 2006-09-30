@@ -14,7 +14,25 @@ import javax.persistence.NamedQuery;
 @NamedQueries({
 	@NamedQuery(
 			name="play.countByPersonAndHand",
-			query="select count(p) from Play p where p.person = :person and p.hand = :hand")
+			query="select count(p.id) from Play p where p.person = :person and p.hand = :hand"),
+	@NamedQuery(
+			name="play.countByPersonAndHandAfter",
+			query=
+				"select count(p.id) " +
+				"from Game g join g.rounds r join r.plays p " +
+				"where p.person = :person and p.hand = :hand and g.datePlayed >= :after"),
+	@NamedQuery(
+			name="play.countByPersonAndHandBefore",
+			query=
+				"select count(p.id) " +
+				"from Game g join g.rounds r join r.plays p " +
+				"where p.person = :person and p.hand = :hand and g.datePlayed <= :before"),
+	@NamedQuery(
+			name="play.countByPersonAndHandBetween",
+			query=
+				"select count(p.id) " +
+				"from Game g join g.rounds r join r.plays p " +
+				"where p.person = :person and p.hand = :hand and g.datePlayed <= :before and g.datePlayed >= :after")
 })
 
 public class Play extends Identity<Play> {
