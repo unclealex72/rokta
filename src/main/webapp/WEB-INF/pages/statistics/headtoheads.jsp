@@ -1,7 +1,7 @@
 <jsp:root
   xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:ww="/webwork"
-  xmlns:decorator="http://www.opensymphony.com/sitemesh/decorator"
-  xmlns:cewolf="http://cewolf.sourceforge.net/taglib/cewolf.tld"
+  xmlns:fmt="http://java.sun.com/jstl/fmt"
+  xmlns:c="http://java.sun.com/jstl/core"
   version="2.0">
 
   <jsp:output doctype-root-element="html" omit-xml-declaration="true"
@@ -24,17 +24,33 @@
     <table>
       <tr>
         <th>Winner/Loser</th>
-        <ww:iterator id="loser" value="players">
+        <ww:iterator value="players">
           <th><ww:property value="name"/></th>
         </ww:iterator>
       </tr>
       <ww:iterator id="winner" value="players">
         <tr>
           <th><ww:property value="name"/></th>
+          <ww:set name="headToHeadResults" value="%{headToHeadResultsByPerson[top]}"/>
           <ww:iterator id="loser" value="players">
-            <td>
-              <ww:property value="headToHeadResultsByPerson"/>
-            </td>
+            <ww:if test="%{#headToHeadResults[top] != null}">
+              <ww:push value="%{#headToHeadResults[top]}">
+                <c:set var="tooltip" scope="page">
+                  <ww:property value="%{#winner.name}"/>:
+                  <ww:property value="%{winCount}"/>,
+                  <ww:property value="%{#loser.name}"/>:
+                  <ww:property value="%{lossCount}"/>
+                </c:set>
+                <td title="${tooltip}">
+                  <fmt:formatNumber type="percent" minFractionDigits="2" maxFractionDigits="2">
+                    <ww:property value="winRatio"/>
+                  </fmt:formatNumber>
+                </td>
+              </ww:push>
+            </ww:if>
+            <ww:else>
+              <td>-</td>
+            </ww:else>       
           </ww:iterator>
         </tr>
       </ww:iterator>

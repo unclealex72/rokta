@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+  default-autowire="byName">
+
+  <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager" scope="singleton"/>
+    
+  <bean id="gameDaoTarget"
+    class="uk.co.unclealex.rokta.model.dao.HibernateGameDao" scope="singleton"/>
+
+  <bean id="personDaoTarget"
+    class="uk.co.unclealex.rokta.model.dao.HibernatePersonDao" scope="singleton"/>
+
+  <bean id="roundDaoTarget"
+    class="uk.co.unclealex.rokta.model.dao.HibernateRoundDao" scope="singleton"/>
+
+  <bean id="playDaoTarget"
+    class="uk.co.unclealex.rokta.model.dao.HibernatePlayDao" scope="singleton"/>
+
+  <bean id="gameDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="singleton">
+    <property name="target">
+      <ref bean="gameDaoTarget"/>
+    </property>
+    <property name="transactionAttributes">
+      <props>
+        <prop key="store*">PROPAGATION_REQUIRED</prop>
+        <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
+      </props>
+    </property>
+  </bean>
+  
+  <bean id="personDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="singleton">
+    <property name="target">
+      <ref bean="personDaoTarget"/>
+    </property>
+    <property name="transactionAttributes">
+      <props>
+        <prop key="store*">PROPAGATION_REQUIRED</prop>
+        <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
+      </props>
+    </property>
+  </bean>
+
+  <bean id="roundDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="singleton">
+    <property name="target">
+      <ref bean="roundDaoTarget"/>
+    </property>
+    <property name="transactionAttributes">
+      <props>
+        <prop key="store*">PROPAGATION_REQUIRED</prop>
+        <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
+      </props>
+    </property>
+  </bean>
+
+  <bean id="playDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="singleton">
+    <property name="target">
+      <ref bean="playDaoTarget"/>
+    </property>
+    <property name="transactionAttributes">
+      <props>
+        <prop key="store*">PROPAGATION_REQUIRED</prop>
+        <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
+      </props>
+    </property>
+  </bean>
+
+  <bean id="dateUtil" class="uk.co.unclealex.rokta.util.DateUtilImpl"/>
+  <bean id="personManager" class="uk.co.unclealex.rokta.process.PersonManagerImpl" scope="prototype"/>
+  <bean id="gameManager"
+    class="uk.co.unclealex.rokta.process.PersistingGameManager"
+    scope="singleton">
+  </bean>
+
+  <bean id="gamesLostDatasetProducer" class="uk.co.unclealex.rokta.process.dataset.GamesLostDatasetProducer"
+    scope="prototype"/>
+    
+  <bean id="leagueGraphDatasetProducer" class="uk.co.unclealex.rokta.process.dataset.LeagueGraphDatasetProducer"
+    scope="prototype"/>
+
+  <bean id="leagueManager"
+    class="uk.co.unclealex.rokta.process.LeagueManagerImpl" scope="prototype">
+  </bean>
+
+  <bean id="statisticsManager"
+    class="uk.co.unclealex.rokta.process.StatisticsManagerImpl" scope="prototype">
+  </bean>
+
+  <bean id="sessionFactory"
+    class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+    <property name="configLocation">
+      <value>classpath:hibernate.cfg.xml</value>
+    </property>
+    <property name="configurationClass">
+      <value>org.hibernate.cfg.AnnotationConfiguration</value>
+    </property>
+  </bean>
+</beans>
+

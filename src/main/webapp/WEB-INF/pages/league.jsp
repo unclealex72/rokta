@@ -1,6 +1,5 @@
 <jsp:root
   xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:ww="/webwork"
-  xmlns:decorator="http://www.opensymphony.com/sitemesh/decorator"
   xmlns:fmt="http://java.sun.com/jstl/fmt"
   version="2.0">
 
