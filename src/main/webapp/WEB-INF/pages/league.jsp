@@ -1,7 +1,7 @@
 <jsp:root
   xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:ww="/webwork"
   xmlns:decorator="http://www.opensymphony.com/sitemesh/decorator"
-  xmlns:cewolf="http://cewolf.sourceforge.net/taglib/cewolf.tld"
+  xmlns:fmt="http://java.sun.com/jstl/fmt"
   version="2.0">
 
   <jsp:output doctype-root-element="html" omit-xml-declaration="true"
@@ -67,14 +67,14 @@
           <td><ww:property value="roundsPlayed" /></td>
           <td><ww:property value="gamesLost" /></td>
           <td>
-            <ww:text name="format.rounded">
-              <ww:param value="roundsPerGame" />
-            </ww:text>
+            <fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2">
+              <ww:property value="roundsPerGame"/>
+            </fmt:formatNumber>
           </td>
           <td>
-            <ww:text name="format.percent">
-              <ww:param value="lossesPerGame * 100" />
-            </ww:text>
+            <fmt:formatNumber type="percent" minFractionDigits="2" maxFractionDigits="2">
+              <ww:property value="lossesPerGame"/>
+            </fmt:formatNumber>
           </td>
           <ww:if test="league.current">
             <td>

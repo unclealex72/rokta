@@ -17,9 +17,7 @@
   <body>
     <ww:iterator id="game" value="gameViews">
       <h1>
-        <ww:text name="format.date">
-          <ww:param value="datePlayed" />
-        </ww:text>
+        <ww:date format="EEEE, d MMMM yyyy HH:mm" name="datePlayed"/>
       </h1>
       <h2>Instigated by <ww:property value="instigator" /></h2>
       <h2>Lost by <ww:property value="loser" /></h2>
