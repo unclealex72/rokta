@@ -21,7 +21,7 @@
     <h1>
       Head To head results
     </h1>
-    <table>
+    <table class="data">
       <tr>
         <th>Winner/Loser</th>
         <ww:iterator value="players">

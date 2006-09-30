@@ -23,7 +23,7 @@
         <ww:param name="size" value="topStreakViews.size"/>
       </ww:text>
     </h1>
-    <table>
+    <table class="data">
       <tr>
         <th>Rank</th>
         <th>Player</th>
@@ -53,7 +53,7 @@
 
     <ww:if test="!currentStreakViews.empty">
       <h1><ww:text name="current"/></h1>    
-      <table>
+      <table class="data">
         <tr>
           <th>Player</th>
           <th>Games</th>

@@ -36,7 +36,7 @@
 		Full league.
       </ww:else>
     </h1>
-    <table>
+    <table class="data">
       <tr>
         <th />
         <th>Player</th>

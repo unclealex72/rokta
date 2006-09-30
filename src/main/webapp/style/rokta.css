@@ -6,7 +6,11 @@
 	background-color: silver;
 }
 
-#addlinks input {
+table.data th, table.data td {
+	text-align: center;
+}
+
+#addlinks select {
 	display: inline;
 }
 
