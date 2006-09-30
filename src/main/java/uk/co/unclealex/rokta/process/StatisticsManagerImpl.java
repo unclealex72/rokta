@@ -3,7 +3,6 @@
  */
 package uk.co.unclealex.rokta.process;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,6 @@ import uk.co.unclealex.rokta.model.Person;
 import uk.co.unclealex.rokta.model.Round;
 import uk.co.unclealex.rokta.model.Streak;
 import uk.co.unclealex.rokta.model.WinLoseCounter;
-import uk.co.unclealex.rokta.model.dao.GameDao;
 import uk.co.unclealex.rokta.model.dao.PersonDao;
 import uk.co.unclealex.rokta.model.dao.PlayDao;
 import uk.co.unclealex.rokta.model.dao.RoundDao;
@@ -29,15 +27,15 @@ import uk.co.unclealex.rokta.model.dao.RoundDao;
  */
 public class StatisticsManagerImpl implements StatisticsManager {
 
-	private GameDao i_gameDao;
 	private PersonDao i_personDao;
 	private PlayDao i_playDao;
 	private RoundDao i_roundDao;
 	
+	private SortedSet<Game> i_games;
+	
 	public SortedMap<Person, Integer> countGamesLostByPlayer() {
-		Collection<Game> allGames = getGameDao().getAllGames();
 		SortedMap<Person,Integer> gamesLostByPerson = new TreeMap<Person, Integer>();
-		for (Game game : allGames) {
+		for (Game game : getGames()) {
 			Person loser = game.getLoser();
 			Integer gamesLost = gamesLostByPerson.get(loser);
 			if (gamesLost == null) {
@@ -60,7 +58,7 @@ public class StatisticsManagerImpl implements StatisticsManager {
 		SortedMap<Person, List<Streak>> streaksByPerson = new TreeMap<Person, List<Streak>>();
 		SortedMap<Person, SortedSet<Game>> currentStreaksByPerson = new TreeMap<Person, SortedSet<Game>>();
 		
-		for (Game game : getGameDao().getAllGames()) {
+		for (Game game : getGames()) {
 			for (Person person : game.getParticipants()) {
 				if (person.equals(game.getLoser()) == losingEndsStreak) {
 					// If this person is the loser then we add their current streak to the list
@@ -144,20 +142,6 @@ public class StatisticsManagerImpl implements StatisticsManager {
 	}
 
 	/**
-	 * @return the gameDao
-	 */
-	public GameDao getGameDao() {
-		return i_gameDao;
-	}
-
-	/**
-	 * @param gameDao the gameDao to set
-	 */
-	public void setGameDao(GameDao gameDao) {
-		i_gameDao = gameDao;
-	}
-
-	/**
 	 * @return the personDao
 	 */
 	public PersonDao getPersonDao() {
@@ -197,6 +181,20 @@ public class StatisticsManagerImpl implements StatisticsManager {
 	 */
 	public void setRoundDao(RoundDao roundDao) {
 		i_roundDao = roundDao;
+	}
+
+	/**
+	 * @return the games
+	 */
+	public SortedSet<Game> getGames() {
+		return i_games;
+	}
+
+	/**
+	 * @param games the games to set
+	 */
+	public void setGames(SortedSet<Game> games) {
+		i_games = games;
 	}
 
 }
