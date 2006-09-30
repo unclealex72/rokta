@@ -5,3 +5,23 @@
 .notPlaying {
 	background-color: silver;
 }
+
+#addlinks input {
+	display: inline;
+}
+
+#addlinks {
+	visibility: hidden;
+}
+
+#leaguelinks {
+	display: none;
+}
+
+#profilelinks {
+	display: none;
+}
+
+#statisticslinks {
+	display: none;
+}

@@ -3,6 +3,7 @@
   xmlns:ww="/webwork"
   xmlns:decorator="http://www.opensymphony.com/sitemesh/decorator"
   xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:rokta="/rokta"
   version="2.0">
 
   <jsp:output doctype-root-element="html" omit-xml-declaration="true"
@@ -20,18 +21,48 @@
     <link rel="stylesheet" type="text/css" href="style/style104_left.css" />
   
     <!-- **** Colour Scheme Stylesheet **** -->
-    <ww:set name="colour" value="colour" scope="page"/>
+    <rokta:theme parameterName="colour" cookieName="colour" var="colour" defaultValue="2" validValues="[1-8]"/>
     <link rel="stylesheet" type="text/css" href="style/colour${colour}.css" />
   
     <!-- **** rokta specific Stylesheet **** -->
     <link rel="stylesheet" type="text/css" href="style/rokta.css" />
 
+    <script type="text/javascript">
+      var links = new Array();
+      links[0] = 'leaguelinks';
+      links[1] = 'profilelinks';
+      links[2] = 'statisticslinks';
+    
+      function showLinks(divId) {
+        var idx;
+
+        for (idx in links) {
+          document.getElementById(links[idx]).style.display = (links[idx] == divId)?'block':'none';
+        }
+        document.getElementById('addlinks').style.visibility = "visible";
+        return false;
+      }
+      
+      function showLeagueLinks() {
+        showLinks('leaguelinks');
+      }
+      
+      function showProfileLinks() {
+        showLinks('profilelinks');
+      }
+      
+      function showStatisticsLinks() {
+        showLinks('statisticslinks');
+      }
+    </script>
   </head>
   
-  <body>
+  <body>  
     <div id="main">
       <div id="links">
-        <a href="#">another link</a> | <a href="#">another link</a> | <a href="#">another link</a> | <a href="#">another link</a>
+        <!--
+          <a href="#">another link</a> | <a href="#">another link</a> | <a href="#">another link</a> | <a href="#">another link</a>
+        -->
       </div>
       <div id="logo"><h1>ROKTA - <decorator:title/></h1></div>
       <div id="content">
@@ -39,10 +70,15 @@
           <div id="menu">
             <h1>Navigate</h1>
             <ul>
-              <li><a href="initialise.html">New game</a></li>
-              <li><a href="league.html">Leagues</a></li>
-              <li><a href="statistics.html">Statistics</a></li>
-              <li><a href="profiles.html">Profiles</a></li>
+              <li>
+                <c:set var="link">
+                  <ww:url action="initialise"/>
+                </c:set>
+                <a href="${link}">New game</a>
+              </li>
+              <li><a href="javascript:showLeagueLinks()">Leagues</a></li>
+              <li><a href="javascript:showStatisticsLinks()">Statistics</a></li>
+              <li><a href="javascript:showProfileLinks()">Profiles</a></li>
             </ul>
           </div>
           <!--
@@ -56,11 +92,10 @@
           </div>
           -->
 
-          <div id="addlinks" style="visibility: ${linksVisibility}">
+          <div id="addlinks">
             <h1>Choose</h1>
-            <div id="leagueLinks" style="visibility: ${leagueLinksVisibility}">
+            <div id="leaguelinks">
               <ul>
-                <li>Choose a league:</li>
                 <li>
                   <a href="league.html">Full league</a>
                 </li>
@@ -84,17 +119,46 @@
                 </li>
               </ul>
             </div>
-            <div id="profileLinks">
+            <div id="profilelinks">
               <ul>
-                <li>Choose a player:</li>
                 <ww:iterator id="player" value="players">
                   <li>
-                    <c:url var="link" value="profile.html">
-                      <c:param name="id" value="${player.id}"/>
-                    </c:url>
-                    <a href="${link}"><ww:property value="player.name"/></a>
+                    <c:set var="link">
+                      <ww:url action="profile">
+                        <ww:param name="id" value="id"/>
+                      </ww:url>
+                    </c:set>
+                    <a href="${link}"><ww:property value="name"/></a>
                   </li>
                 </ww:iterator>
+              </ul>
+            </div>
+            <div id="statisticslinks">
+              <ul>
+                <li>
+                  <c:set var="link">
+                    <ww:url action="headtoheads"/>
+                  </c:set>
+                  <a href="${link}">Head to Heads</a>
+                </li>
+                <li>
+                  <c:set var="link">
+                    <ww:url action="winningstreaks"/>
+                  </c:set>
+                  <a href="${link}">Winning Streaks</a>
+                </li>
+                <li>
+                  <c:set var="link">
+                    <ww:url action="losingstreaks"/>
+                  </c:set>
+                  <a href="${link}">Losing Streaks</a>
+                </li>
+                <li>
+                  <c:set var="link">
+                    <ww:url action="leaguegraph"/>
+                  </c:set>
+                  <a href="${link}">League Graph</a>
+                </li>
               </ul>
             </div>
           </div>
@@ -107,6 +171,17 @@
         copyright 2006 Alex Jones | alex.jones at unclealex.co.uk | <a href="http://validator.w3.org/check?uri=referer">XHTML 1.1</a> | <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> | <a href="http://www.dcarter.co.uk">design by dcarter</a>
       </div>
     </div>
+    <script type="text/javascript">
+      <ww:if test="showLeague != null">
+        showLeagueLinks();
+      </ww:if>
+      <ww:if test="showProfile != null">
+        showProfileLinks();
+      </ww:if>
+      <ww:if test="showStatistics != null">
+        showStatisticsLinks();
+      </ww:if>
+    </script>
   </body>
   </html>
 </jsp:root>
