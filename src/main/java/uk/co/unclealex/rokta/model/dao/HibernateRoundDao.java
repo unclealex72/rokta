@@ -29,7 +29,7 @@ public class HibernateRoundDao extends HibernateDaoSupport implements RoundDao {
 		return (Integer) getHibernateTemplate().execute(
 				new HibernateCallback() {
 					public Object doInHibernate(Session session) throws HibernateException, SQLException {
-						Query q = session.getNamedQuery("round.countOpeningGambitsByPerson");
+						Query q = session.getNamedQuery("round.countOpeningGambitsByPersonAndHand");
 						q.setEntity("person", person);
 						q.setParameter("hand", hand);
             return q.uniqueResult();
