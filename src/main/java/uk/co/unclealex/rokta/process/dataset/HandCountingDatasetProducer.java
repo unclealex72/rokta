@@ -25,7 +25,7 @@ public abstract class HandCountingDatasetProducer extends ProfileAwareDatasetPro
 			sum += count;
 		}
 		for (Map.Entry<Hand,Integer> entry : handCounts.entrySet()) {
-			dataset.setValue(entry.getKey().toString(), 100.0 * entry.getValue() / sum);
+			dataset.setValue(entry.getKey().getDescription(), 100.0 * entry.getValue() / sum);
 		}
 		return dataset;
 
