@@ -18,14 +18,17 @@
     <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
   
     <!-- **** Layout Stylesheet **** -->
-    <link rel="stylesheet" type="text/css" href="style/style104_left.css" />
+    <c:url var="link" value="/style/style104_left.css" />
+    <link rel="stylesheet" type="text/css" href="${link}" />
   
     <!-- **** Colour Scheme Stylesheet **** -->
     <rokta:theme parameterName="colour" cookieName="colour" var="colour" defaultValue="2" validValues="[1-8]"/>
-    <link rel="stylesheet" type="text/css" href="style/colour${colour}.css" />
+    <c:url var="link" value="/style/colour${colour}.css"/>
+    <link rel="stylesheet" type="text/css" href="${link}" />
   
     <!-- **** rokta specific Stylesheet **** -->
-    <link rel="stylesheet" type="text/css" href="style/rokta.css" />
+    <c:url var="link" value="/style/rokta.css" />
+    <link rel="stylesheet" type="text/css" href="${link}" />
 
     <script type="text/javascript">
       var links = new Array();
@@ -125,7 +128,7 @@
                   <li>
                     <c:set var="link">
                       <ww:url action="profile">
-                        <ww:param name="id" value="id"/>
+                        <ww:param name="name" value="name"/>
                       </ww:url>
                     </c:set>
                     <a href="${link}"><ww:property value="name"/></a>
