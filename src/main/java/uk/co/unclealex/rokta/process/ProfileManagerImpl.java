@@ -6,10 +6,9 @@ package uk.co.unclealex.rokta.process;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apache.commons.lang.math.Fraction;
-
 import uk.co.unclealex.rokta.model.Hand;
 import uk.co.unclealex.rokta.model.Person;
+import uk.co.unclealex.rokta.model.WinLoseCounter;
 import uk.co.unclealex.rokta.model.dao.GameDao;
 import uk.co.unclealex.rokta.model.dao.PersonDao;
 import uk.co.unclealex.rokta.model.dao.PlayDao;
@@ -27,6 +26,8 @@ public class ProfileManagerImpl implements ProfileManager {
 	private PersonDao i_personDao;
 	private PlayDao i_playDao;
 	private RoundDao i_roundDao;
+
+	private StatisticsManager i_statisticsManager;
 	
 	public SortedMap<Hand, Integer> countHands() {
 		CountHandPersonOperation operation = new CountHandPersonOperation() {
@@ -58,13 +59,10 @@ public class ProfileManagerImpl implements ProfileManager {
 		return handMap;
 	}
 
-	/* (non-Javadoc)
-	 * @see uk.co.unclealex.rokta.process.ProfileManager#getHeadToHeadRoundWinRate()
-	 */
-	public SortedMap<Person, Fraction> getHeadToHeadRoundWinRate() {
-		// TODO Auto-generated method stub
-		return null;
+	public SortedMap<Person, WinLoseCounter> getHeadToHeadRoundWinRate() {
+		return getStatisticsManager().getHeadToHeadResultsByPerson().get(getPerson());
 	}
+
 	/**
 	 * @return the person
 	 */
@@ -134,4 +132,19 @@ public class ProfileManagerImpl implements ProfileManager {
 	public void setRoundDao(RoundDao roundDao) {
 		i_roundDao = roundDao;
 	}
+
+	/**
+	 * @return the statisticsManager
+	 */
+	public StatisticsManager getStatisticsManager() {
+		return i_statisticsManager;
+	}
+
+	/**
+	 * @param statisticsManager the statisticsManager to set
+	 */
+	public void setStatisticsManager(StatisticsManager statisticsManager) {
+		i_statisticsManager = statisticsManager;
+	}
+
 }
