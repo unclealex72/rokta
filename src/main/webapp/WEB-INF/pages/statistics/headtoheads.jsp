@@ -36,10 +36,7 @@
             <ww:if test="%{#headToHeadResults[top] != null}">
               <ww:push value="%{#headToHeadResults[top]}">
                 <c:set var="tooltip" scope="page">
-                  <ww:property value="%{#winner.name}"/>:
-                  <ww:property value="%{winCount}"/>,
-                  <ww:property value="%{#loser.name}"/>:
-                  <ww:property value="%{lossCount}"/>
+                	<ww:property value="%{#winner.name + ': ' + winCount + ', ' + #loser.name + ': ' + lossCount}"/>
                 </c:set>
                 <td title="${tooltip}">
                   <fmt:formatNumber type="percent" minFractionDigits="2" maxFractionDigits="2">
