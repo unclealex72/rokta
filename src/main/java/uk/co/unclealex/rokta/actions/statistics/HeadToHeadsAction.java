@@ -7,6 +7,7 @@ import java.util.SortedMap;
 
 import uk.co.unclealex.rokta.model.Person;
 import uk.co.unclealex.rokta.model.WinLoseCounter;
+import uk.co.unclealex.rokta.process.StatisticsManager;
 
 /**
  * @author alex
@@ -18,7 +19,9 @@ public class HeadToHeadsAction extends StatisticsAction {
 	
 	@Override
 	protected String executeInternal() {
-		setHeadToHeadResultsByPerson(getStatisticsManager().getHeadToHeadResultsByPerson());
+    StatisticsManager manager = getStatisticsManager();
+    manager.setGames(getGameDao().getAllGames());
+		setHeadToHeadResultsByPerson(manager.getHeadToHeadResultsByPerson());
 		return SUCCESS;
 	}
 

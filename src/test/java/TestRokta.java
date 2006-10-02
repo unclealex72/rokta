@@ -1,9 +1,6 @@
-import java.util.List;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import uk.co.unclealex.rokta.model.Round;
 import uk.co.unclealex.rokta.model.dao.RoundDao;
 
 /**
@@ -21,10 +18,10 @@ public class TestRokta {
 	 */
 	private void run(ApplicationContext context) {
 		RoundDao roundDao = (RoundDao) context.getBean("roundDao");
-		List<Round> rounds = roundDao.getFinalRounds();
-		for (Round round : rounds) {
-			System.out.println("Round " + round.getId() + ", " + round.getPlays().size());
-		}
+		//List<Round> rounds = roundDao.getFinalRounds();
+		//for (Round round : rounds) {
+		//	System.out.println("Round " + round.getId() + ", " + round.getPlays().size());
+		//}
 	}
 	
 	/**

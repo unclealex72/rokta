@@ -26,9 +26,6 @@ import org.apache.commons.collections15.Predicate;
 			name="round.countByPerson",
 			query="select count(*) from Round as round join round.plays as plays where plays.person = :person"),
 	@NamedQuery(
-			name="round.getFinalRounds",
-			query="select r, g.id, max(r.round) from Game g join g.rounds r group by g.id"),
-	@NamedQuery(
 			name="round.countOpeningGambitsByPersonAndHand",
 			query="select count(*) from Round as r join r.plays as p where p.person = :person and p.hand = :hand and r.round = 1")
 })

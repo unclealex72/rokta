@@ -4,8 +4,10 @@
 package uk.co.unclealex.rokta.process;
 
 import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.TreeMap;
 
+import uk.co.unclealex.rokta.model.Game;
 import uk.co.unclealex.rokta.model.Hand;
 import uk.co.unclealex.rokta.model.Person;
 import uk.co.unclealex.rokta.model.WinLoseCounter;
@@ -21,7 +23,8 @@ import uk.co.unclealex.rokta.model.dao.RoundDao;
 public class ProfileManagerImpl implements ProfileManager {
 
 	private Person i_person;
-
+	private SortedSet<Game> i_games;
+  
 	private GameDao i_gameDao;
 	private PersonDao i_personDao;
 	private PlayDao i_playDao;
@@ -146,5 +149,23 @@ public class ProfileManagerImpl implements ProfileManager {
 	public void setStatisticsManager(StatisticsManager statisticsManager) {
 		i_statisticsManager = statisticsManager;
 	}
+
+  /**
+   * @return the games
+   */
+  public SortedSet<Game> getGames() {
+    return i_games;
+  }
+
+  /**
+   * @param games the games to set
+   */
+  public void setGames(SortedSet<Game> games) {
+    i_games = games;
+    StatisticsManager statisticsManager = getStatisticsManager();
+    if (statisticsManager != null) {
+      statisticsManager.setGames(games);
+    }
+  }
 
 }

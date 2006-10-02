@@ -31,6 +31,7 @@ public class ProfileAction extends BasicAction {
 		setPerson(person);
 		ProfileManager manager = getProfileManager();
 		manager.setPerson(person);
+    manager.setGames(getGameDao().getAllGames());
 		getHandChoiceDatasetProducer().setProfileManager(manager);
 		getOpeningGambitDatasetProducer().setProfileManager(manager);
 		setHeadToHeadRoundWinRate(manager.getHeadToHeadRoundWinRate());

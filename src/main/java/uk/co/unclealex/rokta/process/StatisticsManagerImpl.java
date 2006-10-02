@@ -109,7 +109,8 @@ public class StatisticsManagerImpl implements StatisticsManager {
 	public SortedMap<Person, SortedMap<Person, WinLoseCounter>> getHeadToHeadResultsByPerson() {
 		SortedMap<Person, SortedMap<Person, WinLoseCounter>> headToHeadResultsByPerson =
 			new TreeMap<Person, SortedMap<Person,WinLoseCounter>>();
-		for (Round round : getRoundDao().getFinalRounds()) {
+		for (Game game : getGames()) {
+      Round round = game.getRounds().last();
 			Set<Person> participants = round.getParticipants();
 			if (participants.size() == 2) {
 				Person first = round.getParticipants().first();
