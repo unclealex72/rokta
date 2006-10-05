@@ -62,10 +62,6 @@
          <result name="success">/WEB-INF/pages/statistics/headtoheads.jsp</result>
       </action>
 
-      <action name="handsplayed"
-         class="uk.co.unclealex.rokta.actions.statistics.HandsPlayedAction">
-         <result name="success">/WEB-INF/pages/statistics/handsplayed.jsp</result>
-      </action>
    </package>
   </xwork>
 
