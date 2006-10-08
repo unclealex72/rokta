@@ -29,12 +29,13 @@
         <property name="show_sql">false</property>
 
         <!-- Drop and re-create the database schema on startup -->
-        <!-- <property name="hbm2ddl.auto">create</property> -->
+        <property name="hbm2ddl.auto">update</property>
 
 				<mapping class="uk.co.unclealex.rokta.model.Person"/>
 				<mapping class="uk.co.unclealex.rokta.model.Play"/>
 				<mapping class="uk.co.unclealex.rokta.model.Round"/>
 				<mapping class="uk.co.unclealex.rokta.model.Game"/>
+                <mapping class="uk.co.unclealex.rokta.model.Colour"/>
     </session-factory>
 
 </hibernate-configuration>
