@@ -29,3 +29,8 @@ table.data th, table.data td {
 #statisticslinks {
 	display: none;
 }
+
+#colourBlock {
+	outline: black solid thin;
+	width: 100px;
+}
