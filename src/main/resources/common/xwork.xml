@@ -22,8 +22,18 @@
          <result name="finished">/WEB-INF/pages/finished.jsp</result>
       </action>
 
-      <action name="league"
-         class="uk.co.unclealex.rokta.actions.LeagueTableAction">
+      <action name="fullleague"
+         class="uk.co.unclealex.rokta.actions.FullLeagueTableAction">
+         <result name="success">/WEB-INF/pages/league.jsp</result>
+      </action>
+
+      <action name="filteredleague"
+         class="uk.co.unclealex.rokta.actions.FilteredLeagueTableAction">
+         <result name="success">/WEB-INF/pages/league.jsp</result>
+      </action>
+
+      <action name="leaguesince"
+         class="uk.co.unclealex.rokta.actions.SinceLeagueTableAction">
          <result name="success">/WEB-INF/pages/league.jsp</result>
       </action>
 
@@ -37,6 +47,11 @@
          <result name="success">/WEB-INF/pages/profile.jsp</result>
       </action>
       
+      <action name="colour"
+         class="uk.co.unclealex.rokta.actions.ColourAction">
+         <result type="redirect" name="success">/profile.html?person=${person.name}</result>
+      </action>
+
       <action name="statistics"
          class="uk.co.unclealex.rokta.actions.BasicAction">
          <result name="success">/WEB-INF/pages/statistics/statistics.jsp</result>

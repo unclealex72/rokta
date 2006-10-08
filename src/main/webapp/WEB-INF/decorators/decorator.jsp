@@ -100,22 +100,35 @@
             <div id="leaguelinks">
               <ul>
                 <li>
-                  <a href="league.html">Full league</a>
+                  <c:set var="link">
+                    <ww:url action="fullleague"/>
+                  </c:set>
+                  <a href="${link}">Full league</a>
                 </li>
                 <li>
-                  <ww:form name="weeklyForm" action="league" method="post">
+                  <rokta:date format="ddMMyyyy" field="WEEK_OF_YEAR" value="-4" var="since"/>
+                  <c:set var="link">
+                    <ww:url action="leaguesince">
+                      <ww:param name="dateFormat" value="%{'ddMMyyyy'}"/>
+                      <ww:param name="since" value="#attr.since"/>
+                    </ww:url>
+                  </c:set>
+                  <a href="${link}">Last four weeks</a>
+                </li>
+                <li>
+                  <ww:form name="weeklyForm" action="filteredleague" method="post">
                     <ww:select name="selectedWeek" list="selectableWeeks"/>
                     <a href="#" onclick="document.forms['weeklyForm'].submit();return false;">Go</a>
                   </ww:form>
                 </li>
                 <li>
-                  <ww:form name="monthlyForm" action="league" method="post">
+                  <ww:form name="monthlyForm" action="filteredleague" method="post">
                     <ww:select name="selectedMonth" list="selectableMonths"/>
                     <a href="#" onclick="document.forms['monthlyForm'].submit();return false;">Go</a>
                   </ww:form>
                 </li>
                 <li>
-                  <ww:form name="yearlyForm" action="league" method="post">
+                  <ww:form name="yearlyForm" action="filteredleague" method="post">
                     <ww:select name="selectedYear" list="selectableYears"/>
                     <a href="#" onclick="document.forms['yearlyForm'].submit();return false;">Go</a>
                   </ww:form>
@@ -128,7 +141,7 @@
                   <li>
                     <c:set var="link">
                       <ww:url action="profile">
-                        <ww:param name="name" value="name"/>
+                        <ww:param name="person" value="name"/>
                       </ww:url>
                     </c:set>
                     <a href="${link}"><ww:property value="name"/></a>

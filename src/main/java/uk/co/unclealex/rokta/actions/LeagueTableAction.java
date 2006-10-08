@@ -1,7 +1,5 @@
 package uk.co.unclealex.rokta.actions;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,41 +7,23 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.commons.collections15.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-
 import uk.co.unclealex.rokta.actions.statistics.LeagueAction;
 import uk.co.unclealex.rokta.model.Game;
 import uk.co.unclealex.rokta.model.League;
-import uk.co.unclealex.rokta.process.DateFilterPredicate;
 import uk.co.unclealex.rokta.process.GamesLeagueMilestonePredicate;
 import uk.co.unclealex.rokta.process.LeagueManager;
 
-public class LeagueTableAction extends LeagueAction {
+public abstract class LeagueTableAction extends LeagueAction {
 
 	private LeagueManager i_leagueManager;
 	
 	private League i_league;
 
 	@Override
-	public String executeInternal() {
+	public String executeInternal() throws Exception {
 		LeagueManager manager = getLeagueManager();
-		SortedSet<Game> games = getGameDao().getAllGames();
+		SortedSet<Game> games = getGames();
 		
-		DateFormat dfByWeek = new SimpleDateFormat(DATE_FORMAT_WEEK);
-		DateFormat dfByMonth = new SimpleDateFormat(DATE_FORMAT_MONTH);
-		DateFormat dfByYear = new SimpleDateFormat(DATE_FORMAT_YEAR);
-		
-		if (!StringUtils.isEmpty(getSelectedWeek())) {
-			CollectionUtils.filter(games, new DateFilterPredicate(dfByWeek, getSelectedWeek()));
-		}
-		else if (!StringUtils.isEmpty(getSelectedMonth())) {
-			CollectionUtils.filter(games, new DateFilterPredicate(dfByMonth, getSelectedMonth()));
-		}
-		else if (!StringUtils.isEmpty(getSelectedYear())) {
-			CollectionUtils.filter(games, new DateFilterPredicate(dfByYear, getSelectedYear()));
-		}
-
 		if (games.isEmpty()) {
 			setLeague(new League());
 		}
@@ -72,6 +52,8 @@ public class LeagueTableAction extends LeagueAction {
 		return SUCCESS;
 	}
 
+	public abstract SortedSet<Game> getGames() throws Exception;
+	
 	public League getLeague() {
 		return i_league;
 	}

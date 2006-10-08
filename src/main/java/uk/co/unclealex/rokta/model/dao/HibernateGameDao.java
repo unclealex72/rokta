@@ -1,6 +1,7 @@
 package uk.co.unclealex.rokta.model.dao;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -91,5 +92,19 @@ public class HibernateGameDao extends HibernateDaoSupport implements GameDao {
 						return games.iterator().next();
 					}
 				});
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.co.unclealex.rokta.model.dao.GameDao#getGamesSince(java.util.Date)
+	 */
+	public SortedSet<Game> getGamesSince(final Date since) {
+		SortedSet<Game> games = new TreeSet<Game>();
+		games.addAll(getHibernateTemplate().executeFind(
+				new HibernateCallback() {
+					public Object doInHibernate(Session session) throws HibernateException, SQLException {
+            return session.getNamedQuery("game.getAllSince").setParameter("datePlayed", since).list(); 
+					}
+				}));
+		return games;
 	}
 }

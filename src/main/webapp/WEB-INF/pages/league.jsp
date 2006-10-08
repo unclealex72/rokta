@@ -12,29 +12,17 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
     <title>
-      <ww:if test="selectedWeek != null">
-        League for <ww:property value="selectedWeek" />.
-      </ww:if>
-      <ww:elseif test="selectedMonth != null">
-        League for <ww:property value="selectedMonth" />.
-      </ww:elseif>
-      <ww:else>
-        Full league.
-      </ww:else>    
+      <ww:text name="title">
+        <ww:param value="selection"/>
+      </ww:text>
     </title>
   </head>
 
   <body>
     <h1>
-      <ww:if test="selectedWeek != null">
-		League for <ww:property value="selectedWeek" />.
-      </ww:if>
-      <ww:elseif test="selectedMonth != null">
-		League for <ww:property value="selectedMonth" />.
-      </ww:elseif>
-      <ww:else>
-		Full league.
-      </ww:else>
+      <ww:text name="title">
+        <ww:param value="selection"/>
+      </ww:text>
     </h1>
     <table class="data">
       <tr>
