@@ -2,6 +2,7 @@
   xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:ww="/webwork"
   xmlns:decorator="http://www.opensymphony.com/sitemesh/decorator"
   xmlns:cewolf="http://cewolf.sourceforge.net/taglib/cewolf.tld"
+  xmlns:rokta="/rokta"
   version="2.0">
 
   <jsp:output doctype-root-element="html" omit-xml-declaration="true"
@@ -28,6 +29,8 @@
       </cewolf:data>
     </cewolf:chart>
 
+    <rokta:colourise chartid="leagueGraph"/>
+    
     <cewolf:img chartid="leagueGraph" renderer="cewolf" width="480" height="300"/>
   </body>
   </html>
