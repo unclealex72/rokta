@@ -18,6 +18,9 @@
   <bean id="playDaoTarget"
     class="uk.co.unclealex.rokta.model.dao.HibernatePlayDao" scope="session"/>
 
+  <bean id="colourDaoTarget"
+    class="uk.co.unclealex.rokta.model.dao.HibernateColourDao" scope="session"/>
+
   <bean id="gameDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="session">
     <property name="target">
       <ref bean="gameDaoTarget"/>
@@ -66,6 +69,17 @@
     </property>
   </bean>
 
+  <bean id="colourDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="session">
+    <property name="target">
+      <ref bean="colourDaoTarget"/>
+    </property>
+    <property name="transactionAttributes">
+      <props>
+        <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
+      </props>
+    </property>
+  </bean>
+
   <bean id="dateUtil" class="uk.co.unclealex.rokta.util.DateUtilImpl"/>
   <bean id="personManager" class="uk.co.unclealex.rokta.process.PersonManagerImpl" scope="prototype"/>
   <bean id="gameManager"
@@ -83,7 +97,11 @@
     autowire="no" scope="prototype"/>
 
   <bean id="leagueGraphDatasetProducer" class="uk.co.unclealex.rokta.process.dataset.LeagueGraphDatasetProducer"
-    scope="prototype"/>
+    scope="prototype">
+    <property name="averageColour">
+      <value>Orange</value>
+    </property>
+  </bean>
 
   <bean id="leagueManager"
     class="uk.co.unclealex.rokta.process.LeagueManagerImpl" scope="prototype">
