@@ -13,6 +13,64 @@
 
   <tag>
     <description>
+      Calculate a date relative to today's date
+    </description>
+    <name>date</name>
+    <tag-class>uk.co.unclealex.rokta.tags.DateTag</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+      <description>
+          The format of the date to return
+      </description>
+      <name>format</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <description>
+          The Calendar field to use
+      </description>
+      <name>field</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <description>
+          The value to add
+      </description>
+      <name>value</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <description>
+          The name of the variable used to store the result
+      </description>
+      <name>var</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+
+  <tag>
+    <description>
+      Colourise a colour dataset producer chart
+    </description>
+    <name>colourise</name>
+    <tag-class>uk.co.unclealex.rokta.tags.ColouriseTag</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+      <description>
+          The name of the request parameter to look in for the theme suffix.
+      </description>
+      <name>chartid</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  
+  <tag>
+    <description>
       Sets the theme to use for rokta.
     </description>
     <name>theme</name>
