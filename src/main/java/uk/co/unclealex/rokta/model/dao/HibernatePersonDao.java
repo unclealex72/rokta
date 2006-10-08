@@ -14,6 +14,11 @@ import uk.co.unclealex.rokta.model.Person;
 
 public class HibernatePersonDao extends HibernateDaoSupport implements PersonDao {
 
+	public Person store(Person person) {
+		getHibernateTemplate().save(person);
+		return person;
+	}
+	
 	/* (non-Javadoc)
 	 * @see uk.co.unclealex.rokta.model.dao.PersonDao#getPersonByName(java.lang.String)
 	 */
