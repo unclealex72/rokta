@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
@@ -16,7 +17,7 @@ import javax.persistence.NamedQuery;
 public class Person extends Identity<Person> {
 
 	private String i_name;
-
+	private Colour i_colour;
 	@Override
 	public int compareTo(Person o) {
 		return getName().compareTo(o.getName());
@@ -36,6 +37,15 @@ public class Person extends Identity<Person> {
 		i_name = name;
 	}
 	
+	@ManyToOne
+	@Column(nullable=false)
+	public Colour getColour() {
+		return i_colour;
+	}
+	public void setColour(Colour colour) {
+		i_colour = colour;
+	}
+
 	@Override
 	@Id @GeneratedValue
 	public Long getId() {
