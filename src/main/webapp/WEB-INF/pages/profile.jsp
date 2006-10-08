@@ -53,6 +53,40 @@
         </ww:iterator>
       </table>
     </ww:if>
+
+    <h1>Graphing colour</h1>
+    
+    <ww:form action="colour" method="post">
+      <ww:push value="person">
+        <ww:hidden name="person" value="%{top}"/>
+        <table>
+          <tr>
+            <td>
+              <ww:select
+                id="colourSelect" value="colour.htmlName" onchange="setColour()"
+                list="allColours" listKey="htmlName" listValue="name" name="colour"/>
+            </td>
+            <td id="colourBlock"></td>
+          </tr>
+          <tr>
+            <td>
+              <ww:submit value="Change colour"/>
+            </td>
+          </tr>
+        </table>
+      </ww:push>
+    </ww:form>
+    
+    <script type="text/javascript">
+      function setColour() {
+        var colourSelect = document.getElementById('colourSelect');
+        var colourBlock = document.getElementById('colourBlock');
+        
+        colourBlock.style.backgroundColor = colourSelect.value;
+      }
+      
+      setColour();
+    </script>
     
     <h1>Hand choice distribution</h1>
     
