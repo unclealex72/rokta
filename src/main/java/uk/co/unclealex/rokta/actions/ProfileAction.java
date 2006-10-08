@@ -4,7 +4,9 @@
 package uk.co.unclealex.rokta.actions;
 
 import java.util.SortedMap;
+import java.util.SortedSet;
 
+import uk.co.unclealex.rokta.model.Colour;
 import uk.co.unclealex.rokta.model.Person;
 import uk.co.unclealex.rokta.model.WinLoseCounter;
 import uk.co.unclealex.rokta.process.ProfileManager;
@@ -22,13 +24,14 @@ public class ProfileAction extends BasicAction {
 	private SortedMap<Person, WinLoseCounter> i_headToHeadRoundWinRate;
 
 	private ProfileManager i_profileManager;
-	private String i_name;
+	
+	private SortedSet<Colour> i_allColours;
 	private Person i_person;
 	
 	@Override
 	protected String executeInternal() throws Exception {
-		Person person = getPersonDao().getPersonByName(getName());
-		setPerson(person);
+		setAllColours(getColourDao().getColours());
+		Person person = getPerson();
 		ProfileManager manager = getProfileManager();
 		manager.setPerson(person);
     manager.setGames(getGameDao().getAllGames());
@@ -73,20 +76,6 @@ public class ProfileAction extends BasicAction {
 	}
 
 	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return i_name;
-	}
-
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		i_name = name;
-	}
-
-	/**
 	 * @return the person
 	 */
 	public Person getPerson() {
@@ -128,5 +117,19 @@ public class ProfileAction extends BasicAction {
 	public void setOpeningGambitDatasetProducer(
 			OpeningGambitDatasetProducer openingGambitDatasetProvider) {
 		i_openingGambitDatasetProducer = openingGambitDatasetProvider;
+	}
+
+	/**
+	 * @return the allColours
+	 */
+	public SortedSet<Colour> getAllColours() {
+		return i_allColours;
+	}
+
+	/**
+	 * @param allColours the allColours to set
+	 */
+	public void setAllColours(SortedSet<Colour> allColours) {
+		i_allColours = allColours;
 	}
 }

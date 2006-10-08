@@ -8,6 +8,7 @@ import java.util.SortedSet;
 
 import uk.co.unclealex.rokta.model.Game;
 import uk.co.unclealex.rokta.model.Person;
+import uk.co.unclealex.rokta.model.dao.ColourDao;
 import uk.co.unclealex.rokta.model.dao.GameDao;
 import uk.co.unclealex.rokta.model.dao.PersonDao;
 import uk.co.unclealex.rokta.model.dao.PlayDao;
@@ -20,10 +21,12 @@ public class BasicAction extends ActionSupport {
 	protected static final String DATE_FORMAT_WEEK = "'Week 'ww, yyyy";
 	protected static final String DATE_FORMAT_MONTH = "MMMMM, yyyy";
 	protected static final String DATE_FORMAT_YEAR = "yyyy";
+	
 	private PersonDao i_personDao;
 	private GameDao i_gameDao;
 	private PlayDao i_playDao;
 	private RoundDao i_roundDao;
+	private ColourDao i_colourDao;
 	
 	private String i_selectedWeek;
 	private String i_selectedMonth;
@@ -224,5 +227,19 @@ public class BasicAction extends ActionSupport {
 	 */
 	public void setPlayers(SortedSet<Person> players) {
 		i_players = players;
+	}
+
+	/**
+	 * @return the colourDao
+	 */
+	public ColourDao getColourDao() {
+		return i_colourDao;
+	}
+
+	/**
+	 * @param colourDao the colourDao to set
+	 */
+	public void setColourDao(ColourDao colourDao) {
+		i_colourDao = colourDao;
 	}
 }
