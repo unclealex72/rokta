@@ -1,9 +1,11 @@
 package uk.co.unclealex.rokta.process;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.SortedSet;
@@ -20,6 +22,7 @@ import uk.co.unclealex.rokta.model.LeagueRow;
 import uk.co.unclealex.rokta.model.Person;
 import uk.co.unclealex.rokta.model.Round;
 import uk.co.unclealex.rokta.model.dao.GameDao;
+import uk.co.unclealex.rokta.process.league.milestone.LeagueMilestonePredicate;
 import uk.co.unclealex.rokta.util.DateUtil;
 
 public class LeagueManagerImpl implements LeagueManager {
@@ -28,11 +31,13 @@ public class LeagueManagerImpl implements LeagueManager {
 	private SortedSet<Game> i_games;
 	private Date i_currentDate;
 	
-	private LeagueMilestonePredicate i_leagueMilestonePredicate;
+	private List<LeagueMilestonePredicate> i_leagueMilestonePredicates;
 	private Comparator<LeagueRow> i_comparator;
 	
 	private DateUtil i_dateUtil;
 	private PersonManager i_personManager;
+
+	private List<SortedMap<Game, League>> i_leaguesByGameForPredicate;
 	
 	/* (non-Javadoc)
 	 * @see uk.co.unclealex.rokta.process.LeagueManager#generateLeague(java.util.Date)
@@ -40,24 +45,33 @@ public class LeagueManagerImpl implements LeagueManager {
 	/* (non-Javadoc)
 	 * @see uk.co.unclealex.rokta.process.LeagueManager#generateLeagues()
 	 */
-	public SortedMap<Game, League> generateLeagues() {
-		if (getComparator() == null) {
-			setComparator(getCompareByLossesPerGame());
+	public List<SortedMap<Game, League>> generateLeagues() {
+		if (getLeaguesByGameForPredicates() == null) {
+			if (getComparator() == null) {
+				setComparator(getCompareByLossesPerGame());
+			}
+			List<SortedMap<Game, League>> leaguesByGameForPredicates = createLeagues();
+			for (SortedMap<Game, League> leaguesByGame : leaguesByGameForPredicates) {
+				calculateDeltas(leaguesByGame);
+				decorate(leaguesByGame, getGameDao().getLastGame());
+			}
+			setLeaguesByGameForPredicates(leaguesByGameForPredicates);
 		}
-		SortedMap<Game, League> leagues = createLeagues();
-		calculateDeltas(leagues);
-		decorate(leagues, getGameDao().getLastGame());
-		return leagues;
+		return getLeaguesByGameForPredicates();
 	}
 	
-	private SortedMap<Game, League> createLeagues() {
+	private List<SortedMap<Game, League>> createLeagues() {
 		int totalGames = 0;
 		int totalPlayers = 0;
 		Map<Person, LeagueRow> rowMap = new HashMap<Person, LeagueRow>();
-		SortedMap<Game, League> leagues = new TreeMap<Game, League>();
-		
-		LeagueMilestonePredicate predicate = getLeagueMilestonePredicate();
-		predicate.setGames(getGames());
+		List<LeagueMilestonePredicate> predicates = getLeagueMilestonePredicates();
+		List<SortedMap<Game, League>> leaguesForPredicates =
+			new ArrayList<SortedMap<Game,League>>(predicates.size());
+
+		for (LeagueMilestonePredicate predicate : predicates) {
+			predicate.setGames(getGames());
+			leaguesForPredicates.add(new TreeMap<Game, League>());
+		}
 		for (Game game : getGames()) {
 			totalGames++;
 			Person loser = game.getLoser();
@@ -70,20 +84,25 @@ public class LeagueManagerImpl implements LeagueManager {
 					rowMap.put(participant, newLeagueRow);
 				}
 				LeagueRow leagueRow = rowMap.get(participant);
-				leagueRow.setGamesPlayed(leagueRow.getGamesPlayed() + 1);
+				int playsForPersonInGame = countPlaysForPersonInGame(participant, game);
 				if (participant.equals(loser)) {
 					leagueRow.setGamesLost(leagueRow.getGamesLost() + 1);
+					leagueRow.setRoundsPlayedInLostGames(leagueRow.getRoundsPlayedInLostGames() + playsForPersonInGame);
 				}
-				leagueRow.setRoundsPlayed(
-						leagueRow.getRoundsPlayed() + countPlaysForPersonInGame(participant, game));
+				else {
+					leagueRow.setRoundsPlayedInWonGames(leagueRow.getRoundsPlayedInWonGames() + playsForPersonInGame);					
+					leagueRow.setGamesWon(leagueRow.getGamesWon() + 1);
+				}
 			}
-			if (predicate.evaluate(game)) {
-				League league = createLeague(game, rowMap.values(), totalGames, totalPlayers);
-				leagues.put(game, league);
+			for (int idx = 0; idx < predicates.size(); idx++) {
+				if (predicates.get(idx).evaluate(game)) {
+					League league = createLeague(game, rowMap.values(), totalGames, totalPlayers);
+					leaguesForPredicates.get(idx).put(game, league);
+				}				
 			}
 		}
 		
-		return leagues;
+		return leaguesForPredicates;
 	}
 
 	private int countPlaysForPersonInGame(Person person, Game game) {
@@ -219,7 +238,8 @@ public class LeagueManagerImpl implements LeagueManager {
 		return gap;
 	}
 
-
+	// Comparators for leagues - a smaller value on the LHS will mean a higher league placing.
+	
 	static Comparator<LeagueRow> s_atomicCompareByLossesPerGame =
 		new Comparator<LeagueRow>() {
 			public int compare(LeagueRow o1, LeagueRow o2) {
@@ -227,13 +247,20 @@ public class LeagueManagerImpl implements LeagueManager {
 			}
 		};
 		
-	static Comparator<LeagueRow> s_atomicCompareByRoundsPerGame =
+	static Comparator<LeagueRow> s_atomicCompareByRoundsPerWonGame =
 		new Comparator<LeagueRow>() {
 			public int compare(LeagueRow o1, LeagueRow o2) {
-				return new Double(o1.getRoundsPerGame()).compareTo(o2.getRoundsPerGame());
+				return new Double(o1.getRoundsPerWonGames()).compareTo(o2.getRoundsPerWonGames());
 			}
 		};
 					
+		static Comparator<LeagueRow> s_atomicCompareByRoundsPerLostGame =
+			new Comparator<LeagueRow>() {
+				public int compare(LeagueRow o1, LeagueRow o2) {
+					return new Double(o2.getRoundsPerLostGames()).compareTo(o2.getRoundsPerLostGames());
+				}
+			};
+						
 	static Comparator<LeagueRow> s_atomicCompareByGamesPlayed =
 		new Comparator<LeagueRow>() {
 			public int compare(LeagueRow o1, LeagueRow o2) {
@@ -259,7 +286,8 @@ public class LeagueManagerImpl implements LeagueManager {
 		ComparatorChain<LeagueRow> chain = new ComparatorChain<LeagueRow>();
 		
 		chain.addComparator(s_atomicCompareByLossesPerGame);
-		chain.addComparator(s_atomicCompareByRoundsPerGame);
+		chain.addComparator(s_atomicCompareByRoundsPerWonGame);
+		chain.addComparator(s_atomicCompareByRoundsPerLostGame);
 		chain.addComparator(s_atomicCompareByGamesPlayed);
 		chain.addComparator(s_atomicCompareByRoundsPlayed);
 		chain.addComparator(s_atomicCompareByPerson);
@@ -329,16 +357,16 @@ public class LeagueManagerImpl implements LeagueManager {
 	/* (non-Javadoc)
 	 * @see uk.co.unclealex.rokta.process.LeagueManager#getLeagueMilestonePredicate()
 	 */
-	public LeagueMilestonePredicate getLeagueMilestonePredicate() {
-		return i_leagueMilestonePredicate;
+	public List<LeagueMilestonePredicate> getLeagueMilestonePredicates() {
+		return i_leagueMilestonePredicates;
 	}
 
 	/* (non-Javadoc)
 	 * @see uk.co.unclealex.rokta.process.LeagueManager#setLeagueMilestonePredicate(uk.co.unclealex.rokta.process.LeagueMilestonePredicate)
 	 */
-	public void setLeagueMilestonePredicate(
-			LeagueMilestonePredicate leagueMilestonePredicate) {
-		i_leagueMilestonePredicate = leagueMilestonePredicate;
+	public void setLeagueMilestonePredicates(
+			List<LeagueMilestonePredicate> leagueMilestonePredicates) {
+		i_leagueMilestonePredicates = leagueMilestonePredicates;
 	}
 
 	/* (non-Javadoc)
@@ -367,6 +395,20 @@ public class LeagueManagerImpl implements LeagueManager {
 	 */
 	public void setGameDao(GameDao gameDao) {
 		i_gameDao = gameDao;
+	}
+
+	/**
+	 * @return the leaguesByGame
+	 */
+	public List<SortedMap<Game, League>> getLeaguesByGameForPredicates() {
+		return i_leaguesByGameForPredicate;
+	}
+
+	/**
+	 * @param leaguesByGameForPredicate the leaguesByGame to set
+	 */
+	public void setLeaguesByGameForPredicates(List<SortedMap<Game, League>> leaguesByGameForPredicate) {
+		i_leaguesByGameForPredicate = leaguesByGameForPredicate;
 	}
 
 }
