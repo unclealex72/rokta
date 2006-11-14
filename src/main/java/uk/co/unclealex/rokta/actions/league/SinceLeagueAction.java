@@ -1,7 +1,7 @@
 /**
  * 
  */
-package uk.co.unclealex.rokta.actions;
+package uk.co.unclealex.rokta.actions.league;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -14,7 +14,7 @@ import uk.co.unclealex.rokta.model.Game;
  * @author alex
  *
  */
-public class SinceLeagueTableAction extends LeagueTableAction {
+public class SinceLeagueAction extends LeagueAction {
 
 	private DateFormat i_dateFormat;
 	private String i_since;
@@ -68,5 +68,4 @@ public class SinceLeagueTableAction extends LeagueTableAction {
 	public void setSelection(Date selection) {
 		i_selection = selection;
 	}
-
 }

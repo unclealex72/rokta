@@ -1,7 +1,7 @@
 /**
  * 
  */
-package uk.co.unclealex.rokta.actions;
+package uk.co.unclealex.rokta.actions.league;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -17,7 +17,7 @@ import uk.co.unclealex.rokta.process.DateFilterPredicate;
  * @author alex
  *
  */
-public class FilteredLeagueTableAction extends LeagueTableAction {
+public class FilteredLeagueAction extends LeagueAction {
 
 	private String i_selection;
 	
@@ -60,5 +60,4 @@ public class FilteredLeagueTableAction extends LeagueTableAction {
 	public void setSelection(String selection) {
 		i_selection = selection;
 	}
-
 }
