@@ -8,7 +8,7 @@ import uk.co.unclealex.rokta.model.Person;
 import uk.co.unclealex.rokta.process.PersonManager;
 
 
-public class InitialiseAction extends BasicAction {
+public class InitialiseAction extends RoktaAction {
 
 	private SortedSet<Person> i_availablePlayers;
   private SortedSet<Person> i_everybody;

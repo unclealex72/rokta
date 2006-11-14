@@ -17,7 +17,7 @@ import uk.co.unclealex.rokta.process.dataset.OpeningGambitDatasetProducer;
  * @author alex
  *
  */
-public class ProfileAction extends BasicAction {
+public class ProfileAction extends RoktaAction {
 
 	private HandChoiceDatasetProducer i_handChoiceDatasetProducer;
 	private OpeningGambitDatasetProducer i_openingGambitDatasetProducer;

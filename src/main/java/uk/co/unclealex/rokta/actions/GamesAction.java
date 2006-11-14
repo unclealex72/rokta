@@ -7,7 +7,7 @@ import java.util.List;
 import uk.co.unclealex.rokta.model.Game;
 import uk.co.unclealex.rokta.views.GameView;
 
-public class GamesAction extends BasicAction {
+public class GamesAction extends RoktaAction {
 
 	private List<GameView> i_gameViews;
 	
