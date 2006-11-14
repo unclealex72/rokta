@@ -169,12 +169,6 @@
                   </c:set>
                   <a href="${link}">Losing Streaks</a>
                 </li>
-                <li>
-                  <c:set var="link">
-                    <ww:url action="leaguegraph"/>
-                  </c:set>
-                  <a href="${link}">League Graph</a>
-                </li>
               </ul>
             </div>
           </div>
