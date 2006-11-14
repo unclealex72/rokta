@@ -10,13 +10,13 @@ import uk.co.unclealex.rokta.model.Person;
  * @author alex
  *
  */
-public class ColourAction extends BasicAction {
+public class ColourAction extends RoktaAction {
 
 	private Person i_person;
 	private Colour i_colour;
 	
 	/* (non-Javadoc)
-	 * @see uk.co.unclealex.rokta.actions.BasicAction#executeInternal()
+	 * @see uk.co.unclealex.rokta.actions.RoktaAction#executeInternal()
 	 */
 	@Override
 	protected String executeInternal() throws Exception {
