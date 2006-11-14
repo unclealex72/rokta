@@ -96,7 +96,7 @@
   <bean id="openingGambitDatasetProducer" class="uk.co.unclealex.rokta.process.dataset.OpeningGambitDatasetProducer"
     autowire="no" scope="prototype"/>
 
-  <bean id="leagueGraphDatasetProducer" class="uk.co.unclealex.rokta.process.dataset.LeagueGraphDatasetProducer"
+  <bean id="leagueGraphDatasetProducer" class="uk.co.unclealex.rokta.process.dataset.LeagueGraphDatasetProducerImpl"
     scope="prototype">
     <property name="averageColour">
       <value>Orange</value>
