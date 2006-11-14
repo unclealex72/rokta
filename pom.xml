@@ -4,7 +4,7 @@
   <artifactId>rokta</artifactId>
   <packaging>war</packaging>
   <name>Maven Quick Start Archetype</name>
-  <version>${db}-2.0b1</version>
+  <version>${db}-2.0b2</version>
   <url>http://maven.apache.org</url>
   <build>
     <resources>
@@ -41,7 +41,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-annotations</artifactId>
-      <version>3.1beta9</version>
+      <version>3.2.0.ga</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
