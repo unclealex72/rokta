@@ -1,6 +1,9 @@
 <jsp:root
   xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:ww="/webwork"
   xmlns:fmt="http://java.sun.com/jstl/fmt"
+  xmlns:c="http://java.sun.com/jstl/core"
+  xmlns:cewolf="http://cewolf.sourceforge.net/taglib/cewolf.tld"
+  xmlns:rokta="/rokta"
   version="2.0">
 
   <jsp:output doctype-root-element="html" omit-xml-declaration="true"
@@ -12,7 +15,7 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
     <title>
-      <ww:text name="title">
+      <ww:text name="league.title">
         <ww:param value="selection"/>
       </ww:text>
     </title>
@@ -20,7 +23,7 @@
 
   <body>
     <h1>
-      <ww:text name="title">
+      <ww:text name="league.title">
         <ww:param value="selection"/>
       </ww:text>
     </h1>
@@ -31,7 +34,8 @@
         <th>Games</th>
         <th>Rounds</th>
         <th>Lost</th>
-        <th>R/G</th>
+        <th>R/WG</th>
+        <th>R/LG</th>
         <th>L/G</th>
         <ww:if test="league.current">
           <th>Gap</th>
@@ -54,9 +58,24 @@
           <td><ww:property value="roundsPlayed" /></td>
           <td><ww:property value="gamesLost" /></td>
           <td>
-            <fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2">
-              <ww:property value="roundsPerGame"/>
-            </fmt:formatNumber>
+            <ww:if test="%{gamesWon == 0}">
+              -
+            </ww:if>
+            <ww:else>
+              <fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2">
+                <ww:property value="roundsPerWonGames"/>
+              </fmt:formatNumber>
+            </ww:else>
+          </td>
+          <td>
+            <ww:if test="%{gamesLost == 0}">
+              -
+            </ww:if>
+            <ww:else>
+              <fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2">
+                <ww:property value="roundsPerLostGames"/>
+              </fmt:formatNumber>
+            </ww:else>
           </td>
           <td>
             <fmt:formatNumber type="percent" minFractionDigits="2" maxFractionDigits="2">
@@ -79,7 +98,32 @@
           </ww:if>
         </tr>
       </ww:iterator>
-    </table>    
+    </table>
+    
+    <h1>
+      <ww:text name="graph.title">
+        <ww:param value="selection"/>
+      </ww:text>
+    </h1>
+    
+    <ww:set name="leagueGraphProducer" scope="page" value="leagueGraphDatasetProducer"/>
+    <c:set var="graphTitle">
+      <ww:property value="%{granularityPredicate.granularity.description}"/> results
+    </c:set>
+    
+    <cewolf:chart 
+      id="leagueGraph"
+      title="${graphTitle}" 
+      type="line">
+      <cewolf:data>
+          <cewolf:producer id="leagueGraphProducer"/>
+      </cewolf:data>
+    </cewolf:chart>
+
+    <rokta:colourise chartid="leagueGraph"/>
+    
+    <cewolf:img chartid="leagueGraph" renderer="cewolf" width="480" height="300"/>
+    
   </body>
   </html>
 </jsp:root>
