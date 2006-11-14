@@ -16,6 +16,7 @@ public class League {
 	private SortedSet<LeagueRow> i_rows = new TreeSet<LeagueRow>();
 	private int i_totalGames;
 	private int i_totalPlayers;
+	private String i_description;
 	
 	/**
 	 * @return the totalGames
@@ -64,5 +65,17 @@ public class League {
 	 */
 	public void setRows(SortedSet<LeagueRow> rows) {
 		i_rows = rows;
+	}
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return i_description;
+	}
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		i_description = description;
 	}
 }

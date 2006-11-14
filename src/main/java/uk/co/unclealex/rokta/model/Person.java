@@ -38,7 +38,6 @@ public class Person extends Identity<Person> {
 	}
 	
 	@ManyToOne
-	@Column(nullable=false)
 	public Colour getColour() {
 		return i_colour;
 	}

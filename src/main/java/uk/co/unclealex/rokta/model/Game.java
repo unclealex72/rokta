@@ -68,7 +68,6 @@ public class Game extends Identity<Game> {
 	}
 	
 	@ManyToOne
-	@Column(nullable=false)
 	public Person getInstigator() {
 		return i_Instigator;
 	}

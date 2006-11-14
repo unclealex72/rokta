@@ -50,7 +50,6 @@ public class Play extends Identity<Play> {
 	}
 	
 	@ManyToOne
-	@Column(nullable=false)
 	public Person getPerson() {
 		return i_person;
 	}

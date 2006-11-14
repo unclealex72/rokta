@@ -5,10 +5,11 @@ import java.io.Serializable;
 public class LeagueRow implements Serializable {
 
 	private Person i_person;
-	private int i_gamesPlayed;
-	private int i_roundsPlayed;
-	private int i_gamesLost;
 	private int i_totalGamesPlayed;
+	private int i_roundsPlayedInWonGames;
+	private int i_roundsPlayedInLostGames;
+	private int i_gamesLost;
+	private int i_gamesWon;
 	private boolean i_exempt = false;
 	private boolean i_playingToday = true;
 	private InfiniteInteger i_gap;
@@ -20,7 +21,7 @@ public class LeagueRow implements Serializable {
 	/**
 	 * @param person
 	 * @param gamesPlayed
-	 * @param roundsPlayed
+	 * @param roundsPlayedInWonGames
 	 * @param gamesLost
 	 * @param totalGamesPlayed
 	 * @param exempt
@@ -28,12 +29,15 @@ public class LeagueRow implements Serializable {
 	 * @param gap
 	 * @param delta
 	 */
-	public LeagueRow(Person person, int gamesPlayed, int roundsPlayed, int gamesLost, int totalGamesPlayed, boolean exempt, boolean playingToday, InfiniteInteger gap, Delta delta) {
+	public LeagueRow(
+			Person person, int gamesLost, int gamesWon, int roundsPlayedInWonGames, int roundsPlayedInLostGames,
+			int totalGamesPlayed, boolean exempt, boolean playingToday, InfiniteInteger gap, Delta delta) {
 		super();
 		i_person = person;
-		i_gamesPlayed = gamesPlayed;
-		i_roundsPlayed = roundsPlayed;
 		i_gamesLost = gamesLost;
+		i_gamesWon = gamesWon;
+		i_roundsPlayedInWonGames = roundsPlayedInWonGames;
+		i_roundsPlayedInLostGames = roundsPlayedInLostGames;
 		i_totalGamesPlayed = totalGamesPlayed;
 		i_exempt = exempt;
 		i_playingToday = playingToday;
@@ -42,16 +46,20 @@ public class LeagueRow implements Serializable {
 	}
 
 	public LeagueRow copy() {
-		return new LeagueRow(getPerson(), getGamesPlayed(), getRoundsPlayed(), getGamesLost(), getTotalGamesPlayed(), isExempt(), isPlayingToday(), getGap(), getDelta());
+		return new LeagueRow(getPerson(), getGamesLost(), getGamesWon(), getRoundsPlayedInWonGames(), getRoundsPlayedInLostGames(), getTotalGamesPlayed(), isExempt(), isPlayingToday(), getGap(), getDelta());
 	}
 	public double getLossesPerGame() {
 		return getGamesLost() / (double) getGamesPlayed();
 	}
-	
-	public double getRoundsPerGame() {
-		return getRoundsPlayed() / (double) getGamesPlayed();
+
+	public double getRoundsPerWonGames() {
+		return getRoundsPlayedInWonGames() / (double) (getGamesWon());
 	}
 	
+	public double getRoundsPerLostGames() {
+		return getRoundsPlayedInLostGames() / (double) getGamesLost();
+	}
+
 	public int getGamesLost() {
 		return i_gamesLost;
 	}
@@ -59,24 +67,16 @@ public class LeagueRow implements Serializable {
 		i_gamesLost = gamesLost;
 	}
 	public int getGamesPlayed() {
-		return i_gamesPlayed;
+		return getGamesWon() + getGamesLost();
 	}
-	public void setGamesPlayed(int gamesPlayed) {
-		i_gamesPlayed = gamesPlayed;
-	}
+
 	public Person getPerson() {
 		return i_person;
 	}
 	public void setPerson(Person person) {
 		i_person = person;
 	}
-	public int getTotalGamesPlayed() {
-		return i_totalGamesPlayed;
-	}
-	public void setTotalGamesPlayed(int totalGamesPlayed) {
-		i_totalGamesPlayed = totalGamesPlayed;
-	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof LeagueRow)) {
@@ -91,11 +91,7 @@ public class LeagueRow implements Serializable {
 	}
 
 	public int getRoundsPlayed() {
-		return i_roundsPlayed;
-	}
-
-	public void setRoundsPlayed(int roundsPlayed) {
-		i_roundsPlayed = roundsPlayed;
+		return i_roundsPlayedInLostGames + i_roundsPlayedInWonGames;
 	}
 
 	public Delta getDelta() {
@@ -146,5 +142,61 @@ public class LeagueRow implements Serializable {
 	 */
 	public void setGap(InfiniteInteger gap) {
 		i_gap = gap;
+	}
+
+	/**
+	 * @return the roundsPlayedinLostGames
+	 */
+	public int getRoundsPlayedInLostGames() {
+		return i_roundsPlayedInLostGames;
+	}
+
+	/**
+	 * @return the roundsPlayedinWonGames
+	 */
+	public int getRoundsPlayedInWonGames() {
+		return i_roundsPlayedInWonGames;
+	}
+
+	/**
+	 * @param roundsPlayedInLostGames the roundsPlayedInLostGames to set
+	 */
+	public void setRoundsPlayedInLostGames(int roundsPlayedInLostGames) {
+		i_roundsPlayedInLostGames = roundsPlayedInLostGames;
+	}
+
+	/**
+	 * @param roundsPlayedInWonGames the roundsPlayedInWonGames to set
+	 */
+	public void setRoundsPlayedInWonGames(int roundsPlayedInWonGames) {
+		i_roundsPlayedInWonGames = roundsPlayedInWonGames;
+	}
+
+	/**
+	 * @return the gamesWon
+	 */
+	public int getGamesWon() {
+		return i_gamesWon;
+	}
+
+	/**
+	 * @param gamesWon the gamesWon to set
+	 */
+	public void setGamesWon(int gamesWon) {
+		i_gamesWon = gamesWon;
+	}
+
+	/**
+	 * @return the totalGamesPlayed
+	 */
+	public int getTotalGamesPlayed() {
+		return i_totalGamesPlayed;
+	}
+
+	/**
+	 * @param totalGamesPlayed the totalGamesPlayed to set
+	 */
+	public void setTotalGamesPlayed(int totalGamesPlayed) {
+		i_totalGamesPlayed = totalGamesPlayed;
 	}
 }

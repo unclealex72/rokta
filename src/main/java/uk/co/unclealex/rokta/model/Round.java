@@ -87,7 +87,6 @@ public class Round extends Identity<Round> {
 	}
 	
 	@ManyToOne
-	@Column(nullable=false)
 	public Person getCounter() {
 		return i_counter;
 	}
