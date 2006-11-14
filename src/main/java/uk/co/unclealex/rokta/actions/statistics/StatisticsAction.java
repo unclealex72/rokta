@@ -3,19 +3,19 @@
  */
 package uk.co.unclealex.rokta.actions.statistics;
 
-import uk.co.unclealex.rokta.actions.BasicAction;
+import uk.co.unclealex.rokta.actions.RoktaAction;
 import uk.co.unclealex.rokta.process.StatisticsManager;
 
 /**
  * @author alex
  *
  */
-public abstract class StatisticsAction extends BasicAction {
+public abstract class StatisticsAction extends RoktaAction {
 
 	private StatisticsManager i_statisticsManager;
 
 	/* (non-Javadoc)
-	 * @see uk.co.unclealex.rokta.actions.BasicAction#executeInternal()
+	 * @see uk.co.unclealex.rokta.actions.RoktaAction#executeInternal()
 	 */
 	@Override
 	protected abstract String executeInternal() throws Exception;
