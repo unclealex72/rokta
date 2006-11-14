@@ -1,8 +1,6 @@
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import uk.co.unclealex.rokta.model.dao.RoundDao;
-
 /**
  * 
  */
@@ -17,7 +15,7 @@ public class TestRokta {
 	 * @param context
 	 */
 	private void run(ApplicationContext context) {
-		RoundDao roundDao = (RoundDao) context.getBean("roundDao");
+		context.getBean("personDao");
 		//List<Round> rounds = roundDao.getFinalRounds();
 		//for (Round round : rounds) {
 		//	System.out.println("Round " + round.getId() + ", " + round.getPlays().size());
