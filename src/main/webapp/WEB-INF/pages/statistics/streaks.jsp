@@ -44,8 +44,8 @@
           </td>
           <td><ww:property value="person.name"/></td>
           <td><ww:property value="length"/></td>
-          <td><ww:date name="firstGame.datePlayed" format="dd/MM/yyyy hh:mm"/></td>
-          <td><ww:date name="lastGame.datePlayed" format="dd/MM/yyyy hh:mm"/></td>
+          <td><ww:date name="firstGame.datePlayed" format="dd/MM/yyyy HH:mm"/></td>
+          <td><ww:date name="lastGame.datePlayed" format="dd/MM/yyyy HH:mm"/></td>
         </tr>
         <ww:set name="previousLength" value="length"/>
       </ww:iterator>
