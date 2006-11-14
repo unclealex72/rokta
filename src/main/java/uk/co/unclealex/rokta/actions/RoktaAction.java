@@ -16,7 +16,7 @@ import uk.co.unclealex.rokta.model.dao.RoundDao;
 
 import com.opensymphony.xwork.ActionSupport;
 
-public class BasicAction extends ActionSupport {
+public class RoktaAction extends ActionSupport {
 
 	protected static final String DATE_FORMAT_WEEK = "'Week 'ww, yyyy";
 	protected static final String DATE_FORMAT_MONTH = "MMMMM, yyyy";
@@ -58,7 +58,6 @@ public class BasicAction extends ActionSupport {
 		setSelectableWeeks(createDates(dfByWeek, games));
 		setSelectableMonths(createDates(dfByMonth, games));
 		setSelectableYears(createDates(dfByYear, games));
-		
 	}
 
 	/**
@@ -71,7 +70,7 @@ public class BasicAction extends ActionSupport {
 		for (Game game : games) {
 			String date = df.format(game.getDatePlayed());
 			if (!dates.contains(date)) {
-				dates.add(date);
+				dates.add(0, date);
 			}
 		}
 		return dates;
