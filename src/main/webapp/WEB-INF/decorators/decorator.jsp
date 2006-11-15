@@ -117,8 +117,8 @@
                 </li>
                 <li>
                   <ww:form name="weeklyForm" action="filteredleague" method="post">
-                    <ww:select name="selectedWeek" list="selectableWeeks"/>
-                    <a href="#" onclick="document.forms['weeklyForm'].submit();return false;">Go</a>
+                    <ww:select name="selectedWeek" list="selectableWeeks" cssStyle="display: inline"/>
+                    <a href="#" style="display: inline" onclick="document.forms['weeklyForm'].submit();return false;">Go</a>
                   </ww:form>
                 </li>
                 <li>
@@ -132,6 +132,18 @@
                     <ww:select name="selectedYear" list="selectableYears"/>
                     <a href="#" onclick="document.forms['yearlyForm'].submit();return false;">Go</a>
                   </ww:form>
+                </li>
+                <li>
+                  <c:set var="link">
+                    <ww:url action="firstofthedayleague"/>
+                  </c:set>
+                  <a href="${link}">First game of the day league</a>
+                </li>
+                <li>
+                  <c:set var="link">
+                    <ww:url action="firstoftheweekleague"/>
+                  </c:set>
+                  <a href="${link}">First game of the week league</a>
                 </li>
               </ul>
             </div>

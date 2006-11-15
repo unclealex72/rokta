@@ -32,6 +32,16 @@
          <result name="success">/WEB-INF/pages/league.jsp</result>
       </action>
 
+      <action name="firstofthedayleague"
+         class="uk.co.unclealex.rokta.actions.league.FirstGameOfTheDayLeagueAction">
+         <result name="success">/WEB-INF/pages/league.jsp</result>
+      </action>
+
+      <action name="firstoftheweekleague"
+         class="uk.co.unclealex.rokta.actions.league.FirstGameOfTheWeekLeagueAction">
+         <result name="success">/WEB-INF/pages/league.jsp</result>
+      </action>
+
       <action name="leaguesince"
          class="uk.co.unclealex.rokta.actions.league.SinceLeagueAction">
          <result name="success">/WEB-INF/pages/league.jsp</result>
