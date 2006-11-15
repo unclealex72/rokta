@@ -21,7 +21,7 @@ import uk.co.unclealex.rokta.model.Person;
 public class HibernatePlayDao extends HibernateDaoSupport implements PlayDao {
 
 	public int countByPersonAndHand(final Person person, final Hand hand) {
-		return (Integer) getHibernateTemplate().execute(
+		long result = (Long) getHibernateTemplate().execute(
 				new HibernateCallback() {
 					public Object doInHibernate(Session session) throws HibernateException, SQLException {
 						Query q = session.getNamedQuery("play.countByPersonAndHand");
@@ -30,6 +30,7 @@ public class HibernatePlayDao extends HibernateDaoSupport implements PlayDao {
             return q.uniqueResult();
 					}
 				});
+    return (int) result;
 	}
 
 }

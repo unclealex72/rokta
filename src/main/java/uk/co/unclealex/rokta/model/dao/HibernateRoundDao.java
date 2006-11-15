@@ -21,7 +21,7 @@ import uk.co.unclealex.rokta.model.Person;
 public class HibernateRoundDao extends HibernateDaoSupport implements RoundDao {
 
 	public int countOpeningGambitsByPersonAndHand(final Person person, final Hand hand) {
-		return (Integer) getHibernateTemplate().execute(
+		long result = (Long) getHibernateTemplate().execute(
 				new HibernateCallback() {
 					public Object doInHibernate(Session session) throws HibernateException, SQLException {
 						Query q = session.getNamedQuery("round.countOpeningGambitsByPersonAndHand");
@@ -30,5 +30,6 @@ public class HibernateRoundDao extends HibernateDaoSupport implements RoundDao {
             return q.uniqueResult();
 					}
 				});
+    return (int) result;
 	}	
 }
