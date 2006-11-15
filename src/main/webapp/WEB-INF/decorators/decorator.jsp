@@ -167,19 +167,19 @@
                   <c:set var="link">
                     <ww:url action="headtoheads"/>
                   </c:set>
-                  <a href="${link}">Head to Heads</a>
+                  <a href="${link}">Head to heads</a>
                 </li>
                 <li>
                   <c:set var="link">
                     <ww:url action="winningstreaks"/>
                   </c:set>
-                  <a href="${link}">Winning Streaks</a>
+                  <a href="${link}">Winning streaks</a>
                 </li>
                 <li>
                   <c:set var="link">
                     <ww:url action="losingstreaks"/>
                   </c:set>
-                  <a href="${link}">Losing Streaks</a>
+                  <a href="${link}">Losing streaks</a>
                 </li>
               </ul>
             </div>
