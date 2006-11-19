@@ -15,17 +15,13 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
     <title>
-      <ww:text name="league.title">
-        <ww:param value="selection"/>
-      </ww:text>
+      <ww:property value="%{leagueTitle}"/>
     </title>
   </head>
 
   <body>
     <h1>
-      <ww:text name="league.title">
-        <ww:param value="selection"/>
-      </ww:text>
+      <ww:property value="%{leagueTitle}"/>
     </h1>
     <table class="data">
       <tr>
@@ -101,9 +97,7 @@
     </table>
     
     <h1>
-      <ww:text name="graph.title">
-        <ww:param value="selection"/>
-      </ww:text>
+      <ww:property value="%{graphTitle}"/>
     </h1>
     
     <ww:set name="leagueGraphProducer" scope="page" value="leagueGraphDatasetProducer"/>
@@ -122,7 +116,14 @@
 
     <rokta:colourise chartid="leagueGraph"/>
     
-    <cewolf:img chartid="leagueGraph" renderer="cewolf" width="480" height="300"/>
+    <div id="largeChart">
+      <a href="javascript:void()" onclick="document.getElementById('largeChart').style.visibility = 'hidden';">
+        <cewolf:img chartid="leagueGraph" renderer="cewolf" width="900" height="500"/>
+      </a>
+    </div>
+    <a href="javascript:void()" onclick="document.getElementById('largeChart').style.visibility = 'visible';">
+      <cewolf:img chartid="leagueGraph" renderer="cewolf" width="480" height="300" />
+    </a>
     
   </body>
   </html>
