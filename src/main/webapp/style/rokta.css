@@ -34,3 +34,19 @@ table.data th, table.data td {
 	outline: black solid thin;
 	width: 100px;
 }
+
+#calendar {
+	width: auto;
+	float: left;
+	margin-left: 15px;
+}
+
+#largeChart {
+	position: absolute;
+	left: 50px;
+	visibility: hidden;
+}
+
+#largeChart a {
+	display: block;
+}
