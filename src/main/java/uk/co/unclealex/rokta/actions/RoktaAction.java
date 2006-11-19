@@ -1,9 +1,8 @@
 package uk.co.unclealex.rokta.actions;
 
-import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Date;
 import java.util.SortedSet;
 
 import uk.co.unclealex.rokta.model.Game;
@@ -28,14 +27,12 @@ public class RoktaAction extends ActionSupport {
 	private RoundDao i_roundDao;
 	private ColourDao i_colourDao;
 	
-	private String i_selectedWeek;
-	private String i_selectedMonth;
-	private String i_selectedYear;
-	private List<String> i_selectableWeeks;
-	private List<String> i_selectableMonths;
-	private List<String> i_selectableYears;
-	
 	private SortedSet<Person> i_players;
+	private SortedSet<Game> i_allGames;
+	
+	private String i_filteredDate;
+	private Date i_selectedDate;
+	private Date i_initialDate;
 	
 	@Override
 	public final String execute() throws Exception {
@@ -48,32 +45,26 @@ public class RoktaAction extends ActionSupport {
 		setPlayers(getPersonDao().getPlayers());
 	}
 
-	private void populateLeagueNavigation() {
-		SortedSet<Game> games = getGameDao().getAllGames();
-		
-		DateFormat dfByWeek = new SimpleDateFormat(DATE_FORMAT_WEEK);
-		DateFormat dfByMonth = new SimpleDateFormat(DATE_FORMAT_MONTH);
-		DateFormat dfByYear = new SimpleDateFormat(DATE_FORMAT_YEAR);
-		
-		setSelectableWeeks(createDates(dfByWeek, games));
-		setSelectableMonths(createDates(dfByMonth, games));
-		setSelectableYears(createDates(dfByYear, games));
-	}
-
-	/**
-	 * @param dfByWeek
-	 * @param games
-	 * @return
-	 */
-	private List<String> createDates(DateFormat df, SortedSet<Game> games) {
-		List<String> dates = new LinkedList<String>();
-		for (Game game : games) {
-			String date = df.format(game.getDatePlayed());
-			if (!dates.contains(date)) {
-				dates.add(0, date);
-			}
+	private void populateLeagueNavigation() throws ParseException {
+		String filteredDate = getFilteredDate();
+		Date selectedDate = null;
+		if (filteredDate != null) {
+			selectedDate = new SimpleDateFormat("dd/MM/yyyy").parse(filteredDate);
 		}
-		return dates;
+		SortedSet<Game> allGames = getGameDao().getAllGames();
+		setAllGames(allGames);
+		Date lastGamePlayed = allGames.last().getDatePlayed();
+		Date now = new Date();
+		setSelectedDate(selectedDate);
+		if (selectedDate != null) {
+			setInitialDate(selectedDate);
+		}
+		else if (lastGamePlayed.getTime() < now.getTime()) {
+			setInitialDate(lastGamePlayed);
+		}
+		else {
+			setInitialDate(now);
+		}
 	}
 
 	protected String executeInternal() throws Exception {
@@ -131,90 +122,6 @@ public class RoktaAction extends ActionSupport {
 	}
 
 	/**
-	 * @return Returns the selectableMonths.
-	 */
-	public List<String> getSelectableMonths() {
-		return i_selectableMonths;
-	}
-
-	/**
-	 * @param selectableMonths The selectableMonths to set.
-	 */
-	public void setSelectableMonths(List<String> selectableMonths) {
-		i_selectableMonths = selectableMonths;
-	}
-
-	/**
-	 * @return Returns the selectableWeeks.
-	 */
-	public List<String> getSelectableWeeks() {
-		return i_selectableWeeks;
-	}
-
-	/**
-	 * @param selectableWeeks The selectableWeeks to set.
-	 */
-	public void setSelectableWeeks(List<String> selectableWeeks) {
-		i_selectableWeeks = selectableWeeks;
-	}
-
-	/**
-	 * @return Returns the selectedMonth.
-	 */
-	public String getSelectedMonth() {
-		return i_selectedMonth;
-	}
-
-	/**
-	 * @param selectedMonth The selectedMonth to set.
-	 */
-	public void setSelectedMonth(String selectedMonth) {
-		i_selectedMonth = selectedMonth;
-	}
-
-	/**
-	 * @return Returns the selectedWeek.
-	 */
-	public String getSelectedWeek() {
-		return i_selectedWeek;
-	}
-
-	/**
-	 * @param selectedWeek The selectedWeek to set.
-	 */
-	public void setSelectedWeek(String selectedWeek) {
-		i_selectedWeek = selectedWeek;
-	}
-
-	/**
-	 * @return the selectableYears
-	 */
-	public List<String> getSelectableYears() {
-		return i_selectableYears;
-	}
-
-	/**
-	 * @param selectableYears the selectableYears to set
-	 */
-	public void setSelectableYears(List<String> selectableYears) {
-		i_selectableYears = selectableYears;
-	}
-
-	/**
-	 * @return the selectedYear
-	 */
-	public String getSelectedYear() {
-		return i_selectedYear;
-	}
-
-	/**
-	 * @param selectedYear the selectedYear to set
-	 */
-	public void setSelectedYear(String selectedYear) {
-		i_selectedYear = selectedYear;
-	}
-
-	/**
 	 * @return the players
 	 */
 	public SortedSet<Person> getPlayers() {
@@ -240,5 +147,61 @@ public class RoktaAction extends ActionSupport {
 	 */
 	public void setColourDao(ColourDao colourDao) {
 		i_colourDao = colourDao;
+	}
+
+	/**
+	 * @return the allGames
+	 */
+	public SortedSet<Game> getAllGames() {
+		return i_allGames;
+	}
+
+	/**
+	 * @param allGames the allGames to set
+	 */
+	public void setAllGames(SortedSet<Game> allGames) {
+		i_allGames = allGames;
+	}
+
+	/**
+	 * @return the filteredDate
+	 */
+	public String getFilteredDate() {
+		return i_filteredDate;
+	}
+
+	/**
+	 * @param filteredDate the filteredDate to set
+	 */
+	public void setFilteredDate(String filteredDate) {
+		i_filteredDate = filteredDate;
+	}
+
+	/**
+	 * @return the selectedDate
+	 */
+	public Date getSelectedDate() {
+		return i_selectedDate;
+	}
+
+	/**
+	 * @param selectedDate the selectedDate to set
+	 */
+	public void setSelectedDate(Date selectedDate) {
+		i_selectedDate = selectedDate;
+	}
+
+	/**
+	 * @return the initialDate
+	 */
+	public Date getInitialDate() {
+		return i_initialDate;
+	}
+
+	/**
+	 * @param initialDate the initialDate to set
+	 */
+	public void setInitialDate(Date initialDate) {
+		i_initialDate = initialDate;
 	}
 }

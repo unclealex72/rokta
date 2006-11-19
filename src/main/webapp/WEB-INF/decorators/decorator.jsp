@@ -16,7 +16,18 @@
   <head>
     <title>ROKTA - <decorator:title/></title>
     <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-  
+
+    <!-- Epoch calendar -->  
+    <c:url var="link" value="/js/epoch_classes.js"/>
+    <script type="text/javascript" src="${link}">
+    <![CDATA[
+      <!-- Empty comment for IE -->
+    ]]>
+    </script>
+
+    <c:url var="link" value="/style/epoch_styles.css"/>
+    <link rel="stylesheet" type="text/css" href="${link}" />
+    
     <!-- **** Layout Stylesheet **** -->
     <c:url var="link" value="/style/style104_left.css" />
     <link rel="stylesheet" type="text/css" href="${link}" />
@@ -33,8 +44,9 @@
     <script type="text/javascript">
       var links = new Array();
       links[0] = 'leaguelinks';
-      links[1] = 'profilelinks';
-      links[2] = 'statisticslinks';
+      links[1] = 'selectionleaguelinks';
+      links[2] = 'profilelinks';
+      links[3] = 'statisticslinks';
     
       function showLinks(divId) {
         var idx;
@@ -50,6 +62,10 @@
         showLinks('leaguelinks');
       }
       
+      function showSelectionLeagueLinks() {
+        showLinks('selectionleaguelinks');
+      }
+      
       function showProfileLinks() {
         showLinks('profilelinks');
       }
@@ -57,6 +73,71 @@
       function showStatisticsLinks() {
         showLinks('statisticslinks');
       }
+      
+      function filter(type) {
+        document.getElementById('filterType').value = type;
+        document.forms['filtered'].submit();
+      }
+      var cal;
+      var registeredElements = new Array();
+      var registeredHtml = new Array();
+      
+      function register(elId) {
+        var el = document.getElementById(elId);
+        registeredElements[elId] = elId;
+        registeredHtml[elId] = el.innerHTML;
+      }
+      
+      function updateFilters() {
+        try {
+          var filteredDate = document.getElementById('calendar').value;
+          var day = filteredDate.substring(0, 2);
+          var month = filteredDate.substring(3, 5);
+          var year = filteredDate.substring(6, 10);
+          var dt = new Date(year, month - 1, day);
+          
+          if (dt &lt; cal.minDate || dt &gt; cal.maxDate) {
+            throw "Invalid Date";
+          }
+          
+          for (elId in registeredElements) {
+            var el = document.getElementById(elId);
+            el.innerHTML = makeDate(registeredHtml[elId], dt);
+          }
+        }
+        catch (err) {
+          for (elId in registeredElements) {
+            var el = document.getElementById(elId);
+            el.innerHTML = "";
+          }
+        }
+      }
+      
+      function makeDate(fmt, dt) {
+        var re = /-.+?-/g;
+        while ((match = fmt.match(re)) != null) {
+          var dtFmt = match[0].substring(1, match[0].length - 1);
+          fmt = fmt.replace(match[0], dt.dateFormat(dtFmt));
+        }
+        return fmt;
+      }
+      /*put the calendar initializations in the window's onload() method*/
+      
+      window.onload = function() {
+        cal = new Epoch('cal','popup',document.getElementById('calendar'),false);
+        cal.minDate = <ww:text name="javascript.date"><ww:param value="%{allGames.first().datePlayed}"/></ww:text>;
+        cal.maxDate = <ww:text name="javascript.date"><ww:param value="%{allGames.last().datePlayed}"/></ww:text>;
+        cal.onchange = updateFilters;
+        var selectedDates = new Array();
+        selectedDates[0] = <ww:text name="javascript.date"><ww:param value="%{initialDate}"/></ww:text>;
+        cal.selectDates(selectedDates, true, true, true);
+        cal.goToMonth(selectedDates[0].getYear() + 1900, selectedDates[0].getMonth());
+        register('dt_since');
+        register('dt_week');
+        register('dt_month');
+        register('dt_year');
+        updateFilters();
+      };
     </script>
   </head>
   
@@ -79,21 +160,12 @@
                 </c:set>
                 <a href="${link}">New game</a>
               </li>
-              <li><a href="javascript:showLeagueLinks()">Leagues</a></li>
+              <li><a href="javascript:showLeagueLinks()">Current leagues</a></li>
+              <li><a href="javascript:showSelectionLeagueLinks()">Archive leagues</a></li>
               <li><a href="javascript:showStatisticsLinks()">Statistics</a></li>
               <li><a href="javascript:showProfileLinks()">Profiles</a></li>
             </ul>
           </div>
-          <!--
-          <div class="sidebaritem">
-            <h1>news_</h1>
-            <h2>1st January 2006</h2>
-            <p>The company announces the launch of it's new website.</p>
-            <h2>1st January 2006</h2>
-            <p>The company announces the launch of it's new website.</p>
-            <p>NOTES: This area can be used for news or any other info.</p>
-          </div>
-          -->
 
           <div id="addlinks">
             <h1>Choose</h1>
@@ -116,34 +188,44 @@
                   <a href="${link}">Last four weeks</a>
                 </li>
                 <li>
-                  <ww:form name="weeklyForm" action="filteredleague" method="post">
-                    <ww:select name="selectedWeek" list="selectableWeeks" cssStyle="display: inline"/>
-                    <a href="#" style="display: inline" onclick="document.forms['weeklyForm'].submit();return false;">Go</a>
-                  </ww:form>
-                </li>
-                <li>
-                  <ww:form name="monthlyForm" action="filteredleague" method="post">
-                    <ww:select name="selectedMonth" list="selectableMonths"/>
-                    <a href="#" onclick="document.forms['monthlyForm'].submit();return false;">Go</a>
-                  </ww:form>
-                </li>
-                <li>
-                  <ww:form name="yearlyForm" action="filteredleague" method="post">
-                    <ww:select name="selectedYear" list="selectableYears"/>
-                    <a href="#" onclick="document.forms['yearlyForm'].submit();return false;">Go</a>
-                  </ww:form>
-                </li>
-                <li>
                   <c:set var="link">
                     <ww:url action="firstofthedayleague"/>
                   </c:set>
-                  <a href="${link}">First game of the day league</a>
+                  <a href="${link}">First games of the day</a>
                 </li>
                 <li>
                   <c:set var="link">
                     <ww:url action="firstoftheweekleague"/>
                   </c:set>
-                  <a href="${link}">First game of the week league</a>
+                  <a href="${link}">First games of the week</a>
+                </li>
+              </ul>
+            </div>
+            <div id="selectionleaguelinks">
+              <ul>
+                <li>
+                  <ww:form id="filtered" action="filteredleague" method="post">
+                    <ww:textfield name="filteredDate" id="calendar"/>
+                    <input type="hidden" name="filterType" id="filterType"/>
+                  </ww:form>
+                </li>
+                <li id="dt_since">
+                  <c:set var="link">
+                    <ww:url action="leaguesince">
+                      <ww:param name="dateFormat" value="%{'ddMMyyyy'}"/>
+                      <ww:param name="since" value="%{'-dmY-'}"/>
+                    </ww:url>
+                  </c:set>
+                  <a href="${link}">Since -d M Y-</a>
+                </li>
+                <li id="dt_week">
+                  <a href="javascript:filter('week')">Week -w, Y-</a>
+                </li>
+                <li id="dt_month">
+                  <a href="javascript:filter('month')">-F, Y-</a>
+                </li>
+                <li id="dt_year">
+                  <a href="javascript:filter('year')">-Y-</a>
                 </li>
               </ul>
             </div>
@@ -194,15 +276,18 @@
       </div>
     </div>
     <script type="text/javascript">
-      <ww:if test="showLeague != null">
+      <ww:if test="selectedDate != null">
+        showSelectionLeagueLinks();
+      </ww:if>
+      <ww:elseif test="showLeague != null">
         showLeagueLinks();
-      </ww:if>
-      <ww:if test="showProfile != null">
+      </ww:elseif>
+      <ww:elseif test="showProfile != null">
         showProfileLinks();
-      </ww:if>
-      <ww:if test="showStatistics != null">
+      </ww:elseif>
+      <ww:elseif test="showStatistics != null">
         showStatisticsLinks();
-      </ww:if>
+      </ww:elseif>
     </script>
   </body>
   </html>

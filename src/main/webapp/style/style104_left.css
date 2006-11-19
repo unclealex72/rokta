@@ -224,14 +224,14 @@ div.spacer
   height: 22px;
 }
 
-input, textarea
+#column2 input, #column2 textarea
 { width: 259px; 
   font-family: verdana, arial, sans-serif;
   font-size: 100%;
   border: 1px solid;
 }
 
-.submit
+#column2 .submit
 { font-family: verdana, arial, sans-serif;
   font-size: 100%; 
   border: 1px solid;

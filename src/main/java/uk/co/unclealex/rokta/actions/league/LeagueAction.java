@@ -50,6 +50,8 @@ public abstract class LeagueAction extends RoktaAction {
 	private LeagueGraphDatasetProducer i_leagueGraphDatasetProducer;
 	private LeagueManager i_leagueManager;
 	private League i_league;
+	private String i_leagueTitle;
+	private String i_graphTitle;
 	
 	private GranularityPredicate i_granularityPredicate;
 	@Override
@@ -76,12 +78,17 @@ public abstract class LeagueAction extends RoktaAction {
 			setLeague(leaguesByGameForTable.get(leaguesByGameForTable.lastKey()));
 			getLeagueGraphDatasetProducer().setLeaguesByGame(leaguesByGameForGraph);
 			getLeagueGraphDatasetProducer().setGameDescriptor(getGranularityPredicate().getGameDescriptor());
+			setLeagueTitle(getLeagueTitleInternal());
+			setGraphTitle(getGraphTitleInternal());
 		}
 		return SUCCESS;
 	}
 
 	public abstract SortedSet<Game> getGames() throws Exception;
 
+	public abstract String getLeagueTitleInternal();
+	public abstract String getGraphTitleInternal();
+	
 	public GranularityPredicate produceGranularityPredicate(SortedSet<Game> games) {
 		final long millisBetweenGames =
 			games.last().getDatePlayed().getTime() - games.first().getDatePlayed().getTime();
@@ -193,6 +200,34 @@ public abstract class LeagueAction extends RoktaAction {
 	 */
 	public void setGranularityPredicate(GranularityPredicate granularityPredicate) {
 		i_granularityPredicate = granularityPredicate;
+	}
+
+	/**
+	 * @return the leagueTitle
+	 */
+	public final String getLeagueTitle() {
+		return i_leagueTitle;
+	}
+
+	/**
+	 * @param leagueTitle the leagueTitle to set
+	 */
+	public void setLeagueTitle(String leagueTitle) {
+		i_leagueTitle = leagueTitle;
+	}
+
+	/**
+	 * @return the graphTitle
+	 */
+	public final String getGraphTitle() {
+		return i_graphTitle;
+	}
+
+	/**
+	 * @param graphTitle the graphTitle to set
+	 */
+	public void setGraphTitle(String graphTitle) {
+		i_graphTitle = graphTitle;
 	}
 
 }

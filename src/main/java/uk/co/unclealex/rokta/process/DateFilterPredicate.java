@@ -4,6 +4,7 @@
 package uk.co.unclealex.rokta.process;
 
 import java.text.DateFormat;
+import java.util.Date;
 
 import org.apache.commons.collections15.Predicate;
 
@@ -12,21 +13,22 @@ import uk.co.unclealex.rokta.model.Game;
 public class DateFilterPredicate implements Predicate<Game> {
 	
 	private DateFormat i_dateFormat;
-	private String i_selected;
+	private Date i_selected;
 
-	public DateFilterPredicate(DateFormat dateFormat, String selected) {
+	public DateFilterPredicate(DateFormat dateFormat, Date selected) {
 		i_dateFormat = dateFormat;
 		i_selected = selected;
 	}
 
 	public boolean evaluate(Game game) {
-		return getDateFormat().format(game.getDatePlayed()).equals(getSelected());
+		DateFormat fmt = getDateFormat();
+		return fmt.format(game.getDatePlayed()).equals(fmt.format(getSelected()));
 	}
 	
 	public DateFormat getDateFormat() {
 		return i_dateFormat;
 	}
-	public String getSelected() {
+	public Date getSelected() {
 		return i_selected;
 	}
 }

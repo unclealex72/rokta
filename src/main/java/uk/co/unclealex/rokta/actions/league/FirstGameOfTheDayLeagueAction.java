@@ -19,4 +19,17 @@ public class FirstGameOfTheDayLeagueAction extends FilterGamesLeagueAction {
 		return new FirstGameOfTheDayPredicate(getAllGames());
 	}
 
+	@Override
+	public String getGraphTitleInternal() {
+		return "First game of the day graph";
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.co.unclealex.rokta.actions.league.LeagueAction#getLeagueTitle()
+	 */
+	@Override
+	public String getLeagueTitleInternal() {
+		return "First game of the day league";
+	}
+
 }

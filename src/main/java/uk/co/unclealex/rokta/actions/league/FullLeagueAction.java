@@ -22,7 +22,7 @@ public class FullLeagueAction extends LeagueAction {
 
 	@Override
 	public SortedSet<Game> getGames() {
-		return getGameDao().getAllGames();
+		return getAllGames();
 	}
 
 	/**
@@ -36,5 +36,21 @@ public class FullLeagueAction extends LeagueAction {
 		predicates.add(new SinceLeagueMilestonePredicate(calendar.getTime()));
 		predicates.add(super.produceGraphLeagueMilestonePredicate(games));
 		return new LazyAndLeagueMilestonePredicate(predicates);
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.co.unclealex.rokta.actions.league.LeagueAction#getGraphTitle()
+	 */
+	@Override
+	public String getGraphTitleInternal() {
+		return "Full graph";
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.co.unclealex.rokta.actions.league.LeagueAction#getLeagueTitle()
+	 */
+	@Override
+	public String getLeagueTitleInternal() {
+		return "Full league";
 	}
 }
