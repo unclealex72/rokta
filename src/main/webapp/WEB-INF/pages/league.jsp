@@ -117,11 +117,11 @@
     <rokta:colourise chartid="leagueGraph"/>
     
     <div id="largeChart">
-      <a href="javascript:void()" onclick="document.getElementById('largeChart').style.visibility = 'hidden';">
+      <a href="javascript:void(0);" onclick="document.getElementById('largeChart').style.visibility = 'hidden';">
         <cewolf:img chartid="leagueGraph" renderer="cewolf" width="900" height="500"/>
       </a>
     </div>
-    <a href="javascript:void()" onclick="document.getElementById('largeChart').style.visibility = 'visible';">
+    <a href="javascript:void(0);" onclick="document.getElementById('largeChart').style.visibility = 'visible';">
       <cewolf:img chartid="leagueGraph" renderer="cewolf" width="480" height="300" />
     </a>
     
