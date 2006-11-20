@@ -55,6 +55,14 @@ public class LeagueGraphDatasetProducerImpl implements LeagueGraphDatasetProduce
 		}
 		// Now we can add in the correct order
 		List<Colour> colours = new LinkedList<Colour>();
+		
+		// Add the average first so that every game is included in the first run and so keeps in the right order.
+		Colour averageColour = getColourDao().getColourByName(getAverageColour());
+		colours.add(averageColour);
+		dataset.setColours(colours);
+		for (Map.Entry<String, Double> entry : averageResults.entrySet()) {
+			dataset.addValue(entry.getValue(), "Average", entry.getKey());
+		}
 		for (Map.Entry<Person, Map<String, Double>> entry : resultsByPerson.entrySet()) {
 			Person person = entry.getKey();
 			colours.add(person.getColour());
@@ -62,12 +70,6 @@ public class LeagueGraphDatasetProducerImpl implements LeagueGraphDatasetProduce
 			for (Map.Entry<String, Double> resultEntry : entry.getValue().entrySet()) {
 				dataset.addValue(resultEntry.getValue(), name, resultEntry.getKey());
 			}
-		}
-		Colour averageColour = getColourDao().getColourByName(getAverageColour());
-		colours.add(averageColour);
-		dataset.setColours(colours);
-		for (Map.Entry<String, Double> entry : averageResults.entrySet()) {
-			dataset.addValue(entry.getValue(), "Average", entry.getKey());
 		}
 		return dataset;
 	}
