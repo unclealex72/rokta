@@ -12,8 +12,8 @@ http://www.meanfreepath.com/javascript_calendar/index.html
 function Epoch(name,mode,targetelement,multiselect) {
 	var self = this; //workaround due to varying definitions of "this" in variable scopes. see http://www.meanfreepath.com/support/epoch/epoch.html#self for details
 	//DEFINE PRIVATE METHODS
-	//-----------------------------------------------------------------------------
-	/**
+	//-------"content/comics/comicsOverlay.js"----------------------------------------------------------------------
+	/**"content/comics/comicsOverlay.js"
 	* Declares and initializes the calendar variables.  All the variables here can be safely changed
 	* (within reason ;) by the developer
 	*/

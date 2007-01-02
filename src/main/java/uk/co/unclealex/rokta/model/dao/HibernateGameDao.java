@@ -15,7 +15,7 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import uk.co.unclealex.rokta.model.Game;
 import uk.co.unclealex.rokta.model.Person;
-import uk.co.unclealex.rokta.process.restriction.AfterGameRestriction;
+import uk.co.unclealex.rokta.process.restriction.SinceGameRestriction;
 import uk.co.unclealex.rokta.process.restriction.AllGameRestriction;
 import uk.co.unclealex.rokta.process.restriction.BeforeGameRestriction;
 import uk.co.unclealex.rokta.process.restriction.BetweenGameRestriction;
@@ -41,7 +41,7 @@ public class HibernateGameDao extends HibernateDaoSupport implements GameDao {
 		}
 
 		@Override
-		public void visit(AfterGameRestriction restriction) {
+		public void visit(SinceGameRestriction restriction) {
 			i_criteria.add(Restrictions.ge("datePlayed", restriction.getEarliestDate()));
 		}
 

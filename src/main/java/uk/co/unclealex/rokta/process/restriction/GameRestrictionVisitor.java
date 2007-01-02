@@ -10,7 +10,7 @@ package uk.co.unclealex.rokta.process.restriction;
 public abstract class GameRestrictionVisitor {
 
 	public abstract void visit(BeforeGameRestriction restriction);
-	public abstract void visit(AfterGameRestriction restriction);
+	public abstract void visit(SinceGameRestriction restriction);
 	public abstract void visit(BetweenGameRestriction restriction);
 	public abstract void visit(AllGameRestriction restriction);
 	

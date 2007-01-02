@@ -3,14 +3,13 @@
  */
 package uk.co.unclealex.rokta.model;
 
-import java.io.Serializable;
 import java.util.SortedSet;
 
 /**
  * @author alex
  *
  */
-public class Streak implements Serializable {
+public class Streak implements Comparable<Streak> {
 
 	private Person i_person;
 	private SortedSet<Game> i_games;
@@ -35,6 +34,26 @@ public class Streak implements Serializable {
 		i_current = current;
 	}
 	
+	public int compareTo(Streak o) {
+		int cmp = -(new Integer(getLength()).compareTo(o.getLength()));
+		if (cmp != 0) { return cmp; }
+		cmp = -getFirstGame().compareTo(o.getFirstGame());
+		if (cmp != 0) { return cmp; }
+		return getPerson().compareTo(o.getPerson());
+	}
+	
+	public int getLength() {
+		return getGames().size();
+	}
+	
+	public Game getFirstGame() {
+		return getGames().first();
+	}
+
+	public Game getLastGame() {
+		return getGames().last();
+	}
+
 	/**
 	 * @return the games
 	 */

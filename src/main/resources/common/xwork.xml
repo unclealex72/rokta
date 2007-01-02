@@ -22,28 +22,13 @@
          <result name="finished">/WEB-INF/pages/finished.jsp</result>
       </action>
 
-      <action name="fullleague"
-         class="uk.co.unclealex.rokta.actions.league.FullLeagueAction">
+      <action name="league"
+         class="uk.co.unclealex.rokta.actions.LeagueAction">
          <result name="success">/WEB-INF/pages/league.jsp</result>
       </action>
 
-      <action name="filteredleague"
-         class="uk.co.unclealex.rokta.actions.league.FilteredLeagueAction">
-         <result name="success">/WEB-INF/pages/league.jsp</result>
-      </action>
-
-      <action name="firstofthedayleague"
-         class="uk.co.unclealex.rokta.actions.league.FirstGameOfTheDayLeagueAction">
-         <result name="success">/WEB-INF/pages/league.jsp</result>
-      </action>
-
-      <action name="firstoftheweekleague"
-         class="uk.co.unclealex.rokta.actions.league.FirstGameOfTheWeekLeagueAction">
-         <result name="success">/WEB-INF/pages/league.jsp</result>
-      </action>
-
-      <action name="leaguesince"
-         class="uk.co.unclealex.rokta.actions.league.SinceLeagueAction">
+      <action name="index"
+         class="uk.co.unclealex.rokta.actions.LeagueAction">
          <result name="success">/WEB-INF/pages/league.jsp</result>
       </action>
 

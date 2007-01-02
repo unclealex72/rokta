@@ -60,13 +60,13 @@
 
   <listener>
     <listener-class>
-      org.springframework.web.context.ContextLoaderListener
+      org.springframework.web.context.request.RequestContextListener
     </listener-class>
   </listener>
 
   <listener>
     <listener-class>
-      org.springframework.web.context.request.RequestContextListener
+      org.springframework.web.context.ContextLoaderListener
     </listener-class>
   </listener>
 
@@ -109,7 +109,7 @@
 
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>classpath*:applicationContext.xml</param-value>
+    <param-value>classpath:applicationContext.xml,classpath:applicationContext-factories.xml</param-value>
   </context-param>
 
   <jsp-config>

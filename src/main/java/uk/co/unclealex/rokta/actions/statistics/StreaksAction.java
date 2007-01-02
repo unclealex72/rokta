@@ -18,7 +18,6 @@ import org.apache.commons.collections15.Predicate;
 
 import uk.co.unclealex.rokta.model.Person;
 import uk.co.unclealex.rokta.model.Streak;
-import uk.co.unclealex.rokta.views.StreakView;
 
 /**
  * @author alex
@@ -28,37 +27,37 @@ public abstract class StreaksAction extends StatisticsAction {
 
 	private static final int MAX_ITEMS = 10;
 	
-	private List<StreakView> i_topStreakViews;
-	private List<StreakView> i_currentStreakViews;
+	private List<Streak> i_topStreaks;
+	private List<Streak> i_currentStreaks;
 	
 	public abstract Map<Person, List<Streak>> getStreakListsByPerson();
 	
 	@Override
 	public String executeInternal() {
-		getStatisticsManager().setGames(getGameDao().getAllGames());
+		getStatisticsManager().setGames(getGames());
 		Map<Person, List<Streak>> streakListsByPerson = getStreakListsByPerson();
-		List<StreakView> streakViews = new ArrayList<StreakView>();
+		List<Streak> streaks = new ArrayList<Streak>();
 		for (List<Streak> streakList : streakListsByPerson.values()) {
-			CollectionUtils.collect(streakList, StreakView.getStreakViewTransformer(), streakViews);
+			streaks.addAll(streakList);
 		}
 	
-		StreakView[] streakViewArray = streakViews.toArray(new StreakView[streakViews.size()]);
-		Arrays.sort(streakViewArray, ComparatorUtils.NATURAL_COMPARATOR);
+		Streak[] streakArray = streaks.toArray(new Streak[streaks.size()]);
+		Arrays.sort(streakArray, ComparatorUtils.NATURAL_COMPARATOR);
 	
-		int itemCount = Math.min(MAX_ITEMS, streakViewArray.length);
-		streakViews = new ArrayList<StreakView>(itemCount);
+		int itemCount = Math.min(MAX_ITEMS, streakArray.length);
+		streaks = new ArrayList<Streak>(itemCount);
 		int previousLength = -1;
 		for (
 				int idx = 0;
-				idx < streakViewArray.length &&
-					(idx < itemCount || streakViewArray[idx].getLength() == previousLength);
+				idx < streakArray.length &&
+					(idx < itemCount || streakArray[idx].getLength() == previousLength);
 				idx++) {
-			streakViews.add(streakViewArray[idx]);
-			previousLength = streakViewArray[idx].getLength();
+			streaks.add(streakArray[idx]);
+			previousLength = streakArray[idx].getLength();
 		}
-		setTopStreakViews(streakViews);
+		setTopStreaks(streaks);
 		
-		SortedMap<Person, StreakView> currentStreakViewsByPerson = new TreeMap<Person, StreakView>();
+		SortedMap<Person, Streak> currentStreaksByPerson = new TreeMap<Person, Streak>();
 		Predicate<Streak> isCurrentPredicate = new Predicate<Streak>() {
 			public boolean evaluate(Streak streak) {
 				return streak.isCurrent();
@@ -66,46 +65,45 @@ public abstract class StreaksAction extends StatisticsAction {
 		};
 		for (Map.Entry<Person, List<Streak>> entry : streakListsByPerson.entrySet()) {
 			Person person = entry.getKey();
-			List<Streak> streaks = entry.getValue();
-			Streak currentStreak = CollectionUtils.find(streaks, isCurrentPredicate);
+			Streak currentStreak = CollectionUtils.find(entry.getValue(), isCurrentPredicate);
 			if (currentStreak != null) {
-				currentStreakViewsByPerson.put(person, StreakView.getStreakViewTransformer().transform(currentStreak));
+				currentStreaksByPerson.put(person, currentStreak);
 			}
 		}
-		Collection<StreakView> values = currentStreakViewsByPerson.values();
-		List<StreakView> currentStreakViews = new ArrayList<StreakView>(values.size());
-		currentStreakViews.addAll(values);
-		Collections.sort(currentStreakViews);
-		setCurrentStreakViews(currentStreakViews);
+		Collection<Streak> values = currentStreaksByPerson.values();
+		List<Streak> currentStreaks = new ArrayList<Streak>(values.size());
+		currentStreaks.addAll(values);
+		Collections.sort(currentStreaks);
+		setCurrentStreaks(currentStreaks);
 		return SUCCESS;
 	}
 
 	/**
-	 * @return the streakViews
+	 * @return the streaks
 	 */
-	public List<StreakView> getTopStreakViews() {
-		return i_topStreakViews;
+	public List<Streak> getTopStreaks() {
+		return i_topStreaks;
 	}
 
 	/**
-	 * @param streakViews the streakViews to set
+	 * @param streaks the streaks to set
 	 */
-	public void setTopStreakViews(List<StreakView> streakViews) {
-		i_topStreakViews = streakViews;
+	public void setTopStreaks(List<Streak> streaks) {
+		i_topStreaks = streaks;
 	}
 
 	/**
 	 * @return the currentStreaks
 	 */
-	public List<StreakView> getCurrentStreakViews() {
-		return i_currentStreakViews;
+	public List<Streak> getCurrentStreaks() {
+		return i_currentStreaks;
 	}
 
 	/**
 	 * @param currentStreaks the currentStreaks to set
 	 */
-	public void setCurrentStreakViews(List<StreakView> currentStreaks) {
-		i_currentStreakViews = currentStreaks;
+	public void setCurrentStreaks(List<Streak> currentStreaks) {
+		i_currentStreaks = currentStreaks;
 	}
 
 }

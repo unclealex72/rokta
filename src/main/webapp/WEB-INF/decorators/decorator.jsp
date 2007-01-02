@@ -43,10 +43,9 @@
 
     <script type="text/javascript">
       var links = new Array();
-      links[0] = 'leaguelinks';
-      links[1] = 'selectionleaguelinks';
-      links[2] = 'profilelinks';
-      links[3] = 'statisticslinks';
+      links[0] = 'filterlinks';
+      links[1] = 'profilelinks';
+      links[2] = 'statisticslinks';
     
       function showLinks(divId) {
         var idx;
@@ -58,12 +57,8 @@
         return false;
       }
       
-      function showLeagueLinks() {
-        showLinks('leaguelinks');
-      }
-      
-      function showSelectionLeagueLinks() {
-        showLinks('selectionleaguelinks');
+      function showFilterLinks() {
+        showLinks('filterlinks');
       }
       
       function showProfileLinks() {
@@ -74,10 +69,6 @@
         showLinks('statisticslinks');
       }
       
-      function filter(type) {
-        document.getElementById('filterType').value = type;
-        document.forms['filtered'].submit();
-      }
       var cal;
       var registeredElements = new Array();
       var registeredHtml = new Array();
@@ -125,8 +116,8 @@
       
       window.onload = function() {
         cal = new Epoch('cal','popup',document.getElementById('calendar'),false);
-        cal.minDate = <ww:text name="javascript.date"><ww:param value="%{allGames.first().datePlayed}"/></ww:text>;
-        cal.maxDate = <ww:text name="javascript.date"><ww:param value="%{allGames.last().datePlayed}"/></ww:text>;
+        cal.minDate = <ww:text name="javascript.date"><ww:param value="%{minimumDate}"/></ww:text>;
+        cal.maxDate = <ww:text name="javascript.date"><ww:param value="%{maximumDate}"/></ww:text>;
         cal.onchange = updateFilters;
         var selectedDates = new Array();
         selectedDates[0] = <ww:text name="javascript.date"><ww:param value="%{initialDate}"/></ww:text>;
@@ -156,12 +147,21 @@
             <ul>
               <li>
                 <c:set var="link">
-                  <ww:url action="initialise"/>
+                  <ww:url action="initialise">
+                  	<ww:param name="gameFilter" value="%{gameFilter}"/>
+                  </ww:url>
                 </c:set>
                 <a href="${link}">New game</a>
               </li>
-              <li><a href="javascript:showLeagueLinks()">Current leagues</a></li>
-              <li><a href="javascript:showSelectionLeagueLinks()">Archive leagues</a></li>
+              <li>
+                <c:set var="link">
+                  <ww:url action="league">
+                  	<ww:param name="gameFilter" value="%{gameFilter}"/>
+                  </ww:url>
+                </c:set>
+                <a href="${link}">League</a>
+              </li>
+              <li><a href="javascript:showFilterLinks()">Filters</a></li>
               <li><a href="javascript:showStatisticsLinks()">Statistics</a></li>
               <li><a href="javascript:showProfileLinks()">Profiles</a></li>
             </ul>
@@ -169,63 +169,62 @@
 
           <div id="addlinks">
             <h1>Choose</h1>
-            <div id="leaguelinks">
-              <ul>
-                <li>
-                  <c:set var="link">
-                    <ww:url action="fullleague"/>
-                  </c:set>
-                  <a href="${link}">Full league</a>
-                </li>
-                <li>
-                  <rokta:date format="ddMMyyyy" field="WEEK_OF_YEAR" value="-4" var="since"/>
-                  <c:set var="link">
-                    <ww:url action="leaguesince">
-                      <ww:param name="dateFormat" value="%{'ddMMyyyy'}"/>
-                      <ww:param name="since" value="#attr.since"/>
-                    </ww:url>
-                  </c:set>
-                  <a href="${link}">Last four weeks</a>
-                </li>
-                <li>
-                  <c:set var="link">
-                    <ww:url action="firstofthedayleague"/>
-                  </c:set>
-                  <a href="${link}">First games of the day</a>
-                </li>
-                <li>
-                  <c:set var="link">
-                    <ww:url action="firstoftheweekleague"/>
-                  </c:set>
-                  <a href="${link}">First games of the week</a>
-                </li>
-              </ul>
-            </div>
-            <div id="selectionleaguelinks">
+            <div id="filterlinks">
               <ul>
                 <li>
                   <ww:form id="filtered" action="filteredleague" method="post">
                     <ww:textfield name="filteredDate" id="calendar"/>
-                    <input type="hidden" name="filterType" id="filterType"/>
                   </ww:form>
                 </li>
+                <li>
+                  <c:set var="link">
+                    <ww:url value="%{#request.requestURI}">
+                      <ww:param name="gameFilter" value="%{'a'}"/>
+                    </ww:url>
+                  </c:set>
+                  <a href="${link}">All games</a>
+                </li>
+                <li>
+                  <rokta:date format="ddMMyyyy" field="WEEK_OF_YEAR" value="-4" var="since"/>
+                  <c:set var="link">
+                    <ww:url value="%{#request.requestURI}">
+                      <ww:param name="gameFilter" value="s%{#attr.since}"/>
+                    </ww:url>
+                  </c:set>
+                  <a href="${link}">Last four weeks</a>
+                </li>
+
                 <li id="dt_since">
                   <c:set var="link">
-                    <ww:url action="leaguesince">
-                      <ww:param name="dateFormat" value="%{'ddMMyyyy'}"/>
-                      <ww:param name="since" value="%{'-dmY-'}"/>
+                    <ww:url value="%{#request.requestURI}">
+                      <ww:param name="gameFilter" value="%{'s-dmY-'}"/>
                     </ww:url>
                   </c:set>
                   <a href="${link}">Since -d M Y-</a>
                 </li>
                 <li id="dt_week">
-                  <a href="javascript:filter('week')">Week -w, Y-</a>
+                  <c:set var="link">
+                    <ww:url value="%{#request.requestURI}">
+                      <ww:param name="gameFilter" value="%{'w-wY-'}"/>
+                    </ww:url>
+                  </c:set>
+                  <a href="${link}">Week -w, Y-</a>
                 </li>
                 <li id="dt_month">
-                  <a href="javascript:filter('month')">-F, Y-</a>
+                  <c:set var="link">
+                    <ww:url value="%{#request.requestURI}">
+                      <ww:param name="gameFilter" value="%{'m-mY-'}"/>
+                    </ww:url>
+                  </c:set>
+                  <a href="${link}">-F, Y-</a>
                 </li>
                 <li id="dt_year">
-                  <a href="javascript:filter('year')">-Y-</a>
+                  <c:set var="link">
+                    <ww:url value="%{#request.requestURI}">
+                      <ww:param name="gameFilter" value="%{'y-Y-'}"/>
+                    </ww:url>
+                  </c:set>
+                  <a href="${link}">-Y-</a>
                 </li>
               </ul>
             </div>
@@ -236,6 +235,7 @@
                     <c:set var="link">
                       <ww:url action="profile">
                         <ww:param name="person" value="name"/>
+                        <ww:param name="gameFilter" value="%{gameFilter}"/>
                       </ww:url>
                     </c:set>
                     <a href="${link}"><ww:property value="name"/></a>
@@ -247,19 +247,25 @@
               <ul>
                 <li>
                   <c:set var="link">
-                    <ww:url action="headtoheads"/>
+                    <ww:url action="headtoheads">
+                    	<ww:param name="gameFilter" value="%{gameFilter}"/>
+                    </ww:url>
                   </c:set>
                   <a href="${link}">Head to heads</a>
                 </li>
                 <li>
                   <c:set var="link">
-                    <ww:url action="winningstreaks"/>
+                    <ww:url action="winningstreaks">
+                    	<ww:param name="gameFilter" value="%{gameFilter}"/>
+                    </ww:url>
                   </c:set>
                   <a href="${link}">Winning streaks</a>
                 </li>
                 <li>
                   <c:set var="link">
-                    <ww:url action="losingstreaks"/>
+                    <ww:url action="losingstreaks">
+                    	<ww:param name="gameFilter" value="%{gameFilter}"/>
+                    </ww:url>
                   </c:set>
                   <a href="${link}">Losing streaks</a>
                 </li>

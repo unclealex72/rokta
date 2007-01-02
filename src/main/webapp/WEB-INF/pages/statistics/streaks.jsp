@@ -20,7 +20,7 @@
   <body>
     <h1>
       <ww:text name="top">
-        <ww:param name="size" value="topStreakViews.size"/>
+        <ww:param name="size" value="topStreaks.size"/>
       </ww:text>
     </h1>
     <table class="data">
@@ -32,7 +32,7 @@
         <th>To</th>
       </tr>
       <ww:set name="previousLength" value="0"/>
-      <ww:iterator id="view" value="topStreakViews" status="status">
+      <ww:iterator value="topStreaks" status="status">
         <tr>
           <td>
             <ww:if test="#previousLength == length">
@@ -51,7 +51,7 @@
       </ww:iterator>
     </table>
 
-    <ww:if test="!currentStreakViews.empty">
+    <ww:if test="!currentStreaks.empty">
       <h1><ww:text name="current"/></h1>    
       <table class="data">
         <tr>
@@ -60,7 +60,7 @@
           <th>From</th>
           <th>To</th>
         </tr>
-        <ww:iterator id="view" value="currentStreakViews">
+        <ww:iterator value="currentStreaks">
           <tr>
             <td><ww:property value="person.name"/></td>
             <td><ww:property value="length"/></td>

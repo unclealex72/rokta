@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
   default-autowire="byName">
 
-  <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager" scope="session"/>
+  <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager" scope="prototype"/>
     
   <bean id="gameDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="session">
     <property name="target">
@@ -30,7 +30,7 @@
     </property>
   </bean>
 
-  <bean id="roundDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="session">
+  <bean id="roundDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="prototype">
     <property name="target">
       <bean class="uk.co.unclealex.rokta.model.dao.HibernateRoundDao"/>
     </property>
@@ -42,7 +42,7 @@
     </property>
   </bean>
 
-  <bean id="playDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="session">
+  <bean id="playDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="prototype">
     <property name="target">
       <bean class="uk.co.unclealex.rokta.model.dao.HibernatePlayDao"/>
     </property>
@@ -54,7 +54,7 @@
     </property>
   </bean>
 
-  <bean id="colourDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="session">
+  <bean id="colourDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="prototype">
     <property name="target">
       <bean class="uk.co.unclealex.rokta.model.dao.HibernateColourDao"/>
     </property>
@@ -64,12 +64,12 @@
       </props>
     </property>
   </bean>
-
+  	
   <bean id="dateUtil" class="uk.co.unclealex.rokta.util.DateUtilImpl"/>
   <bean id="personManager" class="uk.co.unclealex.rokta.process.PersonManagerImpl" scope="prototype"/>
   <bean id="gameManager"
     class="uk.co.unclealex.rokta.process.PersistingGameManager"
-    scope="session">
+    scope="prototype">
   </bean>
 
   <bean id="gamesLostDatasetProducer" class="uk.co.unclealex.rokta.process.dataset.GamesLostDatasetProducer"
