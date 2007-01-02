@@ -5,8 +5,8 @@
   default-autowire="byName">
 
   <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager" scope="prototype"/>
-    
-  <bean id="gameDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="session">
+
+  <bean id="gameDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="prototype">
     <property name="target">
       <bean class="uk.co.unclealex.rokta.model.dao.HibernateGameDao"/>
     </property>
@@ -17,8 +17,8 @@
       </props>
     </property>
   </bean>
-  
-  <bean id="personDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="session">
+
+  <bean id="personDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="prototype">
     <property name="target">
     	<bean class="uk.co.unclealex.rokta.model.dao.HibernatePersonDao"/>
     </property>
@@ -64,7 +64,7 @@
       </props>
     </property>
   </bean>
-  	
+
   <bean id="dateUtil" class="uk.co.unclealex.rokta.util.DateUtilImpl"/>
   <bean id="personManager" class="uk.co.unclealex.rokta.process.PersonManagerImpl" scope="prototype"/>
   <bean id="gameManager"
@@ -74,7 +74,7 @@
 
   <bean id="gamesLostDatasetProducer" class="uk.co.unclealex.rokta.process.dataset.GamesLostDatasetProducer"
     scope="prototype"/>
-  
+
   <bean id="handChoiceDatasetProducer" class="uk.co.unclealex.rokta.process.dataset.HandChoiceDatasetProducer"
     autowire="no" scope="prototype"/>
 
