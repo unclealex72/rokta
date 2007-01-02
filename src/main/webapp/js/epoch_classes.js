@@ -992,6 +992,7 @@ Date.prototype.dateFormat = function(format)
 	var m=this.getMinutes();
 	var s=this.getSeconds();
 	var w=this.getWeek(1);
+	var W=w<10?'0'+w:w.toString();
 	value = {
 		Y: y.toString(),
 		y: y.substring(2),
@@ -1005,7 +1006,8 @@ Date.prototype.dateFormat = function(format)
 		l: DAY_NAMES[E],
 		G: H,
 		H: LZ(H),
-		w: w
+		w: w.toString(),
+		W: W
 	};
 	if (H==0) {value['g']=12;}
 	else if (H>12){value['g']=H-12;}

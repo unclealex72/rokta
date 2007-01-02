@@ -1,7 +1,7 @@
 /**
  * 
  */
-package uk.co.unclealex.rokta.model.convertors;
+package uk.co.unclealex.rokta.model.converters;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

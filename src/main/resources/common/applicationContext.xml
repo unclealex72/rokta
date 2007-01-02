@@ -69,8 +69,7 @@
   <bean id="personManager" class="uk.co.unclealex.rokta.process.PersonManagerImpl" scope="prototype"/>
   <bean id="gameManager"
     class="uk.co.unclealex.rokta.process.PersistingGameManager"
-    scope="prototype">
-  </bean>
+    scope="prototype" autowire-candidate="false"/>
 
   <bean id="gamesLostDatasetProducer" class="uk.co.unclealex.rokta.process.dataset.GamesLostDatasetProducer"
     scope="prototype"/>

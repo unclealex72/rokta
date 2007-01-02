@@ -16,7 +16,7 @@ public class RoundAction extends PlayingAction {
 	@Override
 	protected String prepareGameManager() throws InvalidRoundException {
 		GameManager gameManager = getGameManager();
-		if (getHands().length != getParticipants().length) {
+		if (gameManager == null || getHands().length != getParticipants().length) {
 			throw new InvalidRoundException();
 		}
 		

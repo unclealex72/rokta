@@ -18,6 +18,7 @@
     <h1>Round <ww:property value="currentRound"/></h1>
     <form action="round.html" method="post">
       <ww:hidden name="currentRound" value="%{currentRound}"/>
+      <ww:hidden name="gameManager" value="%{gameManager}"/>
       <table>
         <tr>
           <td>

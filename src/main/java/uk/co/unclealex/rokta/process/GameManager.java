@@ -1,5 +1,6 @@
 package uk.co.unclealex.rokta.process;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -10,7 +11,7 @@ import uk.co.unclealex.rokta.model.Game;
 import uk.co.unclealex.rokta.model.Hand;
 import uk.co.unclealex.rokta.model.Person;
 
-public interface GameManager {
+public interface GameManager extends Serializable {
 
 	public void startGame(Collection<Person> participants, Person instigator, Date date);
 

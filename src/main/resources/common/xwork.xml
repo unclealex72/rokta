@@ -1,72 +1,91 @@
 <!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.0//EN" "http://www.opensymphony.com/xwork/xwork-1.0.dtd">
-  <xwork>
-   <include file="webwork-default.xml"/>
+<xwork>
+	<include file="webwork-default.xml" />
 
-   <package name="default" extends="webwork-default">
-     <!-- Include webwork defaults (from WebWork JAR). -->
-     <default-interceptor-ref name="completeStack"/>
+	<package name="default" extends="webwork-default">
+		<!-- Include webwork defaults (from WebWork JAR). -->
+		<interceptors>
+			<interceptor name="applicationContext"
+				class="uk.co.unclealex.rokta.spring.ApplicationContextInterceptor" />
+		</interceptors>
 
-      <action name="initialise"
-         class="uk.co.unclealex.rokta.actions.InitialiseAction">
-         <result name="success">/WEB-INF/pages/initialise.jsp</result>
-      </action>
-      
-      <action name="start"
-         class="uk.co.unclealex.rokta.actions.StartAction">
-         <result name="success">/WEB-INF/pages/game.jsp</result>
-      </action>
+		<default-interceptor-ref name="defaultStack" />
 
-      <action name="round"
-         class="uk.co.unclealex.rokta.actions.RoundAction">
-         <result name="next">/WEB-INF/pages/game.jsp</result>
-         <result name="finished">/WEB-INF/pages/finished.jsp</result>
-      </action>
+		<action name="initialise"
+			class="uk.co.unclealex.rokta.actions.InitialiseAction">
+			<result name="success">
+				/WEB-INF/pages/initialise.jsp
+			</result>
+		</action>
 
-      <action name="league"
-         class="uk.co.unclealex.rokta.actions.LeagueAction">
-         <result name="success">/WEB-INF/pages/league.jsp</result>
-      </action>
+		<action name="start"
+			class="uk.co.unclealex.rokta.actions.StartAction">
+			<interceptor-ref name="defaultStack"/>
+			<interceptor-ref name="applicationContext"/>
+			<result name="success">/WEB-INF/pages/game.jsp</result>
+		</action>
 
-      <action name="index"
-         class="uk.co.unclealex.rokta.actions.LeagueAction">
-         <result name="success">/WEB-INF/pages/league.jsp</result>
-      </action>
+		<action name="round"
+			class="uk.co.unclealex.rokta.actions.RoundAction">
+			<result name="next">/WEB-INF/pages/game.jsp</result>
+			<result name="finished">/WEB-INF/pages/finished.jsp</result>
+		</action>
 
-      <action name="games"
-         class="uk.co.unclealex.rokta.actions.GamesAction">
-         <result name="success">/WEB-INF/pages/games.jsp</result>
-      </action>
+		<action name="league"
+			class="uk.co.unclealex.rokta.actions.LeagueAction">
+			<result name="success">/WEB-INF/pages/league.jsp</result>
+		</action>
 
-      <action name="profile"
-         class="uk.co.unclealex.rokta.actions.ProfileAction">
-         <result name="success">/WEB-INF/pages/profile.jsp</result>
-      </action>
-      
-      <action name="colour"
-         class="uk.co.unclealex.rokta.actions.ColourAction">
-         <result type="redirect" name="success">/profile.html?person=${person.name}</result>
-      </action>
+		<action name="index"
+			class="uk.co.unclealex.rokta.actions.LeagueAction">
+			<result name="success">/WEB-INF/pages/league.jsp</result>
+		</action>
 
-      <action name="statistics"
-         class="uk.co.unclealex.rokta.actions.RoktaAction">
-         <result name="success">/WEB-INF/pages/statistics/statistics.jsp</result>
-      </action>
-      
-      <action name="winningstreaks"
-         class="uk.co.unclealex.rokta.actions.statistics.WinningStreaksAction">
-         <result name="success">/WEB-INF/pages/statistics/streaks.jsp</result>
-      </action>
+		<action name="games"
+			class="uk.co.unclealex.rokta.actions.GamesAction">
+			<result name="success">/WEB-INF/pages/games.jsp</result>
+		</action>
 
-      <action name="losingstreaks"
-         class="uk.co.unclealex.rokta.actions.statistics.LosingStreaksAction">
-         <result name="success">/WEB-INF/pages/statistics/streaks.jsp</result>
-      </action>
+		<action name="profile"
+			class="uk.co.unclealex.rokta.actions.ProfileAction">
+			<result name="success">/WEB-INF/pages/profile.jsp</result>
+		</action>
 
-      <action name="headtoheads"
-         class="uk.co.unclealex.rokta.actions.statistics.HeadToHeadsAction">
-         <result name="success">/WEB-INF/pages/statistics/headtoheads.jsp</result>
-      </action>
+		<action name="colour"
+			class="uk.co.unclealex.rokta.actions.ColourAction">
+			<result type="redirect" name="success">
+				/profile.html?person=${person.name}
+			</result>
+		</action>
 
-   </package>
-  </xwork>
+		<action name="statistics"
+			class="uk.co.unclealex.rokta.actions.RoktaAction">
+			<result name="success">
+				/WEB-INF/pages/statistics/statistics.jsp
+			</result>
+		</action>
+
+		<action name="winningstreaks"
+			class="uk.co.unclealex.rokta.actions.statistics.WinningStreaksAction">
+			<result name="success">
+				/WEB-INF/pages/statistics/streaks.jsp
+			</result>
+		</action>
+
+		<action name="losingstreaks"
+			class="uk.co.unclealex.rokta.actions.statistics.LosingStreaksAction">
+			<result name="success">
+				/WEB-INF/pages/statistics/streaks.jsp
+			</result>
+		</action>
+
+		<action name="headtoheads"
+			class="uk.co.unclealex.rokta.actions.statistics.HeadToHeadsAction">
+			<result name="success">
+				/WEB-INF/pages/statistics/headtoheads.jsp
+			</result>
+		</action>
+
+	</package>
+</xwork>
 

@@ -4,7 +4,7 @@ import uk.co.unclealex.rokta.model.dao.GameDao;
 
 public class PersistingGameManager extends DefaultGameManager {
 
-	private GameDao i_GameDao;
+	private transient GameDao i_gameDao;
 	
 	@Override
 	protected void finishGameInternal() {
@@ -12,10 +12,10 @@ public class PersistingGameManager extends DefaultGameManager {
 	}
 
 	public GameDao getGameDao() {
-		return i_GameDao;
+		return i_gameDao;
 	}
 
 	public void setGameDao(GameDao gameDao) {
-		i_GameDao = gameDao;
+		i_gameDao = gameDao;
 	}
 }

@@ -178,6 +178,12 @@
                 </li>
                 <li>
                   <c:set var="link">
+                    <ww:url value="%{#request.requestURI}"/>
+                  </c:set>
+                  <a href="${link}">This year</a>
+                </li>
+                <li>
+                  <c:set var="link">
                     <ww:url value="%{#request.requestURI}">
                       <ww:param name="gameFilter" value="%{'a'}"/>
                     </ww:url>
@@ -205,7 +211,7 @@
                 <li id="dt_week">
                   <c:set var="link">
                     <ww:url value="%{#request.requestURI}">
-                      <ww:param name="gameFilter" value="%{'w-wY-'}"/>
+                      <ww:param name="gameFilter" value="%{'w-WY-'}"/>
                     </ww:url>
                   </c:set>
                   <a href="${link}">Week -w, Y-</a>
