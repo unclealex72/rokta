@@ -10,8 +10,8 @@ public class YearGameFilter extends NamedPeriodGameFilter {
 	private int i_year;
 
 	public YearGameFilter() {
-	}	
-	
+	}
+
 	public YearGameFilter(int year, GameDao gameDao) {
 		super();
 		i_year = year;
@@ -40,7 +40,7 @@ public class YearGameFilter extends NamedPeriodGameFilter {
 
 	@Override
 	protected Calendar getFirstDateAsCalendar() {
-		return new GregorianCalendar(getYear(), 1, 1);
+		return new GregorianCalendar(getYear(), 0, 1);
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class YearGameFilter extends NamedPeriodGameFilter {
 	protected void setYear(int year) {
 		i_year = year;
 	}
-	
+
 	@Override
 	public void accept(GameFilterVistor gameFilterVisitor) {
 		gameFilterVisitor.visit(this);
