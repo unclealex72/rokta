@@ -2,9 +2,17 @@ package uk.co.unclealex.rokta.actions;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.SortedSet;
 
+import org.apache.commons.lang.StringUtils;
+
+import uk.co.unclealex.rokta.filter.GameFilter;
+import uk.co.unclealex.rokta.filter.GameFilterFactory;
+import uk.co.unclealex.rokta.filter.IllegalFilterEncodingException;
+import uk.co.unclealex.rokta.filter.YearGameFilter;
 import uk.co.unclealex.rokta.model.Game;
 import uk.co.unclealex.rokta.model.Person;
 import uk.co.unclealex.rokta.model.dao.ColourDao;
@@ -27,32 +35,53 @@ public class RoktaAction extends ActionSupport {
 	private RoundDao i_roundDao;
 	private ColourDao i_colourDao;
 	
+	private GameFilterFactory i_gameFilterFactory;
+	private GameFilter i_gameFilterInternal;
+	private String i_gameFilter;
+	
 	private SortedSet<Person> i_players;
-	private SortedSet<Game> i_allGames;
+	private SortedSet<Game> i_games;
 	
 	private String i_filteredDate;
 	private Date i_selectedDate;
 	private Date i_initialDate;
 	
+	private Date i_minimumDate;
+	private Date i_maximumDate;
+	
 	@Override
 	public final String execute() throws Exception {
-		populateLeagueNavigation();
+		populateFilter();
+		populateNavigation();
 		populateProfileNavigation();
 		return executeInternal();
 	}
 
+	private void populateFilter() throws IllegalFilterEncodingException {
+		GameFilterFactory gameFilterFactory = getGameFilterFactory();
+		String encoded = getGameFilter();
+		GameFilter gameFilter;
+		if (StringUtils.isEmpty(encoded)) {
+			gameFilter = new YearGameFilter(new GregorianCalendar().get(Calendar.YEAR), getGameDao());
+			setGameFilter(gameFilter.encode());
+		}
+		else {
+			gameFilter = gameFilterFactory.decode(encoded);
+		}
+		setGameFilterInternal(gameFilter);
+	}
+	
 	private void populateProfileNavigation() {
 		setPlayers(getPersonDao().getPlayers());
 	}
 
-	private void populateLeagueNavigation() throws ParseException {
+	private void populateNavigation() throws ParseException {
 		String filteredDate = getFilteredDate();
 		Date selectedDate = null;
 		if (filteredDate != null) {
 			selectedDate = new SimpleDateFormat("dd/MM/yyyy").parse(filteredDate);
 		}
 		SortedSet<Game> allGames = getGameDao().getAllGames();
-		setAllGames(allGames);
 		Date lastGamePlayed = allGames.last().getDatePlayed();
 		Date now = new Date();
 		setSelectedDate(selectedDate);
@@ -65,12 +94,24 @@ public class RoktaAction extends ActionSupport {
 		else {
 			setInitialDate(now);
 		}
+		setMinimumDate(allGames.first().getDatePlayed());
+		Calendar maximumDate = new GregorianCalendar();
+		maximumDate.setTime(lastGamePlayed);
+		maximumDate.add(Calendar.DAY_OF_YEAR, 1);
+		setMaximumDate(maximumDate.getTime());
 	}
 
 	protected String executeInternal() throws Exception {
 		return SUCCESS;
 	}
 
+	public SortedSet<Game> getGames() {
+		if (i_games == null) {
+			i_games = getGameFilterInternal().getGames();
+		}
+		return i_games;
+	}
+	
 	public PersonDao getPersonDao() {
 		return i_personDao;
 	}
@@ -150,20 +191,6 @@ public class RoktaAction extends ActionSupport {
 	}
 
 	/**
-	 * @return the allGames
-	 */
-	public SortedSet<Game> getAllGames() {
-		return i_allGames;
-	}
-
-	/**
-	 * @param allGames the allGames to set
-	 */
-	public void setAllGames(SortedSet<Game> allGames) {
-		i_allGames = allGames;
-	}
-
-	/**
 	 * @return the filteredDate
 	 */
 	public String getFilteredDate() {
@@ -203,5 +230,57 @@ public class RoktaAction extends ActionSupport {
 	 */
 	public void setInitialDate(Date initialDate) {
 		i_initialDate = initialDate;
+	}
+
+	/**
+	 * @return the maximumDate
+	 */
+	public Date getMaximumDate() {
+		return i_maximumDate;
+	}
+
+	/**
+	 * @param maximumDate the maximumDate to set
+	 */
+	public void setMaximumDate(Date maximumDate) {
+		i_maximumDate = maximumDate;
+	}
+
+	/**
+	 * @return the minimumDate
+	 */
+	public Date getMinimumDate() {
+		return i_minimumDate;
+	}
+
+	/**
+	 * @param minimumDate the minimumDate to set
+	 */
+	public void setMinimumDate(Date minimumDate) {
+		i_minimumDate = minimumDate;
+	}
+
+	public GameFilterFactory getGameFilterFactory() {
+		return i_gameFilterFactory;
+	}
+
+	public void setGameFilterFactory(GameFilterFactory gameFilterFactory) {
+		i_gameFilterFactory = gameFilterFactory;
+	}
+
+	public String getGameFilter() {
+		return i_gameFilter;
+	}
+
+	public void setGameFilter(String gameFilter) {
+		i_gameFilter = gameFilter;
+	}
+
+	public GameFilter getGameFilterInternal() {
+		return i_gameFilterInternal;
+	}
+
+	public void setGameFilterInternal(GameFilter gameFilterInternal) {
+		i_gameFilterInternal = gameFilterInternal;
 	}
 }

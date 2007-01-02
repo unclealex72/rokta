@@ -1,36 +1,32 @@
 package uk.co.unclealex.rokta.actions;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Comparator;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import org.apache.commons.collections15.ComparatorUtils;
 
 import uk.co.unclealex.rokta.model.Game;
-import uk.co.unclealex.rokta.views.GameView;
 
 public class GamesAction extends RoktaAction {
 
-	private List<GameView> i_gameViews;
+	private SortedSet<Game> i_reversedGames;
 	
 	@Override
 	public String executeInternal() {
-		List<GameView> gameViews = new ArrayList<GameView>();
-		List<Game> games = new ArrayList<Game>();
-		games.addAll(getGameDao().getAllGames());
-		Collections.reverse(games);
-		
-		for (Game game : games) {
-			gameViews.add(new GameView(game));
-		}
-		
-		setGameViews(gameViews);
+		Comparator<Game> reverseComparator =
+			ComparatorUtils.reversedComparator(ComparatorUtils.NATURAL_COMPARATOR);
+		SortedSet<Game> reversedGames = new TreeSet<Game>(reverseComparator);
+		reversedGames.addAll(getGames());
+		setReversedGames(reversedGames);
 		return SUCCESS;
 	}
 	
-	public List<GameView> getGameViews() {
-		return i_gameViews;
+	public SortedSet<Game> getReversedGames() {
+		return i_reversedGames;
 	}
 
-	public void setGameViews(List<GameView> gameViews) {
-		i_gameViews = gameViews;
+	public void setReversedGames(SortedSet<Game> reversedGames) {
+		i_reversedGames = reversedGames;
 	}
 }

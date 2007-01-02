@@ -34,7 +34,7 @@ public class ProfileAction extends RoktaAction {
 		Person person = getPerson();
 		ProfileManager manager = getProfileManager();
 		manager.setPerson(person);
-    manager.setGames(getGameDao().getAllGames());
+    manager.setGames(getGames());
 		getHandChoiceDatasetProducer().setProfileManager(manager);
 		getOpeningGambitDatasetProducer().setProfileManager(manager);
 		setHeadToHeadRoundWinRate(manager.getHeadToHeadRoundWinRate());
