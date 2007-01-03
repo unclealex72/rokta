@@ -9,14 +9,12 @@ public class AllGameFilter extends AbstractGameFilter {
 	@Override
 	protected void decodeInfo(String encodingInfo)
 			throws IllegalFilterEncodingException {
-		// TODO Auto-generated method stub
-
+		// no info required.
 	}
 
 	@Override
 	protected String encodeInfo() {
-		// TODO Auto-generated method stub
-		return null;
+		return "";
 	}
 
 	@Override
@@ -29,7 +27,7 @@ public class AllGameFilter extends AbstractGameFilter {
 	}
 
 	public String getDescription() {
-		return "all games";
+		return "for all games";
 	}
 
 	public SortedSet<Game> getGames() {
