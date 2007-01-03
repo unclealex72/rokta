@@ -74,10 +74,10 @@
   <bean id="gamesLostDatasetProducer" class="uk.co.unclealex.rokta.process.dataset.GamesLostDatasetProducer"
     scope="prototype"/>
 
-  <bean id="handChoiceDatasetProducer" class="uk.co.unclealex.rokta.process.dataset.HandChoiceDatasetProducer"
+  <bean id="handChoiceDatasetProducer" class="uk.co.unclealex.rokta.process.dataset.HandCountingDatasetProducer"
     autowire="no" scope="prototype"/>
 
-  <bean id="openingGambitDatasetProducer" class="uk.co.unclealex.rokta.process.dataset.OpeningGambitDatasetProducer"
+  <bean id="openingGambitDatasetProducer" class="uk.co.unclealex.rokta.process.dataset.HandCountingDatasetProducer"
     autowire="no" scope="prototype"/>
 
   <bean id="leagueGraphDatasetProducer" class="uk.co.unclealex.rokta.process.dataset.LeagueGraphDatasetProducerImpl"
@@ -95,8 +95,15 @@
     class="uk.co.unclealex.rokta.process.StatisticsManagerImpl" scope="prototype">
   </bean>
 
-  <bean id="profileManager"
-    class="uk.co.unclealex.rokta.process.ProfileManagerImpl" scope="prototype">
+  <bean id="profileManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="prototype">
+    <property name="target">
+      <bean class="uk.co.unclealex.rokta.process.ProfileManagerImpl"/>
+    </property>
+    <property name="transactionAttributes">
+      <props>
+        <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
+      </props>
+    </property>
   </bean>
 
   <bean id="sessionFactory"

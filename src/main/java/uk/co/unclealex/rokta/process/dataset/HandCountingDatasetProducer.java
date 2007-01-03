@@ -15,8 +15,10 @@ import de.laures.cewolf.DatasetProduceException;
  * @author alex
  *
  */
-public abstract class HandCountingDatasetProducer extends ProfileAwareDatasetProducer {
+public class HandCountingDatasetProducer extends StatisticsAwareDatasetProducer {
 
+	private SortedMap<Hand, Integer> i_handCount;
+	
 	public Object produceDataset(Map params) throws DatasetProduceException {
 		DefaultPieDataset dataset = new DefaultPieDataset();
 		SortedMap<Hand, Integer> handCounts = getHandCount();
@@ -32,9 +34,12 @@ public abstract class HandCountingDatasetProducer extends ProfileAwareDatasetPro
 		
 	}
 
-	/**
-	 * @return
-	 */
-	public abstract SortedMap<Hand, Integer> getHandCount();
+	public SortedMap<Hand, Integer> getHandCount() {
+		return i_handCount;
+	}
+
+	public void setHandCount(SortedMap<Hand, Integer> handCount) {
+		i_handCount = handCount;
+	}
 
 }

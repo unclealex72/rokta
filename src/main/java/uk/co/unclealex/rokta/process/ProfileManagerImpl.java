@@ -3,6 +3,9 @@
  */
 package uk.co.unclealex.rokta.process;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -10,11 +13,9 @@ import java.util.TreeMap;
 import uk.co.unclealex.rokta.model.Game;
 import uk.co.unclealex.rokta.model.Hand;
 import uk.co.unclealex.rokta.model.Person;
+import uk.co.unclealex.rokta.model.Play;
+import uk.co.unclealex.rokta.model.Round;
 import uk.co.unclealex.rokta.model.WinLoseCounter;
-import uk.co.unclealex.rokta.model.dao.GameDao;
-import uk.co.unclealex.rokta.model.dao.PersonDao;
-import uk.co.unclealex.rokta.model.dao.PlayDao;
-import uk.co.unclealex.rokta.model.dao.RoundDao;
 
 /**
  * @author alex
@@ -25,17 +26,16 @@ public class ProfileManagerImpl implements ProfileManager {
 	private Person i_person;
 	private SortedSet<Game> i_games;
   
-	private GameDao i_gameDao;
-	private PersonDao i_personDao;
-	private PlayDao i_playDao;
-	private RoundDao i_roundDao;
-
 	private StatisticsManager i_statisticsManager;
 	
 	public SortedMap<Hand, Integer> countHands() {
 		CountHandPersonOperation operation = new CountHandPersonOperation() {
-			public int count(Hand hand) {
-				return getPlayDao().countByPersonAndHand(getPerson(), hand);
+			public Map<Hand, Integer> count(Person person, Game game) {
+				Map<Hand, Integer> handCountMap = new HashMap<Hand, Integer>();
+				for (Round round : game.getRounds()) {
+					addHandsToHandCountMap(round, handCountMap, person);
+				}
+				return handCountMap;
 			}
 		};
 		return countOperation(operation);
@@ -43,21 +43,42 @@ public class ProfileManagerImpl implements ProfileManager {
 	
 	public SortedMap<Hand, Integer> countOpeningGambits() {
 		CountHandPersonOperation operation = new CountHandPersonOperation() {
-			public int count(Hand hand) {
-				return getRoundDao().countOpeningGambitsByPersonAndHand(getPerson(), hand);
-			}			
+			public Map<Hand, Integer> count(Person person, Game game) {
+				Map<Hand, Integer> handCountMap = new HashMap<Hand, Integer>();
+				addHandsToHandCountMap(game.getRounds().first(), handCountMap, person);
+				return handCountMap;
+			}
 		};
 		return countOperation(operation);
 	}
 
 	protected interface CountHandPersonOperation {
-		public int count(Hand hand);
+		public Map<Hand, Integer> count(Person person, Game game);
+	}
+	
+	protected void addHandsToHandCountMap(Round round, Map<Hand, Integer> handCountMap, Person person) {
+		boolean found = false;
+		for (Iterator<Play> iter = round.getPlays().iterator(); iter.hasNext() && !found; ) {
+			Play play = iter.next();
+			if (play.getPerson().equals(person)) {
+				found = true;
+				Integer handCount = handCountMap.get(play.getHand());
+				handCountMap.put(play.getHand(), (handCount==null?0:handCount) + 1);
+			}
+		}
 	}
 	
 	protected SortedMap<Hand, Integer> countOperation(CountHandPersonOperation operation) {
 		SortedMap<Hand, Integer> handMap = new TreeMap<Hand , Integer>();
-		for (Hand hand : Hand.getAllHands()) {
-			handMap.put(hand, operation.count(hand));
+		Person person = getPerson();
+		for (Game game : getGames()) {
+			Map<Hand, Integer> handCount = operation.count(person, game);
+			for (Map.Entry<Hand, Integer> entry : handCount.entrySet()) {
+				Hand hand = entry.getKey();
+				int count = entry.getValue();
+				Integer total = handMap.get(hand);
+				handMap.put(hand, (total==null?0:total) + count);
+			}
 		}
 		return handMap;
 	}
@@ -78,62 +99,6 @@ public class ProfileManagerImpl implements ProfileManager {
 	 */
 	public void setPerson(Person person) {
 		i_person = person;
-	}
-
-	/**
-	 * @return the gameDao
-	 */
-	public GameDao getGameDao() {
-		return i_gameDao;
-	}
-
-	/**
-	 * @param gameDao the gameDao to set
-	 */
-	public void setGameDao(GameDao gameDao) {
-		i_gameDao = gameDao;
-	}
-
-	/**
-	 * @return the personDao
-	 */
-	public PersonDao getPersonDao() {
-		return i_personDao;
-	}
-
-	/**
-	 * @param personDao the personDao to set
-	 */
-	public void setPersonDao(PersonDao personDao) {
-		i_personDao = personDao;
-	}
-
-	/**
-	 * @return the playDao
-	 */
-	public PlayDao getPlayDao() {
-		return i_playDao;
-	}
-
-	/**
-	 * @param playDao the playDao to set
-	 */
-	public void setPlayDao(PlayDao playDao) {
-		i_playDao = playDao;
-	}
-
-	/**
-	 * @return the roundDao
-	 */
-	public RoundDao getRoundDao() {
-		return i_roundDao;
-	}
-
-	/**
-	 * @param roundDao the roundDao to set
-	 */
-	public void setRoundDao(RoundDao roundDao) {
-		i_roundDao = roundDao;
 	}
 
 	/**

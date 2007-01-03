@@ -10,8 +10,7 @@ import uk.co.unclealex.rokta.model.Colour;
 import uk.co.unclealex.rokta.model.Person;
 import uk.co.unclealex.rokta.model.WinLoseCounter;
 import uk.co.unclealex.rokta.process.ProfileManager;
-import uk.co.unclealex.rokta.process.dataset.HandChoiceDatasetProducer;
-import uk.co.unclealex.rokta.process.dataset.OpeningGambitDatasetProducer;
+import uk.co.unclealex.rokta.process.dataset.HandCountingDatasetProducer;
 
 /**
  * @author alex
@@ -19,8 +18,8 @@ import uk.co.unclealex.rokta.process.dataset.OpeningGambitDatasetProducer;
  */
 public class ProfileAction extends RoktaAction {
 
-	private HandChoiceDatasetProducer i_handChoiceDatasetProducer;
-	private OpeningGambitDatasetProducer i_openingGambitDatasetProducer;
+	private HandCountingDatasetProducer i_handChoiceDatasetProducer;
+	private HandCountingDatasetProducer i_openingGambitDatasetProducer;
 	private SortedMap<Person, WinLoseCounter> i_headToHeadRoundWinRate;
 
 	private ProfileManager i_profileManager;
@@ -35,8 +34,8 @@ public class ProfileAction extends RoktaAction {
 		ProfileManager manager = getProfileManager();
 		manager.setPerson(person);
     manager.setGames(getGames());
-		getHandChoiceDatasetProducer().setProfileManager(manager);
-		getOpeningGambitDatasetProducer().setProfileManager(manager);
+		getHandChoiceDatasetProducer().setHandCount(manager.countHands());
+		getOpeningGambitDatasetProducer().setHandCount(manager.countOpeningGambits());
 		setHeadToHeadRoundWinRate(manager.getHeadToHeadRoundWinRate());
 		return SUCCESS;
 	}
@@ -92,7 +91,7 @@ public class ProfileAction extends RoktaAction {
 	/**
 	 * @return the handChoiceDatasetProvider
 	 */
-	public HandChoiceDatasetProducer getHandChoiceDatasetProducer() {
+	public HandCountingDatasetProducer getHandChoiceDatasetProducer() {
 		return i_handChoiceDatasetProducer;
 	}
 
@@ -100,14 +99,14 @@ public class ProfileAction extends RoktaAction {
 	 * @param handChoiceDatasetProvider the handChoiceDatasetProvider to set
 	 */
 	public void setHandChoiceDatasetProducer(
-			HandChoiceDatasetProducer handChoiceDatasetProvider) {
+			HandCountingDatasetProducer handChoiceDatasetProvider) {
 		i_handChoiceDatasetProducer = handChoiceDatasetProvider;
 	}
 
 	/**
 	 * @return the openingGambitDatasetProvider
 	 */
-	public OpeningGambitDatasetProducer getOpeningGambitDatasetProducer() {
+	public HandCountingDatasetProducer getOpeningGambitDatasetProducer() {
 		return i_openingGambitDatasetProducer;
 	}
 
@@ -115,7 +114,7 @@ public class ProfileAction extends RoktaAction {
 	 * @param openingGambitDatasetProvider the openingGambitDatasetProvider to set
 	 */
 	public void setOpeningGambitDatasetProducer(
-			OpeningGambitDatasetProducer openingGambitDatasetProvider) {
+			HandCountingDatasetProducer openingGambitDatasetProvider) {
 		i_openingGambitDatasetProducer = openingGambitDatasetProvider;
 	}
 
