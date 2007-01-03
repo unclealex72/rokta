@@ -15,14 +15,12 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
     <title>
-      <ww:property value="%{leagueTitle}"/>
+      League
     </title>
   </head>
 
   <body>
-    <h1>
-      <ww:property value="%{leagueTitle}"/>
-    </h1>
+    <h1>League</h1>
     <table class="data">
       <tr>
         <th />
@@ -96,9 +94,7 @@
       </ww:iterator>
     </table>
     
-    <h1>
-      <ww:property value="%{graphTitle}"/>
-    </h1>
+    <h1>Graph</h1>
     
     <ww:set name="leagueGraphProducer" scope="page" value="leagueGraphDatasetProducer"/>
     <c:set var="graphTitle">
