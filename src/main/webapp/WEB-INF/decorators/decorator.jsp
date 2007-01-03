@@ -139,7 +139,16 @@
           <a href="#">another link</a> | <a href="#">another link</a> | <a href="#">another link</a> | <a href="#">another link</a>
         -->
       </div>
-      <div id="logo"><h1>ROKTA - <decorator:title/></h1></div>
+      <div id="logo">
+      	<h1>
+      		ROKTA -
+      		<decorator:title/>
+      		    <![CDATA[
+					&nbsp;
+    ]]>
+      		<ww:property value="%{gameFilterInternal.description}"/>
+      	</h1>
+      </div>
       <div id="content">
         <div id="column1">
           <div id="menu">
@@ -147,9 +156,7 @@
             <ul>
               <li>
                 <c:set var="link">
-                  <ww:url action="initialise">
-                  	<ww:param name="gameFilter" value="%{gameFilter}"/>
-                  </ww:url>
+                  <ww:url action="initialise"/>
                 </c:set>
                 <a href="${link}">New game</a>
               </li>
