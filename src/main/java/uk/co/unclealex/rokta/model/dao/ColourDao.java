@@ -4,7 +4,7 @@ import java.util.SortedSet;
 
 import uk.co.unclealex.rokta.model.Colour;
 
-public interface ColourDao {
+public interface ColourDao extends StoreRemoveDao<Colour> {
 
 	public Colour getColourByName(String name);
 	public Colour getColourByHtmlName(String name);

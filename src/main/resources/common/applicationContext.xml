@@ -13,6 +13,7 @@
     <property name="transactionAttributes">
       <props>
         <prop key="store*">PROPAGATION_REQUIRED</prop>
+        <prop key="remove*">PROPAGATION_REQUIRED</prop>
         <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
       </props>
     </property>
@@ -25,6 +26,7 @@
     <property name="transactionAttributes">
       <props>
         <prop key="store*">PROPAGATION_REQUIRED</prop>
+        <prop key="remove*">PROPAGATION_REQUIRED</prop>
         <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
       </props>
     </property>
@@ -37,6 +39,7 @@
     <property name="transactionAttributes">
       <props>
         <prop key="store*">PROPAGATION_REQUIRED</prop>
+        <prop key="remove*">PROPAGATION_REQUIRED</prop>
         <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
       </props>
     </property>
@@ -49,6 +52,7 @@
     <property name="transactionAttributes">
       <props>
         <prop key="store*">PROPAGATION_REQUIRED</prop>
+        <prop key="remove*">PROPAGATION_REQUIRED</prop>
         <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
       </props>
     </property>
@@ -60,6 +64,7 @@
     </property>
     <property name="transactionAttributes">
       <props>
+        <prop key="remove*">PROPAGATION_REQUIRED</prop>
         <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
       </props>
     </property>
@@ -112,8 +117,8 @@
     </property>
     <property name="transactionAttributes">
       <props>
-        <prop key="exportAll">PROPAGATION_REQUIRED,readOnly</prop>
-        <prop key="importAll">PROPAGATION_REQUIRED</prop>
+        <prop key="export*">PROPAGATION_REQUIRED,readOnly</prop>
+        <prop key="import*">PROPAGATION_REQUIRED</prop>
       </props>
     </property>
   </bean>

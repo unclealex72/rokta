@@ -24,8 +24,30 @@ public class HibernateImportExportManager implements ImportExportManager {
 	}
 
 	public void importAll(Rokta rokta) {
-		// TODO Auto-generated method stub
-
+		GameDao gameDao = getGameDao();
+		PersonDao personDao = getPersonDao();
+		ColourDao colourDao = getColourDao();
+		
+		// Remove everything first
+		for (Game game : gameDao.getAllGames()) {
+			gameDao.remove(game);
+		}
+		for (Person person : personDao.getEverybody()) {
+			personDao.remove(person);
+		}
+		for (Colour colour : colourDao.getColours()) {
+			colourDao.remove(colour);
+		}
+		
+		for (Colour colour : rokta.getColours()) {
+			colourDao.store(colour);
+		}
+		for (Person person : personDao.getEverybody()) {
+			personDao.store(person);
+		}
+		for (Game game : gameDao.getAllGames()) {
+			gameDao.store(game);
+		}
 	}
 
 	public GameDao getGameDao() {

@@ -52,7 +52,10 @@
 
 		<action name="export"
 			class="uk.co.unclealex.rokta.actions.ExportAction">
-			<result name="success" type="jaxb">rokta</result>
+			<result name="success" type="jaxb">
+				<param name="variable">rokta</param>
+				<param name="filename">fileName</param>
+			</result>
 		</action>
 
 		<action name="profile"

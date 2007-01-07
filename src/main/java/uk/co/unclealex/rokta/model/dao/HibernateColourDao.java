@@ -7,11 +7,10 @@ import java.util.TreeSet;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import uk.co.unclealex.rokta.model.Colour;
 
-public class HibernateColourDao extends HibernateDaoSupport implements ColourDao {
+public class HibernateColourDao extends HibernateStoreRemoveDao<Colour> implements ColourDao {
 
 	/* (non-Javadoc)
 	 * @see uk.co.unclealex.rokta.model.dao.ColourDao#getColourByName(java.lang.String)

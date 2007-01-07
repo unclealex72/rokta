@@ -7,9 +7,7 @@ import uk.co.unclealex.rokta.model.Game;
 import uk.co.unclealex.rokta.model.Person;
 import uk.co.unclealex.rokta.process.restriction.GameRestriction;
 
-public interface GameDao {
-
-	public void store(Game game);
+public interface GameDao extends StoreRemoveDao<Game> {
 
 	public SortedSet<Game> getGamesByRestriction(GameRestriction restriction);
 	

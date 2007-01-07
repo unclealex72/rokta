@@ -12,13 +12,8 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import uk.co.unclealex.rokta.model.Hand;
 import uk.co.unclealex.rokta.model.Person;
 
-public class HibernatePersonDao extends HibernateDaoSupport implements PersonDao {
+public class HibernatePersonDao extends HibernateStoreRemoveDao<Person> implements PersonDao {
 
-	public Person store(Person person) {
-		getHibernateTemplate().save(person);
-		return person;
-	}
-	
 	/* (non-Javadoc)
 	 * @see uk.co.unclealex.rokta.model.dao.PersonDao#getPersonByName(java.lang.String)
 	 */

@@ -11,22 +11,17 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import uk.co.unclealex.rokta.model.Game;
 import uk.co.unclealex.rokta.model.Person;
-import uk.co.unclealex.rokta.process.restriction.SinceGameRestriction;
 import uk.co.unclealex.rokta.process.restriction.AllGameRestriction;
 import uk.co.unclealex.rokta.process.restriction.BeforeGameRestriction;
 import uk.co.unclealex.rokta.process.restriction.BetweenGameRestriction;
 import uk.co.unclealex.rokta.process.restriction.GameRestriction;
 import uk.co.unclealex.rokta.process.restriction.GameRestrictionVisitor;
+import uk.co.unclealex.rokta.process.restriction.SinceGameRestriction;
 
-public class HibernateGameDao extends HibernateDaoSupport implements GameDao {
-
-	public void store(Game game) {
-		getHibernateTemplate().save(game);
-	}
+public class HibernateGameDao extends HibernateStoreRemoveDao<Game> implements GameDao {
 
 	private class GetGamesByRestrictionVisitor extends GameRestrictionVisitor {
 		private Criteria i_criteria;
