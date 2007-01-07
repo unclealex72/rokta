@@ -16,6 +16,12 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
@@ -29,13 +35,16 @@ import org.hibernate.annotations.SortType;
 				name="game.getLastForPerson",
 				query="select game from Game game join game.rounds round join round.plays play where play.person = :person order by datePlayed desc")
 		})
+@XmlRootElement(name="game")
+@XmlType(propOrder={"datePlayed", "instigator", "rounds"})
 public class Game extends Identity<Game> {
 
-	private Person i_Instigator;
+	private Person i_instigator;
 	private SortedSet<Round> i_rounds;
 	private Date i_datePlayed;
 	
 	@Transient
+	@XmlTransient
 	public SortedSet<Person> getParticipants() {
 		if (getRounds() == null || getRounds().isEmpty()) {
 			return new TreeSet<Person>();
@@ -45,6 +54,7 @@ public class Game extends Identity<Game> {
 	}
 	
 	@Transient
+	@XmlTransient
 	public Person getLoser() {
 		Person loser = null;
 		
@@ -60,6 +70,7 @@ public class Game extends Identity<Game> {
 	}
 	
 	@Column(nullable=false)
+	@XmlElement(name="date-played")
 	public Date getDatePlayed() {
 		return i_datePlayed;
 	}
@@ -68,17 +79,20 @@ public class Game extends Identity<Game> {
 	}
 	
 	@ManyToOne
+	@XmlIDREF
 	public Person getInstigator() {
-		return i_Instigator;
+		return i_instigator;
 	}
 	
 	public void setInstigator(Person instigator) {
-		i_Instigator = instigator;
+		i_instigator = instigator;
 	}
 	
 	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumn(name="game_id")
 	@Sort(type = SortType.NATURAL)
+	@XmlElementWrapper(name="rounds")
+	@XmlElement(name="round")
 	public SortedSet<Round> getRounds() {
 		return i_rounds;
 	}

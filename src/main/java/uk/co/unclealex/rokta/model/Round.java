@@ -17,6 +17,10 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.collections15.Predicate;
 
@@ -29,6 +33,7 @@ import org.apache.commons.collections15.Predicate;
 			name="round.countOpeningGambitsByPersonAndHand",
 			query="select count(*) from Round as r join r.plays as p where p.person = :person and p.hand = :hand and r.round = 1")
 })
+@XmlType(propOrder={"round", "counter", "plays"})
 public class Round extends Identity<Round> {
 
 	private Set<Play> i_plays;
@@ -87,6 +92,7 @@ public class Round extends Identity<Round> {
 	}
 	
 	@ManyToOne
+	@XmlIDREF
 	public Person getCounter() {
 		return i_counter;
 	}
@@ -97,6 +103,8 @@ public class Round extends Identity<Round> {
 	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumn(name="round_id")
 	@Column(nullable=false)
+	@XmlElementWrapper(name="plays")
+	@XmlElement(name="play")
 	public Set<Play> getPlays() {
 		return i_plays;
 	}

@@ -11,6 +11,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * @author alex
@@ -22,6 +26,8 @@ import javax.persistence.NamedQuery;
 		@NamedQuery(name="colour.byName", query="from Colour c where c.name = :name"),
 		@NamedQuery(name="colour.byHtmlName", query="from Colour c where c.htmlName = :name")
 		})
+@XmlRootElement(name="colour")
+@XmlType(propOrder={"name", "htmlName", "red", "green", "blue"})
 public class Colour extends Identity<Colour> {
 
 	private String i_htmlName;
@@ -45,6 +51,7 @@ public class Colour extends Identity<Colour> {
 	}
 	
 	@Column(unique=true, nullable=false)
+	@XmlID
 	public String getName() {
 		return i_name;
 	}
@@ -87,6 +94,7 @@ public class Colour extends Identity<Colour> {
 	 * @return the htmlName
 	 */
 	@Column(unique=true, nullable=false)
+	@XmlElement(name="html-name")
 	public String getHtmlName() {
 		return i_htmlName;
 	}

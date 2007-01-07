@@ -106,6 +106,18 @@
     </property>
   </bean>
 
+  <bean id="importExportManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="prototype">
+    <property name="target">
+      <bean class="uk.co.unclealex.rokta.process.HibernateImportExportManager"/>
+    </property>
+    <property name="transactionAttributes">
+      <props>
+        <prop key="exportAll">PROPAGATION_REQUIRED,readOnly</prop>
+        <prop key="importAll">PROPAGATION_REQUIRED</prop>
+      </props>
+    </property>
+  </bean>
+
   <bean id="sessionFactory"
     class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
     <property name="configLocation">

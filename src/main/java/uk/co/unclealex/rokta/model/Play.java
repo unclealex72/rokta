@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlType;
 
 @Entity
 @NamedQueries({
@@ -34,7 +36,7 @@ import javax.persistence.NamedQuery;
 				"from Game g join g.rounds r join r.plays p " +
 				"where p.person = :person and p.hand = :hand and g.datePlayed <= :before and g.datePlayed >= :after")
 })
-
+@XmlType(propOrder={"person", "hand"})
 public class Play extends Identity<Play> {
 
 	private Person i_person;
@@ -50,6 +52,7 @@ public class Play extends Identity<Play> {
 	}
 	
 	@ManyToOne
+	@XmlIDREF
 	public Person getPerson() {
 		return i_person;
 	}

@@ -2,10 +2,13 @@ package uk.co.unclealex.rokta.model;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 public abstract class Identity<I extends Identity> implements Serializable, Comparable<I>{
 
 	private Long i_id;
 
+	@XmlTransient
 	public Long getId() {
 		return i_id;
 	}

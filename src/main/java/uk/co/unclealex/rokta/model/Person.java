@@ -7,6 +7,10 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 @Entity
 @NamedQueries(value={
@@ -14,6 +18,8 @@ import javax.persistence.NamedQuery;
 		@NamedQuery(name="person.getPlayers", query="select distinct p.person from Play p"),
 		@NamedQuery(name="person.findByName", query="select p from Person p where p.name=:name")
 		})
+@XmlRootElement(name="colour")
+@XmlType(propOrder={"name", "colour"})
 public class Person extends Identity<Person> {
 
 	private String i_name;
@@ -29,6 +35,7 @@ public class Person extends Identity<Person> {
 	}
 	
 	@Column(unique=true, nullable=false)
+	@XmlID
 	public String getName() {
 		return i_name;
 	}
@@ -38,6 +45,7 @@ public class Person extends Identity<Person> {
 	}
 	
 	@ManyToOne
+	@XmlIDREF
 	public Colour getColour() {
 		return i_colour;
 	}
