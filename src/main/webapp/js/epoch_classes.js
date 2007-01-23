@@ -420,7 +420,7 @@ function Epoch(name,mode,targetelement,multiselect) {
 			//and set the new target element
 			self.tgt = targetelement;
 			//create a pointer to the INPUT's date object and init the new data array
-			var dto = self.tgt.dateObj,pdateArr = new Array; 
+			var dto = self.tgt.dateObj,pdateArr = new Array;
 			//if a date is set for the target element
 			if(dto) {
 				if(self.tgt.value.length) { //load it into the calendar...
@@ -511,7 +511,7 @@ function Epoch(name,mode,targetelement,multiselect) {
 			return true;
 		}
 		else {
-			alert(self.maxrange_caption);
+			//alert(self.maxrange_caption);
 			return false;
 		}
 	};
