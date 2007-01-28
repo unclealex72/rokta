@@ -51,7 +51,7 @@ public class LeagueGraphDatasetProducerImpl implements LeagueGraphDatasetProduce
 				}
 				resultsByPerson.get(person).put(category, row.getLossesPerGame() * 100);
 			}
-			averageResults.put(category, 100d * league.getTotalGames() / league.getTotalPlayers());
+			averageResults.put(category, 100d * league.getExpectedLossesPerGame());
 		}
 		// Now we can add in the correct order
 		List<Colour> colours = new LinkedList<Colour>();

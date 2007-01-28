@@ -7,7 +7,6 @@ import java.util.TreeSet;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import uk.co.unclealex.rokta.model.Hand;
 import uk.co.unclealex.rokta.model.Person;

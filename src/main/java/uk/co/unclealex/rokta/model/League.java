@@ -18,6 +18,9 @@ public class League {
 	private int i_totalPlayers;
 	private String i_description;
 	
+	public double getExpectedLossesPerGame() {
+		return getTotalGames() / (double) getTotalPlayers();
+	}
 	/**
 	 * @return the totalGames
 	 */

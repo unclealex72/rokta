@@ -58,6 +58,14 @@
 			</result>
 		</action>
 
+		<action name="import" class="com.opensymphony.xwork.ActionSupport">
+			<result name="success">/WEB-INF/pages/import.jsp</result>
+		</action>
+		
+		<action name="doImport" class="uk.co.unclealex.rokta.actions.ImportAction">
+			<result name="success" type="redirect">/league.html</result>
+		</action>
+		
 		<action name="profile"
 			class="uk.co.unclealex.rokta.actions.ProfileAction">
 			<result name="success">/WEB-INF/pages/profile.jsp</result>

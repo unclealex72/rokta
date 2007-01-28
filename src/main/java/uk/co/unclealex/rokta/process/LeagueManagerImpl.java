@@ -75,7 +75,9 @@ public class LeagueManagerImpl implements LeagueManager {
 		for (Game game : getGames()) {
 			totalGames++;
 			Person loser = game.getLoser();
-			for (Person participant : game.getParticipants()) {
+			SortedSet<Person> participants = game.getParticipants();
+			int participantCount = participants.size();
+			for (Person participant : participants) {
 				totalPlayers++;
 				if (!rowMap.containsKey(participant)) {
 					LeagueRow newLeagueRow = new LeagueRow();
@@ -84,6 +86,7 @@ public class LeagueManagerImpl implements LeagueManager {
 					rowMap.put(participant, newLeagueRow);
 				}
 				LeagueRow leagueRow = rowMap.get(participant);
+				leagueRow.setTotalParticipants(leagueRow.getTotalParticipants() + participantCount);
 				int playsForPersonInGame = countPlaysForPersonInGame(participant, game);
 				if (participant.equals(loser)) {
 					leagueRow.setGamesLost(leagueRow.getGamesLost() + 1);
@@ -116,18 +119,18 @@ public class LeagueManagerImpl implements LeagueManager {
 	}
 
 	private League createLeague(Game game, Collection<LeagueRow> rows, int totalGames, int totalPlayers) {
+		League league = new League();
+		league.setCurrent(false);
+		league.setTotalGames(totalGames);
+		league.setTotalPlayers(totalPlayers);
+
 		SortedSet<LeagueRow> sortedRows = new TreeSet<LeagueRow>(getComparator());
 		for (LeagueRow leagueRow : rows) {
 			LeagueRow copy = leagueRow.copy();
-			copy.setTotalGamesPlayed(totalGames);
+			copy.setLeague(league);
 			sortedRows.add(copy);
-		}
-		
-		League league = new League();
-		league.setCurrent(false);
+		}		
 		league.setRows(sortedRows);
-		league.setTotalGames(totalGames);
-		league.setTotalPlayers(totalPlayers);
 		return league;
 	}
 	

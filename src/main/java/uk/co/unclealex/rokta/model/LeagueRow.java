@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class LeagueRow implements Serializable {
 
 	private Person i_person;
-	private int i_totalGamesPlayed;
+	private int i_totalParticipants;
 	private int i_roundsPlayedInWonGames;
 	private int i_roundsPlayedInLostGames;
 	private int i_gamesLost;
@@ -14,6 +14,7 @@ public class LeagueRow implements Serializable {
 	private boolean i_playingToday = true;
 	private InfiniteInteger i_gap;
 	private Delta i_delta;
+	private League i_league;
 	
 	public LeagueRow() {
 	}
@@ -31,23 +32,40 @@ public class LeagueRow implements Serializable {
 	 */
 	public LeagueRow(
 			Person person, int gamesLost, int gamesWon, int roundsPlayedInWonGames, int roundsPlayedInLostGames,
-			int totalGamesPlayed, boolean exempt, boolean playingToday, InfiniteInteger gap, Delta delta) {
+			int totalParticipants, boolean exempt, boolean playingToday, InfiniteInteger gap, Delta delta, League league) {
 		super();
 		i_person = person;
 		i_gamesLost = gamesLost;
 		i_gamesWon = gamesWon;
 		i_roundsPlayedInWonGames = roundsPlayedInWonGames;
 		i_roundsPlayedInLostGames = roundsPlayedInLostGames;
-		i_totalGamesPlayed = totalGamesPlayed;
+		i_totalParticipants = totalParticipants;
 		i_exempt = exempt;
 		i_playingToday = playingToday;
 		i_gap = gap;
 		i_delta = delta;
+		i_league = league;
 	}
 
 	public LeagueRow copy() {
-		return new LeagueRow(getPerson(), getGamesLost(), getGamesWon(), getRoundsPlayedInWonGames(), getRoundsPlayedInLostGames(), getTotalGamesPlayed(), isExempt(), isPlayingToday(), getGap(), getDelta());
+		return
+			new LeagueRow(
+					getPerson(), getGamesLost(), getGamesWon(), getRoundsPlayedInWonGames(), getRoundsPlayedInLostGames(),
+					getTotalParticipants(), isExempt(), isPlayingToday(), getGap(), getDelta(), getLeague());
 	}
+	
+	public Double getWeightedLossesPerGame() {
+		League league = getLeague();
+		if (league == null) {
+			return null;
+		}
+		return getLossesPerGame()  * league.getExpectedLossesPerGame() / getExpectedLossesPerGame();
+	}
+	
+	public double getExpectedLossesPerGame() {
+		return getGamesPlayed() / (double) getTotalParticipants();
+	}
+	
 	public double getLossesPerGame() {
 		return getGamesLost() / (double) getGamesPlayed();
 	}
@@ -87,7 +105,7 @@ public class LeagueRow implements Serializable {
 					getGamesLost() == other.getGamesLost() &&
 					getRoundsPlayed() == other.getRoundsPlayed() &&
 					getGamesPlayed() == other.getGamesPlayed() &&
-					getTotalGamesPlayed() == other.getTotalGamesPlayed();
+					getGamesWon() == other.getGamesWon();
 	}
 
 	public int getRoundsPlayed() {
@@ -186,17 +204,19 @@ public class LeagueRow implements Serializable {
 		i_gamesWon = gamesWon;
 	}
 
-	/**
-	 * @return the totalGamesPlayed
-	 */
-	public int getTotalGamesPlayed() {
-		return i_totalGamesPlayed;
+	public League getLeague() {
+		return i_league;
 	}
 
-	/**
-	 * @param totalGamesPlayed the totalGamesPlayed to set
-	 */
-	public void setTotalGamesPlayed(int totalGamesPlayed) {
-		i_totalGamesPlayed = totalGamesPlayed;
+	public void setLeague(League league) {
+		i_league = league;
+	}
+
+	public int getTotalParticipants() {
+		return i_totalParticipants;
+	}
+
+	public void setTotalParticipants(int totalParticipants) {
+		i_totalParticipants = totalParticipants;
 	}
 }
