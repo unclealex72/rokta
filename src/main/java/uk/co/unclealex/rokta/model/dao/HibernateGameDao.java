@@ -1,16 +1,12 @@
 package uk.co.unclealex.rokta.model.dao;
 
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.orm.hibernate3.HibernateCallback;
 
 import uk.co.unclealex.rokta.model.Game;
 import uk.co.unclealex.rokta.model.Person;
@@ -52,14 +48,9 @@ public class HibernateGameDao extends HibernateStoreRemoveDao<Game> implements G
 	}
 	
 	public SortedSet<Game> getGamesByRestriction(final GameRestriction restriction) {
-		List<Game> games = getHibernateTemplate().executeFind(
-				new HibernateCallback() {
-					public Object doInHibernate(Session session) throws HibernateException, SQLException {
-						Criteria criteria = session.createCriteria(Game.class);
-						restriction.accept(new GetGamesByRestrictionVisitor(criteria));
-						return criteria.list();
-					}
-				});
+		Criteria criteria = getSession().createCriteria(Game.class);
+		restriction.accept(new GetGamesByRestrictionVisitor(criteria));
+		List<Game> games = criteria.list();
 		SortedSet<Game> sortedGames = new TreeSet<Game>();
 		sortedGames.addAll(games);
 		return sortedGames;
@@ -70,23 +61,13 @@ public class HibernateGameDao extends HibernateStoreRemoveDao<Game> implements G
 	}
 	
 	public Game getLastGame() {
-		return (Game) getHibernateTemplate().execute(
-				new HibernateCallback() {
-					public Object doInHibernate(Session session) throws HibernateException, SQLException {
-						List<Game> games = session.getNamedQuery("game.getLast").list();
-            return games.iterator().next();
-					}
-				});
+		return (Game) getSession().getNamedQuery("game.getLast").list().iterator().next();
 	}
 
 	public Game getLastGamePlayed(final Person person) {
-		return (Game) getHibernateTemplate().execute(
-				new HibernateCallback() {
-					public Object doInHibernate(Session session) throws HibernateException, SQLException {
-            List<Game> games = session.getNamedQuery("game.getLastForPerson").setEntity("person", person).list(); 
-						return games.iterator().next();
-					}
-				});
+		return
+			(Game) getSession().getNamedQuery("game.getLastForPerson").
+			setEntity("person", person).list().iterator().next();
 	}
 
 	/* (non-Javadoc)
@@ -94,12 +75,7 @@ public class HibernateGameDao extends HibernateStoreRemoveDao<Game> implements G
 	 */
 	public SortedSet<Game> getGamesSince(final Date since) {
 		SortedSet<Game> games = new TreeSet<Game>();
-		games.addAll(getHibernateTemplate().executeFind(
-				new HibernateCallback() {
-					public Object doInHibernate(Session session) throws HibernateException, SQLException {
-            return session.getNamedQuery("game.getAllSince").setParameter("datePlayed", since).list(); 
-					}
-				}));
+		games.addAll(getSession().getNamedQuery("game.getAllSince").setParameter("datePlayed", since).list()); 
 		return games;
 	}
 }

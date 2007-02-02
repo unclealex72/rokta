@@ -19,11 +19,13 @@ import javax.xml.bind.annotation.XmlType;
 		@NamedQuery(name="person.findByName", query="select p from Person p where p.name=:name")
 		})
 @XmlRootElement(name="colour")
-@XmlType(propOrder={"name", "colour"})
+@XmlType(propOrder={"name", "password", "colour"})
 public class Person extends Identity<Person> {
 
 	private String i_name;
+	private String i_password;
 	private Colour i_colour;
+	
 	@Override
 	public int compareTo(Person o) {
 		return getName().compareTo(o.getName());
@@ -44,6 +46,15 @@ public class Person extends Identity<Person> {
 		i_name = name;
 	}
 	
+	@Column
+	public String getPassword() {
+		return i_password;
+	}
+
+	public void setPassword(String password) {
+		i_password = password;
+	}
+
 	@ManyToOne
 	@XmlIDREF
 	public Colour getColour() {

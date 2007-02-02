@@ -5,6 +5,4 @@ public interface StoreRemoveDao<T> {
 	public void store(T obj);
 
 	public void remove(T obj);
-	
-
 }

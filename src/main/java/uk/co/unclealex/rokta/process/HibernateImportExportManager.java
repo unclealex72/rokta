@@ -8,6 +8,7 @@ import uk.co.unclealex.rokta.model.Person;
 import uk.co.unclealex.rokta.model.Rokta;
 import uk.co.unclealex.rokta.model.dao.ColourDao;
 import uk.co.unclealex.rokta.model.dao.GameDao;
+import uk.co.unclealex.rokta.model.dao.PerformanceManager;
 import uk.co.unclealex.rokta.model.dao.PersonDao;
 
 public class HibernateImportExportManager implements ImportExportManager {
@@ -15,6 +16,8 @@ public class HibernateImportExportManager implements ImportExportManager {
 	private PersonDao i_personDao;
 	private GameDao i_gameDao;
 	private ColourDao i_colourDao;
+	
+	private PerformanceManager i_performanceManager;
 	
 	public Rokta exportAll() {
 		SortedSet<Person> everybody = getPersonDao().getEverybody();
@@ -39,13 +42,15 @@ public class HibernateImportExportManager implements ImportExportManager {
 			colourDao.remove(colour);
 		}
 		
+		getPerformanceManager().flush();
+		
 		for (Colour colour : rokta.getColours()) {
 			colourDao.store(colour);
 		}
-		for (Person person : personDao.getEverybody()) {
+		for (Person person : rokta.getPeople()) {
 			personDao.store(person);
 		}
-		for (Game game : gameDao.getAllGames()) {
+		for (Game game : rokta.getGames()) {
 			gameDao.store(game);
 		}
 	}
@@ -72,6 +77,14 @@ public class HibernateImportExportManager implements ImportExportManager {
 
 	public void setColourDao(ColourDao colourDao) {
 		i_colourDao = colourDao;
+	}
+
+	public PerformanceManager getPerformanceManager() {
+		return i_performanceManager;
+	}
+
+	public void setPerformanceManager(PerformanceManager performanceManager) {
+		i_performanceManager = performanceManager;
 	}
 
 }
