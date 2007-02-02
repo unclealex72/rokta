@@ -70,6 +70,19 @@
     </property>
   </bean>
 
+  <bean
+  	id="performanceManager"
+  	class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="prototype">
+    <property name="target">
+      <bean class="uk.co.unclealex.rokta.model.dao.HibernatePerformanceManager"/>
+    </property>
+    <property name="transactionAttributes">
+      <props>
+        <prop key="*">PROPAGATION_REQUIRED</prop>
+      </props>
+    </property>
+  </bean>
+
   <bean id="dateUtil" class="uk.co.unclealex.rokta.util.DateUtilImpl"/>
   <bean id="personManager" class="uk.co.unclealex.rokta.process.PersonManagerImpl" scope="prototype"/>
   <bean id="gameManager"
