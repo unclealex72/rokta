@@ -117,4 +117,21 @@
         <rtexprvalue>true</rtexprvalue>
     </attribute>
   </tag>
+
+  <tag>
+    <description>
+    	Print a space or a non-breaking space.
+    </description>
+    <name>space</name>
+    <tag-class>uk.co.unclealex.rokta.tags.SpaceTag</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+        <description>
+          Indicate whether the space should be non-breaking.
+        </description>
+        <name>nonBreaking</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+   </tag>
 </taglib>
