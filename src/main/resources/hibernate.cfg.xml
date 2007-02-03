@@ -8,11 +8,15 @@
     <session-factory>
 
         <!-- Database connection settings -->
+        <!--
         <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
         <property name="connection.url">jdbc:mysql://hurst/rokta</property>
         <property name="connection.username">alex</property>
         <property name="connection.password">wh4mu0</property>
-
+				-->
+				
+				<property name="connection.datasource">java:/comp/env/rokta</property>
+				
         <!-- JDBC connection pool (use the built-in) -->
         <property name="connection.pool_size">1</property>
 
@@ -35,7 +39,7 @@
 				<mapping class="uk.co.unclealex.rokta.model.Play"/>
 				<mapping class="uk.co.unclealex.rokta.model.Round"/>
 				<mapping class="uk.co.unclealex.rokta.model.Game"/>
-                <mapping class="uk.co.unclealex.rokta.model.Colour"/>
+        <mapping class="uk.co.unclealex.rokta.model.Colour"/>
     </session-factory>
 
 </hibernate-configuration>

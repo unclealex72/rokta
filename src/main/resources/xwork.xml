@@ -15,26 +15,6 @@
 
 		<default-interceptor-ref name="defaultStack" />
 
-		<action name="initialise"
-			class="uk.co.unclealex.rokta.actions.InitialiseAction">
-			<result name="success">
-				/WEB-INF/pages/initialise.jsp
-			</result>
-		</action>
-
-		<action name="start"
-			class="uk.co.unclealex.rokta.actions.StartAction">
-			<interceptor-ref name="defaultStack"/>
-			<interceptor-ref name="applicationContext"/>
-			<result name="success">/WEB-INF/pages/game.jsp</result>
-		</action>
-
-		<action name="round"
-			class="uk.co.unclealex.rokta.actions.RoundAction">
-			<result name="next">/WEB-INF/pages/game.jsp</result>
-			<result name="finished">/WEB-INF/pages/finished.jsp</result>
-		</action>
-
 		<action name="league"
 			class="uk.co.unclealex.rokta.actions.LeagueAction">
 			<result name="success">/WEB-INF/pages/league.jsp</result>
@@ -50,6 +30,12 @@
 			<result name="success">/WEB-INF/pages/games.jsp</result>
 		</action>
 
+		<action name="login"
+			class="uk.co.unclealex.rokta.actions.LoginAction">
+			<result name="success">/WEB-INF/pages/login.jsp</result>
+			<result name="input">/WEB-INF/pages/login.jsp</result>
+		</action>
+
 		<action name="export"
 			class="uk.co.unclealex.rokta.actions.ExportAction">
 			<result name="success" type="jaxb">
@@ -58,14 +44,6 @@
 			</result>
 		</action>
 
-		<action name="import" class="com.opensymphony.xwork.ActionSupport">
-			<result name="success">/WEB-INF/pages/import.jsp</result>
-		</action>
-		
-		<action name="doImport" class="uk.co.unclealex.rokta.actions.ImportAction">
-			<result name="success" type="redirect">/league.html</result>
-		</action>
-		
 		<action name="profile"
 			class="uk.co.unclealex.rokta.actions.ProfileAction">
 			<result name="success">/WEB-INF/pages/profile.jsp</result>
@@ -107,5 +85,48 @@
 		</action>
 
 	</package>
+	
+	<package namespace="/edit" name="edit" extends="default">
+		<action name="initialise"
+			class="uk.co.unclealex.rokta.actions.InitialiseAction">
+			<result name="success">
+				/WEB-INF/pages/initialise.jsp
+			</result>
+		</action>
+
+		<action name="start"
+			class="uk.co.unclealex.rokta.actions.StartAction">
+			<interceptor-ref name="defaultStack"/>
+			<interceptor-ref name="applicationContext"/>
+			<result name="success">/WEB-INF/pages/game.jsp</result>
+		</action>
+
+		<action name="round"
+			class="uk.co.unclealex.rokta.actions.RoundAction">
+			<result name="next">/WEB-INF/pages/game.jsp</result>
+			<result name="finished">/WEB-INF/pages/finished.jsp</result>
+		</action>	
+
+		<action name="details"
+			class="uk.co.unclealex.rokta.actions.RoktaAction">
+			<result name="success">/WEB-INF/pages/details.jsp</result>
+		</action>	
+
+		<action name="changepassword"
+			class="uk.co.unclealex.rokta.actions.ChangePasswordAction">
+			<result name="success" type="redirect">/edit/details.html</result>
+			<result name="input">/WEB-INF/pages/details.jsp</result>
+		</action>	
+
+		<action name="import" class="com.opensymphony.xwork.ActionSupport">
+			<result name="success">/WEB-INF/pages/import.jsp</result>
+		</action>
+		
+		<action name="doImport" class="uk.co.unclealex.rokta.actions.ImportAction">
+			<result name="success" type="redirect">/league.html</result>
+		</action>
+		
+	</package>
+
 </xwork>
 
