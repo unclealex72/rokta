@@ -135,17 +135,19 @@
   <body>  
     <div id="main">
       <div id="links">
-        <!--
-          <a href="#">another link</a> | <a href="#">another link</a> | <a href="#">another link</a> | <a href="#">another link</a>
-        -->
+      	<c:set var="link">
+      		<ww:url action="details" namespace="/edit"/>
+      	</c:set>
+      	<a href="${link}">User details</a>
+      	<ww:if test="principalProxy.userPrincipal != null">
+      		| <c:url var="link" value="/logout.html"/> <a href="${link}">Logout</a>
+      	</ww:if>
       </div>
       <div id="logo">
       	<h1>
       		ROKTA -
       		<decorator:title/>
-      		    <![CDATA[
-					&nbsp;
-    ]]>
+      		<rokta:space/>
       		<ww:property value="%{gameFilterInternal.description}"/>
       	</h1>
       </div>
@@ -156,13 +158,13 @@
             <ul>
               <li>
                 <c:set var="link">
-                  <ww:url action="initialise"/>
+                  <ww:url action="initialise" namespace="/edit"/>
                 </c:set>
                 <a href="${link}">New game</a>
               </li>
               <li>
                 <c:set var="link">
-                  <ww:url action="league">
+                  <ww:url action="league" namespace="/">
                   	<ww:param name="gameFilter" value="%{gameFilter}"/>
                   </ww:url>
                 </c:set>
@@ -179,7 +181,7 @@
             <div id="filterlinks">
               <ul>
                 <li>
-                  <ww:form id="filtered" action="filteredleague" method="post">
+                  <ww:form id="filtered" namespace="/" action="filteredleague" method="post">
                     <ww:textfield name="filteredDate" id="calendar"/>
                   </ww:form>
                 </li>
@@ -246,7 +248,7 @@
                 <ww:iterator id="player" value="players">
                   <li>
                     <c:set var="link">
-                      <ww:url action="profile">
+                      <ww:url action="profile" namespace="/">
                         <ww:param name="person" value="name"/>
                         <ww:param name="gameFilter" value="%{gameFilter}"/>
                       </ww:url>
@@ -260,7 +262,7 @@
               <ul>
                 <li>
                   <c:set var="link">
-                    <ww:url action="headtoheads">
+                    <ww:url action="headtoheads" namespace="/">
                     	<ww:param name="gameFilter" value="%{gameFilter}"/>
                     </ww:url>
                   </c:set>
@@ -276,7 +278,7 @@
                 </li>
                 <li>
                   <c:set var="link">
-                    <ww:url action="losingstreaks">
+                    <ww:url action="losingstreaks" namespace="/">
                     	<ww:param name="gameFilter" value="%{gameFilter}"/>
                     </ww:url>
                   </c:set>
