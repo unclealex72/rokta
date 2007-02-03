@@ -29,27 +29,25 @@
           <th>Lost</th>
           <th>Percentage</th>
         </tr>
-        <ww:iterator id="player" value="players">
-          <ww:if test="%{headToHeadRoundWinRate[#player] != null}">
-            <ww:push value="%{headToHeadRoundWinRate[top]}">
-              <tr>
-                <td>
-                  <ww:property value="#player.name"/>
-                </td>
-                <td>
-                  <ww:property value="%{winCount}"/>
-                </td>
-                <td>
-                  <ww:property value="%{lossCount}"/>
-                </td>
-                <td>
-                  <fmt:formatNumber type="percent" minFractionDigits="2" maxFractionDigits="2">
-                    <ww:property value="winRatio"/>
-                  </fmt:formatNumber>
-                </td>
-              </tr>
-            </ww:push>
-          </ww:if>
+        <ww:iterator id="entry" value="headToHeadRoundWinRate.entrySet()">
+           <ww:push value="#entry.value">
+             <tr>
+               <td>
+                 <ww:property value="#entry.key.name"/>
+               </td>
+               <td>
+                 <ww:property value="%{winCount}"/>
+               </td>
+               <td>
+                 <ww:property value="%{lossCount}"/>
+               </td>
+               <td>
+                 <fmt:formatNumber type="percent" minFractionDigits="2" maxFractionDigits="2">
+                   <ww:property value="winRatio"/>
+                 </fmt:formatNumber>
+               </td>
+             </tr>
+           </ww:push>
         </ww:iterator>
       </table>
     </ww:if>

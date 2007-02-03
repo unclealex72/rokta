@@ -16,7 +16,7 @@
 
   <body>
     <h1>Select the players</h1>
-    <form action="start.html" method="post">
+    <ww:form action="start" method="post" theme="simple">
       <p>
         <ww:if test="exempt != null">
           <ww:property value="exempt"/>
@@ -51,7 +51,7 @@
           </td>
         </tr>
       </table>
-    </form>
+    </ww:form>
   </body>
   </html>
 </jsp:root>

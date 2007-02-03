@@ -16,7 +16,7 @@
 
   <body>
     <h1>Round <ww:property value="currentRound"/></h1>
-    <form action="round.html" method="post">
+    <ww:form action="round" method="post" theme="simple">
       <ww:hidden name="currentRound" value="%{currentRound}"/>
       <ww:hidden name="gameManager" value="%{gameManager}"/>
       <table>
@@ -59,7 +59,7 @@
       <ww:iterator id="participant" value="participants">
         <ww:hidden name="participants" value="%{participant}"/>
       </ww:iterator>
-    </form>
+    </ww:form>
   </body>
   </html>
 </jsp:root>

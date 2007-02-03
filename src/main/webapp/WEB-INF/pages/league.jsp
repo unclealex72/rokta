@@ -34,7 +34,7 @@
         <ww:if test="league.current">
           <th>Gap</th>
         </ww:if>
-        <th>W</th>
+        <!-- <th>W</th>  -->
       </tr>
       <ww:iterator id="row" value="league.rows">
         <ww:if test="exempt">
@@ -91,11 +91,13 @@
               </ww:if>
             </td>
           </ww:if>
+          <!--
           <td>
             <fmt:formatNumber type="percent" minFractionDigits="2" maxFractionDigits="2">
 	          	<ww:property value="weightedLossesPerGame"/>
             </fmt:formatNumber>
           </td>
+           -->
         </tr>
       </ww:iterator>
     </table>
