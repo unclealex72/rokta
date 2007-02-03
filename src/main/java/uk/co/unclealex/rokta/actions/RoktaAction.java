@@ -21,9 +21,11 @@ import uk.co.unclealex.rokta.model.dao.PersonDao;
 import uk.co.unclealex.rokta.model.dao.PlayDao;
 import uk.co.unclealex.rokta.model.dao.RoundDao;
 
+import com.opensymphony.webwork.interceptor.PrincipalAware;
+import com.opensymphony.webwork.interceptor.PrincipalProxy;
 import com.opensymphony.xwork.ActionSupport;
 
-public class RoktaAction extends ActionSupport {
+public class RoktaAction extends ActionSupport implements PrincipalAware {
 
 	protected static final String DATE_FORMAT_WEEK = "'Week 'ww, yyyy";
 	protected static final String DATE_FORMAT_MONTH = "MMMMM, yyyy";
@@ -34,6 +36,8 @@ public class RoktaAction extends ActionSupport {
 	private PlayDao i_playDao;
 	private RoundDao i_roundDao;
 	private ColourDao i_colourDao;
+	
+	private PrincipalProxy i_principalProxy;
 	
 	private GameFilterFactory i_gameFilterFactory;
 	private GameFilter i_gameFilterInternal;
@@ -82,7 +86,15 @@ public class RoktaAction extends ActionSupport {
 			selectedDate = new SimpleDateFormat("dd/MM/yyyy").parse(filteredDate);
 		}
 		SortedSet<Game> allGames = getGameDao().getAllGames();
-		Date lastGamePlayed = allGames.last().getDatePlayed();
+		Date lastGamePlayed;
+		Date firstGamePlayed;
+		if (allGames.isEmpty()) {
+			lastGamePlayed = firstGamePlayed = new Date();
+		}
+		else {
+			firstGamePlayed = allGames.first().getDatePlayed();
+			lastGamePlayed = allGames.last().getDatePlayed();
+		}
 		Date now = new Date();
 		setSelectedDate(selectedDate);
 		if (selectedDate != null) {
@@ -94,7 +106,7 @@ public class RoktaAction extends ActionSupport {
 		else {
 			setInitialDate(now);
 		}
-		setMinimumDate(allGames.first().getDatePlayed());
+		setMinimumDate(firstGamePlayed);
 		Calendar maximumDate = new GregorianCalendar();
 		maximumDate.setTime(lastGamePlayed);
 		maximumDate.add(Calendar.DAY_OF_YEAR, 1);
@@ -283,4 +295,13 @@ public class RoktaAction extends ActionSupport {
 	public void setGameFilterInternal(GameFilter gameFilterInternal) {
 		i_gameFilterInternal = gameFilterInternal;
 	}
+
+	public PrincipalProxy getPrincipalProxy() {
+		return i_principalProxy;
+	}
+
+	public void setPrincipalProxy(PrincipalProxy principalProxy) {
+		i_principalProxy = principalProxy;
+	}
+
 }
