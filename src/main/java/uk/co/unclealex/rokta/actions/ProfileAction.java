@@ -28,7 +28,7 @@ public class ProfileAction extends RoktaAction {
 	private Person i_person;
 	
 	@Override
-	protected String executeInternal() throws Exception {
+	protected String executeInternal() {
 		setAllColours(getColourDao().getColours());
 		Person person = getPerson();
 		ProfileManager manager = getProfileManager();
