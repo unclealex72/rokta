@@ -7,6 +7,15 @@
 
   <display-name>Rokta</display-name>
 
+  <filter>
+    <filter-name>acegi</filter-name>
+    <filter-class>org.acegisecurity.util.FilterToBeanProxy</filter-class>
+    <init-param>
+      <param-name>targetClass</param-name>
+      <param-value>org.acegisecurity.util.FilterChainProxy</param-value>
+    </init-param>
+  </filter>
+
 	<filter>
 		<filter-name>gzip</filter-name>
 		<filter-class>com.jspbook.GZIPFilter</filter-class>
@@ -43,6 +52,11 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	
+  <filter-mapping>
+    <filter-name>acegi</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
   <filter-mapping>
     <filter-name>sitemesh</filter-name>
     <url-pattern>*.html</url-pattern>
@@ -119,9 +133,20 @@
 
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>classpath:applicationContext.xml,classpath:applicationContext-factories.xml</param-value>
+    <param-value>
+    	classpath:applicationContext-web-security.xml,
+    	classpath:applicationContext.xml,
+    	classpath:applicationContext-factories.xml
+    </param-value>
   </context-param>
 
+  <resource-ref>
+      <description>Rokta</description>
+      <res-ref-name>rokta</res-ref-name>
+      <res-type>javax.sql.DataSource</res-type>
+      <res-auth>Container</res-auth>
+  </resource-ref>
+  
   <jsp-config>
     <taglib>
       <taglib-uri>http://cewolf.sourceforge.net/taglib/cewolf.tld</taglib-uri>
