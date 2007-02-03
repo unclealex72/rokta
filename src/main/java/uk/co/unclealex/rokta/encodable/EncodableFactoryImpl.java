@@ -17,6 +17,7 @@ public class EncodableFactoryImpl<T extends Encodable> implements EncodableFacto
 			throw new IllegalArgumentException("An encoded game filter cannot be empty.");
 		}
 		for (T template : getEncodableTemplates()) {
+			template.setEncodableFactory(this);
 			if (template.isDecodable(encodedGameFilter)) {
 				template.decode(encodedGameFilter);
 				return template;
