@@ -15,4 +15,6 @@ public interface PersonManager {
 
 	public Person getExemptPlayer(Date date);
 	public boolean currentlyPlaying(Person player, Date date);
+	
+	public boolean changePassword(String name, String currentPassword, String newPassword);
 }

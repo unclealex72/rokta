@@ -9,6 +9,7 @@ import uk.co.unclealex.rokta.model.Game;
 import uk.co.unclealex.rokta.model.Person;
 import uk.co.unclealex.rokta.model.dao.GameDao;
 import uk.co.unclealex.rokta.model.dao.PersonDao;
+import uk.co.unclealex.rokta.security.PasswordEncoder;
 import uk.co.unclealex.rokta.util.DateUtil;
 
 /**
@@ -19,6 +20,8 @@ public class PersonManagerImpl implements PersonManager {
 
 	private PersonDao i_personDao;
 	private GameDao i_gameDao;
+	private PasswordEncoder i_passwordEncoder;
+	
 	private DateUtil i_dateUtil;
 	
 	public Person getExemptPlayer(Date date) {
@@ -37,6 +40,19 @@ public class PersonManagerImpl implements PersonManager {
 	private boolean isGameOnDate(Game game, Date date) {
 		return getDateUtil().areSameDay(game.getDatePlayed(), date);
 	}
+	
+	public boolean changePassword(String name, String currentPassword, String newPassword) {
+		PersonDao personDao = getPersonDao();
+		PasswordEncoder passwordEncoder = getPasswordEncoder(); 
+		Person person = personDao.findPersonByNameAndPassword(name, passwordEncoder.encode(currentPassword));
+		if (person == null) {
+			return false;
+		}
+		person.setPassword(passwordEncoder.encode(newPassword));
+		personDao.store(person);
+		return true;
+	}
+	
 	/**
 	 * @return the gameDao
 	 */
@@ -77,6 +93,14 @@ public class PersonManagerImpl implements PersonManager {
 	 */
 	public void setDateUtil(DateUtil dateUtil) {
 		i_dateUtil = dateUtil;
+	}
+
+	public PasswordEncoder getPasswordEncoder() {
+		return i_passwordEncoder;
+	}
+
+	public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+		i_passwordEncoder = passwordEncoder;
 	}
 
 }
