@@ -11,4 +11,6 @@ public interface PersonDao extends StoreRemoveDao<Person>{
 	public SortedSet<Person> getEverybody();
 	
 	public SortedSet<Person> getPlayers();
+
+	public Person findPersonByNameAndPassword(String username, String encodedPassword);
 }

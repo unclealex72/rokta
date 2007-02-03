@@ -3,6 +3,9 @@ package uk.co.unclealex.rokta.model.dao;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+
 import uk.co.unclealex.rokta.model.Hand;
 import uk.co.unclealex.rokta.model.Person;
 
@@ -35,5 +38,12 @@ public class HibernatePersonDao extends HibernateStoreRemoveDao<Person> implemen
 
 	public SortedSet<Person> getPlayers() {
 		return new TreeSet<Person>(getSession().getNamedQuery("person.getPlayers").list());
+	}
+
+	public Person findPersonByNameAndPassword(String name, String encodedPassword) {
+		Criteria criteria = getSession().createCriteria(Person.class);
+		criteria.add(Restrictions.eq("name", name));
+		criteria.add(Restrictions.eq("password", encodedPassword));
+		return (Person) criteria.uniqueResult();
 	}
 }
