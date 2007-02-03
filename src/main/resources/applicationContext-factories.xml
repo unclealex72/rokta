@@ -4,29 +4,14 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
   default-autowire="byName">
 
-	<bean id="allGameFilter" class="uk.co.unclealex.rokta.filter.AllGameFilter">
-		<property name="encodableFactory" ref="gameFilterFactory"/>
-	</bean>
-	<bean id="beforeGameFilter" class="uk.co.unclealex.rokta.filter.BeforeGameFilter">
-		<property name="encodableFactory" ref="gameFilterFactory"/>
-	</bean>
-	<bean id="sinceGameFilter" class="uk.co.unclealex.rokta.filter.SinceGameFilter">
-		<property name="encodableFactory" ref="gameFilterFactory"/>
-	</bean>
-	<bean id="betweenGameFilter" class="uk.co.unclealex.rokta.filter.BetweenGameFilter">
-		<property name="encodableFactory" ref="gameFilterFactory"/>
-	</bean>
-	<bean id="weekGameFilter" class="uk.co.unclealex.rokta.filter.WeekGameFilter">
-		<property name="encodableFactory" ref="gameFilterFactory"/>
-	</bean>
-	<bean id="monthGameFilter" class="uk.co.unclealex.rokta.filter.MonthGameFilter">
-		<property name="encodableFactory" ref="gameFilterFactory"/>
-	</bean>
-	<bean id="yearGameFilter" class="uk.co.unclealex.rokta.filter.YearGameFilter">
-		<property name="encodableFactory" ref="gameFilterFactory"/>
-	</bean>
-	<bean id="predicateGameFilter" class="uk.co.unclealex.rokta.filter.PredicateGameFilter">
-		<property name="encodableFactory" ref="gameFilterFactory"/>
+	<bean id="allGameFilter" class="uk.co.unclealex.rokta.filter.AllGameFilter" scope="prototype"/>
+	<bean id="beforeGameFilter" class="uk.co.unclealex.rokta.filter.BeforeGameFilter" scope="prototype"/>
+	<bean id="sinceGameFilter" class="uk.co.unclealex.rokta.filter.SinceGameFilter" scope="prototype"/>
+	<bean id="betweenGameFilter" class="uk.co.unclealex.rokta.filter.BetweenGameFilter" scope="prototype"/>
+	<bean id="weekGameFilter" class="uk.co.unclealex.rokta.filter.WeekGameFilter" scope="prototype"/>
+	<bean id="monthGameFilter" class="uk.co.unclealex.rokta.filter.MonthGameFilter" scope="prototype"/>
+	<bean id="yearGameFilter" class="uk.co.unclealex.rokta.filter.YearGameFilter" scope="prototype"/>
+	<bean id="predicateGameFilter" class="uk.co.unclealex.rokta.filter.PredicateGameFilter" scope="prototype">
 		<property name="gamePredicateFactory" ref="gamePredicateFactory"/>
 	</bean>
 
