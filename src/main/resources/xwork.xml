@@ -49,13 +49,6 @@
 			<result name="success">/WEB-INF/pages/profile.jsp</result>
 		</action>
 
-		<action name="colour"
-			class="uk.co.unclealex.rokta.actions.ColourAction">
-			<result type="redirect" name="success">
-				/profile.html?person=${person.name}
-			</result>
-		</action>
-
 		<action name="statistics"
 			class="uk.co.unclealex.rokta.actions.RoktaAction">
 			<result name="success">
@@ -108,7 +101,7 @@
 		</action>	
 
 		<action name="details"
-			class="uk.co.unclealex.rokta.actions.RoktaAction">
+			class="uk.co.unclealex.rokta.actions.DetailsAction">
 			<result name="success">/WEB-INF/pages/details.jsp</result>
 		</action>	
 
@@ -116,6 +109,17 @@
 			class="uk.co.unclealex.rokta.actions.ChangePasswordAction">
 			<result name="success" type="redirect">/edit/details.html</result>
 			<result name="input">/WEB-INF/pages/details.jsp</result>
+		</action>	
+
+		<action name="changedetails"
+			class="uk.co.unclealex.rokta.actions.ChangeDetailsAction">
+			<result name="success" type="redirect">/edit/details.html</result>
+			<result name="input">/WEB-INF/pages/details.jsp</result>
+		</action>	
+
+		<action name="replay"
+			class="uk.co.unclealex.rokta.actions.ReplayAction">
+			<result name="success" type="chain">start</result>
 		</action>	
 
 		<action name="import" class="com.opensymphony.xwork.ActionSupport">
