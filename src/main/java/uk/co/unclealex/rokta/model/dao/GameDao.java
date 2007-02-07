@@ -18,4 +18,6 @@ public interface GameDao extends StoreRemoveDao<Game> {
 	public Game getLastGamePlayed(Person person);
 
 	public SortedSet<Game> getGamesSince(Date since);
+
+	public Game getGameById(long id);
 }

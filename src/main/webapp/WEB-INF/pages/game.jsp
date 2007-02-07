@@ -59,6 +59,9 @@
       <ww:iterator id="participant" value="participants">
         <ww:hidden name="participants" value="%{participant}"/>
       </ww:iterator>
+      <ww:if test="replacingGameId != null">
+      	<ww:hidden name="replacingGameId"/>
+      </ww:if>
     </ww:form>
   </body>
   </html>

@@ -78,4 +78,8 @@ public class HibernateGameDao extends HibernateStoreRemoveDao<Game> implements G
 		games.addAll(getSession().getNamedQuery("game.getAllSince").setParameter("datePlayed", since).list()); 
 		return games;
 	}
+
+	public Game getGameById(long id) {
+		return (Game) getSession().get(Game.class, id);
+	}
 }

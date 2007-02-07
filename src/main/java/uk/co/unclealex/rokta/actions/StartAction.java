@@ -9,7 +9,7 @@ import uk.co.unclealex.rokta.model.Person;
 import uk.co.unclealex.rokta.process.GameManager;
 import uk.co.unclealex.rokta.spring.ApplicationContextAware;
 
-public class StartAction extends PlayingAction implements ApplicationContextAware {
+public class StartAction extends PlayingAction implements ApplicationContextAware, GameStartingAction {
 
 	private Person i_instigator;
 	private Person[] i_participants;

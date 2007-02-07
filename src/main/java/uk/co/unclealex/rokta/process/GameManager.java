@@ -18,7 +18,7 @@ public interface GameManager extends Serializable {
 	public void nextRound(Map<Person, Hand> plays, Person counter, int round)
 			throws InvalidRoundException;
 
-	public void finishGame() throws InvalidRoundException;
+	public void finishGame(Long replacingGameId) throws InvalidRoundException;
 
 	public Game getGame();
 

@@ -27,7 +27,7 @@ public class RoundAction extends PlayingAction {
 		gameManager.nextRound(plays, getCounter(), getCurrentRound());
 		if (gameManager.isFinished()) {
 			setLoser(gameManager.getGame().getLoser());
-			gameManager.finishGame();
+			gameManager.finishGame(getReplacingGameId());
 			return "finished";
 		}
 		return gameManager.isFinished()?"finished":"next";

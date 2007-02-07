@@ -1,5 +1,6 @@
 package uk.co.unclealex.rokta.actions;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -19,7 +20,7 @@ public class InitialiseAction extends RoktaAction {
 	@Override
 	protected String executeInternal() {
 		Person exempt = getPersonManager().getExemptPlayer(new Date());
-		SortedSet<Person> availablePlayers = new TreeSet<Person>();
+		SortedSet<Person> availablePlayers = new TreeSet<Person>(new PlayersFirstComparator());
 		availablePlayers.addAll(getPersonDao().getEverybody());
 		if (exempt != null) {
 			availablePlayers.remove(exempt);
@@ -30,6 +31,22 @@ public class InitialiseAction extends RoktaAction {
 		return SUCCESS;
 	}
 
+	private class PlayersFirstComparator implements Comparator<Person> {
+		public int compare(Person person1, Person person2) {
+			SortedSet<Person> players = getPlayers();
+			boolean isPlayer1 = players.contains(person1);
+			boolean isPlayer2 = players.contains(person2);
+			if (isPlayer1 == isPlayer2) {
+				return person1.compareTo(person2);
+			}
+			else if (isPlayer1 && !isPlayer2) {
+				return -1;
+			}
+			else {
+				return 1;
+			}
+		}
+	}
 	/**
 	 * @return the availablePlayers
 	 */

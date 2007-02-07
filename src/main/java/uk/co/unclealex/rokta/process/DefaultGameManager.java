@@ -88,14 +88,14 @@ public class DefaultGameManager implements GameManager {
 	/* (non-Javadoc)
 	 * @see uk.co.unclealex.rokta.process.GameManager#finishGame()
 	 */
-	public final void finishGame() throws InvalidRoundException {
+	public final void finishGame(Long replacingGameId) throws InvalidRoundException {
 		if (!isFinished()) {
 			throw new InvalidRoundException("This game is not finished.");
 		}
-		finishGameInternal();
+		finishGameInternal(replacingGameId);
 	}
 	
-	protected void finishGameInternal() {
+	protected void finishGameInternal(Long replacingGameId) {
 		// Do nothing
 	}
 	

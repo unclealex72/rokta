@@ -15,6 +15,8 @@ public abstract class PlayingAction extends RoktaAction {
 	private int i_currentRound;
 	private SortedSet<Person> i_everybody;
   
+	private Long i_replacingGameId;
+	
 	@Override
 	protected String executeInternal() throws InvalidRoundException {
     setEverybody(getPersonDao().getEverybody());
@@ -77,4 +79,12 @@ public abstract class PlayingAction extends RoktaAction {
   public void setEverybody(SortedSet<Person> everybody) {
     i_everybody = everybody;
   }
+
+	public Long getReplacingGameId() {
+		return i_replacingGameId;
+	}
+
+	public void setReplacingGameId(Long replacingGameId) {
+		i_replacingGameId = replacingGameId;
+	}
 }
