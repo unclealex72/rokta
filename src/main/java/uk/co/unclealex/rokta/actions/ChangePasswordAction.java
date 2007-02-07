@@ -2,7 +2,7 @@ package uk.co.unclealex.rokta.actions;
 
 import uk.co.unclealex.rokta.process.PersonManager;
 
-public class ChangePasswordAction extends RoktaAction {
+public class ChangePasswordAction extends DetailsAction {
 
 	private PersonManager i_personManager;
 	
@@ -12,6 +12,7 @@ public class ChangePasswordAction extends RoktaAction {
 	
 	@Override
 	protected String executeInternal() {
+		super.executeInternal();
 		String currentPassword = getCurrentPassword();
 		String password = getPassword();
 		String retypePassword = getRetypePassword();

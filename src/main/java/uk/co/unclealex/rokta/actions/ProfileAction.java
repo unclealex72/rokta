@@ -4,9 +4,7 @@
 package uk.co.unclealex.rokta.actions;
 
 import java.util.SortedMap;
-import java.util.SortedSet;
 
-import uk.co.unclealex.rokta.model.Colour;
 import uk.co.unclealex.rokta.model.Person;
 import uk.co.unclealex.rokta.model.WinLoseCounter;
 import uk.co.unclealex.rokta.process.ProfileManager;
@@ -24,12 +22,10 @@ public class ProfileAction extends RoktaAction {
 
 	private ProfileManager i_profileManager;
 	
-	private SortedSet<Colour> i_allColours;
 	private Person i_person;
 	
 	@Override
 	protected String executeInternal() {
-		setAllColours(getColourDao().getColours());
 		Person person = getPerson();
 		ProfileManager manager = getProfileManager();
 		manager.setPerson(person);
@@ -116,19 +112,5 @@ public class ProfileAction extends RoktaAction {
 	public void setOpeningGambitDatasetProducer(
 			HandCountingDatasetProducer openingGambitDatasetProvider) {
 		i_openingGambitDatasetProducer = openingGambitDatasetProvider;
-	}
-
-	/**
-	 * @return the allColours
-	 */
-	public SortedSet<Colour> getAllColours() {
-		return i_allColours;
-	}
-
-	/**
-	 * @param allColours the allColours to set
-	 */
-	public void setAllColours(SortedSet<Colour> allColours) {
-		i_allColours = allColours;
 	}
 }

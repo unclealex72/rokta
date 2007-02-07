@@ -10,16 +10,16 @@ import uk.co.unclealex.rokta.model.Person;
  * @author alex
  *
  */
-public class ColourAction extends RoktaAction {
+public class ChangeDetailsAction extends DetailsAction {
 
-	private Person i_person;
 	private Colour i_colour;
 	
 	/* (non-Javadoc)
 	 * @see uk.co.unclealex.rokta.actions.RoktaAction#executeInternal()
 	 */
 	@Override
-	protected String executeInternal() throws Exception {
+	protected String executeInternal() {
+		super.executeInternal();
 		Person person = getPerson();
 		person.setColour(getColour());
 		getPersonDao().store(person);
@@ -39,19 +39,4 @@ public class ColourAction extends RoktaAction {
 	public void setColour(Colour colour) {
 		i_colour = colour;
 	}
-
-	/**
-	 * @return the person
-	 */
-	public Person getPerson() {
-		return i_person;
-	}
-
-	/**
-	 * @param person the person to set
-	 */
-	public void setPerson(Person person) {
-		i_person = person;
-	}
-
 }
