@@ -42,7 +42,7 @@
           </td>
           <td>
             <ww:select label="Participants" name="participants" list="availablePlayers"
-                listKey="name" listValue="name" multiple="true" required="false" />
+                listKey="name" listValue="name" multiple="true" required="false" size="%{players.size()}"/>
           </td>
         </tr>
         <tr>
