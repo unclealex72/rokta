@@ -22,86 +22,94 @@
   <body>
     <h1>League</h1>
     <table class="data">
-      <tr>
-        <th />
-        <th>Player</th>
-        <th>Games</th>
-        <th>Rounds</th>
-        <th>Lost</th>
-        <th>R/WG</th>
-        <th>R/LG</th>
-        <th>L/G</th>
-        <ww:if test="league.current">
-          <th>Gap</th>
-        </ww:if>
-        <!-- <th>W</th>  -->
-      </tr>
-      <ww:iterator id="row" value="league.rows">
-        <ww:if test="exempt">
-          <ww:set name="class" value="%{'exempt'}" scope="page"/>
-        </ww:if>
-        <ww:elseif test="!playingToday">
-          <ww:set name="class" value="%{'notPlaying'}" scope="page"/>
-        </ww:elseif>
-        <ww:else>
-          <ww:set name="class" value="%{''}" scope="page"/>
-        </ww:else>
-        <tr class="${class}">
-          <td><ww:property value="delta" /></td>
-          <td><ww:property value="person" /></td>
-          <td><ww:property value="gamesPlayed" /></td>
-          <td><ww:property value="roundsPlayed" /></td>
-          <td><ww:property value="gamesLost" /></td>
-          <td>
-            <ww:if test="%{gamesWon == 0}">
-              -
-            </ww:if>
-            <ww:else>
-              <fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2">
-                <ww:property value="roundsPerWonGames"/>
-              </fmt:formatNumber>
-            </ww:else>
-          </td>
-          <td>
-            <ww:if test="%{gamesLost == 0}">
-              -
-            </ww:if>
-            <ww:else>
-              <fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2">
-                <ww:property value="roundsPerLostGames"/>
-              </fmt:formatNumber>
-            </ww:else>
-          </td>
-          <td>
-            <fmt:formatNumber type="percent" minFractionDigits="2" maxFractionDigits="2">
-              <ww:property value="lossesPerGame"/>
-            </fmt:formatNumber>
-          </td>
-          <ww:if test="league.current">
-            <td>
-              <ww:if test="gap != null">
-                <ww:push value="gap">
-                  <ww:if test="infinite">
-                    &#8734;
-                  </ww:if>
-                  <ww:else>                
-                    <ww:property value="value"/>
-                  </ww:else>
-                </ww:push>
-              </ww:if>
-            </td>
-          </ww:if>
-          <!--
-          <td>
-            <fmt:formatNumber type="percent" minFractionDigits="2" maxFractionDigits="2">
-	          	<ww:property value="weightedLossesPerGame"/>
-            </fmt:formatNumber>
-          </td>
-           -->
-        </tr>
-      </ww:iterator>
+    	<caption>
+				Expected losses per game:
+		     <fmt:formatNumber type="percent" minFractionDigits="2" maxFractionDigits="2">
+		       <ww:property value="league.expectedLossesPerGame"/>
+		     </fmt:formatNumber>
+    	</caption>
+    	<thead>
+	      <tr>
+	        <th />
+	        <th>Player</th>
+	        <th>Games</th>
+	        <th>Rounds</th>
+	        <th>Lost</th>
+	        <th>R/WG</th>
+	        <th>R/LG</th>
+	        <th>L/G</th>
+	        <ww:if test="league.current">
+	          <th>Gap</th>
+	        </ww:if>
+	        <th>WL</th>
+	      </tr>
+	    </thead>
+      <tbody>
+	      <ww:iterator id="row" value="league.rows">
+	        <ww:if test="exempt">
+	          <ww:set name="class" value="%{'exempt'}" scope="page"/>
+	        </ww:if>
+	        <ww:elseif test="!playingToday">
+	          <ww:set name="class" value="%{'notPlaying'}" scope="page"/>
+	        </ww:elseif>
+	        <ww:else>
+	          <ww:set name="class" value="%{''}" scope="page"/>
+	        </ww:else>
+	        <tr class="${class}">
+	          <td><ww:property value="delta" /></td>
+	          <td><ww:property value="person" /></td>
+	          <td><ww:property value="gamesPlayed" /></td>
+	          <td><ww:property value="roundsPlayed" /></td>
+	          <td><ww:property value="gamesLost" /></td>
+	          <td>
+	            <ww:if test="%{gamesWon == 0}">
+	              -
+	            </ww:if>
+	            <ww:else>
+	              <fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2">
+	                <ww:property value="roundsPerWonGames"/>
+	              </fmt:formatNumber>
+	            </ww:else>
+	          </td>
+	          <td>
+	            <ww:if test="%{gamesLost == 0}">
+	              -
+	            </ww:if>
+	            <ww:else>
+	              <fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2">
+	                <ww:property value="roundsPerLostGames"/>
+	              </fmt:formatNumber>
+	            </ww:else>
+	          </td>
+	          <td>
+	            <fmt:formatNumber type="percent" minFractionDigits="2" maxFractionDigits="2">
+	              <ww:property value="lossesPerGame"/>
+	            </fmt:formatNumber>
+	          </td>
+	          <ww:if test="league.current">
+	            <td>
+	              <ww:if test="gap != null">
+	                <ww:push value="gap">
+	                  <ww:if test="infinite">
+	                    &#8734;
+	                  </ww:if>
+	                  <ww:else>                
+	                    <ww:property value="value"/>
+	                  </ww:else>
+	                </ww:push>
+	              </ww:if>
+	            </td>
+	          </ww:if>
+	          <td>
+		          <fmt:formatNumber type="percent" minFractionDigits="2" maxFractionDigits="2">
+		            <ww:property value="weightedLossesPerGame"/>
+		          </fmt:formatNumber>
+	          </td>
+	        </tr>
+	      </ww:iterator>
+	    </tbody>
     </table>
-    
+
     <h1>Graph</h1>
     
     <ww:set name="leagueGraphProducer" scope="page" value="leagueGraphDatasetProducer"/>

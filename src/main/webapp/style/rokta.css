@@ -10,6 +10,16 @@ table.data th, table.data td {
 	text-align: center;
 }
 
+table.data {
+	caption-side: bottom;	
+}
+
+table.data caption {
+	text-align: left;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
 #addlinks select {
 	display: inline;
 }
