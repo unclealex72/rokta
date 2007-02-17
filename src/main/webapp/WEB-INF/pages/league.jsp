@@ -41,7 +41,6 @@
 	        <ww:if test="league.current">
 	          <th>Gap</th>
 	        </ww:if>
-	        <th>EL</th>
 	      </tr>
 	    </thead>
       <tbody>
@@ -100,11 +99,6 @@
 	              </ww:if>
 	            </td>
 	          </ww:if>
-	          <td>
-		          <fmt:formatNumber type="percent" minFractionDigits="2" maxFractionDigits="2">
-		            <ww:property value="expectedLossesPerGame"/>
-		          </fmt:formatNumber>
-	          </td>
 	        </tr>
 	      </ww:iterator>
 	    </tbody>
