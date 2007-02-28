@@ -54,7 +54,22 @@
 	        <ww:else>
 	          <ww:set name="class" value="%{''}" scope="page"/>
 	        </ww:else>
-	        <tr class="${class}">
+	        <ww:if test="league.current">
+		        <c:set var="title">
+		        	Win next:
+		        	<fmt:formatNumber type="percent" minFractionDigits="2" maxFractionDigits="2">
+		            <ww:property value="%{gamesLost / (gamesPlayed + 1.0)}"/>
+		          </fmt:formatNumber>,
+		        	Lose next:
+		        	<fmt:formatNumber type="percent" minFractionDigits="2" maxFractionDigits="2">
+		            <ww:property value="%{(gamesLost + 1) / (gamesPlayed + 1.0)}"/>
+		          </fmt:formatNumber>
+						</c:set>	        	
+	        </ww:if>
+	        <ww:else>
+	        	<c:set var="title" value=""/>
+	        </ww:else>
+	        <tr class="${class}" title="${title}">
 	          <td><ww:property value="delta" /></td>
 	          <td><ww:property value="person" /></td>
 	          <td><ww:property value="gamesPlayed" /></td>
