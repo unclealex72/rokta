@@ -187,13 +187,13 @@
                 </li>
                 <li>
                   <c:set var="link">
-                    <ww:url value="%{#request.requestURI}"/>
+                    <ww:url value="%{#request.requestURI}" includeParams="none"/>
                   </c:set>
                   <a href="${link}">This year</a>
                 </li>
                 <li>
                   <c:set var="link">
-                    <ww:url value="%{#request.requestURI}">
+                    <ww:url value="%{#request.requestURI}" includeParams="none">
                       <ww:param name="gameFilter" value="%{'a'}"/>
                     </ww:url>
                   </c:set>
@@ -202,7 +202,7 @@
                 <li>
                   <rokta:date format="ddMMyyyy" field="WEEK_OF_YEAR" value="-4" var="since"/>
                   <c:set var="link">
-                    <ww:url value="%{#request.requestURI}">
+                    <ww:url value="%{#request.requestURI}" includeParams="none">
                       <ww:param name="gameFilter" value="s%{#attr.since}"/>
                     </ww:url>
                   </c:set>
@@ -211,7 +211,7 @@
 
                 <li id="dt_since">
                   <c:set var="link">
-                    <ww:url value="%{#request.requestURI}">
+                    <ww:url value="%{#request.requestURI}" includeParams="none">
                       <ww:param name="gameFilter" value="%{'s-dmY-'}"/>
                     </ww:url>
                   </c:set>
@@ -219,7 +219,7 @@
                 </li>
                 <li id="dt_week">
                   <c:set var="link">
-                    <ww:url value="%{#request.requestURI}">
+                    <ww:url value="%{#request.requestURI}" includeParams="none">
                       <ww:param name="gameFilter" value="%{'w-WY-'}"/>
                     </ww:url>
                   </c:set>
@@ -227,7 +227,7 @@
                 </li>
                 <li id="dt_month">
                   <c:set var="link">
-                    <ww:url value="%{#request.requestURI}">
+                    <ww:url value="%{#request.requestURI}" includeParams="none">
                       <ww:param name="gameFilter" value="%{'m-mY-'}"/>
                     </ww:url>
                   </c:set>
@@ -235,7 +235,7 @@
                 </li>
                 <li id="dt_year">
                   <c:set var="link">
-                    <ww:url value="%{#request.requestURI}">
+                    <ww:url value="%{#request.requestURI}" includeParams="none">
                       <ww:param name="gameFilter" value="%{'y-Y-'}"/>
                     </ww:url>
                   </c:set>
