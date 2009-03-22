@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<!--
-		GWT-Maven archetype generated POM 
-	-->
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>uk.co.unclealex.rokta</groupId>
+	<parent>
+		<groupId>uk.co.unclealex.rokta</groupId>
+		<artifactId>parent</artifactId>
+	<version>3.0-SNAPSHOT</version>
+	</parent>
 	<artifactId>gwt</artifactId>
 	<packaging>war</packaging>
-	<version>0.0.1-SNAPSHOT</version>
 	<name>gwt-maven-archetype-project</name>
 	
 	<!--  include pluginRepository and repository for GWT-Maven -->
@@ -31,6 +31,11 @@
 	
 	<dependencies>
 	    <!--  GWT deps (from central repo) -->
+    <dependency>
+      <groupId>${groupId}</groupId>
+      <artifactId>core</artifactId>
+      <version>${version}</version>
+    </dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-servlet</artifactId>
