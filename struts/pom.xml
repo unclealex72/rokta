@@ -6,6 +6,7 @@
 	  <version>3.0-SNAPSHOT</version>
   </parent>
   <packaging>war</packaging>
+  <artifactId>struts</artifactId>
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
