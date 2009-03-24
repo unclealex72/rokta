@@ -12,6 +12,8 @@ import javax.persistence.NamedQuery;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlType;
 
+import uk.co.unclealex.hibernate.model.KeyedBean;
+
 @Entity
 @NamedQueries({
 	@NamedQuery(
@@ -37,7 +39,7 @@ import javax.xml.bind.annotation.XmlType;
 				"where p.person = :person and p.hand = :hand and g.datePlayed <= :before and g.datePlayed >= :after")
 })
 @XmlType(propOrder={"person", "hand"})
-public class Play extends Identity<Play> {
+public class Play extends KeyedBean<Play> {
 
 	private Person i_person;
 	private Hand i_hand;
@@ -62,7 +64,7 @@ public class Play extends Identity<Play> {
 	
 	@Override
 	@Id @GeneratedValue
-	public Long getId() {
+	public Integer getId() {
 		return super.getId();
 	}
 

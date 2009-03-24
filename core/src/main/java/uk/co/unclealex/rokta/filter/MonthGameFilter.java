@@ -1,47 +1,28 @@
 package uk.co.unclealex.rokta.filter;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
-public class MonthGameFilter extends NamedPeriodGameFilter {
+public class MonthGameFilter implements GameFilter {
 
 	private int i_month;
 	private int i_year;
 	
-	@Override
-	protected void decodeNumbers(int[] numbers) {
-		setMonth(numbers[0]);
-		setYear(numbers[1]);
+	public MonthGameFilter(int month, int year) {
+		super();
+		i_month = month;
+		i_year = year;
 	}
 
-	@Override
-	protected int[] encodeNumbers() {
-		return new int[] { getMonth(), getYear() };
-	}
-
-	@Override
-	protected int[] getNumberLengths() {
-		return new int[] { 2, 4 };
-	}
-
-	@Override
-	protected char getEncodingPrefix() {
-		return GameFilterFactory.MONTH_PREFIX;
+	public MonthGameFilter() {
 	}
 	
 	@Override
-	protected Calendar getFirstDateAsCalendar() {
-		return new GregorianCalendar(getYear(), getMonth() - 1, 1);
+	public boolean isContinuous() {
+		return true;
 	}
-	
+
 	@Override
-	protected int getPeriodLengthField() {
-		return Calendar.MONTH;
-	}
-	
-	@Override
-	public String getPeriodNameDateFormat() {
-		return "MMMM, yyyy";
+	public <T> T accept(GameFilterVistor<T> gameFilterVisitor) {
+		return gameFilterVisitor.visit(this);
 	}
 
 	public int getYear() {
@@ -58,10 +39,5 @@ public class MonthGameFilter extends NamedPeriodGameFilter {
 
 	protected void setMonth(int month) {
 		i_month = month;
-	}
-	
-	@Override
-	public void accept(GameFilterVistor gameFilterVisitor) {
-		gameFilterVisitor.visit(this);
 	}
 }

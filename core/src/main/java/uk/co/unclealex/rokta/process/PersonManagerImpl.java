@@ -3,7 +3,9 @@
  */
 package uk.co.unclealex.rokta.process;
 
-import java.util.Date;
+import org.joda.time.DateTime;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import uk.co.unclealex.rokta.model.Game;
 import uk.co.unclealex.rokta.model.Person;
@@ -16,15 +18,17 @@ import uk.co.unclealex.rokta.util.DateUtil;
  * @author alex
  *
  */
+@Service
+@Transactional
 public class PersonManagerImpl implements PersonManager {
 
-	private PersonDao i_personDao;
-	private GameDao i_gameDao;
-	private PasswordEncoder i_passwordEncoder;
+	protected PersonDao i_personDao;
+	protected GameDao i_gameDao;
+	protected PasswordEncoder i_passwordEncoder;
 	
-	private DateUtil i_dateUtil;
+	protected DateUtil i_dateUtil;
 	
-	public Person getExemptPlayer(Date date) {
+	public Person getExemptPlayer(DateTime date) {
 		Game lastGame = getGameDao().getLastGame();
 		if (isGameOnDate(lastGame, date)) {
 			return lastGame.getLoser();
@@ -32,12 +36,12 @@ public class PersonManagerImpl implements PersonManager {
 		return null;
 	}
 
-	public boolean currentlyPlaying(Person player, Date date) {
+	public boolean currentlyPlaying(Person player, DateTime date) {
 		Game lastGamePlayed = getGameDao().getLastGamePlayed(player);
 		return (isGameOnDate(lastGamePlayed, date)); 
 	}
 
-	private boolean isGameOnDate(Game game, Date date) {
+	protected boolean isGameOnDate(Game game, DateTime date) {
 		return getDateUtil().areSameDay(game.getDatePlayed(), date);
 	}
 	

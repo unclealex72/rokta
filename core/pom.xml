@@ -8,26 +8,23 @@
   <artifactId>core</artifactId>
   <packaging>jar</packaging>
   <name>Maven Quick Start Archetype</name>
-  <version>3.0</version>
   <url>http://maven.apache.org</url>
   <dependencies>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-annotations</artifactId>
-      <version>3.2.1.ga</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>collections-generic</groupId>
-      <artifactId>collections-generic</artifactId>
-      <version>4.01</version>
-      <scope>compile</scope>
-    </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
       <version>${spring-version}</version>
     </dependency>
+    <dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+    <dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core-tiger</artifactId>
+			<version>2.0.4</version>
+		</dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
@@ -49,11 +46,6 @@
       <version>${spring-version}</version>
     </dependency>
     <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-dao</artifactId>
-      <version>${spring-version}</version>
-    </dependency>
-    <dependency>
       <groupId>aopalliance</groupId>
       <artifactId>aopalliance</artifactId>
       <version>1.0</version>
@@ -67,6 +59,52 @@
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>1.2.13</version>
+    </dependency>
+    <dependency>
+    	<groupId>net.sourceforge.collections</groupId>
+    	<artifactId>collections-generic</artifactId>
+    	<version>4.01</version>
+    </dependency>
+    <dependency>
+    	<groupId>jfree</groupId>
+    	<artifactId>jfreechart</artifactId>
+    	<version>1.0.11</version>
+    	<exclusions>
+    		<exclusion>
+    			<artifactId>gnujaxp</artifactId>
+    			<groupId>gnujaxp</groupId>
+    		</exclusion>
+    	</exclusions>
+    </dependency>
+    <dependency>
+    	<groupId>org.apache.xmlgraphics</groupId>
+    	<artifactId>batik-svggen</artifactId>
+    	<version>1.7</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.apache.xmlgraphics</groupId>
+    	<artifactId>batik-dom</artifactId>
+    	<version>1.7</version>
+    </dependency>
+    <dependency>
+    	<groupId>uk.co.unclealex</groupId>
+    	<artifactId>spring-support</artifactId>
+    	<version>2.5.6</version>
+    </dependency>
+    <dependency>
+    	<groupId>uk.co.unclealex</groupId>
+    	<artifactId>hibernate-support</artifactId>
+    	<version>2.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+    	<groupId>joda-time</groupId>
+    	<artifactId>joda-time</artifactId>
+    	<version>1.6</version>
+    </dependency>
+    <dependency>
+    	<groupId>joda-time</groupId>
+    	<artifactId>joda-time-hibernate</artifactId>
+    	<version>1.1</version>
     </dependency>
   </dependencies>
 </project>

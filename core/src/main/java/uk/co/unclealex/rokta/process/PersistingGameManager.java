@@ -8,11 +8,11 @@ public class PersistingGameManager extends DefaultGameManager {
 	private transient GameDao i_gameDao;
 	
 	@Override
-	protected void finishGameInternal(Long replacingGameId) {
+	protected void finishGameInternal(Integer replacingGameId) {
 		GameDao gameDao = getGameDao();
 		Game game = getGame();
 		if (replacingGameId != null) {
-			Game replacingGame = gameDao.getGameById(replacingGameId.longValue());
+			Game replacingGame = gameDao.findById(replacingGameId.intValue());
 			game.setDatePlayed(replacingGame.getDatePlayed());
 			gameDao.remove(replacingGame);
 		}

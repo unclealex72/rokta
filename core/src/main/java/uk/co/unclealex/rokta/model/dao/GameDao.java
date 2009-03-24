@@ -1,23 +1,17 @@
 package uk.co.unclealex.rokta.model.dao;
 
-import java.util.Date;
 import java.util.SortedSet;
 
+import uk.co.unclealex.hibernate.dao.KeyedDao;
+import uk.co.unclealex.rokta.filter.GameFilter;
 import uk.co.unclealex.rokta.model.Game;
 import uk.co.unclealex.rokta.model.Person;
-import uk.co.unclealex.rokta.process.restriction.GameRestriction;
 
-public interface GameDao extends StoreRemoveDao<Game> {
+public interface GameDao extends KeyedDao<Game> {
 
-	public SortedSet<Game> getGamesByRestriction(GameRestriction restriction);
-	
-	public SortedSet<Game> getAllGames();
+	public SortedSet<Game> getGamesByFilter(GameFilter gameFilter);
 	
 	public Game getLastGame();
 	
 	public Game getLastGamePlayed(Person person);
-
-	public SortedSet<Game> getGamesSince(Date since);
-
-	public Game getGameById(long id);
 }

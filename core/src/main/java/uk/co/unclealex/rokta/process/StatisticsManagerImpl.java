@@ -12,19 +12,24 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import uk.co.unclealex.rokta.model.Game;
 import uk.co.unclealex.rokta.model.Person;
 import uk.co.unclealex.rokta.model.Round;
-import uk.co.unclealex.rokta.model.Streak;
-import uk.co.unclealex.rokta.model.WinLoseCounter;
 import uk.co.unclealex.rokta.model.dao.PersonDao;
 import uk.co.unclealex.rokta.model.dao.PlayDao;
 import uk.co.unclealex.rokta.model.dao.RoundDao;
+import uk.co.unclealex.rokta.views.Streak;
+import uk.co.unclealex.rokta.views.WinLoseCounter;
 
 /**
  * @author alex
  *
  */
+@Service
+@Transactional
 public class StatisticsManagerImpl implements StatisticsManager {
 
 	private PersonDao i_personDao;

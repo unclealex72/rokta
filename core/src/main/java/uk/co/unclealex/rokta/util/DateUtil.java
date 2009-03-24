@@ -3,7 +3,7 @@
  */
 package uk.co.unclealex.rokta.util;
 
-import java.util.Date;
+import org.joda.time.DateTime;
 
 /**
  * @author alex
@@ -11,8 +11,8 @@ import java.util.Date;
  */
 public interface DateUtil {
 
-	public Date getStartOfDay(Date date);
-	public Date getEndOfDay(Date date);
-	public boolean areSameDay(Date d1, Date d2);
+	public DateTime getStartOfDay(DateTime date);
+	public DateTime getEndOfDay(DateTime date);
+	public boolean areSameDay(DateTime d1, DateTime d2);
 	
 }

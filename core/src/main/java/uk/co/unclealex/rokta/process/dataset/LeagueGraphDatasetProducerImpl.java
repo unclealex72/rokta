@@ -3,7 +3,6 @@
  */
 package uk.co.unclealex.rokta.process.dataset;
 
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,19 +11,22 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.commons.collections15.Transformer;
+import org.springframework.transaction.annotation.Transactional;
 
 import uk.co.unclealex.rokta.model.Colour;
 import uk.co.unclealex.rokta.model.Game;
-import uk.co.unclealex.rokta.model.League;
-import uk.co.unclealex.rokta.model.LeagueRow;
 import uk.co.unclealex.rokta.model.Person;
 import uk.co.unclealex.rokta.model.dao.ColourDao;
-import de.laures.cewolf.DatasetProduceException;
+import uk.co.unclealex.rokta.views.League;
+import uk.co.unclealex.rokta.views.LeagueRow;
+import uk.co.unclealex.spring.Prototype;
 
 /**
  * @author alex
  * 
  */
+@Prototype
+@Transactional
 public class LeagueGraphDatasetProducerImpl implements LeagueGraphDatasetProducer {
 
 	private SortedMap<Game, League> i_leaguesByGame;
@@ -32,10 +34,8 @@ public class LeagueGraphDatasetProducerImpl implements LeagueGraphDatasetProduce
 	private String i_averageColour;
 	private Transformer<Game, String> i_gameDescriptor;
 
-	/**
-	 * Produces some random data.
-	 */
-	public Object produceDataset(Map params) throws DatasetProduceException {			
+	@Override
+	public ColourCategoryDataset produceDataset() {			
 		ColourCategoryDataset dataset = new ColourCategoryDataset();
 		// We need to make sure that the results are added to the graph in person order
 		SortedMap<Person, Map<String, Double>> resultsByPerson =
@@ -100,20 +100,6 @@ public class LeagueGraphDatasetProducerImpl implements LeagueGraphDatasetProduce
 	 */
 	public void setColourDao(ColourDao colourDao) {
 		i_colourDao = colourDao;
-	}
-
-	/* (non-Javadoc)
-	 * @see de.laures.cewolf.DatasetProducer#getProducerId()
-	 */
-	public String getProducerId() {
-		return getClass().getName();
-	}
-
-	/* (non-Javadoc)
-	 * @see de.laures.cewolf.DatasetProducer#hasExpired(java.util.Map, java.util.Date)
-	 */
-	public boolean hasExpired(Map params, Date since) {
-		return true;
 	}
 
 	/* (non-Javadoc)

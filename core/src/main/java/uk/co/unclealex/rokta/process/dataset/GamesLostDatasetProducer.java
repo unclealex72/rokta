@@ -8,15 +8,14 @@ import java.util.Map;
 import org.jfree.data.general.DefaultPieDataset;
 
 import uk.co.unclealex.rokta.model.Person;
-import de.laures.cewolf.DatasetProduceException;
 
 /**
  * @author alex
  *
  */
-public class GamesLostDatasetProducer extends StatisticsAwareDatasetProducer {
+public class GamesLostDatasetProducer extends StatisticsAwareDatasetProducer<DefaultPieDataset> {
 
-	public Object produceDataset(Map params) throws DatasetProduceException {
+	public DefaultPieDataset produceDataset() {
 		DefaultPieDataset dataset = new DefaultPieDataset();
 		for (Map.Entry<Person,Integer> entry : getStatisticsManager().countGamesLostByPlayer().entrySet()) {
 			dataset.setValue(entry.getKey().getName(), entry.getValue());

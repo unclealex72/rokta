@@ -1,37 +1,20 @@
 package uk.co.unclealex.rokta.filter;
 
-import java.util.SortedSet;
 
-import uk.co.unclealex.rokta.model.Game;
-
-public class AllGameFilter extends AbstractGameFilter {
+public class AllGameFilter implements GameFilter {
 
 	@Override
-	protected void decodeInfo(String encodingInfo)
-			throws IllegalFilterEncodingException {
-		// no info required.
+	public <T> T accept(GameFilterVistor<T> gameFilterVisitor) {
+		return gameFilterVisitor.visit(this);
 	}
-
+	
 	@Override
-	protected String encodeInfo() {
-		return "";
+	public boolean isContinuous() {
+		return true;
 	}
 
 	@Override
-	protected char getEncodingPrefix() {
-		return GameFilterFactory.ALL_PREFIX;
+	public String toString() {
+		return "Filter: All games";
 	}
-
-	public void accept(GameFilterVistor gameFilterVisitor) {
-		gameFilterVisitor.visit(this);
-	}
-
-	public String getDescription() {
-		return "for all games";
-	}
-
-	public SortedSet<Game> getGames() {
-		return getGameDao().getAllGames();
-	}
-
 }

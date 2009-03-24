@@ -3,39 +3,16 @@
  */
 package uk.co.unclealex.rokta.process.dataset;
 
-import java.util.SortedMap;
+import org.joda.time.DateTime;
 
-import org.apache.commons.collections15.Transformer;
-
-import de.laures.cewolf.DatasetProducer;
-
-import uk.co.unclealex.rokta.model.Game;
-import uk.co.unclealex.rokta.model.League;
+import uk.co.unclealex.rokta.filter.GameFilter;
 
 /**
  * @author alex
  *
  */
-public interface LeagueGraphDatasetProducer extends DatasetProducer {
+public interface LeagueGraphDatasetProducer extends DatasetProducer<ColourCategoryDataset> {
 
-	/**
-	 * @return the leaguesByGame
-	 */
-	public SortedMap<Game, League> getLeaguesByGame();
-
-	/**
-	 * @param leaguesByGame the leaguesByGame to set
-	 */
-	public void setLeaguesByGame(SortedMap<Game, League> leaguesByGame);
-
-	/**
-	 * @return the gameDescriptor
-	 */
-	public Transformer<Game, String> getGameDescriptor();
-
-	/**
-	 * @param gameDescriptor the gameDescriptor to set
-	 */
-	public void setGameDescriptor(Transformer<Game, String> gameDescriptor);
+	public void initialise(GameFilter gameFilter, int maximumNumberOfResults, DateTime currentDate);
 
 }

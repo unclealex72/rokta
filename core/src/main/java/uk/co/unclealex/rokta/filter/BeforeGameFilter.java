@@ -1,25 +1,39 @@
 package uk.co.unclealex.rokta.filter;
 
-import uk.co.unclealex.rokta.process.restriction.BeforeGameRestriction;
-import uk.co.unclealex.rokta.process.restriction.GameRestriction;
+import org.joda.time.DateTime;
 
-public class BeforeGameFilter extends SingleDateGameRestrictionGameFilter {
+public class BeforeGameFilter implements GameFilter {
 
-	@Override
-	protected char getEncodingPrefix() {
-		return GameFilterFactory.BEFORE_PREFIX;
+	private DateTime i_before;
+	
+	public BeforeGameFilter() {
+	}
+	
+	public BeforeGameFilter(DateTime before) {
+		super();
+		i_before = before;
 	}
 
 	@Override
-	protected GameRestriction getGameRestriction() {
-		return new BeforeGameRestriction(getDate());
+	public boolean isContinuous() {
+		return true;
 	}
 
-	public String getDescription() {
-		return "before " + createDisplayDateFormat().format(getDate());
+	@Override
+	public <T> T accept(GameFilterVistor<T> gameFilterVisitor) {
+		return gameFilterVisitor.visit(this);
+	}
+	
+	@Override
+	public String toString() {
+		return "Filter: before " + getBefore(); 
 	}
 
-	public void accept(GameFilterVistor gameFilterVisitor) {
-		gameFilterVisitor.visit(this);
+	public DateTime getBefore() {
+		return i_before;
+	}
+
+	public void setBefore(DateTime before) {
+		i_before = before;
 	}
 }

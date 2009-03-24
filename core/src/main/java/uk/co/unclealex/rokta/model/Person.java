@@ -12,6 +12,8 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import uk.co.unclealex.hibernate.model.KeyedBean;
+
 @Entity
 @NamedQueries(value={
 		@NamedQuery(name="person.getAll", query="select p from Person p"),
@@ -20,7 +22,7 @@ import javax.xml.bind.annotation.XmlType;
 		})
 @XmlRootElement(name="colour")
 @XmlType(propOrder={"name", "password", "colour"})
-public class Person extends Identity<Person> {
+public class Person extends KeyedBean<Person> {
 
 	private String i_name;
 	private String i_password;
@@ -66,7 +68,7 @@ public class Person extends Identity<Person> {
 
 	@Override
 	@Id @GeneratedValue
-	public Long getId() {
+	public Integer getId() {
 		return super.getId();
 	}
 	

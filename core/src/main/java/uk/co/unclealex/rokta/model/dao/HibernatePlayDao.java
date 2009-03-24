@@ -3,24 +3,33 @@
  */
 package uk.co.unclealex.rokta.model.dao;
 
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.Query;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import uk.co.unclealex.hibernate.dao.HibernateKeyedDao;
 import uk.co.unclealex.rokta.model.Hand;
 import uk.co.unclealex.rokta.model.Person;
+import uk.co.unclealex.rokta.model.Play;
 
 /**
  * @author alex
  *
  */
-public class HibernatePlayDao extends HibernateDaoSupport implements PlayDao {
+@Repository
+@Transactional
+public class HibernatePlayDao extends HibernateKeyedDao<Play> implements PlayDao {
 
 	public int countByPersonAndHand(final Person person, final Hand hand) {
-		long result =
-			(Long) getSession().getNamedQuery("play.countByPersonAndHand").
+		Query query = 
+			getSession().getNamedQuery("play.countByPersonAndHand").
 							setEntity("person", person).
-							setParameter("hand", hand).
-							uniqueResult();
-    return (int) result;
+							setParameter("hand", hand);
+    return uniqueResult(query, Integer.class);
 	}
 
+	@Override
+	public Play createExampleBean() {
+		return new Play();
+	}
 }

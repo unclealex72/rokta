@@ -1,10 +1,10 @@
 package uk.co.unclealex.rokta.process;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -12,73 +12,71 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import org.apache.commons.collections15.comparators.ComparatorChain;
+import javax.annotation.PostConstruct;
 
-import uk.co.unclealex.rokta.model.Delta;
+import org.apache.commons.collections15.CollectionUtils;
+import org.apache.commons.collections15.ComparatorUtils;
+import org.apache.commons.collections15.Predicate;
+import org.apache.commons.collections15.comparators.ComparableComparator;
+import org.apache.commons.collections15.comparators.ComparatorChain;
+import org.joda.time.DateTime;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import uk.co.unclealex.rokta.filter.GameFilter;
 import uk.co.unclealex.rokta.model.Game;
-import uk.co.unclealex.rokta.model.InfiniteInteger;
-import uk.co.unclealex.rokta.model.League;
-import uk.co.unclealex.rokta.model.LeagueRow;
 import uk.co.unclealex.rokta.model.Person;
 import uk.co.unclealex.rokta.model.Round;
 import uk.co.unclealex.rokta.model.dao.GameDao;
-import uk.co.unclealex.rokta.process.league.milestone.LeagueMilestonePredicate;
+import uk.co.unclealex.rokta.quotient.DatePlayedQuotientTransformer;
+import uk.co.unclealex.rokta.quotient.DayDatePlayedQuotientTransformer;
+import uk.co.unclealex.rokta.quotient.InstantDatePlayedQuotientTransformer;
+import uk.co.unclealex.rokta.quotient.MonthDatePlayedQuotientTransformer;
+import uk.co.unclealex.rokta.quotient.QuotientPredicate;
+import uk.co.unclealex.rokta.quotient.WeekDatePlayedQuotientTransformer;
+import uk.co.unclealex.rokta.quotient.YearDatePlayedQuotientTransformer;
 import uk.co.unclealex.rokta.util.DateUtil;
+import uk.co.unclealex.rokta.views.Delta;
+import uk.co.unclealex.rokta.views.InfiniteInteger;
+import uk.co.unclealex.rokta.views.League;
+import uk.co.unclealex.rokta.views.LeagueRow;
+import uk.co.unclealex.rokta.views.LeaguesHolder;
 
+@Service
+@Transactional
 public class LeagueManagerImpl implements LeagueManager {
 
 	private GameDao i_gameDao;
-	private SortedSet<Game> i_games;
-	private Date i_currentDate;
-	
-	private List<LeagueMilestonePredicate> i_leagueMilestonePredicates;
-	private Comparator<LeagueRow> i_comparator;
-	
 	private DateUtil i_dateUtil;
 	private PersonManager i_personManager;
-
-	private List<SortedMap<Game, League>> i_leaguesByGameForPredicate;
+	private Comparator<LeagueRow> i_leagueRowComparator;
 	
-	/* (non-Javadoc)
-	 * @see uk.co.unclealex.rokta.process.LeagueManager#generateLeague(java.util.Date)
-	 */
-	/* (non-Javadoc)
-	 * @see uk.co.unclealex.rokta.process.LeagueManager#generateLeagues()
-	 */
-	public List<SortedMap<Game, League>> generateLeagues() {
-		if (getLeaguesByGameForPredicates() == null) {
-			if (getComparator() == null) {
-				setComparator(getCompareByLossesPerGame());
-			}
-			List<SortedMap<Game, League>> leaguesByGameForPredicates = createLeagues();
-			for (SortedMap<Game, League> leaguesByGame : leaguesByGameForPredicates) {
-				calculateDeltas(leaguesByGame);
-				decorate(leaguesByGame, getGameDao().getLastGame());
-			}
-			setLeaguesByGameForPredicates(leaguesByGameForPredicates);
-		}
-		return getLeaguesByGameForPredicates();
+	@PostConstruct
+	public void initialise() {
+		setLeagueRowComparator(createLeagueRowComparator());
 	}
 	
-	private List<SortedMap<Game, League>> createLeagues() {
+	@Override
+	public LeaguesHolder generateLeague(GameFilter gameFilter, int maximumLeagues, DateTime now) {
+		SortedSet<Game> games = getGameDao().getGamesByFilter(gameFilter);
+		SortedMap<Game, League> leaguesForAllGames = generateLeagues(games);
+		decorateWithDeltas(leaguesForAllGames);
+		decorateWithExemptionAndAbsence(leaguesForAllGames, now);
+		return filterGranularity(leaguesForAllGames, maximumLeagues);
+	}
+	
+	protected SortedMap<Game, League> generateLeagues(SortedSet<Game> games) {
 		int totalGames = 0;
 		int totalPlayers = 0;
 		Map<Person, LeagueRow> rowMap = new HashMap<Person, LeagueRow>();
-		List<LeagueMilestonePredicate> predicates = getLeagueMilestonePredicates();
-		List<SortedMap<Game, League>> leaguesForPredicates =
-			new ArrayList<SortedMap<Game,League>>(predicates.size());
-
-		for (LeagueMilestonePredicate predicate : predicates) {
-			predicate.setGames(getGames());
-			leaguesForPredicates.add(new TreeMap<Game, League>());
-		}
-		for (Game game : getGames()) {
+		SortedMap<Game, League> leaguesByGame = new TreeMap<Game, League>();
+		for (Game game : games) {
 			totalGames++;
 			Person loser = game.getLoser();
 			SortedSet<Person> participants = game.getParticipants();
 			int participantCount = participants.size();
+			totalPlayers += participantCount;
 			for (Person participant : participants) {
-				totalPlayers++;
 				if (!rowMap.containsKey(participant)) {
 					LeagueRow newLeagueRow = new LeagueRow();
 					newLeagueRow.setPerson(participant);
@@ -97,18 +95,14 @@ public class LeagueManagerImpl implements LeagueManager {
 					leagueRow.setGamesWon(leagueRow.getGamesWon() + 1);
 				}
 			}
-			for (int idx = 0; idx < predicates.size(); idx++) {
-				if (predicates.get(idx).evaluate(game)) {
-					League league = createLeague(game, rowMap.values(), totalGames, totalPlayers);
-					leaguesForPredicates.get(idx).put(game, league);
-				}				
-			}
-		}
-		
-		return leaguesForPredicates;
+			League league = createLeague(rowMap.values(), totalGames, totalPlayers);
+			leaguesByGame.put(game, league);
+			
+		}		
+		return leaguesByGame;
 	}
 
-	private int countPlaysForPersonInGame(Person person, Game game) {
+	protected int countPlaysForPersonInGame(Person person, Game game) {
 		int cnt = 0;
 		for (Round round : game.getRounds()) {
 			if (round.getParticipants().contains(person)) {
@@ -118,13 +112,13 @@ public class LeagueManagerImpl implements LeagueManager {
 		return cnt;
 	}
 
-	private League createLeague(Game game, Collection<LeagueRow> rows, int totalGames, int totalPlayers) {
+	protected League createLeague(Collection<LeagueRow> rows, int totalGames, int totalPlayers) {
 		League league = new League();
 		league.setCurrent(false);
 		league.setTotalGames(totalGames);
 		league.setTotalPlayers(totalPlayers);
 
-		SortedSet<LeagueRow> sortedRows = new TreeSet<LeagueRow>(getComparator());
+		SortedSet<LeagueRow> sortedRows = new TreeSet<LeagueRow>(getLeagueRowComparator());
 		for (LeagueRow leagueRow : rows) {
 			LeagueRow copy = leagueRow.copy();
 			copy.setLeague(league);
@@ -134,11 +128,18 @@ public class LeagueManagerImpl implements LeagueManager {
 		return league;
 	}
 	
-	private void calculateDeltas(SortedMap<Game, League> leagues) {
+	protected void decorateWithDeltas(SortedMap<Game, League> leaguesByGame) {
+		// We only decorate the last league and only if there is something to compare it against.
+		if (leaguesByGame.size() < 2) {
+			return;
+		}
+		
+		Game lastGame = leaguesByGame.lastKey();
+		Game penultimateGame = leaguesByGame.headMap(lastGame).lastKey();
 		Map<Person,Integer> oldPositions;
 		Map<Person,Integer> newPositions = new HashMap<Person, Integer>();
-				
-		for (League league : leagues.values()) {
+		League[] leagues = new League[] { leaguesByGame.get(penultimateGame), leaguesByGame.get(lastGame) };
+		for (League league : leagues) {
 			oldPositions = newPositions;
 			newPositions = new HashMap<Person, Integer>();
 			for (
@@ -164,24 +165,25 @@ public class LeagueManagerImpl implements LeagueManager {
 		}		
 	}	
 	
-	private void decorate(SortedMap<Game, League> leagues, Game lastGame) {
-		for (Map.Entry<Game, League> entry: leagues.entrySet()) {
-			Game game = entry.getKey();
-			League league = entry.getValue();
-			// Exemptions only occur if the last game played was today.
-			// If the last game was played today we can also see who hasn't played today
-			if (game.equals(lastGame)) {
-				league.setCurrent(true);
-				if (getDateUtil().areSameDay(lastGame.getDatePlayed(), getCurrentDate())) {
-					Person exempt = getPersonManager().getExemptPlayer(getCurrentDate());
-					for (LeagueRow leagueRow : league.getRows()) {
-						Person player = leagueRow.getPerson();
-						leagueRow.setExempt(player.equals(exempt));
-						leagueRow.setPlayingToday(getPersonManager().currentlyPlaying(player, getCurrentDate()));
-					}
+	protected void decorateWithExemptionAndAbsence(SortedMap<Game, League> leaguesByGame, DateTime currentDate) {
+		if (leaguesByGame.isEmpty()) {
+			return;
+		}
+		Game lastGamePlayed = getGameDao().getLastGame();
+		Game lastLeagueGame = leaguesByGame.lastKey();
+		// Exemptions only occur if the last game played was today.
+		// If the last game was played today we can also see who hasn't played today
+		if (lastLeagueGame.equals(lastGamePlayed)) {
+			League league = leaguesByGame.get(lastLeagueGame);
+			league.setCurrent(true);
+			if (getDateUtil().areSameDay(lastGamePlayed.getDatePlayed(), currentDate)) {
+				Person exempt = getPersonManager().getExemptPlayer(currentDate);
+				for (LeagueRow leagueRow : league.getRows()) {
+					Person player = leagueRow.getPerson();
+					leagueRow.setExempt(player.equals(exempt));
+					leagueRow.setPlayingToday(getPersonManager().currentlyPlaying(player, currentDate));
 				}
 			}
-			
 			LeagueRow previousRow = null;
 			for (LeagueRow currentRow : league.getRows()) {
 				if (previousRow != null) {
@@ -189,10 +191,10 @@ public class LeagueManagerImpl implements LeagueManager {
 				}
 				previousRow = currentRow;
 			}
-		}
+		}		
 	}
 	
-	private InfiniteInteger calculateGap(LeagueRow higherRow, LeagueRow lowerRow) {
+	protected InfiniteInteger calculateGap(LeagueRow higherRow, LeagueRow lowerRow) {
 		int playedTop = higherRow.getGamesPlayed();
 		int lostTop = higherRow.getGamesLost();
 		boolean exemptTop = higherRow.isExempt();
@@ -216,9 +218,8 @@ public class LeagueManagerImpl implements LeagueManager {
 		}
 		return gap;
 	}
-	
-	
-	private int race(
+		
+	protected int race(
 			boolean playingTop, int playedTop, int lostTop, boolean exemptTop,
 			boolean playingBottom, int playedBottom, int lostBottom, boolean exemptBottom) {
 		int gap = 0;
@@ -241,78 +242,96 @@ public class LeagueManagerImpl implements LeagueManager {
 		return gap;
 	}
 
-	// Comparators for leagues - a smaller value on the LHS will mean a higher league placing.
-	
-	static Comparator<LeagueRow> s_atomicCompareByLossesPerGame =
-		new Comparator<LeagueRow>() {
-			public int compare(LeagueRow o1, LeagueRow o2) {
-				return new Double(o1.getLossesPerGame()).compareTo(o2.getLossesPerGame());
-			}
-		};
+	protected LeaguesHolder filterGranularity(SortedMap<Game, League> leaguesForAllGames, int maximumLeagues) {
+		// We need to reverse the order of the games so we find the last game of a quotient.
+		SortedSet<Game> reversedGames = new TreeSet<Game>(ComparatorUtils.reversedComparator(ComparableComparator.getInstance()));
+		reversedGames.addAll(leaguesForAllGames.keySet());
+		List<DatePlayedQuotientTransformer> quotientTransformers =
+			Arrays.asList(new DatePlayedQuotientTransformer[] {
+				new InstantDatePlayedQuotientTransformer(),
+				new DayDatePlayedQuotientTransformer(),
+				new WeekDatePlayedQuotientTransformer(),
+				new MonthDatePlayedQuotientTransformer(),
+				new YearDatePlayedQuotientTransformer()
+			});
+		DatePlayedQuotientTransformer quotientTransformer = null;
+		SortedSet<Game> filteredGames = null;
 		
-	static Comparator<LeagueRow> s_atomicCompareByRoundsPerWonGame =
-		new Comparator<LeagueRow>() {
-			public int compare(LeagueRow o1, LeagueRow o2) {
-				return new Double(o1.getRoundsPerWonGames()).compareTo(o2.getRoundsPerWonGames());
+		// Find which quotient to use.
+		for (Iterator<DatePlayedQuotientTransformer> iter = quotientTransformers.iterator(); filteredGames == null; ) {
+			quotientTransformer = iter.next();
+			SortedSet<Game> filteredGamesForQuotient = new TreeSet<Game>();
+			Predicate<Game> quotientPredicate = new QuotientPredicate<Game, Long>(quotientTransformer);
+			CollectionUtils.select(reversedGames, quotientPredicate, filteredGamesForQuotient);
+			if (!iter.hasNext() || filteredGamesForQuotient.size() <= maximumLeagues) {
+				filteredGames = filteredGamesForQuotient;
 			}
-		};
-					
-		static Comparator<LeagueRow> s_atomicCompareByRoundsPerLostGame =
+		}
+		
+		// Replace the last filtered game with the actual last game
+		filteredGames.remove(filteredGames.last());
+		filteredGames.add(reversedGames.first());
+		
+		SortedMap<Game, League> leaguesByFilteredGames = new TreeMap<Game, League>();
+		for (Game game : filteredGames) {
+			leaguesByFilteredGames.put(game, leaguesForAllGames.get(game));
+		}
+		return new LeaguesHolder(quotientTransformer, leaguesByFilteredGames);
+	}
+
+
+	// Comparators for leagues - a smaller value on the LHS will mean a higher league placing.
+		
+	protected Comparator<LeagueRow> createLeagueRowComparator() {
+		Comparator<LeagueRow> atomicCompareByLossesPerGame =
 			new Comparator<LeagueRow>() {
 				public int compare(LeagueRow o1, LeagueRow o2) {
-					return new Double(o2.getRoundsPerLostGames()).compareTo(o2.getRoundsPerLostGames());
+					return new Double(o1.getLossesPerGame()).compareTo(o2.getLossesPerGame());
+				}
+			};
+			
+		Comparator<LeagueRow> atomicCompareByRoundsPerWonGame =
+			new Comparator<LeagueRow>() {
+				public int compare(LeagueRow o1, LeagueRow o2) {
+					return new Double(o1.getRoundsPerWonGames()).compareTo(o2.getRoundsPerWonGames());
 				}
 			};
 						
-	static Comparator<LeagueRow> s_atomicCompareByGamesPlayed =
-		new Comparator<LeagueRow>() {
-			public int compare(LeagueRow o1, LeagueRow o2) {
-				return new Integer(o2.getGamesPlayed()).compareTo(o1.getGamesPlayed());
-			}
-		};
+			Comparator<LeagueRow> atomicCompareByRoundsPerLostGame =
+				new Comparator<LeagueRow>() {
+					public int compare(LeagueRow o1, LeagueRow o2) {
+						return new Double(o2.getRoundsPerLostGames()).compareTo(o2.getRoundsPerLostGames());
+					}
+				};
+							
+		Comparator<LeagueRow> atomicCompareByGamesPlayed =
+			new Comparator<LeagueRow>() {
+				public int compare(LeagueRow o1, LeagueRow o2) {
+					return new Integer(o2.getGamesPlayed()).compareTo(o1.getGamesPlayed());
+				}
+			};
 
-	static Comparator<LeagueRow> s_atomicCompareByRoundsPlayed =
-		new Comparator<LeagueRow>() {
-			public int compare(LeagueRow o1, LeagueRow o2) {
-				return new Integer(o2.getRoundsPlayed()).compareTo(o1.getRoundsPlayed());
-			}
-		};
+		Comparator<LeagueRow> atomicCompareByRoundsPlayed =
+			new Comparator<LeagueRow>() {
+				public int compare(LeagueRow o1, LeagueRow o2) {
+					return new Integer(o2.getRoundsPlayed()).compareTo(o1.getRoundsPlayed());
+				}
+			};
 
-	static Comparator<LeagueRow> s_atomicCompareByPerson =
-		new Comparator<LeagueRow>() {
-			public int compare(LeagueRow o1, LeagueRow o2) {
-				return o1.getPerson().compareTo(o2.getPerson());
-			}
-		};
-	
-	public Comparator<LeagueRow> getCompareByLossesPerGame() {
-		ComparatorChain<LeagueRow> chain = new ComparatorChain<LeagueRow>();
-		
-		chain.addComparator(s_atomicCompareByLossesPerGame);
-		chain.addComparator(s_atomicCompareByRoundsPerWonGame);
-		chain.addComparator(s_atomicCompareByRoundsPerLostGame);
-		chain.addComparator(s_atomicCompareByGamesPlayed);
-		chain.addComparator(s_atomicCompareByRoundsPlayed);
-		chain.addComparator(s_atomicCompareByPerson);
+		Comparator<LeagueRow> atomicCompareByPerson =
+			new Comparator<LeagueRow>() {
+				public int compare(LeagueRow o1, LeagueRow o2) {
+					return o1.getPerson().compareTo(o2.getPerson());
+				}
+			};
+		ComparatorChain<LeagueRow> chain = new ComparatorChain<LeagueRow>();		
+		chain.addComparator(atomicCompareByLossesPerGame);
+		chain.addComparator(atomicCompareByRoundsPerWonGame);
+		chain.addComparator(atomicCompareByRoundsPerLostGame);
+		chain.addComparator(atomicCompareByGamesPlayed);
+		chain.addComparator(atomicCompareByRoundsPlayed);
+		chain.addComparator(atomicCompareByPerson);
 		return chain;
-	}
-	/* (non-Javadoc)
-	 * @see uk.co.unclealex.rokta.process.LeagueManager#getComparator()
-	 */
-	/* (non-Javadoc)
-	 * @see uk.co.unclealex.rokta.process.LeagueManager#getComparator()
-	 */
-	public Comparator<LeagueRow> getComparator() {
-		return i_comparator;
-	}
-	/* (non-Javadoc)
-	 * @see uk.co.unclealex.rokta.process.LeagueManager#setComparator(java.util.Comparator)
-	 */
-	/* (non-Javadoc)
-	 * @see uk.co.unclealex.rokta.process.LeagueManager#setComparator(java.util.Comparator)
-	 */
-	public void setComparator(Comparator<LeagueRow> comparator) {
-		i_comparator = comparator;
 	}
 
 	/**
@@ -343,49 +362,6 @@ public class LeagueManagerImpl implements LeagueManager {
 		i_personManager = personManager;
 	}
 
-	/* (non-Javadoc)
-	 * @see uk.co.unclealex.rokta.process.LeagueManager#getGames()
-	 */
-	public SortedSet<Game> getGames() {
-		return i_games;
-	}
-
-	/* (non-Javadoc)
-	 * @see uk.co.unclealex.rokta.process.LeagueManager#setGames(java.util.SortedSet)
-	 */
-	public void setGames(SortedSet<Game> games) {
-		i_games = games;
-	}
-
-	/* (non-Javadoc)
-	 * @see uk.co.unclealex.rokta.process.LeagueManager#getLeagueMilestonePredicate()
-	 */
-	public List<LeagueMilestonePredicate> getLeagueMilestonePredicates() {
-		return i_leagueMilestonePredicates;
-	}
-
-	/* (non-Javadoc)
-	 * @see uk.co.unclealex.rokta.process.LeagueManager#setLeagueMilestonePredicate(uk.co.unclealex.rokta.process.LeagueMilestonePredicate)
-	 */
-	public void setLeagueMilestonePredicates(
-			List<LeagueMilestonePredicate> leagueMilestonePredicates) {
-		i_leagueMilestonePredicates = leagueMilestonePredicates;
-	}
-
-	/* (non-Javadoc)
-	 * @see uk.co.unclealex.rokta.process.LeagueManager#getCurrentDate()
-	 */
-	public Date getCurrentDate() {
-		return i_currentDate;
-	}
-
-	/* (non-Javadoc)
-	 * @see uk.co.unclealex.rokta.process.LeagueManager#setCurrentDate(java.util.Date)
-	 */
-	public void setCurrentDate(Date currentDate) {
-		i_currentDate = currentDate;
-	}
-
 	/**
 	 * @return the gameDao
 	 */
@@ -400,18 +376,11 @@ public class LeagueManagerImpl implements LeagueManager {
 		i_gameDao = gameDao;
 	}
 
-	/**
-	 * @return the leaguesByGame
-	 */
-	public List<SortedMap<Game, League>> getLeaguesByGameForPredicates() {
-		return i_leaguesByGameForPredicate;
+	public Comparator<LeagueRow> getLeagueRowComparator() {
+		return i_leagueRowComparator;
 	}
 
-	/**
-	 * @param leaguesByGameForPredicate the leaguesByGame to set
-	 */
-	public void setLeaguesByGameForPredicates(List<SortedMap<Game, League>> leaguesByGameForPredicate) {
-		i_leaguesByGameForPredicate = leaguesByGameForPredicate;
+	public void setLeagueRowComparator(Comparator<LeagueRow> leagueRowComparator) {
+		i_leagueRowComparator = leagueRowComparator;
 	}
-
 }

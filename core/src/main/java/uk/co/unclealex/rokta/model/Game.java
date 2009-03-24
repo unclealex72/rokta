@@ -1,6 +1,5 @@
 package uk.co.unclealex.rokta.model;
 
-import java.util.Date;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -25,6 +24,10 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
+import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
+
+import uk.co.unclealex.hibernate.model.KeyedBean;
 
 @Entity()
 @NamedQueries(value={
@@ -37,11 +40,11 @@ import org.hibernate.annotations.SortType;
 		})
 @XmlRootElement(name="game")
 @XmlType(propOrder={"datePlayed", "instigator", "rounds"})
-public class Game extends Identity<Game> {
+public class Game extends KeyedBean<Game> {
 
 	private Person i_instigator;
 	private SortedSet<Round> i_rounds;
-	private Date i_datePlayed;
+	private DateTime i_datePlayed;
 	
 	@Transient
 	@XmlTransient
@@ -71,11 +74,13 @@ public class Game extends Identity<Game> {
 	
 	@Column(nullable=false)
 	@XmlElement(name="date-played")
-	public Date getDatePlayed() {
+	@Type(type="org.joda.time.contrib.hibernate.PersistentDateTime")
+	public DateTime getDatePlayed() {
 		return i_datePlayed;
 	}
-	public void setDatePlayed(Date date) {
-		i_datePlayed = date;
+	
+	public void setDatePlayed(DateTime datePlayed) {
+		i_datePlayed = datePlayed;
 	}
 	
 	@ManyToOne
@@ -103,7 +108,7 @@ public class Game extends Identity<Game> {
 	
 	@Override
 	@Id @GeneratedValue
-	public Long getId() {
+	public Integer getId() {
 		return super.getId();
 	}
 

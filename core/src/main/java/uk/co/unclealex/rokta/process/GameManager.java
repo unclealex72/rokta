@@ -2,9 +2,10 @@ package uk.co.unclealex.rokta.process;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Map;
 import java.util.SortedSet;
+
+import org.joda.time.DateTime;
 
 import uk.co.unclealex.rokta.exceptions.InvalidRoundException;
 import uk.co.unclealex.rokta.model.Game;
@@ -13,12 +14,12 @@ import uk.co.unclealex.rokta.model.Person;
 
 public interface GameManager extends Serializable {
 
-	public void startGame(Collection<Person> participants, Person instigator, Date date);
+	public void startGame(Collection<Person> participants, Person instigator, DateTime date);
 
 	public void nextRound(Map<Person, Hand> plays, Person counter, int round)
 			throws InvalidRoundException;
 
-	public void finishGame(Long replacingGameId) throws InvalidRoundException;
+	public void finishGame(Integer replacingGameId) throws InvalidRoundException;
 
 	public Game getGame();
 

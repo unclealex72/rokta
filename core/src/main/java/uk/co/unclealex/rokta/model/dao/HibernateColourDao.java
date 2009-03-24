@@ -1,27 +1,28 @@
 package uk.co.unclealex.rokta.model.dao;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import uk.co.unclealex.hibernate.dao.HibernateKeyedDao;
 import uk.co.unclealex.rokta.model.Colour;
 
-public class HibernateColourDao extends HibernateStoreRemoveDao<Colour> implements ColourDao {
+@Repository
+@Transactional
+public class HibernateColourDao extends HibernateKeyedDao<Colour> implements ColourDao {
 
 	/* (non-Javadoc)
 	 * @see uk.co.unclealex.rokta.model.dao.ColourDao#getColourByName(java.lang.String)
 	 */
 	public Colour getColourByName(final String name) {
-		return (Colour) getSession().getNamedQuery("colour.byName").setString("name", name).uniqueResult();
+		return uniqueResult(getSession().getNamedQuery("colour.byName").setString("name", name));
 	}
 	
 	public Colour getColourByHtmlName(final String name) {
-		return (Colour) getSession().getNamedQuery("colour.byHtmlName").setString("name", name).uniqueResult();
+		return uniqueResult(getSession().getNamedQuery("colour.byHtmlName").setString("name", name));
 	}
 
-	/* (non-Javadoc)
-	 * @see uk.co.unclealex.rokta.model.dao.ColourDao#getEverybody()
-	 */
-	public SortedSet<Colour> getColours() {
-		return new TreeSet<Colour>(getSession().getNamedQuery("colour.getAll").list());
+	@Override
+	public Colour createExampleBean() {
+		return new Colour();
 	}
 }

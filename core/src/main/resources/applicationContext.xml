@@ -1,90 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd 
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+    http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd"
   default-autowire="byName">
 
-  <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager" scope="prototype"/>
+  <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager"/>
 
-  <bean id="gameDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="prototype">
-    <property name="target">
-      <bean class="uk.co.unclealex.rokta.model.dao.HibernateGameDao"/>
-    </property>
-    <property name="transactionAttributes">
-      <props>
-        <prop key="store*">PROPAGATION_REQUIRED</prop>
-        <prop key="remove*">PROPAGATION_REQUIRED</prop>
-        <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
-      </props>
-    </property>
-  </bean>
+	<jee:jndi-lookup id="dataSource"
+		jndi-name="jdbc/rokta" resource-ref="true" proxy-interface="javax.sql.DataSource"/>
+		
+	<tx:annotation-driven/>
 
-  <bean id="personDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="prototype">
-    <property name="target">
-    	<bean class="uk.co.unclealex.rokta.model.dao.HibernatePersonDao"/>
-    </property>
-    <property name="transactionAttributes">
-      <props>
-        <prop key="store*">PROPAGATION_REQUIRED</prop>
-        <prop key="remove*">PROPAGATION_REQUIRED</prop>
-        <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
-      </props>
-    </property>
-  </bean>
+	<bean id="hibernateProperties"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="properties">
+			<props>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.show_sql">false</prop>
+			</props>
+		</property>
+	</bean>
 
-  <bean id="roundDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="prototype">
-    <property name="target">
-      <bean class="uk.co.unclealex.rokta.model.dao.HibernateRoundDao"/>
-    </property>
-    <property name="transactionAttributes">
-      <props>
-        <prop key="store*">PROPAGATION_REQUIRED</prop>
-        <prop key="remove*">PROPAGATION_REQUIRED</prop>
-        <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
-      </props>
-    </property>
-  </bean>
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="annotatedClasses">
+			<list>
+				<value>uk.co.unclealex.rokta.model.Person</value>
+				<value>uk.co.unclealex.rokta.model.Play</value>
+				<value>uk.co.unclealex.rokta.model.Round</value>
+				<value>uk.co.unclealex.rokta.model.Game</value>
+        <value>uk.co.unclealex.rokta.model.Colour</value>
+			</list>
+		</property>
+	</bean>
 
-  <bean id="playDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="prototype">
-    <property name="target">
-      <bean class="uk.co.unclealex.rokta.model.dao.HibernatePlayDao"/>
-    </property>
-    <property name="transactionAttributes">
-      <props>
-        <prop key="store*">PROPAGATION_REQUIRED</prop>
-        <prop key="remove*">PROPAGATION_REQUIRED</prop>
-        <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
-      </props>
-    </property>
-  </bean>
+  <context:component-scan
+  	base-package="uk.co.unclealex.rokta"
+  	name-generator="uk.co.unclealex.spring.BeanNameGenerator"
+  	scope-resolver="uk.co.unclealex.spring.AnnotationScopeMetadataResolver"/>
 
-  <bean id="colourDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="prototype">
-    <property name="target">
-      <bean class="uk.co.unclealex.rokta.model.dao.HibernateColourDao"/>
-    </property>
-    <property name="transactionAttributes">
-      <props>
-        <prop key="remove*">PROPAGATION_REQUIRED</prop>
-        <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
-      </props>
-    </property>
-  </bean>
-
-  <bean
-  	id="performanceManager"
-  	class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="prototype">
-    <property name="target">
-      <bean class="uk.co.unclealex.rokta.model.dao.HibernatePerformanceManager"/>
-    </property>
-    <property name="transactionAttributes">
-      <props>
-        <prop key="*">PROPAGATION_REQUIRED</prop>
-      </props>
-    </property>
-  </bean>
-
-  <bean id="dateUtil" class="uk.co.unclealex.rokta.util.DateUtilImpl"/>
-  <bean id="personManager" class="uk.co.unclealex.rokta.process.PersonManagerImpl" scope="prototype"/>
   <bean id="gameManager"
     class="uk.co.unclealex.rokta.process.PersistingGameManager"
     scope="prototype" autowire-candidate="false"/>
@@ -102,47 +63,6 @@
     scope="prototype">
     <property name="averageColour">
       <value>Orange</value>
-    </property>
-  </bean>
-
-  <bean id="leagueManager"
-    class="uk.co.unclealex.rokta.process.LeagueManagerImpl" scope="prototype">
-  </bean>
-
-  <bean id="statisticsManager"
-    class="uk.co.unclealex.rokta.process.StatisticsManagerImpl" scope="prototype">
-  </bean>
-
-  <bean id="profileManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="prototype">
-    <property name="target">
-      <bean class="uk.co.unclealex.rokta.process.ProfileManagerImpl"/>
-    </property>
-    <property name="transactionAttributes">
-      <props>
-        <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
-      </props>
-    </property>
-  </bean>
-
-  <bean id="importExportManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="prototype">
-    <property name="target">
-      <bean class="uk.co.unclealex.rokta.process.HibernateImportExportManager"/>
-    </property>
-    <property name="transactionAttributes">
-      <props>
-        <prop key="export*">PROPAGATION_REQUIRED,readOnly</prop>
-        <prop key="import*">PROPAGATION_REQUIRED</prop>
-      </props>
-    </property>
-  </bean>
-
-  <bean id="sessionFactory"
-    class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
-    <property name="configLocation">
-      <value>classpath:hibernate.cfg.xml</value>
-    </property>
-    <property name="configurationClass">
-      <value>org.hibernate.cfg.AnnotationConfiguration</value>
     </property>
   </bean>
 </beans>

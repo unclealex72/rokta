@@ -3,20 +3,16 @@
  */
 package uk.co.unclealex.rokta.filter;
 
-import java.util.SortedSet;
+import java.io.Serializable;
 
-import uk.co.unclealex.rokta.encodable.Encodable;
-import uk.co.unclealex.rokta.model.Game;
 
 /**
  * @author alex
  *
  */
-public interface GameFilter extends Encodable<GameFilter> {
+public interface GameFilter extends Serializable {
 
-	public SortedSet<Game> getGames();
+	public <T> T accept(GameFilterVistor<T> gameFilterVisitor);
 	
-	public String getDescription();
-	
-	public void accept(GameFilterVistor gameFilterVisitor);	
+	public boolean isContinuous();
 }

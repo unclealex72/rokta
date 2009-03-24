@@ -9,17 +9,16 @@ import java.util.SortedMap;
 import org.jfree.data.general.DefaultPieDataset;
 
 import uk.co.unclealex.rokta.model.Hand;
-import de.laures.cewolf.DatasetProduceException;
 
 /**
  * @author alex
  *
  */
-public class HandCountingDatasetProducer extends StatisticsAwareDatasetProducer {
+public class HandCountingDatasetProducer extends StatisticsAwareDatasetProducer<DefaultPieDataset> {
 
 	private SortedMap<Hand, Integer> i_handCount;
 	
-	public Object produceDataset(Map params) throws DatasetProduceException {
+	public DefaultPieDataset produceDataset() {
 		DefaultPieDataset dataset = new DefaultPieDataset();
 		SortedMap<Hand, Integer> handCounts = getHandCount();
 		int sum = 0;

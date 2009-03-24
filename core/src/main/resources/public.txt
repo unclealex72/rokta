@@ -1,0 +1,12 @@
+Facade:
+
+SortedSet<Person> getAllUsers()
+League getLeague(GameFilter, DateTime)
+void drawLeagueGraph(GameFilter, Dimension, int, Writer)
+void drawHandDistributionGraph(GameFilter, Person, Dimension, Writer)
+void drawOpeningHandDistributionGraph(GameFilter, Person, Dimension, Writer)
+
+StreakLeague getWinningStreaks(GameFilter, int)
+StreakLeague getLosingStreaks(GameFilter, int)
+StreakLeague getCurrentWinningStreaks(GameFilter, int)
+StreakLeague getCurrentLosingStreaks(GameFilter, int)

@@ -1,13 +1,13 @@
 package uk.co.unclealex.rokta.process;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 
 import uk.co.unclealex.rokta.exceptions.InvalidRoundException;
 import uk.co.unclealex.rokta.model.Game;
@@ -27,7 +27,7 @@ public class DefaultGameManager implements GameManager {
 	/* (non-Javadoc)
 	 * @see uk.co.unclealex.rokta.process.GameManager#startGame()
 	 */
-	public void startGame(Collection<Person> participants, Person instigator, Date date) {
+	public void startGame(Collection<Person> participants, Person instigator, DateTime date) {
 		setParticipants(new TreeSet<Person>(participants));
 		setRounds(0);
 		setFinished(false);
@@ -88,14 +88,14 @@ public class DefaultGameManager implements GameManager {
 	/* (non-Javadoc)
 	 * @see uk.co.unclealex.rokta.process.GameManager#finishGame()
 	 */
-	public final void finishGame(Long replacingGameId) throws InvalidRoundException {
+	public final void finishGame(Integer replacingGameId) throws InvalidRoundException {
 		if (!isFinished()) {
 			throw new InvalidRoundException("This game is not finished.");
 		}
 		finishGameInternal(replacingGameId);
 	}
 	
-	protected void finishGameInternal(Long replacingGameId) {
+	protected void finishGameInternal(Integer replacingGameId) {
 		// Do nothing
 	}
 	

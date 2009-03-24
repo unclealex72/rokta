@@ -3,23 +3,33 @@
  */
 package uk.co.unclealex.rokta.model.dao;
 
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.Query;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import uk.co.unclealex.hibernate.dao.HibernateKeyedDao;
 import uk.co.unclealex.rokta.model.Hand;
 import uk.co.unclealex.rokta.model.Person;
+import uk.co.unclealex.rokta.model.Round;
 
 /**
  * @author alex
  *
  */
-public class HibernateRoundDao extends HibernateDaoSupport implements RoundDao {
+@Transactional
+@Repository
+public class HibernateRoundDao extends HibernateKeyedDao<Round> implements RoundDao {
 
 	public int countOpeningGambitsByPersonAndHand(final Person person, final Hand hand) {
-		long result =
-			(Long) getSession().getNamedQuery("round.countOpeningGambitsByPersonAndHand").
+		Query query = 
+			getSession().getNamedQuery("round.countOpeningGambitsByPersonAndHand").
 							setEntity("person", person).
-							setParameter("hand", hand).
-							uniqueResult();
-    return (int) result;
-	}	
+							setParameter("hand", hand);
+    return uniqueResult(query, Integer.class);
+	}
+	
+	@Override
+	public Round createExampleBean() {
+		return new Round();
+	}
 }

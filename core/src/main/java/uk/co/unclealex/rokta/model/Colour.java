@@ -16,6 +16,8 @@ import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import uk.co.unclealex.hibernate.model.KeyedBean;
+
 /**
  * @author alex
  *
@@ -28,7 +30,7 @@ import javax.xml.bind.annotation.XmlType;
 		})
 @XmlRootElement(name="colour")
 @XmlType(propOrder={"name", "htmlName", "red", "green", "blue"})
-public class Colour extends Identity<Colour> {
+public class Colour extends KeyedBean<Colour> {
 
 	private String i_htmlName;
 	private String i_name;
@@ -50,6 +52,17 @@ public class Colour extends Identity<Colour> {
 		return obj instanceof Colour && getName().equals(((Colour) obj).getName());
 	}
 	
+	@Override
+	@Id @GeneratedValue
+	public Integer getId() {
+		return super.getId();
+	}
+	
+	@Override
+	public String toString() {
+		return getName();
+	}
+
 	@Column(unique=true, nullable=false)
 	@XmlID
 	public String getName() {
@@ -120,16 +133,4 @@ public class Colour extends Identity<Colour> {
 	public void setRed(short red) {
 		i_red = red;
 	}
-
-	@Override
-	@Id @GeneratedValue
-	public Long getId() {
-		return super.getId();
-	}
-	
-	@Override
-	public String toString() {
-		return getName();
-	}
-
 }

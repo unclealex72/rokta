@@ -3,30 +3,20 @@
  */
 package uk.co.unclealex.rokta.process.dataset;
 
-import java.util.Date;
-import java.util.Map;
+import org.jfree.data.general.Dataset;
 
 import uk.co.unclealex.rokta.process.InformationProvider;
 import uk.co.unclealex.rokta.process.StatisticsManager;
-import de.laures.cewolf.DatasetProducer;
 
 /**
  * @author alex
  *
  */
-public abstract class StatisticsAwareDatasetProducer implements DatasetProducer {
+public abstract class StatisticsAwareDatasetProducer<D extends Dataset> implements DatasetProducer<D> {
 
 	private StatisticsManager i_statisticsManager;
 	private InformationProvider i_informationProvider;
 	
-	public final String getProducerId() {
-		return getClass().getName();
-	}
-
-	public boolean hasExpired(Map params, Date since) {
-		return true;
-	}
-
 	/**
 	 * @return the statisticsManager
 	 */

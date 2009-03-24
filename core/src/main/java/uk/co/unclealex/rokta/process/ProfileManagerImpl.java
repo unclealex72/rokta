@@ -10,17 +10,22 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import uk.co.unclealex.rokta.model.Game;
 import uk.co.unclealex.rokta.model.Hand;
 import uk.co.unclealex.rokta.model.Person;
 import uk.co.unclealex.rokta.model.Play;
 import uk.co.unclealex.rokta.model.Round;
-import uk.co.unclealex.rokta.model.WinLoseCounter;
+import uk.co.unclealex.rokta.views.WinLoseCounter;
 
 /**
  * @author alex
  *
  */
+@Transactional
+@Service
 public class ProfileManagerImpl implements ProfileManager {
 
 	private Person i_person;

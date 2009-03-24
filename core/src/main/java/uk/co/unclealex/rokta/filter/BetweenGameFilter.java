@@ -1,69 +1,44 @@
 package uk.co.unclealex.rokta.filter;
 
-import java.text.DateFormat;
-import java.text.ParsePosition;
-import java.util.Date;
+import org.joda.time.DateTime;
 
-import uk.co.unclealex.rokta.process.restriction.BetweenGameRestriction;
-import uk.co.unclealex.rokta.process.restriction.GameRestriction;
+public class BetweenGameFilter implements GameFilter {
 
-public class BetweenGameFilter extends GameRestrictionGameFilter {
+	private DateTime i_from;
+	private DateTime i_to;
 
-	private Date i_from;
-	private Date i_to;
-
-	@Override
-	protected void decodeInfo(String encodingInfo) throws IllegalFilterEncodingException {
-		ParsePosition pos = new ParsePosition(0);
-		DateFormat fmt = createEncodingDateFormat();
-		Date from = fmt.parse(encodingInfo, pos);
-		Date to = fmt.parse(encodingInfo, pos);
-		if (from == null || to == null) {
-			throw new IllegalFilterEncodingException("Could not parse " + encodingInfo + " for a start and end date.");
-		}
-		setFrom(from);
-		setTo(to);
+	public BetweenGameFilter() {
 	}
-
-	@Override
-	protected String encodeInfo() {
-		DateFormat fmt = createEncodingDateFormat();
-		return fmt.format(getFrom()) + fmt.format(getTo());
-	}
-
-	@Override
-	protected char getEncodingPrefix() {
-		return GameFilterFactory.BETWEEN_PREFIX;
-	}
-
-
-	@Override
-	protected GameRestriction getGameRestriction() {
-		return new BetweenGameRestriction(getFrom(), getTo());
-	}
-
-	public String getDescription() {
-		DateFormat fmt = createDisplayDateFormat();
-		return "between " + fmt.format(getFrom()) + "and " + fmt.format(getTo());
-	}
-
-	public Date getFrom() {
-		return i_from;
-	}
-
-	public Date getTo() {
-		return i_to;
-	}
-
-	protected void setFrom(Date from) {
+	
+	public BetweenGameFilter(DateTime from, DateTime to) {
+		super();
 		i_from = from;
-	}
-
-	protected void setTo(Date to) {
 		i_to = to;
 	}
 
-	public void accept(GameFilterVistor gameFilterVisitor) {
-		gameFilterVisitor.visit(this);
+	@Override
+	public boolean isContinuous() {
+		return true;
+	}
+
+	@Override
+	public <T> T accept(GameFilterVistor<T> gameFilterVisitor) {
+		return gameFilterVisitor.visit(this);
+	}
+
+	public DateTime getFrom() {
+		return i_from;
+	}
+
+	public DateTime getTo() {
+		return i_to;
+	}
+
+	protected void setFrom(DateTime from) {
+		i_from = from;
+	}
+
+	protected void setTo(DateTime to) {
+		i_to = to;
 	}
 }

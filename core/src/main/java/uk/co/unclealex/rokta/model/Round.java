@@ -23,6 +23,9 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.collections15.Predicate;
+import org.apache.commons.lang.StringUtils;
+
+import uk.co.unclealex.hibernate.model.KeyedBean;
 
 @Entity
 @NamedQueries({
@@ -34,7 +37,7 @@ import org.apache.commons.collections15.Predicate;
 			query="select count(*) from Round as r join r.plays as p where p.person = :person and p.hand = :hand and r.round = 1")
 })
 @XmlType(propOrder={"round", "counter", "plays"})
-public class Round extends Identity<Round> {
+public class Round extends KeyedBean<Round> {
 
 	private Set<Play> i_plays;
 	private Person i_counter;
@@ -113,7 +116,11 @@ public class Round extends Identity<Round> {
 		i_plays = plays;
 	}
 	
-
+	@Override
+	public String toString() {
+		return "[Round " + getRound() + ": " + StringUtils.join(getPlays(), ", ") + "]";
+	}
+	
 	@Column(nullable=false)
 	public Integer getRound() {
 		return i_round;
@@ -131,7 +138,7 @@ public class Round extends Identity<Round> {
 	
 	@Override
 	@Id @GeneratedValue
-	public Long getId() {
+	public Integer getId() {
 		return super.getId();
 	}
 }
