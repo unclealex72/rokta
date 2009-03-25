@@ -43,5 +43,6 @@
 		<module>core</module>
 		<module>struts</module>
 		<module>gwt</module>
+		<module>public</module>
 	</modules>
 </project>
