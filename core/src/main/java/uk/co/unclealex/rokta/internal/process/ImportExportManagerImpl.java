@@ -1,17 +1,17 @@
-package uk.co.unclealex.rokta.process;
+package uk.co.unclealex.rokta.internal.process;
 
 import java.util.SortedSet;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.co.unclealex.rokta.model.Colour;
-import uk.co.unclealex.rokta.model.Game;
-import uk.co.unclealex.rokta.model.Person;
-import uk.co.unclealex.rokta.model.dao.ColourDao;
-import uk.co.unclealex.rokta.model.dao.GameDao;
-import uk.co.unclealex.rokta.model.dao.PersonDao;
-import uk.co.unclealex.rokta.views.Rokta;
+import uk.co.unclealex.rokta.internal.dao.ColourDao;
+import uk.co.unclealex.rokta.internal.dao.GameDao;
+import uk.co.unclealex.rokta.internal.dao.PersonDao;
+import uk.co.unclealex.rokta.pub.model.Colour;
+import uk.co.unclealex.rokta.pub.model.Game;
+import uk.co.unclealex.rokta.pub.model.Person;
+import uk.co.unclealex.rokta.pub.views.Rokta;
 
 @Service
 @Transactional

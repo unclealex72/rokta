@@ -1,8 +1,8 @@
-package uk.co.unclealex.rokta.quotient;
+package uk.co.unclealex.rokta.internal.quotient;
 
 import org.joda.time.DateTime;
 
-import uk.co.unclealex.rokta.quotient.visitor.DatePlayedQuotientTransformerVisitor;
+import uk.co.unclealex.rokta.internal.quotient.visitor.DatePlayedQuotientTransformerVisitor;
 
 public class WeekDatePlayedQuotientTransformer extends DatePlayedQuotientTransformer {
 

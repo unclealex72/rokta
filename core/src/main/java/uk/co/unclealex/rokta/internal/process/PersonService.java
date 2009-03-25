@@ -1,18 +1,18 @@
 /**
  * 
  */
-package uk.co.unclealex.rokta.process;
+package uk.co.unclealex.rokta.internal.process;
 
 
 import org.joda.time.DateTime;
 
-import uk.co.unclealex.rokta.model.Person;
+import uk.co.unclealex.rokta.pub.model.Person;
 
 /**
  * @author alex
  *
  */
-public interface PersonManager {
+public interface PersonService {
 
 	public Person getExemptPlayer(DateTime date);
 	public boolean currentlyPlaying(Person player, DateTime date);

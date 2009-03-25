@@ -1,14 +1,14 @@
 /**
  * 
  */
-package uk.co.unclealex.rokta.process;
+package uk.co.unclealex.rokta.internal.process;
 
 import java.text.DateFormat;
 import java.util.Date;
 
 import org.apache.commons.collections15.Predicate;
 
-import uk.co.unclealex.rokta.model.Game;
+import uk.co.unclealex.rokta.pub.model.Game;
 
 public class DateFilterPredicate implements Predicate<Game> {
 	

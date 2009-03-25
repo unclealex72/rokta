@@ -1,7 +1,7 @@
 /**
  * 
  */
-package uk.co.unclealex.rokta.security;
+package uk.co.unclealex.rokta.internal.security;
 
 import org.springframework.security.AuthenticationException;
 import org.springframework.security.BadCredentialsException;
@@ -11,8 +11,8 @@ import org.springframework.security.providers.dao.AbstractUserDetailsAuthenticat
 import org.springframework.security.userdetails.User;
 import org.springframework.security.userdetails.UserDetails;
 
-import uk.co.unclealex.rokta.model.Person;
-import uk.co.unclealex.rokta.model.dao.PersonDao;
+import uk.co.unclealex.rokta.internal.dao.PersonDao;
+import uk.co.unclealex.rokta.pub.model.Person;
 
 /*
  * Created by: aj016368

@@ -1,4 +1,4 @@
-package uk.co.unclealex.rokta.security;
+package uk.co.unclealex.rokta.internal.security;
 
 import org.apache.commons.codec.digest.DigestUtils;
 

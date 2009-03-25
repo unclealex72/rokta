@@ -1,4 +1,4 @@
-package uk.co.unclealex.rokta.process;
+package uk.co.unclealex.rokta.internal.process;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -9,12 +9,12 @@ import java.util.TreeSet;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 
-import uk.co.unclealex.rokta.exceptions.InvalidRoundException;
-import uk.co.unclealex.rokta.model.Game;
-import uk.co.unclealex.rokta.model.Hand;
-import uk.co.unclealex.rokta.model.Person;
-import uk.co.unclealex.rokta.model.Play;
-import uk.co.unclealex.rokta.model.Round;
+import uk.co.unclealex.rokta.pub.exceptions.InvalidRoundException;
+import uk.co.unclealex.rokta.pub.model.Game;
+import uk.co.unclealex.rokta.pub.model.Hand;
+import uk.co.unclealex.rokta.pub.model.Person;
+import uk.co.unclealex.rokta.pub.model.Play;
+import uk.co.unclealex.rokta.pub.model.Round;
 
 public class DefaultGameManager implements GameManager {
 

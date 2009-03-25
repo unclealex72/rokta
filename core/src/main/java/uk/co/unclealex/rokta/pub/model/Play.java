@@ -1,4 +1,4 @@
-package uk.co.unclealex.rokta.model;
+package uk.co.unclealex.rokta.pub.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

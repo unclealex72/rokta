@@ -47,7 +47,7 @@ public class LeagueAction extends RoktaAction {
 	}
 	
 	private LeagueGraphDatasetProducer i_leagueGraphDatasetProducer;
-	private LeagueManager i_leagueManager;
+	private LeagueService i_leagueManager;
 	private League i_league;
 	
 	private GranularityPredicate i_granularityPredicate;
@@ -64,7 +64,7 @@ public class LeagueAction extends RoktaAction {
 			predicates.add(produceTableLeagueMilestonePredicate(games));
 			predicates.add(produceGraphLeagueMilestonePredicate(games));
 			
-			LeagueManager manager = getLeagueManager();
+			LeagueService manager = getLeagueManager();
 			manager.setCurrentDate(new Date());
 			manager.setGames(games);
 			manager.setLeagueMilestonePredicates(predicates);
@@ -167,14 +167,14 @@ public class LeagueAction extends RoktaAction {
 	/**
 	 * @return the leagueManager
 	 */
-	public LeagueManager getLeagueManager() {
+	public LeagueService getLeagueManager() {
 		return i_leagueManager;
 	}
 
 	/**
 	 * @param leagueManager the leagueManager to set
 	 */
-	public void setLeagueManager(LeagueManager leagueManager) {
+	public void setLeagueManager(LeagueService leagueManager) {
 		i_leagueManager = leagueManager;
 	}
 

@@ -1,4 +1,4 @@
-package uk.co.unclealex.rokta.util;
+package uk.co.unclealex.rokta.internal.util;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -7,7 +7,7 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
 
-import uk.co.unclealex.rokta.model.Person;
+import uk.co.unclealex.rokta.pub.model.Person;
 
 public class DatabaseCreator {
 

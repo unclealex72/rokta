@@ -1,13 +1,13 @@
 /**
  * 
  */
-package uk.co.unclealex.rokta.process;
+package uk.co.unclealex.rokta.internal.process;
 
 import java.util.Collection;
 
 import org.apache.commons.collections15.Predicate;
 
-import uk.co.unclealex.rokta.model.Game;
+import uk.co.unclealex.rokta.pub.model.Game;
 
 /**
  * @author alex

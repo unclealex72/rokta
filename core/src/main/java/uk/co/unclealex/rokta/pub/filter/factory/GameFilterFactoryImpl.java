@@ -1,16 +1,16 @@
-package uk.co.unclealex.rokta.filter.factory;
+package uk.co.unclealex.rokta.pub.filter.factory;
 
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 
-import uk.co.unclealex.rokta.filter.AllGameFilter;
-import uk.co.unclealex.rokta.filter.BeforeGameFilter;
-import uk.co.unclealex.rokta.filter.BetweenGameFilter;
-import uk.co.unclealex.rokta.filter.GameFilter;
-import uk.co.unclealex.rokta.filter.MonthGameFilter;
-import uk.co.unclealex.rokta.filter.SinceGameFilter;
-import uk.co.unclealex.rokta.filter.WeekGameFilter;
-import uk.co.unclealex.rokta.filter.YearGameFilter;
+import uk.co.unclealex.rokta.pub.filter.AllGameFilter;
+import uk.co.unclealex.rokta.pub.filter.BeforeGameFilter;
+import uk.co.unclealex.rokta.pub.filter.BetweenGameFilter;
+import uk.co.unclealex.rokta.pub.filter.GameFilter;
+import uk.co.unclealex.rokta.pub.filter.MonthGameFilter;
+import uk.co.unclealex.rokta.pub.filter.SinceGameFilter;
+import uk.co.unclealex.rokta.pub.filter.WeekGameFilter;
+import uk.co.unclealex.rokta.pub.filter.YearGameFilter;
 
 @Service
 public class GameFilterFactoryImpl implements GameFilterFactory {

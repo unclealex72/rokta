@@ -1,10 +1,10 @@
-package uk.co.unclealex.rokta.process.dataset;
+package uk.co.unclealex.rokta.internal.process.dataset;
 
 import org.jfree.data.general.PieDataset;
 import org.joda.time.DateTime;
 
-import uk.co.unclealex.rokta.filter.GameFilter;
-import uk.co.unclealex.rokta.model.Person;
+import uk.co.unclealex.rokta.pub.filter.GameFilter;
+import uk.co.unclealex.rokta.pub.model.Person;
 
 public interface DatasetProducerFactory {
 

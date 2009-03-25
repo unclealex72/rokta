@@ -1,8 +1,8 @@
-package uk.co.unclealex.rokta.views;
+package uk.co.unclealex.rokta.pub.views;
 
 import java.io.Serializable;
 
-import uk.co.unclealex.rokta.model.Person;
+import uk.co.unclealex.rokta.pub.model.Person;
 
 public class LeagueRow implements Serializable {
 

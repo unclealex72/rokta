@@ -1,10 +1,10 @@
-package uk.co.unclealex.rokta.quotient;
+package uk.co.unclealex.rokta.internal.quotient;
 
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
 
-import uk.co.unclealex.rokta.model.Game;
-import uk.co.unclealex.rokta.quotient.visitor.DatePlayedQuotientTransformerVisitor;
+import uk.co.unclealex.rokta.internal.quotient.visitor.DatePlayedQuotientTransformerVisitor;
+import uk.co.unclealex.rokta.pub.model.Game;
 
 public abstract class DatePlayedQuotientTransformer implements Transformer<Game, Long> {
 

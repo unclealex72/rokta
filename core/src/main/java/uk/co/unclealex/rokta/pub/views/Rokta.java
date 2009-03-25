@@ -1,4 +1,4 @@
-package uk.co.unclealex.rokta.views;
+package uk.co.unclealex.rokta.pub.views;
 
 import java.io.Serializable;
 import java.util.SortedSet;
@@ -8,9 +8,9 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import uk.co.unclealex.rokta.model.Colour;
-import uk.co.unclealex.rokta.model.Game;
-import uk.co.unclealex.rokta.model.Person;
+import uk.co.unclealex.rokta.pub.model.Colour;
+import uk.co.unclealex.rokta.pub.model.Game;
+import uk.co.unclealex.rokta.pub.model.Person;
 
 @XmlRootElement
 @XmlType(propOrder={"people", "games", "colours"})

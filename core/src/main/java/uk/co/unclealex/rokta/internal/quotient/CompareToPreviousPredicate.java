@@ -1,4 +1,4 @@
-package uk.co.unclealex.rokta.quotient;
+package uk.co.unclealex.rokta.internal.quotient;
 
 public abstract class CompareToPreviousPredicate<T> extends CompareToPreviousTransformedPredicate<T, T> {
 

@@ -1,18 +1,18 @@
 /**
  * 
  */
-package uk.co.unclealex.rokta.process;
+package uk.co.unclealex.rokta.internal.process;
 
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.co.unclealex.rokta.model.Game;
-import uk.co.unclealex.rokta.model.Person;
-import uk.co.unclealex.rokta.model.dao.GameDao;
-import uk.co.unclealex.rokta.model.dao.PersonDao;
-import uk.co.unclealex.rokta.security.PasswordEncoder;
-import uk.co.unclealex.rokta.util.DateUtil;
+import uk.co.unclealex.rokta.internal.dao.GameDao;
+import uk.co.unclealex.rokta.internal.dao.PersonDao;
+import uk.co.unclealex.rokta.internal.security.PasswordEncoder;
+import uk.co.unclealex.rokta.internal.util.DateUtil;
+import uk.co.unclealex.rokta.pub.model.Game;
+import uk.co.unclealex.rokta.pub.model.Person;
 
 /**
  * @author alex
@@ -20,7 +20,7 @@ import uk.co.unclealex.rokta.util.DateUtil;
  */
 @Service
 @Transactional
-public class PersonManagerImpl implements PersonManager {
+public class PersonServiceImpl implements PersonService {
 
 	protected PersonDao i_personDao;
 	protected GameDao i_gameDao;

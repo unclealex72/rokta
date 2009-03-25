@@ -1,7 +1,7 @@
 /**
  * 
  */
-package uk.co.unclealex.rokta.process.dataset;
+package uk.co.unclealex.rokta.internal.process.dataset;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -13,12 +13,12 @@ import java.util.TreeMap;
 import org.apache.commons.collections15.Transformer;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.co.unclealex.rokta.model.Colour;
-import uk.co.unclealex.rokta.model.Game;
-import uk.co.unclealex.rokta.model.Person;
-import uk.co.unclealex.rokta.model.dao.ColourDao;
-import uk.co.unclealex.rokta.views.League;
-import uk.co.unclealex.rokta.views.LeagueRow;
+import uk.co.unclealex.rokta.internal.dao.ColourDao;
+import uk.co.unclealex.rokta.pub.model.Colour;
+import uk.co.unclealex.rokta.pub.model.Game;
+import uk.co.unclealex.rokta.pub.model.Person;
+import uk.co.unclealex.rokta.pub.views.League;
+import uk.co.unclealex.rokta.pub.views.LeagueRow;
 import uk.co.unclealex.spring.Prototype;
 
 /**

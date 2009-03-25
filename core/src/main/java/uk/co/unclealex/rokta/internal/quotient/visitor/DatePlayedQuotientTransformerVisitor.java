@@ -1,10 +1,10 @@
-package uk.co.unclealex.rokta.quotient.visitor;
+package uk.co.unclealex.rokta.internal.quotient.visitor;
 
-import uk.co.unclealex.rokta.quotient.DatePlayedQuotientTransformer;
-import uk.co.unclealex.rokta.quotient.DayDatePlayedQuotientTransformer;
-import uk.co.unclealex.rokta.quotient.MonthDatePlayedQuotientTransformer;
-import uk.co.unclealex.rokta.quotient.WeekDatePlayedQuotientTransformer;
-import uk.co.unclealex.rokta.quotient.YearDatePlayedQuotientTransformer;
+import uk.co.unclealex.rokta.internal.quotient.DatePlayedQuotientTransformer;
+import uk.co.unclealex.rokta.internal.quotient.DayDatePlayedQuotientTransformer;
+import uk.co.unclealex.rokta.internal.quotient.MonthDatePlayedQuotientTransformer;
+import uk.co.unclealex.rokta.internal.quotient.WeekDatePlayedQuotientTransformer;
+import uk.co.unclealex.rokta.internal.quotient.YearDatePlayedQuotientTransformer;
 
 public abstract class DatePlayedQuotientTransformerVisitor<T> {
 

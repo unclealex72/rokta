@@ -1,11 +1,11 @@
 /**
  * 
  */
-package uk.co.unclealex.rokta.process.dataset;
+package uk.co.unclealex.rokta.internal.process.dataset;
 
 import org.joda.time.DateTime;
 
-import uk.co.unclealex.rokta.filter.GameFilter;
+import uk.co.unclealex.rokta.pub.filter.GameFilter;
 
 /**
  * @author alex

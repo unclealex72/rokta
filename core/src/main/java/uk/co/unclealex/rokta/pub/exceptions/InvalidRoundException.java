@@ -1,4 +1,4 @@
-package uk.co.unclealex.rokta.exceptions;
+package uk.co.unclealex.rokta.pub.exceptions;
 
 public class InvalidRoundException extends Exception {
 

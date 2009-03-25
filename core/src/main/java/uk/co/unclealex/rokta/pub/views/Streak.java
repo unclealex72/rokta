@@ -1,12 +1,12 @@
 /**
  * 
  */
-package uk.co.unclealex.rokta.views;
+package uk.co.unclealex.rokta.pub.views;
 
 import java.util.SortedSet;
 
-import uk.co.unclealex.rokta.model.Game;
-import uk.co.unclealex.rokta.model.Person;
+import uk.co.unclealex.rokta.pub.model.Game;
+import uk.co.unclealex.rokta.pub.model.Person;
 
 /**
  * @author alex

@@ -1,4 +1,4 @@
-package uk.co.unclealex.rokta.model;
+package uk.co.unclealex.rokta.pub.model;
 
 import java.util.HashSet;
 import java.util.Iterator;

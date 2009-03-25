@@ -1,10 +1,10 @@
 /**
  * 
  */
-package uk.co.unclealex.rokta.model.dao;
+package uk.co.unclealex.rokta.internal.dao;
 
-import uk.co.unclealex.rokta.model.Hand;
-import uk.co.unclealex.rokta.model.Person;
+import uk.co.unclealex.rokta.pub.model.Hand;
+import uk.co.unclealex.rokta.pub.model.Person;
 
 /**
  * @author alex

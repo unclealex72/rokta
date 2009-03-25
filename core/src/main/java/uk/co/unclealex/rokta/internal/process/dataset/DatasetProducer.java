@@ -1,4 +1,4 @@
-package uk.co.unclealex.rokta.process.dataset;
+package uk.co.unclealex.rokta.internal.process.dataset;
 
 import org.jfree.data.general.Dataset;
 

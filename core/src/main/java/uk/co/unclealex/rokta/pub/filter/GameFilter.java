@@ -1,7 +1,7 @@
 /**
  * 
  */
-package uk.co.unclealex.rokta.filter;
+package uk.co.unclealex.rokta.pub.filter;
 
 import java.io.Serializable;
 

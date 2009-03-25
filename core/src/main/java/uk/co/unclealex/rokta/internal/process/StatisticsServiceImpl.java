@@ -1,7 +1,7 @@
 /**
  * 
  */
-package uk.co.unclealex.rokta.process;
+package uk.co.unclealex.rokta.internal.process;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -15,14 +15,14 @@ import java.util.TreeSet;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.co.unclealex.rokta.model.Game;
-import uk.co.unclealex.rokta.model.Person;
-import uk.co.unclealex.rokta.model.Round;
-import uk.co.unclealex.rokta.model.dao.PersonDao;
-import uk.co.unclealex.rokta.model.dao.PlayDao;
-import uk.co.unclealex.rokta.model.dao.RoundDao;
-import uk.co.unclealex.rokta.views.Streak;
-import uk.co.unclealex.rokta.views.WinLoseCounter;
+import uk.co.unclealex.rokta.internal.dao.PersonDao;
+import uk.co.unclealex.rokta.internal.dao.PlayDao;
+import uk.co.unclealex.rokta.internal.dao.RoundDao;
+import uk.co.unclealex.rokta.pub.model.Game;
+import uk.co.unclealex.rokta.pub.model.Person;
+import uk.co.unclealex.rokta.pub.model.Round;
+import uk.co.unclealex.rokta.pub.views.Streak;
+import uk.co.unclealex.rokta.pub.views.WinLoseCounter;
 
 /**
  * @author alex
@@ -30,7 +30,7 @@ import uk.co.unclealex.rokta.views.WinLoseCounter;
  */
 @Service
 @Transactional
-public class StatisticsManagerImpl implements StatisticsManager {
+public class StatisticsServiceImpl implements StatisticsService {
 
 	private PersonDao i_personDao;
 	private PlayDao i_playDao;

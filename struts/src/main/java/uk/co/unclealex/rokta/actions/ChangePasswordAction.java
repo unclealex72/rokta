@@ -4,7 +4,7 @@ import uk.co.unclealex.rokta.process.PersonManager;
 
 public class ChangePasswordAction extends DetailsAction {
 
-	private PersonManager i_personManager;
+	private PersonService i_personManager;
 	
 	private String i_currentPassword;
 	private String i_password;
@@ -56,11 +56,11 @@ public class ChangePasswordAction extends DetailsAction {
 		i_password = password;
 	}
 
-	public PersonManager getPersonManager() {
+	public PersonService getPersonManager() {
 		return i_personManager;
 	}
 
-	public void setPersonManager(PersonManager personManager) {
+	public void setPersonManager(PersonService personManager) {
 		i_personManager = personManager;
 	}
 }

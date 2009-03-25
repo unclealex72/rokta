@@ -19,7 +19,7 @@ public class HeadToHeadsAction extends StatisticsAction {
 	
 	@Override
 	protected String executeInternal() {
-    StatisticsManager manager = getStatisticsManager();
+    StatisticsService manager = getStatisticsManager();
     manager.setGames(getGames());
 		setHeadToHeadResultsByPerson(manager.getHeadToHeadResultsByPerson());
 		return SUCCESS;

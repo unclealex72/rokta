@@ -1,8 +1,8 @@
-package uk.co.unclealex.rokta.filter.factory;
+package uk.co.unclealex.rokta.pub.filter.factory;
 
 import org.joda.time.DateTime;
 
-import uk.co.unclealex.rokta.filter.GameFilter;
+import uk.co.unclealex.rokta.pub.filter.GameFilter;
 
 public interface GameFilterFactory {
 

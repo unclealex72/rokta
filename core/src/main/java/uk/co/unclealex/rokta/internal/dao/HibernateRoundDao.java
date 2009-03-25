@@ -1,16 +1,16 @@
 /**
  * 
  */
-package uk.co.unclealex.rokta.model.dao;
+package uk.co.unclealex.rokta.internal.dao;
 
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.co.unclealex.hibernate.dao.HibernateKeyedDao;
-import uk.co.unclealex.rokta.model.Hand;
-import uk.co.unclealex.rokta.model.Person;
-import uk.co.unclealex.rokta.model.Round;
+import uk.co.unclealex.rokta.pub.model.Hand;
+import uk.co.unclealex.rokta.pub.model.Person;
+import uk.co.unclealex.rokta.pub.model.Round;
 
 /**
  * @author alex

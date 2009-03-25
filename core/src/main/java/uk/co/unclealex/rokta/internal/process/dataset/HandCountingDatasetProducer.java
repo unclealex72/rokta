@@ -1,14 +1,14 @@
 /**
  * 
  */
-package uk.co.unclealex.rokta.process.dataset;
+package uk.co.unclealex.rokta.internal.process.dataset;
 
 import java.util.Map;
 import java.util.SortedMap;
 
 import org.jfree.data.general.DefaultPieDataset;
 
-import uk.co.unclealex.rokta.model.Hand;
+import uk.co.unclealex.rokta.pub.model.Hand;
 
 /**
  * @author alex

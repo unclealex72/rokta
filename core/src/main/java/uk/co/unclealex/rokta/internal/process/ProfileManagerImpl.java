@@ -1,7 +1,7 @@
 /**
  * 
  */
-package uk.co.unclealex.rokta.process;
+package uk.co.unclealex.rokta.internal.process;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,12 +13,12 @@ import java.util.TreeMap;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.co.unclealex.rokta.model.Game;
-import uk.co.unclealex.rokta.model.Hand;
-import uk.co.unclealex.rokta.model.Person;
-import uk.co.unclealex.rokta.model.Play;
-import uk.co.unclealex.rokta.model.Round;
-import uk.co.unclealex.rokta.views.WinLoseCounter;
+import uk.co.unclealex.rokta.pub.model.Game;
+import uk.co.unclealex.rokta.pub.model.Hand;
+import uk.co.unclealex.rokta.pub.model.Person;
+import uk.co.unclealex.rokta.pub.model.Play;
+import uk.co.unclealex.rokta.pub.model.Round;
+import uk.co.unclealex.rokta.pub.views.WinLoseCounter;
 
 /**
  * @author alex
@@ -31,7 +31,7 @@ public class ProfileManagerImpl implements ProfileManager {
 	private Person i_person;
 	private SortedSet<Game> i_games;
   
-	private StatisticsManager i_statisticsManager;
+	private StatisticsService i_statisticsManager;
 	
 	public SortedMap<Hand, Integer> countHands() {
 		CountHandPersonOperation operation = new CountHandPersonOperation() {
@@ -109,14 +109,14 @@ public class ProfileManagerImpl implements ProfileManager {
 	/**
 	 * @return the statisticsManager
 	 */
-	public StatisticsManager getStatisticsManager() {
+	public StatisticsService getStatisticsManager() {
 		return i_statisticsManager;
 	}
 
 	/**
 	 * @param statisticsManager the statisticsManager to set
 	 */
-	public void setStatisticsManager(StatisticsManager statisticsManager) {
+	public void setStatisticsManager(StatisticsService statisticsManager) {
 		i_statisticsManager = statisticsManager;
 	}
 
@@ -132,7 +132,7 @@ public class ProfileManagerImpl implements ProfileManager {
    */
   public void setGames(SortedSet<Game> games) {
     i_games = games;
-    StatisticsManager statisticsManager = getStatisticsManager();
+    StatisticsService statisticsManager = getStatisticsManager();
     if (statisticsManager != null) {
       statisticsManager.setGames(games);
     }

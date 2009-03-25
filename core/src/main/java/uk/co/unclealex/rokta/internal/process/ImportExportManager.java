@@ -1,6 +1,6 @@
-package uk.co.unclealex.rokta.process;
+package uk.co.unclealex.rokta.internal.process;
 
-import uk.co.unclealex.rokta.views.Rokta;
+import uk.co.unclealex.rokta.pub.views.Rokta;
 
 public interface ImportExportManager {
 

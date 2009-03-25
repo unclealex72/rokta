@@ -15,7 +15,7 @@ public class InitialiseAction extends RoktaAction {
   private SortedSet<Person> i_everybody;
 	private Person i_exempt;
 	
-	private PersonManager i_personManager;
+	private PersonService i_personManager;
 	
 	@Override
 	protected String executeInternal() {
@@ -78,14 +78,14 @@ public class InitialiseAction extends RoktaAction {
 	/**
 	 * @return the personManager
 	 */
-	public PersonManager getPersonManager() {
+	public PersonService getPersonManager() {
 		return i_personManager;
 	}
 
 	/**
 	 * @param personManager the personManager to set
 	 */
-	public void setPersonManager(PersonManager personManager) {
+	public void setPersonManager(PersonService personManager) {
 		i_personManager = personManager;
 	}
 

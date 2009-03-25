@@ -1,4 +1,4 @@
-package uk.co.unclealex.rokta.process;
+package uk.co.unclealex.rokta.internal.process;
 
 import java.util.Iterator;
 

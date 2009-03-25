@@ -1,4 +1,4 @@
-package uk.co.unclealex.rokta.quotient;
+package uk.co.unclealex.rokta.internal.quotient;
 
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;

@@ -1,12 +1,12 @@
 /**
  * 
  */
-package uk.co.unclealex.rokta.process.dataset;
+package uk.co.unclealex.rokta.internal.process.dataset;
 
 import org.jfree.data.general.Dataset;
 
-import uk.co.unclealex.rokta.process.InformationProvider;
-import uk.co.unclealex.rokta.process.StatisticsManager;
+import uk.co.unclealex.rokta.internal.process.InformationProvider;
+import uk.co.unclealex.rokta.internal.process.StatisticsService;
 
 /**
  * @author alex
@@ -14,20 +14,20 @@ import uk.co.unclealex.rokta.process.StatisticsManager;
  */
 public abstract class StatisticsAwareDatasetProducer<D extends Dataset> implements DatasetProducer<D> {
 
-	private StatisticsManager i_statisticsManager;
+	private StatisticsService i_statisticsManager;
 	private InformationProvider i_informationProvider;
 	
 	/**
 	 * @return the statisticsManager
 	 */
-	public StatisticsManager getStatisticsManager() {
+	public StatisticsService getStatisticsManager() {
 		return i_statisticsManager;
 	}
 
 	/**
 	 * @param statisticsManager the statisticsManager to set
 	 */
-	public void setStatisticsManager(StatisticsManager statisticsManager) {
+	public void setStatisticsManager(StatisticsService statisticsManager) {
 		i_statisticsManager = statisticsManager;
 	}
 

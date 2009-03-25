@@ -12,7 +12,7 @@ import uk.co.unclealex.rokta.process.StatisticsManager;
  */
 public abstract class StatisticsAction extends RoktaAction {
 
-	private StatisticsManager i_statisticsManager;
+	private StatisticsService i_statisticsManager;
 
 	/* (non-Javadoc)
 	 * @see uk.co.unclealex.rokta.actions.RoktaAction#executeInternal()
@@ -22,14 +22,14 @@ public abstract class StatisticsAction extends RoktaAction {
 	/**
 	 * @return the statisticsManager
 	 */
-	public StatisticsManager getStatisticsManager() {
+	public StatisticsService getStatisticsManager() {
 		return i_statisticsManager;
 	}
 
 	/**
 	 * @param statisticsManager the statisticsManager to set
 	 */
-	public void setStatisticsManager(StatisticsManager statisticsManager) {
+	public void setStatisticsManager(StatisticsService statisticsManager) {
 		i_statisticsManager = statisticsManager;
 	}
 	

@@ -1,4 +1,4 @@
-package uk.co.unclealex.rokta.process;
+package uk.co.unclealex.rokta.internal.process;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,32 +23,32 @@ import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.co.unclealex.rokta.filter.GameFilter;
-import uk.co.unclealex.rokta.model.Game;
-import uk.co.unclealex.rokta.model.Person;
-import uk.co.unclealex.rokta.model.Round;
-import uk.co.unclealex.rokta.model.dao.GameDao;
-import uk.co.unclealex.rokta.quotient.DatePlayedQuotientTransformer;
-import uk.co.unclealex.rokta.quotient.DayDatePlayedQuotientTransformer;
-import uk.co.unclealex.rokta.quotient.InstantDatePlayedQuotientTransformer;
-import uk.co.unclealex.rokta.quotient.MonthDatePlayedQuotientTransformer;
-import uk.co.unclealex.rokta.quotient.QuotientPredicate;
-import uk.co.unclealex.rokta.quotient.WeekDatePlayedQuotientTransformer;
-import uk.co.unclealex.rokta.quotient.YearDatePlayedQuotientTransformer;
-import uk.co.unclealex.rokta.util.DateUtil;
-import uk.co.unclealex.rokta.views.Delta;
-import uk.co.unclealex.rokta.views.InfiniteInteger;
-import uk.co.unclealex.rokta.views.League;
-import uk.co.unclealex.rokta.views.LeagueRow;
-import uk.co.unclealex.rokta.views.LeaguesHolder;
+import uk.co.unclealex.rokta.internal.dao.GameDao;
+import uk.co.unclealex.rokta.internal.quotient.DatePlayedQuotientTransformer;
+import uk.co.unclealex.rokta.internal.quotient.DayDatePlayedQuotientTransformer;
+import uk.co.unclealex.rokta.internal.quotient.InstantDatePlayedQuotientTransformer;
+import uk.co.unclealex.rokta.internal.quotient.MonthDatePlayedQuotientTransformer;
+import uk.co.unclealex.rokta.internal.quotient.QuotientPredicate;
+import uk.co.unclealex.rokta.internal.quotient.WeekDatePlayedQuotientTransformer;
+import uk.co.unclealex.rokta.internal.quotient.YearDatePlayedQuotientTransformer;
+import uk.co.unclealex.rokta.internal.util.DateUtil;
+import uk.co.unclealex.rokta.pub.filter.GameFilter;
+import uk.co.unclealex.rokta.pub.model.Game;
+import uk.co.unclealex.rokta.pub.model.Person;
+import uk.co.unclealex.rokta.pub.model.Round;
+import uk.co.unclealex.rokta.pub.views.Delta;
+import uk.co.unclealex.rokta.pub.views.InfiniteInteger;
+import uk.co.unclealex.rokta.pub.views.League;
+import uk.co.unclealex.rokta.pub.views.LeagueRow;
+import uk.co.unclealex.rokta.pub.views.LeaguesHolder;
 
 @Service
 @Transactional
-public class LeagueManagerImpl implements LeagueManager {
+public class LeagueServiceImpl implements LeagueService {
 
 	private GameDao i_gameDao;
 	private DateUtil i_dateUtil;
-	private PersonManager i_personManager;
+	private PersonService i_personService;
 	private Comparator<LeagueRow> i_leagueRowComparator;
 	
 	@PostConstruct
@@ -177,11 +177,11 @@ public class LeagueManagerImpl implements LeagueManager {
 			League league = leaguesByGame.get(lastLeagueGame);
 			league.setCurrent(true);
 			if (getDateUtil().areSameDay(lastGamePlayed.getDatePlayed(), currentDate)) {
-				Person exempt = getPersonManager().getExemptPlayer(currentDate);
+				Person exempt = getPersonService().getExemptPlayer(currentDate);
 				for (LeagueRow leagueRow : league.getRows()) {
 					Person player = leagueRow.getPerson();
 					leagueRow.setExempt(player.equals(exempt));
-					leagueRow.setPlayingToday(getPersonManager().currentlyPlaying(player, currentDate));
+					leagueRow.setPlayingToday(getPersonService().currentlyPlaying(player, currentDate));
 				}
 			}
 			LeagueRow previousRow = null;
@@ -351,15 +351,15 @@ public class LeagueManagerImpl implements LeagueManager {
 	/**
 	 * @return the personManager
 	 */
-	public PersonManager getPersonManager() {
-		return i_personManager;
+	public PersonService getPersonService() {
+		return i_personService;
 	}
 
 	/**
 	 * @param personManager the personManager to set
 	 */
-	public void setPersonManager(PersonManager personManager) {
-		i_personManager = personManager;
+	public void setPersonService(PersonService personManager) {
+		i_personService = personManager;
 	}
 
 	/**

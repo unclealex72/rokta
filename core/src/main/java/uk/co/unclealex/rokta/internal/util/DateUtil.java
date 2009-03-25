@@ -1,7 +1,7 @@
 /**
  * 
  */
-package uk.co.unclealex.rokta.util;
+package uk.co.unclealex.rokta.internal.util;
 
 import org.joda.time.DateTime;
 

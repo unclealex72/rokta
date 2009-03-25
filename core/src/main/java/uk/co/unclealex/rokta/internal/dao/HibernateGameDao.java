@@ -1,4 +1,4 @@
-package uk.co.unclealex.rokta.model.dao;
+package uk.co.unclealex.rokta.internal.dao;
 
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -14,31 +14,31 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.co.unclealex.hibernate.dao.HibernateKeyedDao;
-import uk.co.unclealex.rokta.filter.AllGameFilter;
-import uk.co.unclealex.rokta.filter.BeforeGameFilter;
-import uk.co.unclealex.rokta.filter.BetweenGameFilter;
-import uk.co.unclealex.rokta.filter.FirstGameOfTheDayFilter;
-import uk.co.unclealex.rokta.filter.FirstGameOfTheMonthFilter;
-import uk.co.unclealex.rokta.filter.FirstGameOfTheWeekFilter;
-import uk.co.unclealex.rokta.filter.FirstGameOfTheYearFilter;
-import uk.co.unclealex.rokta.filter.GameFilter;
-import uk.co.unclealex.rokta.filter.GameFilterVistor;
-import uk.co.unclealex.rokta.filter.LastGameOfTheDayFilter;
-import uk.co.unclealex.rokta.filter.LastGameOfTheMonthFilter;
-import uk.co.unclealex.rokta.filter.LastGameOfTheWeekFilter;
-import uk.co.unclealex.rokta.filter.LastGameOfTheYearFilter;
-import uk.co.unclealex.rokta.filter.MonthGameFilter;
-import uk.co.unclealex.rokta.filter.SinceGameFilter;
-import uk.co.unclealex.rokta.filter.WeekGameFilter;
-import uk.co.unclealex.rokta.filter.YearGameFilter;
-import uk.co.unclealex.rokta.model.Game;
-import uk.co.unclealex.rokta.model.Person;
-import uk.co.unclealex.rokta.quotient.DatePlayedQuotientTransformer;
-import uk.co.unclealex.rokta.quotient.DayDatePlayedQuotientTransformer;
-import uk.co.unclealex.rokta.quotient.MonthDatePlayedQuotientTransformer;
-import uk.co.unclealex.rokta.quotient.QuotientPredicate;
-import uk.co.unclealex.rokta.quotient.WeekDatePlayedQuotientTransformer;
-import uk.co.unclealex.rokta.quotient.YearDatePlayedQuotientTransformer;
+import uk.co.unclealex.rokta.internal.quotient.DatePlayedQuotientTransformer;
+import uk.co.unclealex.rokta.internal.quotient.DayDatePlayedQuotientTransformer;
+import uk.co.unclealex.rokta.internal.quotient.MonthDatePlayedQuotientTransformer;
+import uk.co.unclealex.rokta.internal.quotient.QuotientPredicate;
+import uk.co.unclealex.rokta.internal.quotient.WeekDatePlayedQuotientTransformer;
+import uk.co.unclealex.rokta.internal.quotient.YearDatePlayedQuotientTransformer;
+import uk.co.unclealex.rokta.pub.filter.AllGameFilter;
+import uk.co.unclealex.rokta.pub.filter.BeforeGameFilter;
+import uk.co.unclealex.rokta.pub.filter.BetweenGameFilter;
+import uk.co.unclealex.rokta.pub.filter.FirstGameOfTheDayFilter;
+import uk.co.unclealex.rokta.pub.filter.FirstGameOfTheMonthFilter;
+import uk.co.unclealex.rokta.pub.filter.FirstGameOfTheWeekFilter;
+import uk.co.unclealex.rokta.pub.filter.FirstGameOfTheYearFilter;
+import uk.co.unclealex.rokta.pub.filter.GameFilter;
+import uk.co.unclealex.rokta.pub.filter.GameFilterVistor;
+import uk.co.unclealex.rokta.pub.filter.LastGameOfTheDayFilter;
+import uk.co.unclealex.rokta.pub.filter.LastGameOfTheMonthFilter;
+import uk.co.unclealex.rokta.pub.filter.LastGameOfTheWeekFilter;
+import uk.co.unclealex.rokta.pub.filter.LastGameOfTheYearFilter;
+import uk.co.unclealex.rokta.pub.filter.MonthGameFilter;
+import uk.co.unclealex.rokta.pub.filter.SinceGameFilter;
+import uk.co.unclealex.rokta.pub.filter.WeekGameFilter;
+import uk.co.unclealex.rokta.pub.filter.YearGameFilter;
+import uk.co.unclealex.rokta.pub.model.Game;
+import uk.co.unclealex.rokta.pub.model.Person;
 
 @Repository
 @Transactional

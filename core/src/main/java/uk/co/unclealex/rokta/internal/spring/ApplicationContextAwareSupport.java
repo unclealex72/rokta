@@ -1,4 +1,4 @@
-package uk.co.unclealex.rokta.spring;
+package uk.co.unclealex.rokta.internal.spring;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;

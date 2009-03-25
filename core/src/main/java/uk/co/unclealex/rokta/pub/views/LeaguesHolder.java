@@ -1,9 +1,9 @@
-package uk.co.unclealex.rokta.views;
+package uk.co.unclealex.rokta.pub.views;
 
 import java.util.SortedMap;
 
-import uk.co.unclealex.rokta.model.Game;
-import uk.co.unclealex.rokta.quotient.DatePlayedQuotientTransformer;
+import uk.co.unclealex.rokta.internal.quotient.DatePlayedQuotientTransformer;
+import uk.co.unclealex.rokta.pub.model.Game;
 
 public class LeaguesHolder {
 

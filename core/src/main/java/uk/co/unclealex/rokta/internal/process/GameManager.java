@@ -1,4 +1,4 @@
-package uk.co.unclealex.rokta.process;
+package uk.co.unclealex.rokta.internal.process;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -7,10 +7,10 @@ import java.util.SortedSet;
 
 import org.joda.time.DateTime;
 
-import uk.co.unclealex.rokta.exceptions.InvalidRoundException;
-import uk.co.unclealex.rokta.model.Game;
-import uk.co.unclealex.rokta.model.Hand;
-import uk.co.unclealex.rokta.model.Person;
+import uk.co.unclealex.rokta.pub.exceptions.InvalidRoundException;
+import uk.co.unclealex.rokta.pub.model.Game;
+import uk.co.unclealex.rokta.pub.model.Hand;
+import uk.co.unclealex.rokta.pub.model.Person;
 
 public interface GameManager extends Serializable {
 

@@ -1,4 +1,4 @@
-package uk.co.unclealex.rokta.process.dataset;
+package uk.co.unclealex.rokta.internal.process.dataset;
 
 import java.awt.Dimension;
 import java.awt.Rectangle;
@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
-import uk.co.unclealex.rokta.model.Colour;
+import uk.co.unclealex.rokta.pub.model.Colour;
 
 @Service
 @Transactional
