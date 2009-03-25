@@ -10,6 +10,11 @@
   <name>Maven Quick Start Archetype</name>
   <url>http://maven.apache.org</url>
   <dependencies>
+  	<dependency>
+  		<groupId>${groupId}</groupId>
+  		<artifactId>public</artifactId>
+  		<version>${version}</version>
+  	</dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
