@@ -6,7 +6,7 @@ package uk.co.unclealex.rokta.internal.process;
 
 import org.joda.time.DateTime;
 
-import uk.co.unclealex.rokta.pub.model.Person;
+import uk.co.unclealex.rokta.internal.model.Person;
 
 /**
  * @author alex

@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
-import uk.co.unclealex.rokta.pub.model.Colour;
+import uk.co.unclealex.rokta.internal.model.Colour;
 
 @Service
 @Transactional

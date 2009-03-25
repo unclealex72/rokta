@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.jfree.data.general.DefaultPieDataset;
 
-import uk.co.unclealex.rokta.pub.model.Person;
+import uk.co.unclealex.rokta.internal.model.Person;
 
 /**
  * @author alex

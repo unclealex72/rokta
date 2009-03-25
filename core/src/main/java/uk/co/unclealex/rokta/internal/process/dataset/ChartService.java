@@ -3,8 +3,8 @@ package uk.co.unclealex.rokta.internal.process.dataset;
 import java.awt.Dimension;
 import java.io.Writer;
 
+import uk.co.unclealex.rokta.internal.model.Person;
 import uk.co.unclealex.rokta.pub.filter.GameFilter;
-import uk.co.unclealex.rokta.pub.model.Person;
 
 public interface ChartService {
 

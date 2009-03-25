@@ -9,12 +9,12 @@ import java.util.TreeSet;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 
+import uk.co.unclealex.rokta.internal.model.Game;
+import uk.co.unclealex.rokta.internal.model.Hand;
+import uk.co.unclealex.rokta.internal.model.Person;
+import uk.co.unclealex.rokta.internal.model.Play;
+import uk.co.unclealex.rokta.internal.model.Round;
 import uk.co.unclealex.rokta.pub.exceptions.InvalidRoundException;
-import uk.co.unclealex.rokta.pub.model.Game;
-import uk.co.unclealex.rokta.pub.model.Hand;
-import uk.co.unclealex.rokta.pub.model.Person;
-import uk.co.unclealex.rokta.pub.model.Play;
-import uk.co.unclealex.rokta.pub.model.Round;
 
 public class DefaultGameManager implements GameManager {
 

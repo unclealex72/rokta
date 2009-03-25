@@ -1,7 +1,7 @@
 package uk.co.unclealex.rokta.internal.dao;
 
 import uk.co.unclealex.hibernate.dao.KeyedDao;
-import uk.co.unclealex.rokta.pub.model.Colour;
+import uk.co.unclealex.rokta.internal.model.Colour;
 
 public interface ColourDao extends KeyedDao<Colour> {
 

@@ -4,7 +4,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.co.unclealex.hibernate.dao.HibernateKeyedDao;
-import uk.co.unclealex.rokta.pub.model.Colour;
+import uk.co.unclealex.rokta.internal.model.Colour;
 
 @Repository
 @Transactional

@@ -8,9 +8,9 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import uk.co.unclealex.rokta.pub.model.Colour;
-import uk.co.unclealex.rokta.pub.model.Game;
-import uk.co.unclealex.rokta.pub.model.Person;
+import uk.co.unclealex.rokta.internal.model.Colour;
+import uk.co.unclealex.rokta.internal.model.Game;
+import uk.co.unclealex.rokta.internal.model.Person;
 
 @XmlRootElement
 @XmlType(propOrder={"people", "games", "colours"})

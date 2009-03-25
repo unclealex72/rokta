@@ -13,11 +13,11 @@ import java.util.TreeMap;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.co.unclealex.rokta.pub.model.Game;
-import uk.co.unclealex.rokta.pub.model.Hand;
-import uk.co.unclealex.rokta.pub.model.Person;
-import uk.co.unclealex.rokta.pub.model.Play;
-import uk.co.unclealex.rokta.pub.model.Round;
+import uk.co.unclealex.rokta.internal.model.Game;
+import uk.co.unclealex.rokta.internal.model.Hand;
+import uk.co.unclealex.rokta.internal.model.Person;
+import uk.co.unclealex.rokta.internal.model.Play;
+import uk.co.unclealex.rokta.internal.model.Round;
 import uk.co.unclealex.rokta.pub.views.WinLoseCounter;
 
 /**

@@ -18,9 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.co.unclealex.rokta.internal.dao.PersonDao;
 import uk.co.unclealex.rokta.internal.dao.PlayDao;
 import uk.co.unclealex.rokta.internal.dao.RoundDao;
-import uk.co.unclealex.rokta.pub.model.Game;
-import uk.co.unclealex.rokta.pub.model.Person;
-import uk.co.unclealex.rokta.pub.model.Round;
+import uk.co.unclealex.rokta.internal.model.Game;
+import uk.co.unclealex.rokta.internal.model.Person;
+import uk.co.unclealex.rokta.internal.model.Round;
 import uk.co.unclealex.rokta.pub.views.Streak;
 import uk.co.unclealex.rokta.pub.views.WinLoseCounter;
 

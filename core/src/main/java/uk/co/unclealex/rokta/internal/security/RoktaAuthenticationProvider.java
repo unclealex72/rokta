@@ -12,7 +12,7 @@ import org.springframework.security.userdetails.User;
 import org.springframework.security.userdetails.UserDetails;
 
 import uk.co.unclealex.rokta.internal.dao.PersonDao;
-import uk.co.unclealex.rokta.pub.model.Person;
+import uk.co.unclealex.rokta.internal.model.Person;
 
 /*
  * Created by: aj016368

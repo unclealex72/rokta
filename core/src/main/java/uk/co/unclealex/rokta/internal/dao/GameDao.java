@@ -3,9 +3,9 @@ package uk.co.unclealex.rokta.internal.dao;
 import java.util.SortedSet;
 
 import uk.co.unclealex.hibernate.dao.KeyedDao;
+import uk.co.unclealex.rokta.internal.model.Game;
+import uk.co.unclealex.rokta.internal.model.Person;
 import uk.co.unclealex.rokta.pub.filter.GameFilter;
-import uk.co.unclealex.rokta.pub.model.Game;
-import uk.co.unclealex.rokta.pub.model.Person;
 
 public interface GameDao extends KeyedDao<Game> {
 

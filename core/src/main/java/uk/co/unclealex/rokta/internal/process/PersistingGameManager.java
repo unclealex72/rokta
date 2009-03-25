@@ -1,7 +1,7 @@
 package uk.co.unclealex.rokta.internal.process;
 
 import uk.co.unclealex.rokta.internal.dao.GameDao;
-import uk.co.unclealex.rokta.pub.model.Game;
+import uk.co.unclealex.rokta.internal.model.Game;
 
 public class PersistingGameManager extends DefaultGameManager {
 

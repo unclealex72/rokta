@@ -7,7 +7,7 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
 
-import uk.co.unclealex.rokta.pub.model.Person;
+import uk.co.unclealex.rokta.internal.model.Person;
 
 public class DatabaseCreator {
 

@@ -7,7 +7,7 @@ import java.util.Collection;
 
 import org.apache.commons.collections15.Predicate;
 
-import uk.co.unclealex.rokta.pub.model.Game;
+import uk.co.unclealex.rokta.internal.model.Game;
 
 /**
  * @author alex

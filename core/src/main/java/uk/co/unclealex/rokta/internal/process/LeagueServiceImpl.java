@@ -24,6 +24,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.co.unclealex.rokta.internal.dao.GameDao;
+import uk.co.unclealex.rokta.internal.model.Game;
+import uk.co.unclealex.rokta.internal.model.Person;
+import uk.co.unclealex.rokta.internal.model.Round;
 import uk.co.unclealex.rokta.internal.quotient.DatePlayedQuotientTransformer;
 import uk.co.unclealex.rokta.internal.quotient.DayDatePlayedQuotientTransformer;
 import uk.co.unclealex.rokta.internal.quotient.InstantDatePlayedQuotientTransformer;
@@ -33,9 +36,6 @@ import uk.co.unclealex.rokta.internal.quotient.WeekDatePlayedQuotientTransformer
 import uk.co.unclealex.rokta.internal.quotient.YearDatePlayedQuotientTransformer;
 import uk.co.unclealex.rokta.internal.util.DateUtil;
 import uk.co.unclealex.rokta.pub.filter.GameFilter;
-import uk.co.unclealex.rokta.pub.model.Game;
-import uk.co.unclealex.rokta.pub.model.Person;
-import uk.co.unclealex.rokta.pub.model.Round;
 import uk.co.unclealex.rokta.pub.views.Delta;
 import uk.co.unclealex.rokta.pub.views.InfiniteInteger;
 import uk.co.unclealex.rokta.pub.views.League;

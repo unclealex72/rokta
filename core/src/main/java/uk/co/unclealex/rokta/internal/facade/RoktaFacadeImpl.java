@@ -10,13 +10,13 @@ import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
 
 import uk.co.unclealex.rokta.internal.dao.PersonDao;
+import uk.co.unclealex.rokta.internal.model.Person;
 import uk.co.unclealex.rokta.internal.process.LeagueService;
 import uk.co.unclealex.rokta.internal.process.SecurityService;
 import uk.co.unclealex.rokta.internal.process.StatisticsService;
 import uk.co.unclealex.rokta.internal.process.dataset.ChartService;
 import uk.co.unclealex.rokta.pub.facade.RoktaFacade;
 import uk.co.unclealex.rokta.pub.filter.GameFilter;
-import uk.co.unclealex.rokta.pub.model.Person;
 import uk.co.unclealex.rokta.pub.views.League;
 import uk.co.unclealex.rokta.pub.views.Streak;
 

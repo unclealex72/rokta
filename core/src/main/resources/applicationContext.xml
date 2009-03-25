@@ -32,11 +32,11 @@
 	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
 		<property name="annotatedClasses">
 			<list>
-				<value>uk.co.unclealex.rokta.pub.model.Person</value>
-				<value>uk.co.unclealex.rokta.pub.model.Play</value>
-				<value>uk.co.unclealex.rokta.pub.model.Round</value>
-				<value>uk.co.unclealex.rokta.pub.model.Game</value>
-        <value>uk.co.unclealex.rokta.pub.model.Colour</value>
+				<value>uk.co.unclealex.rokta.internal.model.Person</value>
+				<value>uk.co.unclealex.rokta.internal.model.Play</value>
+				<value>uk.co.unclealex.rokta.internal.model.Round</value>
+				<value>uk.co.unclealex.rokta.internal.model.Game</value>
+        <value>uk.co.unclealex.rokta.internal.model.Colour</value>
 			</list>
 		</property>
 	</bean>

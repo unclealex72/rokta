@@ -8,7 +8,7 @@ import java.util.Date;
 
 import org.apache.commons.collections15.Predicate;
 
-import uk.co.unclealex.rokta.pub.model.Game;
+import uk.co.unclealex.rokta.internal.model.Game;
 
 public class DateFilterPredicate implements Predicate<Game> {
 	

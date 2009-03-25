@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.jfree.data.category.DefaultCategoryDataset;
 
-import uk.co.unclealex.rokta.pub.model.Colour;
+import uk.co.unclealex.rokta.internal.model.Colour;
 
 /**
  * @author alex

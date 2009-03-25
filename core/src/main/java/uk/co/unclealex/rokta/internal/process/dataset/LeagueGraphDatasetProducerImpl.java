@@ -14,9 +14,9 @@ import org.apache.commons.collections15.Transformer;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.co.unclealex.rokta.internal.dao.ColourDao;
-import uk.co.unclealex.rokta.pub.model.Colour;
-import uk.co.unclealex.rokta.pub.model.Game;
-import uk.co.unclealex.rokta.pub.model.Person;
+import uk.co.unclealex.rokta.internal.model.Colour;
+import uk.co.unclealex.rokta.internal.model.Game;
+import uk.co.unclealex.rokta.internal.model.Person;
 import uk.co.unclealex.rokta.pub.views.League;
 import uk.co.unclealex.rokta.pub.views.LeagueRow;
 import uk.co.unclealex.spring.Prototype;

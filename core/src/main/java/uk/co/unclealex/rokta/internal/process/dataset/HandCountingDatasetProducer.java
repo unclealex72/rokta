@@ -8,7 +8,7 @@ import java.util.SortedMap;
 
 import org.jfree.data.general.DefaultPieDataset;
 
-import uk.co.unclealex.rokta.pub.model.Hand;
+import uk.co.unclealex.rokta.internal.model.Hand;
 
 /**
  * @author alex

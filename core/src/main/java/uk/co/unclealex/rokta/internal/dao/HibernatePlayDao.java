@@ -8,9 +8,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.co.unclealex.hibernate.dao.HibernateKeyedDao;
-import uk.co.unclealex.rokta.pub.model.Hand;
-import uk.co.unclealex.rokta.pub.model.Person;
-import uk.co.unclealex.rokta.pub.model.Play;
+import uk.co.unclealex.rokta.internal.model.Hand;
+import uk.co.unclealex.rokta.internal.model.Person;
+import uk.co.unclealex.rokta.internal.model.Play;
 
 /**
  * @author alex

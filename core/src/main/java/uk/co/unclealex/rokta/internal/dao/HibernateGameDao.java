@@ -14,6 +14,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.co.unclealex.hibernate.dao.HibernateKeyedDao;
+import uk.co.unclealex.rokta.internal.model.Game;
+import uk.co.unclealex.rokta.internal.model.Person;
 import uk.co.unclealex.rokta.internal.quotient.DatePlayedQuotientTransformer;
 import uk.co.unclealex.rokta.internal.quotient.DayDatePlayedQuotientTransformer;
 import uk.co.unclealex.rokta.internal.quotient.MonthDatePlayedQuotientTransformer;
@@ -37,8 +39,6 @@ import uk.co.unclealex.rokta.pub.filter.MonthGameFilter;
 import uk.co.unclealex.rokta.pub.filter.SinceGameFilter;
 import uk.co.unclealex.rokta.pub.filter.WeekGameFilter;
 import uk.co.unclealex.rokta.pub.filter.YearGameFilter;
-import uk.co.unclealex.rokta.pub.model.Game;
-import uk.co.unclealex.rokta.pub.model.Person;
 
 @Repository
 @Transactional
