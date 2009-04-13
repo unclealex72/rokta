@@ -1,17 +1,18 @@
 package uk.co.unclealex.rokta.internal.process.dataset;
 
-import java.awt.Dimension;
-import java.io.Writer;
+import java.util.SortedMap;
 
+import uk.co.unclealex.rokta.internal.model.Colour;
 import uk.co.unclealex.rokta.internal.model.Person;
 import uk.co.unclealex.rokta.pub.filter.GameFilter;
+import uk.co.unclealex.rokta.pub.views.ChartView;
+import uk.co.unclealex.rokta.pub.views.Hand;
 
 public interface ChartService {
 
-	public void drawHandDistributionGraph(GameFilter gameFilter, Person whois, Dimension size, Writer writer);
-
-	public void drawOpeningHandDistributionGraph(GameFilter gameFilter, Person whois, Dimension size, Writer writer);
-
-	public void drawLeagueGraph(GameFilter gameFilter, Dimension size, int maximumColumns, Writer writer);
+	public SortedMap<Hand, Integer> createHandDistributionGraph(GameFilter gameFilter, Person person);
+	public SortedMap<Hand, Integer> createOpeningHandDistributionGraph(GameFilter gameFilter, Person person);
+	
+	public ChartView<Double> createLeagueChart(GameFilter gameFilter, Colour averageColour, int maximumColumns);
 
 }

@@ -1,17 +1,17 @@
 package uk.co.unclealex.rokta.pub.filter;
 
-public class WeekGameFilter implements GameFilter {
+import java.util.Date;
 
-	private int i_week;
-	private int i_year;
+public class WeekGameFilter extends AbstractGameFilter {
 
-	public WeekGameFilter() {
+	private Date i_date;
+	
+	protected WeekGameFilter() {
 	}
 	
-	public WeekGameFilter(int week, int year) {
+	public WeekGameFilter(Date date) {
 		super();
-		i_week = week;
-		i_year = year;
+		i_date = date;
 	}
 
 	@Override
@@ -20,23 +20,20 @@ public class WeekGameFilter implements GameFilter {
 	}
 
 	@Override
+	public String[] toStringArgs() {
+		return new String[] { Long.toString(getDate().getTime()) }; 
+	}
+	
+	@Override
 	public <T> T accept(GameFilterVistor<T> gameFilterVisitor) {
 		return gameFilterVisitor.visit(this);
 	}
 
-	public int getYear() {
-		return i_year;
-	}
-
-	protected void setYear(int year) {
-		i_year = year;
+	public Date getDate() {
+		return i_date;
 	}
 	
-	public int getWeek() {
-		return i_week;
+	protected void setDate(Date date) {
+		i_date = date;
 	}
-
-	protected void setWeek(int week) {
-		i_week = week;
-	}	
 }

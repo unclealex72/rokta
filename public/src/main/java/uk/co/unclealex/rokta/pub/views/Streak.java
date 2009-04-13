@@ -3,86 +3,48 @@
  */
 package uk.co.unclealex.rokta.pub.views;
 
-import java.util.SortedSet;
-
-import uk.co.unclealex.rokta.internal.model.Game;
-import uk.co.unclealex.rokta.internal.model.Person;
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author alex
  *
  */
-public class Streak implements Comparable<Streak> {
+public class Streak implements Comparable<Streak>, Serializable {
 
-	private Person i_person;
-	private SortedSet<Game> i_games;
+	private String i_personName;
+	private Date i_startDate;
+	private Date i_endDate;
+	private int i_length;
+	private int i_rank;
+	private int i_positionInTable;
+	private boolean i_rankSameAsPreviousRank;
 	private boolean i_current;
 	
-	/**
-	 * 
-	 */
-	public Streak() {
-		super();
-		// TODO Auto-generated constructor stub
+	protected Streak() {
+		// No-arg constructor for serialisation
 	}
 	
 	/**
 	 * @param person
 	 * @param games
 	 */
-	public Streak(Person person, SortedSet<Game> games, boolean current) {
+	public Streak(int positionInTable, int rank, String personName, Date startDate, Date endDate, int length, boolean rankSameAsPreviousRank, boolean current) {
 		super();
-		i_person = person;
-		i_games = games;
+		i_positionInTable = positionInTable;
+		i_rank = rank;
+		i_personName = personName;
+		i_startDate = startDate;
+		i_endDate = endDate;
+		i_length = length;
+		i_rankSameAsPreviousRank = rankSameAsPreviousRank;
 		i_current = current;
 	}
 	
 	public int compareTo(Streak o) {
-		int cmp = -(new Integer(getLength()).compareTo(o.getLength()));
-		if (cmp != 0) { return cmp; }
-		cmp = -getFirstGame().compareTo(o.getFirstGame());
-		if (cmp != 0) { return cmp; }
-		return getPerson().compareTo(o.getPerson());
+		return getPositionInTable() - o.getPositionInTable();
 	}
 	
-	public int getLength() {
-		return getGames().size();
-	}
-	
-	public Game getFirstGame() {
-		return getGames().first();
-	}
-
-	public Game getLastGame() {
-		return getGames().last();
-	}
-
-	/**
-	 * @return the games
-	 */
-	public SortedSet<Game> getGames() {
-		return i_games;
-	}
-	/**
-	 * @param games the games to set
-	 */
-	public void setGames(SortedSet<Game> games) {
-		i_games = games;
-	}
-	
-	/**
-	 * @return the person
-	 */
-	public Person getPerson() {
-		return i_person;
-	}
-	/**
-	 * @param person the person to set
-	 */
-	public void setPerson(Person person) {
-		i_person = person;
-	}
-
 	/**
 	 * @return the current
 	 */
@@ -90,12 +52,31 @@ public class Streak implements Comparable<Streak> {
 		return i_current;
 	}
 
-	/**
-	 * @param current the current to set
-	 */
-	public void setCurrent(boolean current) {
-		i_current = current;
+	public String getPersonName() {
+		return i_personName;
+	}
+
+	public Date getStartDate() {
+		return i_startDate;
+	}
+
+	public Date getEndDate() {
+		return i_endDate;
+	}
+
+	public int getRank() {
+		return i_rank;
+	}
+
+	public int getPositionInTable() {
+		return i_positionInTable;
+	}
+
+	public int getLength() {
+		return i_length;
 	}
 	
-	
+	public boolean isRankSameAsPreviousRank() {
+		return i_rankSameAsPreviousRank;
+	}
 }

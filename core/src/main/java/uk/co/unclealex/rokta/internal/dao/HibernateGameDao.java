@@ -1,5 +1,8 @@
 package uk.co.unclealex.rokta.internal.dao;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -8,6 +11,7 @@ import org.apache.commons.collections15.ComparatorUtils;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.comparators.ComparableComparator;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Repository;
@@ -49,10 +53,40 @@ public class HibernateGameDao extends HibernateKeyedDao<Game> implements GameDao
 		return gameFilter.accept(new GamesByFilterVisitor());
 	}
 
-	public Game getLastGame() {
-		return (Game) getSession().getNamedQuery("game.getLast").list().iterator().next();
+	@Override
+	public Game getFirstGame() {
+		return getFirstOrLastGame(true, null);
 	}
-
+	
+	@Override
+	public Game getFirstGameInYear(int year) {
+		return getFirstOrLastGame(true, year);
+	}
+	
+	@Override
+	public Game getLastGame() {
+		return getFirstOrLastGame(false, null);
+	}
+	
+	@Override
+	public Game getLastGameInYear(int year) {
+		return getFirstOrLastGame(false, year);
+	}
+	
+	protected Game getFirstOrLastGame(boolean first, Integer year) {
+		Criteria criteria = createCriteria(new Game());
+		if (year != null) {
+			Calendar cal = new GregorianCalendar(year, 0, 1, 0, 0, 0);
+			criteria.add(Restrictions.ge("datePlayed", cal.getTime()));
+			cal.add(Calendar.YEAR, 1);
+			criteria.add(Restrictions.lt("datePlayed", cal.getTime()));
+		}
+		criteria.setMaxResults(1);
+		Order order = first?Order.asc("datePlayed"):Order.desc("datePlayed");
+		criteria.addOrder(order);
+		return uniqueResult(criteria);
+	}
+	
 	public Game getLastGamePlayed(final Person person) {
 		return
 			(Game) getSession().getNamedQuery("game.getLastForPerson").
@@ -68,36 +102,49 @@ public class HibernateGameDao extends HibernateKeyedDao<Game> implements GameDao
 
 		@Override
 		public SortedSet<Game> visit(BeforeGameFilter beforeGameFilter) {
-			return gamesBetween(null, beforeGameFilter.getBefore());
+			return gamesBetween(null, beginningOf(beforeGameFilter.getBefore()));
 		}
 
 		@Override
 		public SortedSet<Game> visit(BetweenGameFilter betweenGameFilter) {
-			return gamesBetween(betweenGameFilter.getFrom(), betweenGameFilter.getTo());
+			return gamesBetween(beginningOf(betweenGameFilter.getFrom()), endOf(betweenGameFilter.getTo()));
 		}
 
 		@Override
 		public SortedSet<Game> visit(SinceGameFilter sinceGameFilter) {
-			return gamesBetween(sinceGameFilter.getSince(), null);
+			return gamesBetween(beginningOf(sinceGameFilter.getSince()), null);
+		}
+
+		protected DateTime beginningOf(Date date) {
+			DateTime beginningOfDay = new DateTime(date).withHourOfDay(0).withMillisOfDay(0);
+			return beginningOfDay;
+		}
+
+		protected DateTime endOf(Date date) {
+			DateTime endOfDay = beginningOf(date).plusDays(1).minusMillis(1);
+			return endOfDay;
 		}
 
 		@Override
 		public SortedSet<Game> visit(MonthGameFilter monthGameFilter) {
-			DateTime startDate = new DateTime(monthGameFilter.getYear(), monthGameFilter.getMonth(), 1, 0, 0, 0, 0);
+			DateTime startDate = new DateTime(monthGameFilter.getDate());
+			startDate = startDate.withDayOfMonth(1).withMillisOfDay(0);
 			DateTime endDate = startDate.plusMonths(1).minusMillis(1);
 			return gamesBetween(startDate, endDate);
 		}
 
 		@Override
 		public SortedSet<Game> visit(WeekGameFilter weekGameFilter) {
-			DateTime startDate = new DateTime(weekGameFilter.getYear(), 1, 1, 0, 0, 0, 0).withWeekOfWeekyear(weekGameFilter.getWeek());
+			DateTime startDate = new DateTime(weekGameFilter.getDate());
+			startDate = startDate.withDayOfWeek(1).withMillisOfDay(0);
 			DateTime endDate = startDate.plusWeeks(1).minusMillis(1);
 			return gamesBetween(startDate, endDate);
 		}
 
 		@Override
 		public SortedSet<Game> visit(YearGameFilter yearGameFilter) {
-			DateTime startDate = new DateTime(yearGameFilter.getYear(), 1, 1, 0, 0, 0, 0);
+			DateTime startDate = new DateTime(yearGameFilter.getDate());
+			startDate = startDate.withDayOfYear(1).withMillisOfDay(0);
 			DateTime endDate = startDate.plusYears(1).minusMillis(1);
 			return gamesBetween(startDate, endDate);
 		}
@@ -110,13 +157,13 @@ public class HibernateGameDao extends HibernateKeyedDao<Game> implements GameDao
 		public SortedSet<Game> gamesBetween(DateTime startDate, DateTime endDate) {
 			Criteria criteria = getSession().createCriteria(Game.class);
 			if (startDate == null && endDate != null) {
-				criteria.add(Restrictions.le("datePlayed", endDate));
+				criteria.add(Restrictions.le("datePlayed", endDate.toDate()));
 			}
 			else if (startDate != null && endDate == null) {
-				criteria.add(Restrictions.ge("datePlayed", startDate));
+				criteria.add(Restrictions.ge("datePlayed", startDate.toDate()));
 			}
 			else if (startDate != null && endDate != null) {
-				criteria.add(Restrictions.between("datePlayed", startDate, endDate));
+				criteria.add(Restrictions.between("datePlayed", startDate.toDate(), endDate.toDate()));
 	
 			}
 			return asSortedSet(criteria);

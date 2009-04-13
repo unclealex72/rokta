@@ -1,0 +1,29 @@
+<module>
+
+      <!-- Inherit the core Web Toolkit stuff.                        -->
+      <inherits name='com.google.gwt.user.User'/>   	
+    
+      <!--  inherit css based theme -->
+      <inherits name='com.google.gwt.user.theme.standard.Standard'/>
+			
+			<!--  inherit internationalisation -->
+		  <inherits name="com.google.gwt.i18n.I18N"/>
+
+			<!-- Include all public Rokta entities -->
+			<inherits name='uk.co.unclealex.rokta.Public'/>
+			
+			<!-- Include Open Flash Charts -->
+			<inherits name='com.rednels.ofcgwt.OFCGWT'/>
+
+		  <!-- Include GWTChismes library -->
+		  <inherits name="com.google.code.p.gwtchismes.GWTChismes"/>
+		  <!-- Load dinamically GWTC Style sheets when the application starts -->
+		  <stylesheet src="GWTC-compressed.css"/>
+
+      <!-- Specify the app entry point class.                         -->
+      <entry-point class='uk.co.unclealex.rokta.gwt.client.Rokta'/>
+    
+      <!-- Specify the application specific style sheet.              -->
+      <stylesheet src='rokta.css' />
+	
+</module>

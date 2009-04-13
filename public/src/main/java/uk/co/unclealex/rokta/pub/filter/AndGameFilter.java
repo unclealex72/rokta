@@ -1,6 +1,6 @@
 package uk.co.unclealex.rokta.pub.filter;
 
-public class AndGameFilter implements GameFilter {
+public class AndGameFilter extends AbstractGameFilter {
 
 	private GameFilter i_leftGameFilter;
 	private GameFilter i_rightGameFilter;
@@ -15,15 +15,20 @@ public class AndGameFilter implements GameFilter {
 	}
 
 	@Override
+	public boolean isContinuous() {
+		return getLeftGameFilter().isContinuous() && getRightGameFilter().isContinuous();
+	}
+
+	@Override
+	public String[] toStringArgs() {
+		return new String[] { getLeftGameFilter().toString(), getRightGameFilter().toString() };
+	}
+	
+	@Override
 	public <T> T accept(GameFilterVistor<T> gameFilterVisitor) {
 		return gameFilterVisitor.join(getLeftGameFilter().accept(gameFilterVisitor), getRightGameFilter().accept(gameFilterVisitor));
 	}
 
-	@Override
-	public boolean isContinuous() {
-		return getLeftGameFilter().isContinuous() && getRightGameFilter().isContinuous();
-	}
-	
 	public GameFilter getLeftGameFilter() {
 		return i_leftGameFilter;
 	}

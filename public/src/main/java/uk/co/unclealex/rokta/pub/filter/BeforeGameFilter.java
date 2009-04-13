@@ -1,15 +1,15 @@
 package uk.co.unclealex.rokta.pub.filter;
 
-import org.joda.time.DateTime;
+import java.util.Date;
 
-public class BeforeGameFilter implements GameFilter {
+public class BeforeGameFilter extends AbstractGameFilter {
 
-	private DateTime i_before;
+	private Date i_before;
 	
 	public BeforeGameFilter() {
 	}
 	
-	public BeforeGameFilter(DateTime before) {
+	public BeforeGameFilter(Date before) {
 		super();
 		i_before = before;
 	}
@@ -20,20 +20,20 @@ public class BeforeGameFilter implements GameFilter {
 	}
 
 	@Override
+	public String[] toStringArgs() {
+		return new String[] { makeDateArgument(getBefore()) };
+	}
+	
+	@Override
 	public <T> T accept(GameFilterVistor<T> gameFilterVisitor) {
 		return gameFilterVisitor.visit(this);
 	}
 	
-	@Override
-	public String toString() {
-		return "Filter: before " + getBefore(); 
-	}
-
-	public DateTime getBefore() {
+	public Date getBefore() {
 		return i_before;
 	}
 
-	public void setBefore(DateTime before) {
+	public void setBefore(Date before) {
 		i_before = before;
 	}
 }

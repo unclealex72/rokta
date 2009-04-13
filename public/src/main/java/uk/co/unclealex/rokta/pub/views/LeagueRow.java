@@ -2,11 +2,9 @@ package uk.co.unclealex.rokta.pub.views;
 
 import java.io.Serializable;
 
-import uk.co.unclealex.rokta.internal.model.Person;
-
 public class LeagueRow implements Serializable {
 
-	private Person i_person;
+	private String i_personName;
 	private int i_totalParticipants;
 	private int i_roundsPlayedInWonGames;
 	private int i_roundsPlayedInLostGames;
@@ -22,7 +20,7 @@ public class LeagueRow implements Serializable {
 	}
 	
 	/**
-	 * @param person
+	 * @param personName
 	 * @param gamesPlayed
 	 * @param roundsPlayedInWonGames
 	 * @param gamesLost
@@ -33,10 +31,10 @@ public class LeagueRow implements Serializable {
 	 * @param delta
 	 */
 	public LeagueRow(
-			Person person, int gamesLost, int gamesWon, int roundsPlayedInWonGames, int roundsPlayedInLostGames,
+			String personName, int gamesLost, int gamesWon, int roundsPlayedInWonGames, int roundsPlayedInLostGames,
 			int totalParticipants, boolean exempt, boolean playingToday, InfiniteInteger gap, Delta delta, League league) {
 		super();
-		i_person = person;
+		i_personName = personName;
 		i_gamesLost = gamesLost;
 		i_gamesWon = gamesWon;
 		i_roundsPlayedInWonGames = roundsPlayedInWonGames;
@@ -52,7 +50,7 @@ public class LeagueRow implements Serializable {
 	public LeagueRow copy() {
 		return
 			new LeagueRow(
-					getPerson(), getGamesLost(), getGamesWon(), getRoundsPlayedInWonGames(), getRoundsPlayedInLostGames(),
+					getPersonName(), getGamesLost(), getGamesWon(), getRoundsPlayedInWonGames(), getRoundsPlayedInLostGames(),
 					getTotalParticipants(), isExempt(), isPlayingToday(), getGap(), getDelta(), getLeague());
 	}
 	
@@ -80,6 +78,14 @@ public class LeagueRow implements Serializable {
 		return getRoundsPlayedInLostGames() / (double) getGamesLost();
 	}
 
+	public double getWinNext() {
+		return (double) getGamesLost() / (double) (getGamesPlayed() + 1);
+	}
+	
+	public double getLoseNext() {
+		return (double) (getGamesLost() + 1) / (double) (getGamesPlayed() + 1);
+	}
+	
 	public int getGamesLost() {
 		return i_gamesLost;
 	}
@@ -90,20 +96,13 @@ public class LeagueRow implements Serializable {
 		return getGamesWon() + getGamesLost();
 	}
 
-	public Person getPerson() {
-		return i_person;
-	}
-	public void setPerson(Person person) {
-		i_person = person;
-	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof LeagueRow)) {
 			return false;
 		}
 		LeagueRow other = (LeagueRow) obj;
-		return getPerson().equals(other.getPerson()) &&
+		return getPersonName().equals(other.getPersonName()) &&
 					getGamesLost() == other.getGamesLost() &&
 					getRoundsPlayed() == other.getRoundsPlayed() &&
 					getGamesPlayed() == other.getGamesPlayed() &&
@@ -221,4 +220,12 @@ public class LeagueRow implements Serializable {
 	public void setTotalParticipants(int totalParticipants) {
 		i_totalParticipants = totalParticipants;
 	}
+
+	public String getPersonName() {
+		return i_personName;
+	}
+	public void setPersonName(String personName) {
+		i_personName = personName;
+	}
+
 }

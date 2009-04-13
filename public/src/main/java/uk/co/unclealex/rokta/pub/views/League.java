@@ -3,17 +3,18 @@
  */
 package uk.co.unclealex.rokta.pub.views;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author alex
  *
  */
-public class League {
+public class League implements Serializable {
 
 	private boolean i_current;
-	private SortedSet<LeagueRow> i_rows = new TreeSet<LeagueRow>();
+	private List<LeagueRow> i_rows = new ArrayList<LeagueRow>();
 	private int i_totalGames;
 	private int i_totalPlayers;
 	private String i_description;
@@ -60,13 +61,13 @@ public class League {
 	/**
 	 * @return the rows
 	 */
-	public SortedSet<LeagueRow> getRows() {
+	public List<LeagueRow> getRows() {
 		return i_rows;
 	}
 	/**
 	 * @param rows the rows to set
 	 */
-	public void setRows(SortedSet<LeagueRow> rows) {
+	public void setRows(List<LeagueRow> rows) {
 		i_rows = rows;
 	}
 	/**

@@ -3,10 +3,10 @@
  */
 package uk.co.unclealex.rokta.internal.process;
 
-import org.joda.time.DateTime;
+import java.util.Date;
 
 import uk.co.unclealex.rokta.pub.filter.GameFilter;
-import uk.co.unclealex.rokta.pub.views.LeaguesHolder;
+import uk.co.unclealex.rokta.pub.views.League;
 
 /**
  * @author alex
@@ -17,6 +17,8 @@ public interface LeagueService {
 	/* (non-Javadoc)
 	 * @see uk.co.unclealex.rokta.process.LeagueManager#generateLeague(java.util.Date)
 	 */
-	public LeaguesHolder generateLeague(GameFilter gameFilter, int maximumLeagues, DateTime now);
+	public LeaguesHolder generateLeagues(GameFilter gameFilter, int maximumLeagues, Date now);
+
+	public League generateLeague(GameFilter gameFilter, Date now);
 
 }

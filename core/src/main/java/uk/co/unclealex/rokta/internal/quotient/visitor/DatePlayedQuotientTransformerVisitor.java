@@ -2,6 +2,7 @@ package uk.co.unclealex.rokta.internal.quotient.visitor;
 
 import uk.co.unclealex.rokta.internal.quotient.DatePlayedQuotientTransformer;
 import uk.co.unclealex.rokta.internal.quotient.DayDatePlayedQuotientTransformer;
+import uk.co.unclealex.rokta.internal.quotient.InstantDatePlayedQuotientTransformer;
 import uk.co.unclealex.rokta.internal.quotient.MonthDatePlayedQuotientTransformer;
 import uk.co.unclealex.rokta.internal.quotient.WeekDatePlayedQuotientTransformer;
 import uk.co.unclealex.rokta.internal.quotient.YearDatePlayedQuotientTransformer;
@@ -20,4 +21,6 @@ public abstract class DatePlayedQuotientTransformerVisitor<T> {
 	public abstract T visit(MonthDatePlayedQuotientTransformer monthDatePlayedQuotientTransformer);
 	
 	public abstract T visit(YearDatePlayedQuotientTransformer yearDatePlayedQuotientTransformer);
+	
+	public abstract T visit(InstantDatePlayedQuotientTransformer instantDatePlayedQuotientTransformer);
 }

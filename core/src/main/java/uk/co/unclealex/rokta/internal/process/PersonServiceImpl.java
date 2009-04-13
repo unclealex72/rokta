@@ -3,7 +3,8 @@
  */
 package uk.co.unclealex.rokta.internal.process;
 
-import org.joda.time.DateTime;
+import java.util.Date;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +29,7 @@ public class PersonServiceImpl implements PersonService {
 	
 	protected DateUtil i_dateUtil;
 	
-	public Person getExemptPlayer(DateTime date) {
+	public Person getExemptPlayer(Date date) {
 		Game lastGame = getGameDao().getLastGame();
 		if (isGameOnDate(lastGame, date)) {
 			return lastGame.getLoser();
@@ -36,12 +37,13 @@ public class PersonServiceImpl implements PersonService {
 		return null;
 	}
 
-	public boolean currentlyPlaying(Person player, DateTime date) {
+	public boolean currentlyPlaying(String playerName, Date date) {
+		Person player = getPersonDao().getPersonByName(playerName);
 		Game lastGamePlayed = getGameDao().getLastGamePlayed(player);
 		return (isGameOnDate(lastGamePlayed, date)); 
 	}
 
-	protected boolean isGameOnDate(Game game, DateTime date) {
+	protected boolean isGameOnDate(Game game, Date date) {
 		return getDateUtil().areSameDay(game.getDatePlayed(), date);
 	}
 	

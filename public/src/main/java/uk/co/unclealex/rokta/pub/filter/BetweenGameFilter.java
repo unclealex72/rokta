@@ -1,16 +1,16 @@
 package uk.co.unclealex.rokta.pub.filter;
 
-import org.joda.time.DateTime;
+import java.util.Date;
 
-public class BetweenGameFilter implements GameFilter {
+public class BetweenGameFilter extends AbstractGameFilter {
 
-	private DateTime i_from;
-	private DateTime i_to;
+	private Date i_from;
+	private Date i_to;
 
 	public BetweenGameFilter() {
 	}
 	
-	public BetweenGameFilter(DateTime from, DateTime to) {
+	public BetweenGameFilter(Date from, Date to) {
 		super();
 		i_from = from;
 		i_to = to;
@@ -22,23 +22,28 @@ public class BetweenGameFilter implements GameFilter {
 	}
 
 	@Override
+	public String[] toStringArgs() {
+		return new String[] { makeDateArgument(getFrom()), makeDateArgument(getTo()) };
+	}
+	
+	@Override
 	public <T> T accept(GameFilterVistor<T> gameFilterVisitor) {
 		return gameFilterVisitor.visit(this);
 	}
 
-	public DateTime getFrom() {
+	public Date getFrom() {
 		return i_from;
 	}
 
-	public DateTime getTo() {
+	public Date getTo() {
 		return i_to;
 	}
 
-	protected void setFrom(DateTime from) {
+	protected void setFrom(Date from) {
 		i_from = from;
 	}
 
-	protected void setTo(DateTime to) {
+	protected void setTo(Date to) {
 		i_to = to;
 	}
 }

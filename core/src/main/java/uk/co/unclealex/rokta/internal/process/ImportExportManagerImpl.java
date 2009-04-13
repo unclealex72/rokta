@@ -11,7 +11,7 @@ import uk.co.unclealex.rokta.internal.dao.PersonDao;
 import uk.co.unclealex.rokta.internal.model.Colour;
 import uk.co.unclealex.rokta.internal.model.Game;
 import uk.co.unclealex.rokta.internal.model.Person;
-import uk.co.unclealex.rokta.pub.views.Rokta;
+import uk.co.unclealex.rokta.internal.model.Rokta;
 
 @Service
 @Transactional

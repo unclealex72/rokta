@@ -1,5 +1,6 @@
 package uk.co.unclealex.rokta.internal.model;
 
+import java.util.Date;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -24,8 +25,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
-import org.hibernate.annotations.Type;
-import org.joda.time.DateTime;
 
 import uk.co.unclealex.hibernate.model.KeyedBean;
 
@@ -44,7 +43,7 @@ public class Game extends KeyedBean<Game> {
 
 	private Person i_instigator;
 	private SortedSet<Round> i_rounds;
-	private DateTime i_datePlayed;
+	private Date i_datePlayed;
 	
 	@Transient
 	@XmlTransient
@@ -74,12 +73,11 @@ public class Game extends KeyedBean<Game> {
 	
 	@Column(nullable=false)
 	@XmlElement(name="date-played")
-	@Type(type="org.joda.time.contrib.hibernate.PersistentDateTime")
-	public DateTime getDatePlayed() {
+	public Date getDatePlayed() {
 		return i_datePlayed;
 	}
 	
-	public void setDatePlayed(DateTime datePlayed) {
+	public void setDatePlayed(Date datePlayed) {
 		i_datePlayed = datePlayed;
 	}
 	

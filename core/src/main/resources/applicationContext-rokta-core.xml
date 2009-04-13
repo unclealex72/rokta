@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd 
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+    http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd"
+  default-autowire="byName">
+
+  <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager"/>
+
+	<jee:jndi-lookup id="dataSource"
+		jndi-name="rokta" resource-ref="true" proxy-interface="javax.sql.DataSource"/>
+		
+	<tx:annotation-driven/>
+
+	<bean id="hibernateProperties"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="properties">
+			<props>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.show_sql">false</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="annotatedClasses">
+			<list>
+				<value>uk.co.unclealex.rokta.internal.model.Person</value>
+				<value>uk.co.unclealex.rokta.internal.model.Play</value>
+				<value>uk.co.unclealex.rokta.internal.model.Round</value>
+				<value>uk.co.unclealex.rokta.internal.model.Game</value>
+        <value>uk.co.unclealex.rokta.internal.model.Colour</value>
+			</list>
+		</property>
+	</bean>
+
+  <context:component-scan
+  	base-package="uk.co.unclealex.rokta"
+  	name-generator="uk.co.unclealex.spring.BeanNameGenerator"
+  	scope-resolver="uk.co.unclealex.spring.AnnotationScopeMetadataResolver"/>
+
+	<bean id="resourceBundle" class="uk.co.unclealex.rokta.internal.spring.ResourceBundleFactory">
+		<property name="bundleName" value="resources"/>
+	</bean>
+	<!-- Caching  
+  <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+	  <property name="configLocation">
+	    <value>classpath:ehcache.xml</value>
+	  </property>
+	</bean>
+	
+	<bean id="methodCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+	  <property name="cacheManager">
+	    <ref local="cacheManager"/>
+	  </property>
+	  <property name="cacheName">
+	    <value>org.taha.cache.METHOD_CACHE</value>
+	  </property>
+	</bean>
+	<bean id="methodCacheInterceptor" class="uk.co.unclealex.rokta.internal.cache.MethodCacheInterceptor">
+	  <property name="cache">
+	    <ref local="methodCache" />
+	  </property>
+	</bean>
+
+	<bean id="methodCachePointCut" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+	  <property name="advice">
+	    <ref local="methodCacheInterceptor"/>
+	  </property>
+	  <property name="patterns">
+	    <list>
+	      <value>.*</value>
+	    </list>
+	  </property>
+	</bean>
+	
+	<bean id="readOnlyRoktaFacade" class="org.springframework.aop.framework.ProxyFactoryBean">
+	  <property name="target">
+	   <bean class="uk.co.unclealex.rokta.internal.facade.ReadOnlyRoktaFacadeImpl"/>
+	  </property>
+	  <property name="interceptorNames">
+	    <list>
+	      <value>methodCachePointCut</value>
+	    </list>
+	  </property>
+	</bean>
+	 -->
+
+	<bean id="readOnlyRoktaFacade" class="uk.co.unclealex.rokta.internal.facade.ReadOnlyRoktaFacadeImpl"/>
+</beans>
+

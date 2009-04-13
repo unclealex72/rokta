@@ -10,7 +10,7 @@ public abstract class DatePlayedQuotientTransformer implements Transformer<Game,
 
 	@Override
 	public Long transform(Game game) {
-		return transformDatePlayed(game.getDatePlayed());
+		return transformDatePlayed(new DateTime(game.getDatePlayed()));
 	}
 	
 	public abstract long transformDatePlayed(DateTime dateTime);

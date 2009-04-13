@@ -3,6 +3,8 @@
  */
 package uk.co.unclealex.rokta.internal.util;
 
+import java.util.Date;
+
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,11 @@ public class DateUtilImpl implements DateUtil {
 		return getStartOfDay(d1).isEqual(getStartOfDay(d2));
 	}
 
+	@Override
+	public boolean areSameDay(Date d1, Date d2) {
+		return areSameDay(new DateTime(d1), new DateTime(d2));
+	}
+	
 	public DateTime getStartOfDay(DateTime date) {
 		return date.withTime(0, 0, 0, 0);
 	}

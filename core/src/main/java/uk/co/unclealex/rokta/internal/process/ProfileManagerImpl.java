@@ -7,17 +7,19 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedMap;
-import java.util.SortedSet;
 import java.util.TreeMap;
 
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import uk.co.unclealex.rokta.internal.dao.GameDao;
 import uk.co.unclealex.rokta.internal.model.Game;
-import uk.co.unclealex.rokta.internal.model.Hand;
 import uk.co.unclealex.rokta.internal.model.Person;
 import uk.co.unclealex.rokta.internal.model.Play;
 import uk.co.unclealex.rokta.internal.model.Round;
+import uk.co.unclealex.rokta.pub.filter.GameFilter;
+import uk.co.unclealex.rokta.pub.views.Hand;
 import uk.co.unclealex.rokta.pub.views.WinLoseCounter;
 
 /**
@@ -28,12 +30,11 @@ import uk.co.unclealex.rokta.pub.views.WinLoseCounter;
 @Service
 public class ProfileManagerImpl implements ProfileManager {
 
-	private Person i_person;
-	private SortedSet<Game> i_games;
-  
-	private StatisticsService i_statisticsManager;
+	private StatisticsService i_statisticsService;
+	private GameDao i_gameDao;
 	
-	public SortedMap<Hand, Integer> countHands() {
+	@Override
+	public SortedMap<Hand, Integer> countHands(GameFilter gameFilter, Person person) {
 		CountHandPersonOperation operation = new CountHandPersonOperation() {
 			public Map<Hand, Integer> count(Person person, Game game) {
 				Map<Hand, Integer> handCountMap = new HashMap<Hand, Integer>();
@@ -43,10 +44,11 @@ public class ProfileManagerImpl implements ProfileManager {
 				return handCountMap;
 			}
 		};
-		return countOperation(operation);
+		return countOperation(operation, gameFilter, person);
 	}
 	
-	public SortedMap<Hand, Integer> countOpeningGambits() {
+	@Override
+	public SortedMap<Hand, Integer> countOpeningGambits(GameFilter gameFilter, Person person) {
 		CountHandPersonOperation operation = new CountHandPersonOperation() {
 			public Map<Hand, Integer> count(Person person, Game game) {
 				Map<Hand, Integer> handCountMap = new HashMap<Hand, Integer>();
@@ -54,7 +56,7 @@ public class ProfileManagerImpl implements ProfileManager {
 				return handCountMap;
 			}
 		};
-		return countOperation(operation);
+		return countOperation(operation, gameFilter, person);
 	}
 
 	protected interface CountHandPersonOperation {
@@ -73,10 +75,9 @@ public class ProfileManagerImpl implements ProfileManager {
 		}
 	}
 	
-	protected SortedMap<Hand, Integer> countOperation(CountHandPersonOperation operation) {
+	protected SortedMap<Hand, Integer> countOperation(CountHandPersonOperation operation, GameFilter gameFilter, Person person) {
 		SortedMap<Hand, Integer> handMap = new TreeMap<Hand , Integer>();
-		Person person = getPerson();
-		for (Game game : getGames()) {
+		for (Game game : getGameDao().getGamesByFilter(gameFilter)) {
 			Map<Hand, Integer> handCount = operation.count(person, game);
 			for (Map.Entry<Hand, Integer> entry : handCount.entrySet()) {
 				Hand hand = entry.getKey();
@@ -88,54 +89,32 @@ public class ProfileManagerImpl implements ProfileManager {
 		return handMap;
 	}
 
-	public SortedMap<Person, WinLoseCounter> getHeadToHeadRoundWinRate() {
-		return getStatisticsManager().getHeadToHeadResultsByPerson().get(getPerson());
-	}
-
-	/**
-	 * @return the person
-	 */
-	public Person getPerson() {
-		return i_person;
-	}
-
-	/**
-	 * @param person the person to set
-	 */
-	public void setPerson(Person person) {
-		i_person = person;
+	@Override
+	public SortedMap<Person, WinLoseCounter> getHeadToHeadRoundWinRate(GameFilter gameFilter, Person person) {
+		return getStatisticsService().getHeadToHeadResultsByPerson(gameFilter).get(person);
 	}
 
 	/**
 	 * @return the statisticsManager
 	 */
-	public StatisticsService getStatisticsManager() {
-		return i_statisticsManager;
+	public StatisticsService getStatisticsService() {
+		return i_statisticsService;
 	}
 
 	/**
 	 * @param statisticsManager the statisticsManager to set
 	 */
-	public void setStatisticsManager(StatisticsService statisticsManager) {
-		i_statisticsManager = statisticsManager;
+	@Required
+	public void setStatisticsService(StatisticsService statisticsManager) {
+		i_statisticsService = statisticsManager;
 	}
 
-  /**
-   * @return the games
-   */
-  public SortedSet<Game> getGames() {
-    return i_games;
-  }
+	public GameDao getGameDao() {
+		return i_gameDao;
+	}
 
-  /**
-   * @param games the games to set
-   */
-  public void setGames(SortedSet<Game> games) {
-    i_games = games;
-    StatisticsService statisticsManager = getStatisticsManager();
-    if (statisticsManager != null) {
-      statisticsManager.setGames(games);
-    }
-  }
-
+	@Required
+	public void setGameDao(GameDao gameDao) {
+		i_gameDao = gameDao;
+	}
 }

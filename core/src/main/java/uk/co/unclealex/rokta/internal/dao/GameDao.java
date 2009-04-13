@@ -10,8 +10,12 @@ import uk.co.unclealex.rokta.pub.filter.GameFilter;
 public interface GameDao extends KeyedDao<Game> {
 
 	public SortedSet<Game> getGamesByFilter(GameFilter gameFilter);
-	
+
+	public Game getLastGameInYear(int year);
 	public Game getLastGame();
 	
 	public Game getLastGamePlayed(Person person);
+
+	public Game getFirstGameInYear(int year);
+	public Game getFirstGame();
 }

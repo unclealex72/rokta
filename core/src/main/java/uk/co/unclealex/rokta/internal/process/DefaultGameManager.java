@@ -1,20 +1,20 @@
 package uk.co.unclealex.rokta.internal.process;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
 
 import uk.co.unclealex.rokta.internal.model.Game;
-import uk.co.unclealex.rokta.internal.model.Hand;
 import uk.co.unclealex.rokta.internal.model.Person;
 import uk.co.unclealex.rokta.internal.model.Play;
 import uk.co.unclealex.rokta.internal.model.Round;
 import uk.co.unclealex.rokta.pub.exceptions.InvalidRoundException;
+import uk.co.unclealex.rokta.pub.views.Hand;
 
 public class DefaultGameManager implements GameManager {
 
@@ -27,7 +27,7 @@ public class DefaultGameManager implements GameManager {
 	/* (non-Javadoc)
 	 * @see uk.co.unclealex.rokta.process.GameManager#startGame()
 	 */
-	public void startGame(Collection<Person> participants, Person instigator, DateTime date) {
+	public void startGame(Collection<Person> participants, Person instigator, Date date) {
 		setParticipants(new TreeSet<Person>(participants));
 		setRounds(0);
 		setFinished(false);

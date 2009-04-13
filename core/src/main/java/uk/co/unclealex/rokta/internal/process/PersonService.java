@@ -4,7 +4,7 @@
 package uk.co.unclealex.rokta.internal.process;
 
 
-import org.joda.time.DateTime;
+import java.util.Date;
 
 import uk.co.unclealex.rokta.internal.model.Person;
 
@@ -14,8 +14,8 @@ import uk.co.unclealex.rokta.internal.model.Person;
  */
 public interface PersonService {
 
-	public Person getExemptPlayer(DateTime date);
-	public boolean currentlyPlaying(Person player, DateTime date);
+	public Person getExemptPlayer(Date date);
+	public boolean currentlyPlaying(String playerName, Date date);
 	
 	public boolean changePassword(String name, String currentPassword, String newPassword);
 }

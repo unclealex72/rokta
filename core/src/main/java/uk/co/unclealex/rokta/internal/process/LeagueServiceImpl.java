@@ -1,8 +1,10 @@
 package uk.co.unclealex.rokta.internal.process;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -19,7 +21,6 @@ import org.apache.commons.collections15.ComparatorUtils;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.comparators.ComparableComparator;
 import org.apache.commons.collections15.comparators.ComparatorChain;
-import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +41,6 @@ import uk.co.unclealex.rokta.pub.views.Delta;
 import uk.co.unclealex.rokta.pub.views.InfiniteInteger;
 import uk.co.unclealex.rokta.pub.views.League;
 import uk.co.unclealex.rokta.pub.views.LeagueRow;
-import uk.co.unclealex.rokta.pub.views.LeaguesHolder;
 
 @Service
 @Transactional
@@ -57,12 +57,27 @@ public class LeagueServiceImpl implements LeagueService {
 	}
 	
 	@Override
-	public LeaguesHolder generateLeague(GameFilter gameFilter, int maximumLeagues, DateTime now) {
+	public League generateLeague(GameFilter gameFilter, Date now) {
+		SortedMap<Game, League> leaguesForAllGames = generateAllLeagues(gameFilter, now);
+		if (leaguesForAllGames.isEmpty()) {
+			return new League();
+		}
+		Game lastGame = leaguesForAllGames.lastKey();
+		return leaguesForAllGames.get(lastGame);
+	}
+	
+	@Override
+	public LeaguesHolder generateLeagues(GameFilter gameFilter, int maximumLeagues, Date now) {
+		SortedMap<Game, League> leaguesForAllGames = generateAllLeagues(gameFilter, now);
+		return filterGranularity(leaguesForAllGames, maximumLeagues);
+	}
+
+	protected SortedMap<Game, League> generateAllLeagues(GameFilter gameFilter, Date now) {
 		SortedSet<Game> games = getGameDao().getGamesByFilter(gameFilter);
 		SortedMap<Game, League> leaguesForAllGames = generateLeagues(games);
 		decorateWithDeltas(leaguesForAllGames);
 		decorateWithExemptionAndAbsence(leaguesForAllGames, now);
-		return filterGranularity(leaguesForAllGames, maximumLeagues);
+		return leaguesForAllGames;
 	}
 	
 	protected SortedMap<Game, League> generateLeagues(SortedSet<Game> games) {
@@ -79,7 +94,7 @@ public class LeagueServiceImpl implements LeagueService {
 			for (Person participant : participants) {
 				if (!rowMap.containsKey(participant)) {
 					LeagueRow newLeagueRow = new LeagueRow();
-					newLeagueRow.setPerson(participant);
+					newLeagueRow.setPersonName(participant.getName());
 					newLeagueRow.setDelta(Delta.NONE);
 					rowMap.put(participant, newLeagueRow);
 				}
@@ -124,7 +139,7 @@ public class LeagueServiceImpl implements LeagueService {
 			copy.setLeague(league);
 			sortedRows.add(copy);
 		}		
-		league.setRows(sortedRows);
+		league.setRows(new ArrayList<LeagueRow>(sortedRows));
 		return league;
 	}
 	
@@ -136,23 +151,23 @@ public class LeagueServiceImpl implements LeagueService {
 		
 		Game lastGame = leaguesByGame.lastKey();
 		Game penultimateGame = leaguesByGame.headMap(lastGame).lastKey();
-		Map<Person,Integer> oldPositions;
-		Map<Person,Integer> newPositions = new HashMap<Person, Integer>();
+		Map<String,Integer> oldPositions;
+		Map<String,Integer> newPositions = new HashMap<String, Integer>();
 		League[] leagues = new League[] { leaguesByGame.get(penultimateGame), leaguesByGame.get(lastGame) };
 		for (League league : leagues) {
 			oldPositions = newPositions;
-			newPositions = new HashMap<Person, Integer>();
+			newPositions = new HashMap<String, Integer>();
 			for (
 					IndexingIterator<LeagueRow> iter = new IndexingIterator<LeagueRow>(league.getRows().iterator());
 					iter.hasNext(); ) {
 				LeagueRow row = iter.next();
-				newPositions.put(row.getPerson(), iter.getIndex());
+				newPositions.put(row.getPersonName(), iter.getIndex());
 			}
 			
 			for (LeagueRow row : league.getRows()) {
-				Person person = row.getPerson();
-				Integer currentPosition = newPositions.get(person);
-				Integer previousPosition = oldPositions.get(person);
+				String personName = row.getPersonName();
+				Integer currentPosition = newPositions.get(personName);
+				Integer previousPosition = oldPositions.get(personName);
 				if (previousPosition != null) {
 					if (currentPosition < previousPosition) {
 						row.setDelta(Delta.UP);
@@ -165,7 +180,7 @@ public class LeagueServiceImpl implements LeagueService {
 		}		
 	}	
 	
-	protected void decorateWithExemptionAndAbsence(SortedMap<Game, League> leaguesByGame, DateTime currentDate) {
+	protected void decorateWithExemptionAndAbsence(SortedMap<Game, League> leaguesByGame, Date currentDate) {
 		if (leaguesByGame.isEmpty()) {
 			return;
 		}
@@ -178,10 +193,11 @@ public class LeagueServiceImpl implements LeagueService {
 			league.setCurrent(true);
 			if (getDateUtil().areSameDay(lastGamePlayed.getDatePlayed(), currentDate)) {
 				Person exempt = getPersonService().getExemptPlayer(currentDate);
+				String exemptName = exempt == null?null:exempt.getName();
 				for (LeagueRow leagueRow : league.getRows()) {
-					Person player = leagueRow.getPerson();
-					leagueRow.setExempt(player.equals(exempt));
-					leagueRow.setPlayingToday(getPersonService().currentlyPlaying(player, currentDate));
+					String playerName = leagueRow.getPersonName();
+					leagueRow.setExempt(playerName.equals(exemptName));
+					leagueRow.setPlayingToday(getPersonService().currentlyPlaying(playerName, currentDate));
 				}
 			}
 			LeagueRow previousRow = null;
@@ -321,7 +337,7 @@ public class LeagueServiceImpl implements LeagueService {
 		Comparator<LeagueRow> atomicCompareByPerson =
 			new Comparator<LeagueRow>() {
 				public int compare(LeagueRow o1, LeagueRow o2) {
-					return o1.getPerson().compareTo(o2.getPerson());
+					return o1.getPersonName().compareTo(o2.getPersonName());
 				}
 			};
 		ComparatorChain<LeagueRow> chain = new ComparatorChain<LeagueRow>();		

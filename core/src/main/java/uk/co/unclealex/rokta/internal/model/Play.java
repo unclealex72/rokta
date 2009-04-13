@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlType;
 
 import uk.co.unclealex.hibernate.model.KeyedBean;
+import uk.co.unclealex.rokta.pub.views.Hand;
 
 @Entity
 @NamedQueries({
