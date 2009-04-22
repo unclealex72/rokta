@@ -21,7 +21,7 @@
 		  <stylesheet src="GWTC-compressed.css"/>
 
       <!-- Specify the app entry point class.                         -->
-      <entry-point class='uk.co.unclealex.rokta.gwt.client.Rokta'/>
+      <entry-point class='uk.co.unclealex.rokta.gwt.client.view.Rokta'/>
     
       <!-- Specify the application specific style sheet.              -->
       <stylesheet src='rokta.css' />
