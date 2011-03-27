@@ -30,9 +30,9 @@ public class ProfileAction extends RoktaAction {
 		ProfileManager manager = getProfileManager();
 		manager.setPerson(person);
     manager.setGames(getGames());
-		getHandChoiceDatasetProducer().setHandCount(manager.countHands());
-		getOpeningGambitDatasetProducer().setHandCount(manager.countOpeningGambits());
-		setHeadToHeadRoundWinRate(manager.getHeadToHeadRoundWinRate());
+		getHandChoiceDatasetProducer().setHandCount(manager.countHands(gameFilter, person));
+		getOpeningGambitDatasetProducer().setHandCount(manager.countOpeningGambits(gameFilter, person));
+		setHeadToHeadRoundWinRate(manager.getHeadToHeadRoundWinRate(gameFilter, person));
 		return SUCCESS;
 	}
 

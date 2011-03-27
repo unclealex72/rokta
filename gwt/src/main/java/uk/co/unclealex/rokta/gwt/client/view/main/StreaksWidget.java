@@ -9,14 +9,18 @@ import uk.co.unclealex.rokta.pub.views.StreaksLeague;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Grid;
 
-public class StreaksWidget extends LoadingAwareComposite<StreaksLeague> {
+public class StreaksWidget extends LoadingAwareComposite<StreaksLeague, Grid> {
 
 	private Grid i_grid = new Grid();
 	private StreaksMessages i_messages = GWT.create(StreaksMessages.class);
 
 	public StreaksWidget(RoktaController roktaController, StreaksModel streaksModel) {
 		super(roktaController, streaksModel);
-		initWidget(getGrid());
+	}
+
+	@Override
+	protected Grid create() {
+		return getGrid();
 	}
 	
 	public void onValueChanged(StreaksLeague streaksLeague) {

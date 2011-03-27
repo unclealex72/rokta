@@ -16,8 +16,8 @@
   
   <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
   	<property name="driverClassName" value="org.postgresql.Driver"/>
-  	<property name="username" value="rokta"/>
-  	<property name="password" value="r0kt@"/>
-  	<property name="url" value="jdbc:postgresql://localhost:5432/rokta"/>
+  	<property name="username" value="rokta_dev"/>
+  	<property name="password" value="r0kt@_d3v"/>
+  	<property name="url" value="jdbc:postgresql://hurst:5432/rokta_dev"/>
   </bean>  
 </beans>

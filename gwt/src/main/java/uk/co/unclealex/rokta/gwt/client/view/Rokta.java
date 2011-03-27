@@ -44,19 +44,19 @@ public class Rokta implements EntryPoint, LoadingListener<String>, AsyncCallback
   public interface Images extends TitlePanel.Images {
   }
 
-  private GwtReadOnlyRoktaFacadeAsync i_gwtReadOnlyRoktaFacadeAsync;
+  private GwtRoktaFacadeAsync i_gwtRoktaFacadeAsync;
   
   /**
    * This method constructs the application user interface by instantiating
    * controls and hooking up event listeners.
    */
   public void onModuleLoad() {
-		GwtReadOnlyRoktaFacadeAsync gwtReadOnlyRoktaFacadeAsync = 
-			(GwtReadOnlyRoktaFacadeAsync) GWT.create(GwtReadOnlyRoktaFacade.class);
-		ServiceDefTarget target = (ServiceDefTarget) gwtReadOnlyRoktaFacadeAsync;
+		GwtRoktaFacadeAsync gwtRoktaFacadeAsync = 
+			(GwtRoktaFacadeAsync) GWT.create(GwtRoktaFacade.class);
+		ServiceDefTarget target = (ServiceDefTarget) gwtRoktaFacadeAsync;
 		target.setServiceEntryPoint("../handler/rpc");
-		setGwtReadOnlyRoktaFacadeAsync(gwtReadOnlyRoktaFacadeAsync);
-  	gwtReadOnlyRoktaFacadeAsync.getAllPlayerNames(this);
+		setGwtRoktaFacadeAsync(gwtRoktaFacadeAsync);
+  	gwtRoktaFacadeAsync.getAllPlayerNames(this);
   }
   
   public void onFailure(Throwable caught) {
@@ -66,7 +66,7 @@ public class Rokta implements EntryPoint, LoadingListener<String>, AsyncCallback
   public void onSuccess(List<String> playerNames) {
   	RoktaModel roktaModel = new RoktaModel(playerNames);
   	RoktaController roktaController =
-  		new RoktaController(roktaModel, new YearGameFilter(new Date()), getGwtReadOnlyRoktaFacadeAsync());
+  		new RoktaController(roktaModel, new YearGameFilter(new Date()), getGwtRoktaFacadeAsync());
   	DecorationFactory decorationFactory = new DecorationFactory(roktaController, roktaModel);
   	SidePanelFactory sidePanelFactory = new SidePanelFactory(roktaController, roktaModel);
   	MainPanelFactory mainPanelFactory = new MainPanelFactory(roktaController, roktaModel);
@@ -108,11 +108,11 @@ public class Rokta implements EntryPoint, LoadingListener<String>, AsyncCallback
   	// Do nothing
   }
 
-	public GwtReadOnlyRoktaFacadeAsync getGwtReadOnlyRoktaFacadeAsync() {
-		return i_gwtReadOnlyRoktaFacadeAsync;
+	public GwtRoktaFacadeAsync getGwtRoktaFacadeAsync() {
+		return i_gwtRoktaFacadeAsync;
 	}
 
-	public void setGwtReadOnlyRoktaFacadeAsync(GwtReadOnlyRoktaFacadeAsync gwtReadOnlyRoktaFacadeAsync) {
-		i_gwtReadOnlyRoktaFacadeAsync = gwtReadOnlyRoktaFacadeAsync;
+	public void setGwtRoktaFacadeAsync(GwtRoktaFacadeAsync gwtRoktaFacadeAsync) {
+		i_gwtRoktaFacadeAsync = gwtRoktaFacadeAsync;
 	}
 }

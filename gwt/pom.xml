@@ -11,22 +11,11 @@
 	<name>gwt-maven-archetype-project</name>
 	
 	<!--  include pluginRepository and repository for GWT-Maven -->
-	<pluginRepositories>
-        <pluginRepository>
-            <id>gwt-maven-plugins</id>
-            <url>http://gwt-maven.googlecode.com/svn/trunk/mavenrepo/</url>
-        </pluginRepository>
-    </pluginRepositories>    
-    <repositories>        
-        <repository>
-            <id>gwt-maven</id>
-            <url>http://gwt-maven.googlecode.com/svn/trunk/mavenrepo/</url>
-        </repository>
-    </repositories>
     
 	<!--  convenience to define GWT version in one place -->
 	<properties>
-		<gwtVersion>1.6.4</gwtVersion>
+		<gwtVersion>2.0.0</gwtVersion>
+		<!-- <gwtVersion>1.5.3</gwtVersion> -->
 	</properties>
 	
 	<dependencies>
@@ -46,8 +35,8 @@
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
 			<version>${gwtVersion}</version>
-			<scope>provided</scope>
 		</dependency>
+		<!--
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-dev</artifactId>
@@ -56,12 +45,12 @@
 			<type>zip</type>
 			<scope>provided</scope>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-dev</artifactId>
 			<version>${gwtVersion}</version>
-			<classifier>${platform}</classifier>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
 		
 		<dependency>
@@ -84,52 +73,27 @@
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>8.3-603.jdbc3</version>
-		</dependency>
-		<dependency>
-			<groupId>com.rednels</groupId>
-			<artifactId>ofcgwt</artifactId>
-			<version>1.3.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.code</groupId>
-			<artifactId>gwtchismes</artifactId>
-			<version>0.9.1</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	
 	<build>
 		<plugins>
 		    <!--  configure the GWT-Maven plugin -->
-			<plugin>
-				<groupId>com.totsp.gwt</groupId>
-				<artifactId>maven-googlewebtoolkit2-plugin</artifactId>
-				<version>2.0-RC1</version>
-				<configuration>
-			    <!--  contextXml - must be specified if you want to set the shell context, there is no default -->
-			    <!--  the shell uses an old Tomcat version (5.0.28) and config is different in many cases than what you want at deploy time -->
-			    <contextXml>${basedir}/src/main/webapp/META-INF/contextGwtShell.xml</contextXml>
-					<compileTargets>
-						<value>uk.co.unclealex.rokta.gwt.Rokta</value>
-					</compileTargets>
-					<runTarget>uk.co.unclealex.rokta.gwt.Rokta/rokta.html</runTarget>
-					<logLevel>INFO</logLevel>
-					<style>DETAILED</style>
-					<noServer>false</noServer>
-					<debugSuspend>false</debugSuspend>
-					<extraJvmArgs>-Xmx1024m</extraJvmArgs>
-					<gwtVersion>${gwtVersion}</gwtVersion>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<!-- <goal>mergewebxml</goal>-->
-							<!-- <goal>i18n</goal>-->
-							<goal>compile</goal>							
-                            <goal>test</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>gwt-maven-plugin</artifactId>
+        <version>1.1</version>
+        <executions>
+            <execution>
+                <goals>
+                    <goal>compile</goal>
+                    <goal>generateAsync</goal>
+                </goals>
+            </execution>
+        </executions>
+    </plugin>
+
 			<!--  Use the dependency plugin to unpack gwt-dev-PLATFORM-libs.zip -->
 			<!--
 				(this is a replacement for the old "automatic" mode - useful if you
@@ -140,6 +104,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
+					<!--
 					<execution>
 						<id>unpack</id>
 						<phase>compile</phase>
@@ -160,6 +125,7 @@
 							</artifactItems>
 						</configuration>
 					</execution>
+					 -->
 					<execution>
 						<id>copyJdbcJar</id>
 						<phase>compile</phase>
@@ -180,6 +146,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			
 			<!--
                 If you want to use the target/web.xml file mergewebxml produces,
                 tell the war plugin to use it. 
@@ -210,14 +177,12 @@
           <phase>compile</phase>
           <configuration>
             <tasks>
-            	<!-- 
               <copy
                 file="${basedir}/src/main/webapp/WEB-INF/handler-servlet.xml"
                 toDir="${basedir}/target/tomcat/webapps/ROOT/WEB-INF" />
-              -->
               <copy
                 file="${basedir}/src/main/db/applicationContext-rokta-db-override.xml"
-                toDir="${basedir}/target/${artifactId}-${version}/WEB-INF/classes" />
+                toDir="${basedir}/target/tomcat/webapps/ROOT/WEB-INF/classes" />
               <!-- copy
                 file="${basedir}/target/${artifactId}-${version}/.gwt-tmp/shell"
                 toDir="${basedir}/target/tomcat/webapps/ROOT">

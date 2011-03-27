@@ -1,6 +1,7 @@
-package uk.co.unclealex.rokta.gwt.client.view.side.gamefilter;
+package uk.co.unclealex.rokta.gwt.client.view.date;
 
 import java.util.Date;
+
 
 import com.google.gwt.core.client.GWT;
 
@@ -66,9 +67,16 @@ public class DatePickerNames implements DatePickerNameMessages {
 		return getDatePickerNameMessages().monthFormat(date);
 	}	
 	
-	protected DatePickerNameMessages getDatePickerNameMessages() {
-		return i_datePickerNameMessages;
+	public String datePlayed() {
+		return getDatePickerNameMessages().datePlayed();
+	}
+
+	public String datePlayedFormat(Date date) {
+		return getDatePickerNameMessages().datePlayedFormat(date);
 	}
 
 
+	protected DatePickerNameMessages getDatePickerNameMessages() {
+		return i_datePickerNameMessages;
+	}
 }

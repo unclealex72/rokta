@@ -8,12 +8,12 @@ import uk.co.unclealex.rokta.pub.filter.GameFilter;
 import uk.co.unclealex.rokta.pub.filter.YearGameFilter;
 import uk.co.unclealex.rokta.pub.views.InitialDatesView;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 
-public class YearGameFilterProducerPanel extends GameFilterProducerComposite {
+public class YearGameFilterProducerPanel extends GameFilterProducerComposite<SimplePanel> {
 
 	private Integer i_year;
 	private ListBox i_yearListBox;
@@ -21,21 +21,25 @@ public class YearGameFilterProducerPanel extends GameFilterProducerComposite {
 	public YearGameFilterProducerPanel(
 			RoktaController roktaController, InitialDatesModel model, GameFilterProducerListener... gameFilterProducerListeners) {
 		super(roktaController, model, gameFilterProducerListeners);
+	}
+
+	@Override
+	protected SimplePanel create() {
 		final ListBox yearListBox = new ListBox();
-		ChangeHandler changeHandler = new ChangeHandler() {
-			public void onChange(ChangeEvent event) {
+		ChangeListener changeListener = new ChangeListener() {
+			public void onChange(Widget source) {
 				int year = Integer.valueOf(yearListBox.getValue(yearListBox.getSelectedIndex()));
 				setYear(year);
 				setGameFilter(createGameFilter());
 			}
 		};
-		yearListBox.addChangeHandler(changeHandler);
+		yearListBox.addChangeListener(changeListener);
 		setYearListBox(yearListBox);
 		SimplePanel panel = new SimplePanel();
 		panel.add(yearListBox);
-		initWidget(panel);
+		return panel;
 	}
-
+	
 	@Override
 	public void onLoading() {
 		getYearListBox().setEnabled(false);

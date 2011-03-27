@@ -6,10 +6,10 @@ import java.util.TreeMap;
 
 import uk.co.unclealex.rokta.gwt.client.controller.RoktaController;
 import uk.co.unclealex.rokta.gwt.client.controller.RoktaControllerCallback;
+import uk.co.unclealex.rokta.gwt.client.model.GameModel;
 import uk.co.unclealex.rokta.gwt.client.model.PlayerProfileModel;
 import uk.co.unclealex.rokta.gwt.client.model.RoktaModel;
 import uk.co.unclealex.rokta.gwt.client.model.StreaksModel;
-import uk.co.unclealex.rokta.gwt.client.view.main.GamePanel;
 import uk.co.unclealex.rokta.gwt.client.view.main.HandDistributionChartWidget;
 import uk.co.unclealex.rokta.gwt.client.view.main.LeagueChartWidget;
 import uk.co.unclealex.rokta.gwt.client.view.main.LeaguePanel;
@@ -21,6 +21,10 @@ import uk.co.unclealex.rokta.gwt.client.view.main.ProfileMessages;
 import uk.co.unclealex.rokta.gwt.client.view.main.StreaksMessages;
 import uk.co.unclealex.rokta.gwt.client.view.main.StreaksPanel;
 import uk.co.unclealex.rokta.gwt.client.view.main.StreaksWidget;
+import uk.co.unclealex.rokta.gwt.client.view.main.game.GamePanel;
+import uk.co.unclealex.rokta.gwt.client.view.main.game.RoundPanel;
+import uk.co.unclealex.rokta.gwt.client.view.main.game.SelectPlayersPanel;
+import uk.co.unclealex.rokta.gwt.client.view.main.game.SubmitPanel;
 
 import com.google.gwt.core.client.GWT;
 
@@ -35,9 +39,20 @@ public class MainPanelFactory extends ViewFactory {
 		RoktaController roktaController = getRoktaController();
 		RoktaModel roktaModel = getRoktaModel();
 		LeagueWidget leagueWidget = new LeagueWidget(roktaController, roktaModel.getLeagueModel());
+		leagueWidget.initialise();
 		LeagueChartWidget leagueChartWidget = new LeagueChartWidget(roktaController, roktaModel.getLeagueChartModel());
+		leagueChartWidget.initialise();
 		LeaguePanel leaguePanel = new LeaguePanel(roktaController, leagueWidget, leagueChartWidget);
-		GamePanel gamePanel = new GamePanel();
+		leaguePanel.initialise();
+		GameModel gameModel = roktaModel.getGameModel();
+		SelectPlayersPanel selectPlayersPanel = new SelectPlayersPanel(roktaController, gameModel);
+		selectPlayersPanel.initialise();
+		RoundPanel roundPanel = new RoundPanel(roktaController, gameModel);
+		roundPanel.initialise();
+		SubmitPanel submitPanel = new SubmitPanel(roktaController, gameModel);
+		submitPanel.initialise();
+		GamePanel gamePanel = new GamePanel(roktaController, gameModel, selectPlayersPanel, roundPanel, submitPanel);
+		gamePanel.initialise();
 		StreaksPanel winningStreaksPanel =
 			createStreaksPanel(
 					roktaModel.getWinningStreaksModel(), roktaModel.getCurrentWinningStreaksModel(), streaksMessages.currentWinningStreaks(),
@@ -55,21 +70,30 @@ public class MainPanelFactory extends ViewFactory {
 						}
 					});
 		PlayerProfilesPanel playerProfilesPanel = createPlayerProfilesPanel();
-		return new MainPanel(
+		MainPanel mainPanel = new MainPanel(
 				roktaController, roktaModel.getMainPageModel(), leaguePanel, gamePanel,
 				winningStreaksPanel, losingStreaksPanel, playerProfilesPanel);
+		mainPanel.initialise();
+		return mainPanel;
 	}
 
 	protected StreaksPanel createStreaksPanel(
 			StreaksModel streaksModel, StreaksModel currentStreaksModel, String currentStreaksTitle, RoktaControllerCallback callback) {
 		RoktaController roktaController = getRoktaController();
 		StreaksWidget streaksWidget = new StreaksWidget(roktaController, streaksModel);
+		streaksWidget.initialise();
 		StreaksWidget currentStreaksWidget = new StreaksWidget(roktaController, currentStreaksModel);
-		return new StreaksPanel(roktaController, callback, streaksWidget, currentStreaksWidget, currentStreaksTitle);
+		currentStreaksWidget.initialise();
+		StreaksPanel streaksPanel = new StreaksPanel(roktaController, callback, streaksWidget, currentStreaksWidget, currentStreaksTitle);
+		streaksPanel.initialise();
+		return streaksPanel;
 	}
 
 	protected PlayerProfilesPanel createPlayerProfilesPanel() {
-		return new PlayerProfilesPanel(getRoktaController(), getRoktaModel().getPlayerModel(), createPlayerProfilePanelsByPlayerName());
+		PlayerProfilesPanel playerProfilesPanel =
+			new PlayerProfilesPanel(getRoktaController(), getRoktaModel().getPlayerModel(), createPlayerProfilePanelsByPlayerName());
+		playerProfilesPanel.initialise();
+		return playerProfilesPanel;
 	}
 
 	protected SortedMap<String, PlayerProfilePanel> createPlayerProfilePanelsByPlayerName() {
@@ -88,11 +112,16 @@ public class MainPanelFactory extends ViewFactory {
 		RoktaController roktaController = getRoktaController();
 		HandDistributionChartWidget allHandDistributionChartWidget = 
 			new HandDistributionChartWidget(
-					roktaController, playerProfileModel.getAllHandDistributionChartModel(), messages.playersHands(playerName));
+					roktaController, playerProfileModel.getAllHandDistributionChartModel());
+		allHandDistributionChartWidget.initialise();
 		HandDistributionChartWidget openingHandDistributionChartWidget = 
 			new HandDistributionChartWidget(
-					roktaController, playerProfileModel.getOpeningHandDistributionChartModel(), messages.playersOpeningHands(playerName));
-		return new PlayerProfilePanel(roktaController, playerName, allHandDistributionChartWidget, openingHandDistributionChartWidget);
+					roktaController, playerProfileModel.getOpeningHandDistributionChartModel());
+		openingHandDistributionChartWidget.initialise();
+		PlayerProfilePanel playerProfilePanel = 
+			new PlayerProfilePanel(roktaController, playerName, allHandDistributionChartWidget, openingHandDistributionChartWidget);
+		playerProfilePanel.initialise();
+		return playerProfilePanel;
 	}
 
 }

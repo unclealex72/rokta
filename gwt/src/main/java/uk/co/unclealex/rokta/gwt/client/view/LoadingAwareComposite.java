@@ -4,7 +4,9 @@ import uk.co.unclealex.rokta.gwt.client.controller.RoktaController;
 import uk.co.unclealex.rokta.gwt.client.listener.LoadingListener;
 import uk.co.unclealex.rokta.gwt.client.model.LoadingNotifier;
 
-public abstract class LoadingAwareComposite<V> extends RoktaAwareComposite implements LoadingListener<V> {
+import com.google.gwt.user.client.ui.Widget;
+
+public abstract class LoadingAwareComposite<V, W extends Widget> extends RoktaAwareComposite<W> implements LoadingListener<V> {
 
 
 	public LoadingAwareComposite(RoktaController roktaController, LoadingNotifier<V> notifier) {

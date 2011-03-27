@@ -22,13 +22,14 @@ import uk.co.unclealex.rokta.pub.filter.YearGameFilter;
 import uk.co.unclealex.rokta.pub.views.InitialDatesView;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
-public class ContinuousGameFilterWidget extends GameFilterProducerComposite implements GameFilterProducer, GameFilterProducerListener, ChangeHandler {
+public class ContinuousGameFilterWidget extends GameFilterProducerComposite<VerticalPanel> 
+	implements GameFilterProducer, GameFilterProducerListener, ChangeListener {
 
 	private DeckPanel i_panel;
 	private ListBox i_listBox;
@@ -40,74 +41,80 @@ public class ContinuousGameFilterWidget extends GameFilterProducerComposite impl
 	private BetweenGameFilterProducerPanel i_betweenGameFilterProducerPanel;
 	private SinceGameFilterProducerPanel i_sinceGameFilterProducerPanel;
 	private AllGameFilterProducerPanel i_allGameFilterProducerPanel;
+	private ThisYearGameFilterProducerPanel i_thisYearGameFilterProducerPanel;
+	private LastFourWeeksGameFilterProducerPanel i_lastFourWeeksGameFilterProducerPanel;
+	private ThisMonthGameFilterProducerPanel i_thisMonthGameFilterProducerPanel;
+	private ThisWeekGameFilterProducerPanel i_thisWeekGameFilterProducerPanel;
+	private TodayGameFilterProducerPanel i_todayGameFilterProducerPanel;
 
 	public ContinuousGameFilterWidget(
-			RoktaController roktaController, InitialDatesModel model, GameFilterProducerListener gameFilterProducerListener) {
-		super(roktaController, model, gameFilterProducerListener);
+			RoktaController roktaController, InitialDatesModel model,
+			YearGameFilterProducerPanel yearGameFilterProducerPanel,
+			MonthGameFilterProducerPanel monthGameFilterProducerPanel,
+			WeekGameFilterProducerPanel weekGameFilterProducerPanel,
+			BeforeGameFilterProducerPanel beforeGameFilterProducerPanel,
+			BetweenGameFilterProducerPanel betweenGameFilterProducerPanel,
+			SinceGameFilterProducerPanel sinceGameFilterProducerPanel,
+			AllGameFilterProducerPanel allGameFilterProducerPanel,
+			ThisYearGameFilterProducerPanel thisYearGameFilterProducerPanel,
+			LastFourWeeksGameFilterProducerPanel lastFourWeeksGameFilterProducerPanel,
+			ThisMonthGameFilterProducerPanel thisMonthGameFilterProducerPanel,
+			ThisWeekGameFilterProducerPanel thisWeekGameFilterProducerPanel,
+			TodayGameFilterProducerPanel todayGameFilterProducerPanel) {
+		super(roktaController, model);
+		i_yearGameFilterProducerPanel = yearGameFilterProducerPanel;
+		i_monthGameFilterProducerPanel = monthGameFilterProducerPanel;
+		i_weekGameFilterProducerPanel = weekGameFilterProducerPanel;
+		i_beforeGameFilterProducerPanel = beforeGameFilterProducerPanel;
+		i_betweenGameFilterProducerPanel = betweenGameFilterProducerPanel;
+		i_sinceGameFilterProducerPanel = sinceGameFilterProducerPanel;
+		i_allGameFilterProducerPanel = allGameFilterProducerPanel;
+		i_thisYearGameFilterProducerPanel = thisYearGameFilterProducerPanel;
+		i_lastFourWeeksGameFilterProducerPanel = lastFourWeeksGameFilterProducerPanel;
+		i_thisMonthGameFilterProducerPanel = thisMonthGameFilterProducerPanel;
+		i_thisWeekGameFilterProducerPanel = thisWeekGameFilterProducerPanel;
+		i_todayGameFilterProducerPanel = todayGameFilterProducerPanel;
+	}
+
+	@Override
+	protected VerticalPanel create() {
 		VerticalPanel verticalPanel = new VerticalPanel();
 		ListBox listBox = new ListBox();
 		setListBox(listBox);
-		listBox.addChangeHandler(this);
+		listBox.addChangeListener(this);
 		final DeckPanel panel = new DeckPanel();
 		setPanel(panel);
 
 		GameFilterMessages messages = GWT.create(GameFilterMessages.class);
 
-		add(new ThisYearGameFilterProducerPanel(roktaController, model, this), messages.thisYear());
-		add(new LastFourWeeksGameFilterProducerPanel(roktaController, model, this), messages.lastFourWeeks());
-		add(new ThisMonthGameFilterProducerPanel(roktaController, model, this), messages.thisMonth());
-		add(new ThisWeekGameFilterProducerPanel(roktaController, model, this), messages.thisWeek());
-		add(new TodayGameFilterProducerPanel(roktaController, model, this), messages.today());
-
-		YearGameFilterProducerPanel yearGameFilterProducerPanel =
-			new YearGameFilterProducerPanel(roktaController, model, this);
-		add(yearGameFilterProducerPanel, messages.year());
-		setYearGameFilterProducerPanel(yearGameFilterProducerPanel);
-
-		MonthGameFilterProducerPanel monthGameFilterProducerPanel =
-			new MonthGameFilterProducerPanel(roktaController, model, this);
-		add(monthGameFilterProducerPanel, messages.month());
-		setMonthGameFilterProducerPanel(monthGameFilterProducerPanel);
-		
-		WeekGameFilterProducerPanel weekGameFilterProducerPanel =
-			new WeekGameFilterProducerPanel(roktaController, model, this);
-		setWeekGameFilterProducerPanel(weekGameFilterProducerPanel);
-		add(weekGameFilterProducerPanel, messages.week());
-		
-		BeforeGameFilterProducerPanel beforeGameFilterProducerPanel = 
-			new BeforeGameFilterProducerPanel(roktaController, model, this);
-		setBeforeGameFilterProducerPanel(beforeGameFilterProducerPanel);
-		add(beforeGameFilterProducerPanel, messages.before());
-
-		BetweenGameFilterProducerPanel betweenGameFilterProducerPanel = 
-			new BetweenGameFilterProducerPanel(roktaController, model, this);
-		setBetweenGameFilterProducerPanel(betweenGameFilterProducerPanel);
-		add(betweenGameFilterProducerPanel, messages.between());
-		
-		SinceGameFilterProducerPanel sinceGameFilterProducerPanel = 
-			new SinceGameFilterProducerPanel(roktaController, model, this);
-		setSinceGameFilterProducerPanel(sinceGameFilterProducerPanel);
-		add(sinceGameFilterProducerPanel, messages.since());
-		
-		AllGameFilterProducerPanel allGameFilterProducerPanel = 
-			new AllGameFilterProducerPanel(roktaController, model, this);
-		add(allGameFilterProducerPanel, messages.all());
-		setAllGameFilterProducerPanel(allGameFilterProducerPanel);
+		add(getThisYearGameFilterProducerPanel(), messages.thisYear());
+		add(getLastFourWeeksGameFilterProducerPanel(), messages.lastFourWeeks());
+		add(getThisMonthGameFilterProducerPanel(), messages.thisMonth());
+		add(getThisWeekGameFilterProducerPanel(), messages.thisWeek());
+		add(getTodayGameFilterProducerPanel(), messages.today());
+		add(getYearGameFilterProducerPanel(), messages.year());
+		add(getMonthGameFilterProducerPanel(), messages.month());
+		add(getWeekGameFilterProducerPanel(), messages.week());
+		add(getBeforeGameFilterProducerPanel(), messages.before());
+		add(getBetweenGameFilterProducerPanel(), messages.between());
+		add(getSinceGameFilterProducerPanel(), messages.since());
+		add(getAllGameFilterProducerPanel(), messages.all());
 		
 		getListBox().setSelectedIndex(0);
 		panel.showWidget(0);
 		setGameFilter(createGameFilter());
 		verticalPanel.add(listBox);
 		verticalPanel.add(panel);
-		initWidget(verticalPanel);
+		return verticalPanel;
 	}
-
-	protected void add(GameFilterProducerComposite gameFilterProducerComposite, String title) {
+	
+	protected void add(
+			GameFilterProducerComposite<?> gameFilterProducerComposite, String title) {
 		getPanel().add(gameFilterProducerComposite);
 		getListBox().addItem(title);
 	}
 
-	public void onChange(ChangeEvent event) {
+	public void onChange(Widget source) {
 		int index = getListBox().getSelectedIndex();
 		getPanel().showWidget(index);
 	}
@@ -124,7 +131,7 @@ public class ContinuousGameFilterWidget extends GameFilterProducerComposite impl
 	
 	protected class ContinuousGameFilterVisitor extends GameFilterVistor<Object> {
 
-		protected Object select(GameFilterProducerComposite gameFilterProducerPanel) {
+		protected Object select(GameFilterProducerComposite<?> gameFilterProducerPanel) {
 			DeckPanel panel = getPanel();
 			int widgetIndex = panel.getWidgetIndex(gameFilterProducerPanel);
 			panel.showWidget(widgetIndex);
@@ -300,5 +307,25 @@ public class ContinuousGameFilterWidget extends GameFilterProducerComposite impl
 
 	public void setListBox(ListBox listBox) {
 		i_listBox = listBox;
+	}
+
+	public ThisYearGameFilterProducerPanel getThisYearGameFilterProducerPanel() {
+		return i_thisYearGameFilterProducerPanel;
+	}
+
+	public LastFourWeeksGameFilterProducerPanel getLastFourWeeksGameFilterProducerPanel() {
+		return i_lastFourWeeksGameFilterProducerPanel;
+	}
+
+	public ThisMonthGameFilterProducerPanel getThisMonthGameFilterProducerPanel() {
+		return i_thisMonthGameFilterProducerPanel;
+	}
+
+	public ThisWeekGameFilterProducerPanel getThisWeekGameFilterProducerPanel() {
+		return i_thisWeekGameFilterProducerPanel;
+	}
+
+	public TodayGameFilterProducerPanel getTodayGameFilterProducerPanel() {
+		return i_todayGameFilterProducerPanel;
 	}
 }

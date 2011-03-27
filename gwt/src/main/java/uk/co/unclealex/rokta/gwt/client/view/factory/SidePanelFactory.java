@@ -14,22 +14,35 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class SidePanelFactory extends ViewFactory {
 
+	private GameFilterFactory i_gameFilterFactory;
+	
 	public SidePanelFactory(RoktaController roktaController, RoktaModel roktaModel) {
 		super(roktaController, roktaModel);
+		i_gameFilterFactory = new GameFilterFactory(roktaController, roktaModel);
 	}
 
 	public Widget createNavigationPanel() {
-		return new NavigationPanel(getRoktaController());
+		NavigationPanel navigationPanel = new NavigationPanel(getRoktaController());
+		navigationPanel.initialise();
+		return navigationPanel;
 	}
 
 	public Widget createDetailPanel(Collection<String> playerNames) {
 		RoktaController roktaController = getRoktaController();
 		RoktaModel roktaModel = getRoktaModel();
 		StatisticsPanel statisticsPanel = new StatisticsPanel(roktaController);
+		statisticsPanel.initialise();
 		ProfilesPanel profilesPanel = new ProfilesPanel(roktaController, playerNames);
-		GameFilterWidget gameFilterWidget = new GameFilterWidget(roktaController, roktaModel.getInitialDatesModel());
-		return new DetailPanel(
+		profilesPanel.initialise();
+		GameFilterWidget gameFilterWidget = getGameFilterFactory().createGameFilterWidget();
+		DetailPanel detailPanel = new DetailPanel(
 			roktaController, roktaModel.getDetailPageModel(), gameFilterWidget, profilesPanel, statisticsPanel);
+		detailPanel.initialise();
+		return detailPanel;
+	}
+
+	public GameFilterFactory getGameFilterFactory() {
+		return i_gameFilterFactory;
 	}
 
 }

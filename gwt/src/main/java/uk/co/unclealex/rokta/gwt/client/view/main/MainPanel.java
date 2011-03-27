@@ -4,6 +4,7 @@ import uk.co.unclealex.rokta.gwt.client.controller.RoktaController;
 import uk.co.unclealex.rokta.gwt.client.model.MainPageEnum;
 import uk.co.unclealex.rokta.gwt.client.model.MainPageModel;
 import uk.co.unclealex.rokta.gwt.client.util.MapMaker;
+import uk.co.unclealex.rokta.gwt.client.view.main.game.GamePanel;
 
 import com.google.gwt.user.client.ui.Widget;
 

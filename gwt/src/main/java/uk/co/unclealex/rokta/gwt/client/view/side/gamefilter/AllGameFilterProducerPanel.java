@@ -9,7 +9,7 @@ public class AllGameFilterProducerPanel extends SimpleGameFilterProducerPanel {
 
 	private static GameFilter ALL_GAME_FILTER = new AllGameFilter();
 	
-	protected AllGameFilterProducerPanel(
+	public AllGameFilterProducerPanel(
 			RoktaController roktaController, InitialDatesModel model, GameFilterProducerListener... gameFilterProducerListeners) {
 		super(roktaController, model, gameFilterProducerListeners);
 	}

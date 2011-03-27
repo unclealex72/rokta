@@ -1,4 +1,4 @@
-package uk.co.unclealex.rokta.gwt.client.view.side.gamefilter;
+package uk.co.unclealex.rokta.gwt.client.view.date;
 
 import java.util.Date;
 

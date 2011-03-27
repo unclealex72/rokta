@@ -30,19 +30,14 @@ import uk.co.unclealex.rokta.pub.filter.YearGameFilter;
 
 @Service
 @Transactional
-public class TitleFactoryImpl extends GameFilterVistor<String> implements TitleFactory {
+public class GameFilterServiceImpl extends GameFilterVistor<String> implements GameFilterService {
 
 	private ResourceBundle i_resourceBundle;
 	private GameDao i_gameDao;
 	
 	@Override
-	public String createCopyright() {
-		return formatResource("copyright", new Date());
-	}
-	
-	@Override
-	public String createTitle(GameFilter gameFilter, String prefix) {
-		return formatResource("prefix", prefix, gameFilter.accept(this));
+	public String describeGameFilter(GameFilter gameFilter) {
+		return gameFilter.accept(this);
 	}
 
 	@Override

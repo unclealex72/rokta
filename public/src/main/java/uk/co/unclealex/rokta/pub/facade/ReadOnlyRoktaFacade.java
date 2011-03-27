@@ -8,6 +8,7 @@ import uk.co.unclealex.rokta.pub.filter.GameFilter;
 import uk.co.unclealex.rokta.pub.views.ChartView;
 import uk.co.unclealex.rokta.pub.views.Hand;
 import uk.co.unclealex.rokta.pub.views.InitialDatesView;
+import uk.co.unclealex.rokta.pub.views.InitialPlayers;
 import uk.co.unclealex.rokta.pub.views.League;
 import uk.co.unclealex.rokta.pub.views.StreaksLeague;
 
@@ -15,8 +16,7 @@ public interface ReadOnlyRoktaFacade {
 
 	public GameFilter getDefaultGameFilter();
 	
-	public String getTitle(GameFilter gameFilter, String prefix);
-	public String getCopyright();
+	public String describeGameFilter(GameFilter gameFilter);
 
 	public League getLeague(GameFilter gameFilter, Date now);
 
@@ -35,4 +35,5 @@ public interface ReadOnlyRoktaFacade {
 	public List<String> getAllPlayerNames();
 	
 	public InitialDatesView getInitialDates();
+	public InitialPlayers getInitialPlayers(Date date);
 }

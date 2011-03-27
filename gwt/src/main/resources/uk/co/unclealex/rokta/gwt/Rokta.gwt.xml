@@ -12,9 +12,6 @@
 			<!-- Include all public Rokta entities -->
 			<inherits name='uk.co.unclealex.rokta.Public'/>
 			
-			<!-- Include Open Flash Charts -->
-			<inherits name='com.rednels.ofcgwt.OFCGWT'/>
-
 		  <!-- Include GWTChismes library -->
 		  <inherits name="com.google.code.p.gwtchismes.GWTChismes"/>
 		  <!-- Load dinamically GWTC Style sheets when the application starts -->

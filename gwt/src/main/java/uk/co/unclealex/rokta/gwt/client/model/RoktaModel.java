@@ -7,6 +7,7 @@ import java.util.Map;
 
 public class RoktaModel extends CompositeModel {
 
+	private GameModel i_gameModel = new GameModel();
 	private DetailPageModel i_detailPageModel = new DetailPageModel();
 	private LeagueChartModel i_leagueChartModel = new LeagueChartModel();
 	private LeagueModel i_leagueModel = new LeagueModel();
@@ -18,6 +19,8 @@ public class RoktaModel extends CompositeModel {
 	private InitialDatesModel i_initialDatesModel = new InitialDatesModel();
 	private TitleModel i_titleModel = new TitleModel();
 	private PlayerModel i_playerModel = new PlayerModel();
+	private CurrentlyLoadingModel i_currentlyLoadingModel = new CurrentlyLoadingModel();
+	
 	private Map<String, PlayerProfileModel> i_playerProfileModelsByPlayerName = new HashMap<String, PlayerProfileModel>();
 	
 	public RoktaModel(Collection<String> playerNames) {
@@ -32,6 +35,8 @@ public class RoktaModel extends CompositeModel {
 		add(i_initialDatesModel);
 		add(i_titleModel);
 		add(i_playerModel);
+		add(i_currentlyLoadingModel);
+		add(i_gameModel);
 		Map<String, PlayerProfileModel> playerProfileModelsByPlayerName = getPlayerProfileModelsByPlayerName();
 		for (String playerName : playerNames) {
 			PlayerProfileModel playerProfileModel = new PlayerProfileModel();
@@ -86,5 +91,13 @@ public class RoktaModel extends CompositeModel {
 
 	public Map<String, PlayerProfileModel> getPlayerProfileModelsByPlayerName() {
 		return i_playerProfileModelsByPlayerName;
+	}
+
+	public CurrentlyLoadingModel getCurrentlyLoadingModel() {
+		return i_currentlyLoadingModel;
+	}
+
+	public GameModel getGameModel() {
+		return i_gameModel;
 	}
 }

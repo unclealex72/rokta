@@ -1,6 +1,7 @@
-package uk.co.unclealex.rokta.gwt.client.view.side.gamefilter;
+package uk.co.unclealex.rokta.gwt.client.view.date;
 
 import java.util.Date;
+
 
 import com.google.code.p.gwtchismes.client.GWTCButton;
 import com.google.code.p.gwtchismes.client.GWTCDatePicker;
@@ -12,7 +13,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-@SuppressWarnings("deprecation")
 public class DatePicker extends Composite {
 
 	private Label i_label;

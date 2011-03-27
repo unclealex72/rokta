@@ -3,19 +3,22 @@ package uk.co.unclealex.rokta.gwt.client.view.side.gamefilter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.user.client.ui.Widget;
+
 import uk.co.unclealex.rokta.gwt.client.controller.RoktaController;
 import uk.co.unclealex.rokta.gwt.client.model.InitialDatesModel;
 import uk.co.unclealex.rokta.gwt.client.view.LoadingAwareComposite;
 import uk.co.unclealex.rokta.pub.filter.GameFilter;
 import uk.co.unclealex.rokta.pub.views.InitialDatesView;
 
-public abstract class GameFilterProducerComposite extends LoadingAwareComposite<InitialDatesView> implements GameFilterProducer {
+public abstract class GameFilterProducerComposite<W extends Widget> 
+	extends LoadingAwareComposite<InitialDatesView, W> implements GameFilterProducer {
 
 	private List<GameFilterProducerListener> i_gameFilterProducerListeners = new ArrayList<GameFilterProducerListener>();
 	private GameFilter i_gameFilter;
 	
 	protected GameFilterProducerComposite(
-			RoktaController roktaController, InitialDatesModel model, GameFilterProducerListener[] gameFilterProducerListeners) {
+			RoktaController roktaController, InitialDatesModel model, GameFilterProducerListener... gameFilterProducerListeners) {
 		super(roktaController, model);
 		List<GameFilterProducerListener> existingGameFilterProducerListeners = getGameFilterProducerListeners();
 		for (GameFilterProducerListener gameFilterProducerListener : gameFilterProducerListeners) {

@@ -19,16 +19,18 @@ import uk.co.unclealex.rokta.internal.model.Colour;
 import uk.co.unclealex.rokta.internal.model.Person;
 import uk.co.unclealex.rokta.internal.process.DateService;
 import uk.co.unclealex.rokta.internal.process.LeagueService;
+import uk.co.unclealex.rokta.internal.process.PersonService;
 import uk.co.unclealex.rokta.internal.process.SecurityService;
 import uk.co.unclealex.rokta.internal.process.StatisticsService;
 import uk.co.unclealex.rokta.internal.process.dataset.ChartService;
-import uk.co.unclealex.rokta.internal.process.dataset.TitleFactory;
+import uk.co.unclealex.rokta.internal.process.dataset.GameFilterService;
 import uk.co.unclealex.rokta.pub.facade.ReadOnlyRoktaFacade;
 import uk.co.unclealex.rokta.pub.filter.GameFilter;
 import uk.co.unclealex.rokta.pub.filter.YearGameFilter;
 import uk.co.unclealex.rokta.pub.views.ChartView;
 import uk.co.unclealex.rokta.pub.views.Hand;
 import uk.co.unclealex.rokta.pub.views.InitialDatesView;
+import uk.co.unclealex.rokta.pub.views.InitialPlayers;
 import uk.co.unclealex.rokta.pub.views.League;
 import uk.co.unclealex.rokta.pub.views.Streak;
 import uk.co.unclealex.rokta.pub.views.StreaksLeague;
@@ -39,8 +41,9 @@ public class ReadOnlyRoktaFacadeImpl implements ReadOnlyRoktaFacade {
 	private LeagueService i_leagueService;
 	private StatisticsService i_statisticsService;
 	private SecurityService i_securityService;
-	private TitleFactory i_titleFactory;
+	private GameFilterService i_gameFilterService;
 	private DateService i_dateService;
+	private PersonService i_personService;
 	
 	private PersonDao i_personDao;
 	private ColourDao i_colourDao; 
@@ -51,15 +54,25 @@ public class ReadOnlyRoktaFacadeImpl implements ReadOnlyRoktaFacade {
 	}
 	
 	@Override
-	public String getTitle(GameFilter gameFilter, String prefix) {
-		return getTitleFactory().createTitle(gameFilter, prefix);
+	public String describeGameFilter(GameFilter gameFilter) {
+		return getGameFilterService().describeGameFilter(gameFilter);
 	}
 	
 	@Override
-	public String getCopyright() {
-		return getTitleFactory().createCopyright();
+	public InitialPlayers getInitialPlayers(Date date) {
+		Person exemptPlayer = getPersonService().getExemptPlayer(date);
+		List<String> playerNames = getAllPlayerNames();
+		String exemptPlayerName;
+		if (exemptPlayer == null) {
+			exemptPlayerName = null;
+		}
+		else {
+			exemptPlayerName = exemptPlayer.getName();
+			playerNames.remove(exemptPlayerName);
+		}
+		return new InitialPlayers(getAllUsersNames(), playerNames, exemptPlayerName);
 	}
-	
+
 	@Override
 	public List<String> getAllPlayerNames() {
 		return getNames(getPersonDao().getPlayers());
@@ -206,13 +219,13 @@ public class ReadOnlyRoktaFacadeImpl implements ReadOnlyRoktaFacade {
 		i_securityService = securityService;
 	}
 
-	public TitleFactory getTitleFactory() {
-		return i_titleFactory;
+	public GameFilterService getGameFilterService() {
+		return i_gameFilterService;
 	}
 
 	@Required
-	public void setTitleFactory(TitleFactory titleFactory) {
-		i_titleFactory = titleFactory;
+	public void setGameFilterService(GameFilterService gameFilterService) {
+		i_gameFilterService = gameFilterService;
 	}
 
 	public ColourDao getColourDao() {
@@ -233,4 +246,11 @@ public class ReadOnlyRoktaFacadeImpl implements ReadOnlyRoktaFacade {
 		i_dateService = dateService;
 	}
 
+	protected PersonService getPersonService() {
+		return i_personService;
+	}
+
+	protected void setPersonService(PersonService personService) {
+		i_personService = personService;
+	}
 }

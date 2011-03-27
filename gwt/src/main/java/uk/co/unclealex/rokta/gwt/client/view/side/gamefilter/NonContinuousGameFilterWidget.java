@@ -17,11 +17,11 @@ import uk.co.unclealex.rokta.pub.filter.LastGameOfTheYearFilter;
 import uk.co.unclealex.rokta.pub.views.InitialDatesView;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Widget;
 
-public class NonContinuousGameFilterWidget extends GameFilterProducerComposite implements GameFilterProducer, ChangeHandler {
+public class NonContinuousGameFilterWidget extends GameFilterProducerComposite<ListBox> implements GameFilterProducer, ChangeListener {
 
 	private ListBox i_listBox;
 	private List<GameFilter> i_gameFilters;
@@ -29,6 +29,10 @@ public class NonContinuousGameFilterWidget extends GameFilterProducerComposite i
 	public NonContinuousGameFilterWidget(
 		RoktaController roktaController, InitialDatesModel model, GameFilterProducerListener... gameFilterProducerListeners) {
 		super(roktaController, model, gameFilterProducerListeners);
+	}
+
+	@Override
+	protected ListBox create() {
 		GameFilterMessages messages = GWT.create(GameFilterMessages.class);
 		
 		ListBox listBox = new ListBox();
@@ -46,11 +50,11 @@ public class NonContinuousGameFilterWidget extends GameFilterProducerComposite i
 					null, new FirstGameOfTheDayFilter(), new FirstGameOfTheWeekFilter(), new FirstGameOfTheMonthFilter(), 
 					new FirstGameOfTheYearFilter(), new LastGameOfTheDayFilter(), new LastGameOfTheWeekFilter(), 
 					new LastGameOfTheMonthFilter(), new LastGameOfTheYearFilter() }));
-		listBox.addChangeHandler(this);
-		initWidget(listBox);
+		listBox.addChangeListener(this);
+		return listBox;
 	}
-
-	public void onChange(ChangeEvent event) {
+	
+	public void onChange(Widget source) {
 		setGameFilter(createGameFilter());
 	}
 	

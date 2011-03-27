@@ -10,16 +10,20 @@ import uk.co.unclealex.rokta.pub.views.LeagueRow;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Grid;
 
-public class LeagueWidget extends LoadingAwareComposite<League> {
+public class LeagueWidget extends LoadingAwareComposite<League, Grid> {
 
 	private Grid i_grid = new Grid();
 	private LeagueWidgetMessages i_messages = GWT.create(LeagueWidgetMessages.class);
 	
 	public LeagueWidget(RoktaController roktaController, LeagueModel leagueModel) {
 		super(roktaController, leagueModel);
-		initWidget(getGrid());
 	}
 
+	@Override
+	public Grid create() {
+		return getGrid();
+	}
+	
 	public void onValueChanged(League league) {
 		LeagueWidgetMessages messages = getMessages();
 		Grid grid = getGrid();

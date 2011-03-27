@@ -10,4 +10,7 @@ public interface ProfileMessages extends Messages {
 	@DefaultMessage("{0}''s opening hand distribution")
 	public String playersOpeningHands(String playerName);
 
+	@DefaultMessage("{0}''s profile")
+	public String profileTitle(String playerName);
+
 }

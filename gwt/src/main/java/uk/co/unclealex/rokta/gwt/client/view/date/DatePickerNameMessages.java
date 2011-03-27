@@ -1,4 +1,4 @@
-package uk.co.unclealex.rokta.gwt.client.view.side.gamefilter;
+package uk.co.unclealex.rokta.gwt.client.view.date;
 
 import java.util.Date;
 
@@ -34,5 +34,10 @@ public interface DatePickerNameMessages extends Messages {
 	@DefaultMessage("Month")
 	public String month();
 	@DefaultMessage("{0,date,MMM yyyy}")
-	public String monthFormat(Date date);	
+	public String monthFormat(Date date);
+
+	@DefaultMessage("Date Played")
+	public String datePlayed();
+	@DefaultMessage("{0,date,EEE dd MMM yyyy HH:mm}")
+	public String datePlayedFormat(Date date);
 }

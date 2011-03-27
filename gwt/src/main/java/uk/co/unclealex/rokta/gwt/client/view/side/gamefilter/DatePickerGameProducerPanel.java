@@ -4,6 +4,8 @@ import java.util.Date;
 
 import uk.co.unclealex.rokta.gwt.client.controller.RoktaController;
 import uk.co.unclealex.rokta.gwt.client.model.InitialDatesModel;
+import uk.co.unclealex.rokta.gwt.client.view.date.DateFormatter;
+import uk.co.unclealex.rokta.gwt.client.view.date.DatePicker;
 import uk.co.unclealex.rokta.pub.filter.GameFilter;
 import uk.co.unclealex.rokta.pub.views.InitialDatesView;
 
@@ -13,8 +15,7 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-@SuppressWarnings("deprecation")
-public abstract class DatePickerGameProducerPanel extends GameFilterProducerComposite implements ChangeListener {
+public abstract class DatePickerGameProducerPanel extends GameFilterProducerComposite<VerticalPanel> implements ChangeListener {
 
 	private DateFormatter[] i_dateFormatters;
 	private	DatePicker[] i_datePickers;
@@ -25,18 +26,23 @@ public abstract class DatePickerGameProducerPanel extends GameFilterProducerComp
 			GameFilterProducerListener[] gameFilterProducerListeners, DateFormatter... dateFormatters) {
 		super(roktaController, model, gameFilterProducerListeners);
 		i_dateFormatters = dateFormatters;
+		i_datePickers = new DatePicker[dateFormatters.length];
+	}
+
+	@Override
+	protected VerticalPanel create() {
+		DateFormatter[] dateFormatters = getDateFormatters();
 		int length = dateFormatters.length;
-		i_datePickers = new DatePicker[length];
-		Panel panel = new VerticalPanel();
+		VerticalPanel panel = new VerticalPanel();
     panel.setWidth("100%");
 		for (int idx = 0; idx < length; idx++) {
 			DatePicker datePicker = createDatePicker(panel, dateFormatters[idx]);
 			i_datePickers[idx] = datePicker;
 			panel.add(datePicker);
 		}
-		initWidget(panel);
+		return panel;
 	}
-
+	
 	protected DatePicker createDatePicker(Panel panel, final DateFormatter dateFormatter) {
 		int options = GWTCDatePicker.CONFIG_DIALOG  
       | GWTCDatePicker.CONFIG_NO_HELP_BUTTON | GWTCDatePicker.CONFIG_BACKGROUND

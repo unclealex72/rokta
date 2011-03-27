@@ -12,7 +12,9 @@ public class DecorationFactory extends ViewFactory {
 	}
 
 	public TitlePanel createTitlePanel(TitlePanel.Images images) {
-		return new TitlePanel(getRoktaController(), getRoktaModel().getTitleModel(), images);
+		TitlePanel titlePanel = new TitlePanel(getRoktaController(), getRoktaModel().getTitleModel(), images);
+		titlePanel.initialise();
+		return titlePanel;
 	}
 
 	public CopyrightPanel createCopyrightPanel() {

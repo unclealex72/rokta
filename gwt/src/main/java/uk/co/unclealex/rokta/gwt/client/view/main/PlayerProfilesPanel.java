@@ -8,7 +8,7 @@ import uk.co.unclealex.rokta.gwt.client.view.ModelAwareComposite;
 
 import com.google.gwt.user.client.ui.DeckPanel;
 
-public class PlayerProfilesPanel extends ModelAwareComposite<String> {
+public class PlayerProfilesPanel extends ModelAwareComposite<String, DeckPanel> {
 
 	private DeckPanel i_panel = new DeckPanel();
 	private SortedMap<String, PlayerProfilePanel> i_playerProfilePanelsByPlayerName;
@@ -18,13 +18,17 @@ public class PlayerProfilesPanel extends ModelAwareComposite<String> {
 			SortedMap<String, PlayerProfilePanel> playerProfilePanelsByPlayerName) {
 		super(roktaController, playerModel);
 		i_playerProfilePanelsByPlayerName = playerProfilePanelsByPlayerName;
-		DeckPanel panel = getPanel();
-		for (PlayerProfilePanel playerProfilePanel : playerProfilePanelsByPlayerName.values()) {
-			panel.add(playerProfilePanel);
-		}
-		initWidget(panel);
 	}
 
+	@Override
+	protected DeckPanel create() {
+		DeckPanel panel = getPanel();
+		for (PlayerProfilePanel playerProfilePanel : getPlayerProfilePanelsByPlayerName().values()) {
+			panel.add(playerProfilePanel);
+		}
+		return panel;
+	}
+	
 	public void onValueChanged(String playerName) {
 		PlayerProfilePanel playerProfilePanel = getPlayerProfilePanelsByPlayerName().get(playerName);
 		if (playerProfilePanel != null) {

@@ -6,14 +6,18 @@ import uk.co.unclealex.rokta.pub.views.InitialDatesView;
 
 import com.google.gwt.user.client.ui.SimplePanel;
 
-public abstract class SimpleGameFilterProducerPanel extends GameFilterProducerComposite {
+public abstract class SimpleGameFilterProducerPanel extends GameFilterProducerComposite<SimplePanel> {
 
-	protected SimpleGameFilterProducerPanel(
+	public SimpleGameFilterProducerPanel(
 		RoktaController roktaController, InitialDatesModel model, GameFilterProducerListener... gameFilterProducerListeners) {
 		super(roktaController, model, gameFilterProducerListeners);
-		initWidget(new SimplePanel());
 	}
 
+	@Override
+	protected SimplePanel create() {
+		return new SimplePanel();
+	}
+	
 	public void onValueChanged(InitialDatesView value) {
 		// Do nothing
 	}

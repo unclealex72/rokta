@@ -9,7 +9,7 @@ import uk.co.unclealex.rokta.pub.filter.WeekGameFilter;
 
 public class ThisWeekGameFilterProducerPanel extends SimpleGameFilterProducerPanel {
 
-	protected ThisWeekGameFilterProducerPanel(
+	public ThisWeekGameFilterProducerPanel(
 			RoktaController roktaController, InitialDatesModel model, GameFilterProducerListener... gameFilterProducerListeners) {
 		super(roktaController, model, gameFilterProducerListeners);
 	}

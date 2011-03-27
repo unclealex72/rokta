@@ -9,34 +9,39 @@ import uk.co.unclealex.rokta.pub.filter.AndGameFilter;
 import uk.co.unclealex.rokta.pub.filter.GameFilter;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
-public class GameFilterWidget extends RoktaAwareComposite implements GameFilterProducerListener, ClickHandler {
+public class GameFilterWidget extends RoktaAwareComposite<VerticalPanel> implements GameFilterProducerListener, ClickListener {
 
 	private ContinuousGameFilterWidget i_continuousGameFilterWidget;
 	private NonContinuousGameFilterWidget i_nonContinuousGameFilterWidget;
 	private Button i_button;
 	
-	public GameFilterWidget(RoktaController roktaController, InitialDatesModel model) {
+	public GameFilterWidget(
+			RoktaController roktaController, InitialDatesModel model, 
+			ContinuousGameFilterWidget continuousGameFilterWidget, NonContinuousGameFilterWidget nonContinuousGameFilterWidget) {
 		super(roktaController);
+		i_continuousGameFilterWidget = continuousGameFilterWidget;
+		i_nonContinuousGameFilterWidget = nonContinuousGameFilterWidget;
+	}
+
+	@Override
+	protected VerticalPanel create() {
 		NavigationMessages navigationMessages = GWT.create(NavigationMessages.class);
 		VerticalPanel verticalPanel = new VerticalPanel();
 		verticalPanel.add(new HeaderElement(navigationMessages.filters(), 1));
-		ContinuousGameFilterWidget continuousGameFilterWidget = new ContinuousGameFilterWidget(roktaController, model, this); 
-		NonContinuousGameFilterWidget nonContinuousGameFilterWidget = new NonContinuousGameFilterWidget(roktaController, model, this);
 		Button button = new Button("Change", this);
 		button.setEnabled(false);
-		setContinuousGameFilterWidget(continuousGameFilterWidget);
-		setNonContinuousGameFilterWidget(nonContinuousGameFilterWidget);
-		verticalPanel.add(continuousGameFilterWidget);
-		verticalPanel.add(nonContinuousGameFilterWidget);
+		setButton(button);
+		verticalPanel.add(getContinuousGameFilterWidget());
+		verticalPanel.add(getNonContinuousGameFilterWidget());
 		verticalPanel.add(button);
-		initWidget(verticalPanel);
+		return verticalPanel;
 	}
-
+	
 	public void onGameFilterProduced(GameFilterProducerEvent gameFilterProducerEvent) {
 		Button button = getButton();
 		if (button != null) {
@@ -44,7 +49,7 @@ public class GameFilterWidget extends RoktaAwareComposite implements GameFilterP
 		}
 	}
 	
-	public void onClick(ClickEvent event) {
+	public void onClick(Widget source) {
 		GameFilter gameFilter = getGameFilter();
 		if (gameFilter != null) {
 			getRoktaController().changeGameFilter(gameFilter);
@@ -61,6 +66,9 @@ public class GameFilterWidget extends RoktaAwareComposite implements GameFilterP
 				GameFilter nonContinuousGameFilter = nonContinuousGameFilterWidget.getGameFilter();
 				if (nonContinuousGameFilter != null) {
 					gameFilter = new AndGameFilter(continuousGameFilter, nonContinuousGameFilter);
+				}
+				else {
+					gameFilter = continuousGameFilter;
 				}
 			}
 		}

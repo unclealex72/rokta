@@ -1,7 +1,7 @@
 package uk.co.unclealex.rokta.gwt.server;
 
-import uk.co.unclealex.rokta.gwt.client.view.GwtReadOnlyRoktaFacade;
-import uk.co.unclealex.rokta.internal.facade.ReadOnlyRoktaFacadeImpl;
+import uk.co.unclealex.rokta.gwt.client.view.GwtRoktaFacade;
+import uk.co.unclealex.rokta.internal.facade.RoktaFacadeImpl;
 
-public class GwtReadOnlyRoktaFacadeImpl extends ReadOnlyRoktaFacadeImpl implements GwtReadOnlyRoktaFacade {
+public class GwtReadOnlyRoktaFacadeImpl extends RoktaFacadeImpl implements GwtRoktaFacade {
 }
