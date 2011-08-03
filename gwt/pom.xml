@@ -14,7 +14,7 @@
     
 	<!--  convenience to define GWT version in one place -->
 	<properties>
-		<gwtVersion>2.0.0</gwtVersion>
+		<gwtVersion>2.2.0</gwtVersion>
 		<!-- <gwtVersion>1.5.3</gwtVersion> -->
 	</properties>
 	

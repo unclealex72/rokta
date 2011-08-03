@@ -4,12 +4,12 @@ import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.FactoryBean;
 
-public class ResourceBundleFactory implements FactoryBean {
+public class ResourceBundleFactory implements FactoryBean<ResourceBundle> {
 
 	private String i_bundleName;
 	
 	@Override
-	public Object getObject() {
+	public ResourceBundle getObject() {
 		String bundleName = getBundleName();
 		return ResourceBundle.getBundle(bundleName);
 	}
