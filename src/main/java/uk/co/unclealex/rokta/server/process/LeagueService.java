@@ -5,8 +5,8 @@ package uk.co.unclealex.rokta.server.process;
 
 import java.util.Date;
 
-import uk.co.unclealex.rokta.pub.filter.GameFilter;
-import uk.co.unclealex.rokta.pub.views.League;
+import uk.co.unclealex.rokta.client.filter.GameFilter;
+import uk.co.unclealex.rokta.client.views.League;
 
 /**
  * @author alex

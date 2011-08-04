@@ -3,7 +3,7 @@ package uk.co.unclealex.rokta.server.dao;
 import java.util.SortedSet;
 
 import uk.co.unclealex.hibernate.dao.KeyedDao;
-import uk.co.unclealex.rokta.pub.filter.GameFilter;
+import uk.co.unclealex.rokta.client.filter.GameFilter;
 import uk.co.unclealex.rokta.server.model.Game;
 import uk.co.unclealex.rokta.server.model.Person;
 

@@ -3,7 +3,7 @@ package uk.co.unclealex.rokta.server.process;
 import java.util.Date;
 import java.util.SortedSet;
 
-import uk.co.unclealex.rokta.pub.views.InitialDatesView;
+import uk.co.unclealex.rokta.client.views.InitialDatesView;
 
 public interface DateService {
 

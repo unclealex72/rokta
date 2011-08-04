@@ -2,7 +2,7 @@ package uk.co.unclealex.rokta.server.process;
 
 import java.util.SortedMap;
 
-import uk.co.unclealex.rokta.pub.views.League;
+import uk.co.unclealex.rokta.client.views.League;
 import uk.co.unclealex.rokta.server.model.Game;
 import uk.co.unclealex.rokta.server.quotient.DatePlayedQuotientTransformer;
 

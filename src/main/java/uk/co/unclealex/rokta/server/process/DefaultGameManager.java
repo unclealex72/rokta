@@ -9,8 +9,8 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 
-import uk.co.unclealex.rokta.pub.exceptions.InvalidRoundException;
-import uk.co.unclealex.rokta.pub.views.Hand;
+import uk.co.unclealex.rokta.client.exceptions.InvalidRoundException;
+import uk.co.unclealex.rokta.client.views.Hand;
 import uk.co.unclealex.rokta.server.model.Game;
 import uk.co.unclealex.rokta.server.model.Person;
 import uk.co.unclealex.rokta.server.model.Play;

@@ -24,11 +24,11 @@ import org.apache.commons.collections15.comparators.ComparatorChain;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.co.unclealex.rokta.pub.filter.GameFilter;
-import uk.co.unclealex.rokta.pub.views.Delta;
-import uk.co.unclealex.rokta.pub.views.InfiniteInteger;
-import uk.co.unclealex.rokta.pub.views.League;
-import uk.co.unclealex.rokta.pub.views.LeagueRow;
+import uk.co.unclealex.rokta.client.filter.GameFilter;
+import uk.co.unclealex.rokta.client.views.Delta;
+import uk.co.unclealex.rokta.client.views.InfiniteInteger;
+import uk.co.unclealex.rokta.client.views.League;
+import uk.co.unclealex.rokta.client.views.LeagueRow;
 import uk.co.unclealex.rokta.server.dao.GameDao;
 import uk.co.unclealex.rokta.server.model.Game;
 import uk.co.unclealex.rokta.server.model.Person;

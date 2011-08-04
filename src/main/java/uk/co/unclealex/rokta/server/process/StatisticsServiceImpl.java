@@ -19,9 +19,9 @@ import org.apache.commons.collections15.Transformer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.co.unclealex.rokta.pub.filter.GameFilter;
-import uk.co.unclealex.rokta.pub.views.Streak;
-import uk.co.unclealex.rokta.pub.views.WinLoseCounter;
+import uk.co.unclealex.rokta.client.filter.GameFilter;
+import uk.co.unclealex.rokta.client.views.Streak;
+import uk.co.unclealex.rokta.client.views.WinLoseCounter;
 import uk.co.unclealex.rokta.server.dao.GameDao;
 import uk.co.unclealex.rokta.server.dao.PersonDao;
 import uk.co.unclealex.rokta.server.dao.PlayDao;

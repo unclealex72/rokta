@@ -6,8 +6,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.SortedSet;
 
-import uk.co.unclealex.rokta.pub.exceptions.InvalidRoundException;
-import uk.co.unclealex.rokta.pub.views.Hand;
+import uk.co.unclealex.rokta.client.exceptions.InvalidRoundException;
+import uk.co.unclealex.rokta.client.views.Hand;
 import uk.co.unclealex.rokta.server.model.Game;
 import uk.co.unclealex.rokta.server.model.Person;
 

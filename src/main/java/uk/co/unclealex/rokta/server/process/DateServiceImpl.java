@@ -9,7 +9,7 @@ import java.util.TreeSet;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.stereotype.Service;
 
-import uk.co.unclealex.rokta.pub.views.InitialDatesView;
+import uk.co.unclealex.rokta.client.views.InitialDatesView;
 import uk.co.unclealex.rokta.server.dao.GameDao;
 import uk.co.unclealex.rokta.server.model.Game;
 

@@ -4,7 +4,7 @@ import org.apache.commons.collections15.Transformer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.co.unclealex.rokta.pub.views.ColourView;
+import uk.co.unclealex.rokta.client.views.ColourView;
 import uk.co.unclealex.rokta.server.model.Colour;
 
 @Service

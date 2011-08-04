@@ -9,9 +9,9 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import uk.co.unclealex.rokta.pub.facade.RoktaFacade;
-import uk.co.unclealex.rokta.pub.views.Game;
-import uk.co.unclealex.rokta.pub.views.Hand;
+import uk.co.unclealex.rokta.client.facade.RoktaFacade;
+import uk.co.unclealex.rokta.client.views.Game;
+import uk.co.unclealex.rokta.client.views.Hand;
 import uk.co.unclealex.rokta.server.dao.GameDao;
 import uk.co.unclealex.rokta.server.dao.PersonDao;
 import uk.co.unclealex.rokta.server.model.Person;
