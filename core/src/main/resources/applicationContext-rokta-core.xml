@@ -44,11 +44,11 @@
 	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
 		<property name="annotatedClasses">
 			<list>
-				<value>uk.co.unclealex.rokta.internal.model.Person</value>
-				<value>uk.co.unclealex.rokta.internal.model.Play</value>
-				<value>uk.co.unclealex.rokta.internal.model.Round</value>
-				<value>uk.co.unclealex.rokta.internal.model.Game</value>
-        <value>uk.co.unclealex.rokta.internal.model.Colour</value>
+				<value>uk.co.unclealex.rokta.server.model.Person</value>
+				<value>uk.co.unclealex.rokta.server.model.Play</value>
+				<value>uk.co.unclealex.rokta.server.model.Round</value>
+				<value>uk.co.unclealex.rokta.server.model.Game</value>
+        <value>uk.co.unclealex.rokta.server.model.Colour</value>
 			</list>
 		</property>
 	</bean>
@@ -58,7 +58,7 @@
   	name-generator="uk.co.unclealex.spring.BeanNameGenerator"
   	scope-resolver="uk.co.unclealex.spring.AnnotationScopeMetadataResolver"/>
 
-	<bean id="resourceBundle" class="uk.co.unclealex.rokta.internal.spring.ResourceBundleFactory">
+	<bean id="resourceBundle" class="uk.co.unclealex.rokta.server.spring.ResourceBundleFactory">
 		<property name="bundleName" value="resources"/>
 	</bean>
 	<!-- Caching  
@@ -76,7 +76,7 @@
 	    <value>org.taha.cache.METHOD_CACHE</value>
 	  </property>
 	</bean>
-	<bean id="methodCacheInterceptor" class="uk.co.unclealex.rokta.internal.cache.MethodCacheInterceptor">
+	<bean id="methodCacheInterceptor" class="uk.co.unclealex.rokta.server.cache.MethodCacheInterceptor">
 	  <property name="cache">
 	    <ref local="methodCache" />
 	  </property>
@@ -95,7 +95,7 @@
 	
 	<bean id="readOnlyRoktaFacade" class="org.springframework.aop.framework.ProxyFactoryBean">
 	  <property name="target">
-	   <bean class="uk.co.unclealex.rokta.internal.facade.ReadOnlyRoktaFacadeImpl"/>
+	   <bean class="uk.co.unclealex.rokta.server.facade.ReadOnlyRoktaFacadeImpl"/>
 	  </property>
 	  <property name="interceptorNames">
 	    <list>
@@ -105,6 +105,6 @@
 	</bean>
 	 -->
 
-	<bean id="readOnlyRoktaFacade" class="uk.co.unclealex.rokta.internal.facade.ReadOnlyRoktaFacadeImpl"/>
+	<bean id="readOnlyRoktaFacade" class="uk.co.unclealex.rokta.server.facade.ReadOnlyRoktaFacadeImpl"/>
 </beans>
 
