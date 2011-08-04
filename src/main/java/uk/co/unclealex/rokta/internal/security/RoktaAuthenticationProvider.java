@@ -3,13 +3,13 @@
  */
 package uk.co.unclealex.rokta.internal.security;
 
-import org.springframework.security.AuthenticationException;
-import org.springframework.security.BadCredentialsException;
-import org.springframework.security.GrantedAuthorityImpl;
-import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
-import org.springframework.security.providers.dao.AbstractUserDetailsAuthenticationProvider;
-import org.springframework.security.userdetails.User;
-import org.springframework.security.userdetails.UserDetails;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import uk.co.unclealex.rokta.internal.dao.PersonDao;
 import uk.co.unclealex.rokta.internal.model.Person;
@@ -37,7 +37,8 @@ public class RoktaAuthenticationProvider extends
   /**
    * Authenticate a user using a metasolv authenticator.
    */
-  @Override
+  @SuppressWarnings("deprecation")
+	@Override
 	protected UserDetails retrieveUser(String username,
       UsernamePasswordAuthenticationToken authentication)
       throws AuthenticationException {
