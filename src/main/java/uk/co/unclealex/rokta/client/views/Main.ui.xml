@@ -1,0 +1,77 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder 
+  xmlns:ui="urn:ui:com.google.gwt.uibinder"
+  xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<g:HTMLPanel>
+<!-- Header -->
+<div id="hdr">
+<div style="font-weight:bold;font-size:12px;margin:6px 10px;">
+Link 1 | Link 2 | Link 3 | Link 4</div>
+</div>
+<!-- left column -->
+<div id="lh-col"><br />
+<h4 align="center">Left Column</h4>
+<p align="center">The left col can be used for navigation links,
+search box etc.</p>
+<br />
+<br />
+<p align="center"><a
+href="http://www.ssi-developer.net/main/templates/">View more
+templates.</a></p>
+</div>
+<!-- end of left column -->
+<!-- right column -->
+<div id="rh-col">
+<p align="center"><a href="http://www.ssi-developer.net/"
+title="Go to main page."><img src="logo.gif" alt="" border="0"
+width="230" height="50" /></a></p>
+<h3 align="center">Two Column - Left Column Static with Header
+Bar</h3>
+<div align="center" style="color: red;">Ver 2.3</div>
+<p>The left column is absolutly positioned and is a fixed width.
+It won't move.</p>
+<p>The header row and content column, which you are reading from,
+are flexible. They will automatically change shape, width can be
+controlled by setting appropriate margins or an actual width can
+be specified if required.</p>
+<p>This template has been tested in:</p>
+<ul>
+<li>Mozilla 1.5b &amp; Firebird 0.6.1</li>
+<li>Internet Explorer 6</li>
+<li>Netscape 7.1</li>
+<li>Opera 7.11</li>
+</ul>
+<p>Changes in this version:</p>
+<ol>
+<li>Defined zero for the body to fix a problem in Opera.</li>
+</ol>
+<br />
+<p style="font-weight: bold;">Filler Content</p>
+<p lang="ga">Dzig alta in mac sin i tig a athar &amp; a mathar
+icon airdig i m-Maig Muirthemne, ocus adfeta dz sczla na maccaemi
+i n-Emain. Dzig is amlaid domeill Conchobar in rigi, o ro gab
+rzgi in rz, .i. mar atraig fzchetzir czsta &amp; cangni in
+choicid d'ordugud. In lz do raind i trz asa athlil: cetna trian
+de fzchetzir ic fegad na maccaem ic imbirt chless cluchi &amp;
+immanae, in trian tanaise dond lz ic imbirt brandub &amp;
+fidchell, &amp; in trian dedenach ic tochathim bzd &amp; lenna,
+con-dageib cotlud for czch, aes czuil &amp; airfitid dia thalgud
+fri sodain. Ciataim ane ar longais riam reme dabiur brzthir, ar
+Fergus, na fuil in hErind no i n-Albain zclach macsamla
+Conchobair.</p>
+<p lang="ga">Ocus adfeta don mac sin sczla na macezem &amp; na
+maccraide i n-Emain, &amp; radis in mac bec ria mathair ar co
+n-digsed dz chluchi do chluchemaig na Emna. Romoch duitsiu sain a
+meic bic, ar a mathair, co n-deoch anruth do anrothaib. Ulad lett
+no choimthecht ecin do chaimthechtaib Conchobair, do chor th'
+aesma &amp; t'imdegla for in maccraid. Czan lim-sa di sodain a
+mathair, ar in mac bec, &amp; ni biu-sa oca idnaide acht
+tecoisc-siu dam-sa cia airm itz Emain. Is czan uait, ar a
+mathair, airm in-das-fil. Sliab Fzait etrut &amp; Emain. Dobzr-sa
+ardmes furri amne, ar esium.</p>
+</div>
+<!-- end of right column -->
+
+	</g:HTMLPanel>
+</ui:UiBinder>
