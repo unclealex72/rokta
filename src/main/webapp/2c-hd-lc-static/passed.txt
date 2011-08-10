@@ -1,0 +1,12 @@
+
+
+12 October 2003 15:22:58
+
+Tested and Passed in:
+
+Mozilla 1.5b
+  Firebird 0.6.1
+  Netscape 7.1
+Internet Explorer 6
+Opera 7.11
+

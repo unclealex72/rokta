@@ -1,0 +1,55 @@
+
+/* Layout Stylesheet */ 
+
+body{
+ margin: 0;
+ padding:0;
+ background: #808080;
+ color: #333333;
+ }
+	 
+#hdr{
+ height:35px;
+ background:#c0c0c0;
+ color:#000000;
+ border:solid #000000;
+ border-width:2px 0px;
+ margin:40px 0 0 0;
+ }
+
+#lh-col{
+ position: absolute;
+ top: 99px;
+ left: 20px;
+ width: 180px;
+ border: 2px solid #000000;
+ background: #c0c0c0;
+ color: #333333;
+ margin: 0px;
+ padding: 0px;
+ height: 400px;
+ }
+
+#rh-col{
+ margin: 20px 20px 20px 220px;
+ border: 2px solid #000000;
+ background: #ffffff;
+ color: #333333;
+ padding: 20px;
+ position :relative;
+ }
+ 
+
+
+
+/* Presentation Stylesheet */ 
+h4 {
+ margin:0; 
+ padding: 5px 0;
+ }
+ 
+p:first-letter {
+ font-size: 80%; 
+ font-weight: bold;
+ color:blue;
+ }
