@@ -9,9 +9,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
-import uk.co.unclealex.rokta.client.views.Game;
-import uk.co.unclealex.rokta.client.views.Hand;
-import uk.co.unclealex.rokta.client.views.Game.State;
+import uk.co.unclealex.rokta.shared.model.Game;
+import uk.co.unclealex.rokta.shared.model.Hand;
+import uk.co.unclealex.rokta.shared.model.Game.State;
 
 public class SimpleGameController implements GameController {
 

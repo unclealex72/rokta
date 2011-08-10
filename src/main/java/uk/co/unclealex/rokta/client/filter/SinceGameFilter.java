@@ -3,39 +3,18 @@ package uk.co.unclealex.rokta.client.filter;
 import java.util.Date;
 
 
-public class SinceGameFilter extends AbstractGameFilter {
+public class SinceGameFilter extends DateGameFilter {
 
-	private Date i_since;
-	
-	public SinceGameFilter() {
-	}
-	
-	public SinceGameFilter(Date since) {
+	protected SinceGameFilter() {
 		super();
-		i_since = since;
-	}
-
-	@Override
-	public boolean isContinuous() {
-		return true;
-	}
-
-	@Override
-	public String[] toStringArgs() {
-		return new String[] { makeDateArgument(getSince()) };
 	}
 	
+	public SinceGameFilter(Modifier modifier, Date since) {
+		super(modifier, since);
+	}
+
 	@Override
-	public <T> T accept(GameFilterVistor<T> gameFilterVisitor) {
+	public <T> T accept(GameFilterVisitor<T> gameFilterVisitor) {
 		return gameFilterVisitor.visit(this);
 	}
-
-	public Date getSince() {
-		return i_since;
-	}
-
-	public void setSince(Date since) {
-		i_since = since;
-	}
-
 }

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd 
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+    http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd"
+  default-autowire="byName">
+
+  <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager"/>
+
+	<!--
+	<jee:jndi-lookup id="dataSource"
+		jndi-name="rokta" resource-ref="true" proxy-interface="javax.sql.DataSource"/>
+	 -->
+	 
+  <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+  	<property name="driverClassName" value="org.postgresql.Driver"/>
+  	<property name="username" value="rokta"/>
+  	<property name="password" value="r0kt@"/>
+  	<property name="url" value="jdbc:postgresql://hurst:5432/rokta-ng"/>
+  </bean>  
+
+	 
+	<tx:annotation-driven/>
+
+	<bean id="hibernateProperties"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="properties">
+			<props>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.show_sql">true</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="annotatedClasses">
+			<list>
+				<value>uk.co.unclealex.rokta.server.model.Person</value>
+				<value>uk.co.unclealex.rokta.server.model.Play</value>
+				<value>uk.co.unclealex.rokta.server.model.Round</value>
+				<value>uk.co.unclealex.rokta.server.model.Game</value>
+        <value>uk.co.unclealex.rokta.server.model.Colour</value>
+			</list>
+		</property>
+	</bean>
+
+	<context:annotation-config/>
+
+</beans>
+

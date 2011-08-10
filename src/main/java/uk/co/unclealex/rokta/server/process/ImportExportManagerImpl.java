@@ -2,7 +2,6 @@ package uk.co.unclealex.rokta.server.process;
 
 import java.util.SortedSet;
 
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.co.unclealex.rokta.server.dao.ColourDao;
@@ -13,7 +12,6 @@ import uk.co.unclealex.rokta.server.model.Game;
 import uk.co.unclealex.rokta.server.model.Person;
 import uk.co.unclealex.rokta.server.model.Rokta;
 
-@Service
 @Transactional
 public class ImportExportManagerImpl implements ImportExportManager {
 

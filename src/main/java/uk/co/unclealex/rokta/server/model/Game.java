@@ -12,8 +12,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlElement;
@@ -23,27 +21,24 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
 
 import uk.co.unclealex.hibernate.model.KeyedBean;
 
-@Entity()
-@NamedQueries(value={
-		@NamedQuery(name="game.getAll", query="from Game"),
-		@NamedQuery(name="game.getAllSince", query="from Game g where g.datePlayed >= :datePlayed"),
-		@NamedQuery(name="game.getLast", query="from Game g order by datePlayed desc"),
-		@NamedQuery(
-				name="game.getLastForPerson",
-				query="select game from Game game join game.rounds round join round.plays play where play.person = :person order by datePlayed desc")
-		})
+@Entity
 @XmlRootElement(name="game")
-@XmlType(propOrder={"datePlayed", "instigator", "rounds"})
+@XmlType
 public class Game extends KeyedBean<Game> {
 
 	private Person i_instigator;
 	private SortedSet<Round> i_rounds;
 	private Date i_datePlayed;
+	private Integer i_yearPlayed;
+	private Integer i_monthPlayed;
+	private Integer i_weekPlayed;
+	private Integer i_dayPlayed;
 	
 	@Transient
 	@XmlTransient
@@ -71,8 +66,9 @@ public class Game extends KeyedBean<Game> {
 		
 	}
 	
-	@Column(nullable=false)
+	@Column(nullable=false, unique=true)
 	@XmlElement(name="date-played")
+	@Index(name="datePlayed")
 	public Date getDatePlayed() {
 		return i_datePlayed;
 	}
@@ -112,12 +108,48 @@ public class Game extends KeyedBean<Game> {
 
 	@Override
 	public int compareTo(Game o) {
-		int cmp = getDatePlayed().compareTo(o.getDatePlayed());
+		Integer cmp = getDatePlayed().compareTo(o.getDatePlayed());
 		return cmp!=0?cmp:super.compareTo(o);
 	}
 	
 	@Override
 	public String toString() {
 		return "[Game " + getId() + " @ " + getDatePlayed() + "]";
+	}
+
+	@Index(name="yearPlayed")
+	public Integer getYearPlayed() {
+		return i_yearPlayed;
+	}
+
+	public void setYearPlayed(Integer yearPlayed) {
+		i_yearPlayed = yearPlayed;
+	}
+
+	@Index(name="weekPlayed")
+	public Integer getWeekPlayed() {
+		return i_weekPlayed;
+	}
+
+	public void setWeekPlayed(Integer weekPlayed) {
+		i_weekPlayed = weekPlayed;
+	}
+
+	@Index(name="dayPlayed")
+	public Integer getDayPlayed() {
+		return i_dayPlayed;
+	}
+
+	public void setDayPlayed(Integer dayPlayed) {
+		i_dayPlayed = dayPlayed;
+	}
+
+	@Index(name="monthPlayed")
+	public Integer getMonthPlayed() {
+		return i_monthPlayed;
+	}
+
+	public void setMonthPlayed(Integer monthPlayed) {
+		i_monthPlayed = monthPlayed;
 	}
 }

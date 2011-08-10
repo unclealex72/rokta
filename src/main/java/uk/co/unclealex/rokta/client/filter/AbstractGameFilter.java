@@ -1,32 +1,31 @@
 package uk.co.unclealex.rokta.client.filter;
 
-import java.util.Date;
+public abstract class AbstractGameFilter<G extends AbstractGameFilter<G>> implements GameFilter {
 
-public abstract class AbstractGameFilter implements GameFilter {
-
-	public abstract String[] toStringArgs();
+	private Modifier i_modifier;
 	
-	public abstract <T> T accept(GameFilterVistor<T> gameFilterVisitor);
-
-	public abstract boolean isContinuous();
-
-	@Override
-	public String toString() {
-		return getClass().getName() + ":" + join(toStringArgs(), '-');
+	protected AbstractGameFilter() {
+		super();
 	}
 
-	protected String join(String[] stringArgs, char separator) {
-		StringBuffer buffer = new StringBuffer();
-		for (int idx = 0; idx < stringArgs.length; idx++) {
-			if (idx != 0) {
-				buffer.append(separator);
-			}
-			buffer.append(stringArgs[idx]);
-		}
-		return buffer.toString();
+	public AbstractGameFilter(Modifier modifier) {
+		super();
+		i_modifier = modifier;
 	}
 
-	protected String makeDateArgument(Date date) {
-		return Long.toString(date.getTime());
+	@SuppressWarnings("unchecked")
+	public boolean equals(Object other) {
+		return 
+			other != null && 
+			getClass().equals(other.getClass()) && 
+			getModifier().equals(((G) other).getModifier()) && isEqual((G) other);
+	}
+	
+	protected abstract boolean isEqual(G other);
+	
+	public abstract <T> T accept(GameFilterVisitor<T> gameFilterVisitor);
+
+	public Modifier getModifier() {
+		return i_modifier;
 	}
 }

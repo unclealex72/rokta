@@ -1,20 +1,24 @@
 package uk.co.unclealex.rokta.client.filter;
 
 
-public class AllGameFilter extends AbstractGameFilter {
+public class AllGameFilter extends AbstractGameFilter<AllGameFilter> {
 
-	@Override
-	public boolean isContinuous() {
-		return true;
+	
+	protected AllGameFilter() {
+		super();
+	}
+
+	public AllGameFilter(Modifier modifier) {
+		super(modifier);
 	}
 
 	@Override
-	public String[] toStringArgs() {
-		return new String[0];
+	protected boolean isEqual(AllGameFilter other) {
+		return true;
 	}
 	
 	@Override
-	public <T> T accept(GameFilterVistor<T> gameFilterVisitor) {
+	public <T> T accept(GameFilterVisitor<T> gameFilterVisitor) {
 		return gameFilterVisitor.visit(this);
 	}	
 }

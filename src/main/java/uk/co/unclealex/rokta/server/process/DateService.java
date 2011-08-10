@@ -3,7 +3,7 @@ package uk.co.unclealex.rokta.server.process;
 import java.util.Date;
 import java.util.SortedSet;
 
-import uk.co.unclealex.rokta.client.views.InitialDatesView;
+import uk.co.unclealex.rokta.shared.model.InitialDates;
 
 public interface DateService {
 
@@ -15,5 +15,5 @@ public interface DateService {
 	
 	public SortedSet<Integer> getValidWeeksForYear(int year);
 
-	public InitialDatesView getInitialDates();
+	public InitialDates getInitialDates();
 }

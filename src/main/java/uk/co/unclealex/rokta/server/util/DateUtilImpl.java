@@ -6,13 +6,11 @@ package uk.co.unclealex.rokta.server.util;
 import java.util.Date;
 
 import org.joda.time.DateTime;
-import org.springframework.stereotype.Service;
 
 /**
  * @author alex
  *
  */
-@Service
 public class DateUtilImpl implements DateUtil {
 
 	public boolean areSameDay(DateTime d1, DateTime d2) {

@@ -12,7 +12,7 @@ import java.io.Serializable;
  */
 public interface GameFilter extends Serializable {
 
-	public <T> T accept(GameFilterVistor<T> gameFilterVisitor);
+	public <T> T accept(GameFilterVisitor<T> gameFilterVisitor);
 	
-	public boolean isContinuous();
+	public Modifier getModifier();
 }

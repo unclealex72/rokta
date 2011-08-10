@@ -26,7 +26,7 @@ import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang.StringUtils;
 
 import uk.co.unclealex.hibernate.model.KeyedBean;
-import uk.co.unclealex.rokta.client.views.Hand;
+import uk.co.unclealex.rokta.shared.model.Hand;
 
 @Entity
 @NamedQueries({

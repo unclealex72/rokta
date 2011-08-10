@@ -7,13 +7,11 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Required;
-import org.springframework.stereotype.Service;
 
-import uk.co.unclealex.rokta.client.views.InitialDatesView;
 import uk.co.unclealex.rokta.server.dao.GameDao;
 import uk.co.unclealex.rokta.server.model.Game;
+import uk.co.unclealex.rokta.shared.model.InitialDates;
 
-@Service
 public class DateServiceImpl implements DateService {
 
 	private GameDao i_gameDao;
@@ -33,13 +31,13 @@ public class DateServiceImpl implements DateService {
 		int last;
 		Calendar calendar = new GregorianCalendar();
 		if (year == getFirstYear(calendar)) {
-			calendar.setTime(getGameDao().getFirstGameInYear(year).getDatePlayed());
+			calendar.setTime(getGameDao().getDateFirstGameInYearPlayed(year));
 			first = calendar.get(calendarField);
 			last = maximum;
 		}
 		else if (year == getLastYear(calendar)) {
 			first = minumum;
-			calendar.setTime(getGameDao().getLastGameInYear(year).getDatePlayed());
+			calendar.setTime(getGameDao().getDateLastGameInYearPlayed(year));
 			last = calendar.get(calendarField);
 		}
 		else {
@@ -59,22 +57,22 @@ public class DateServiceImpl implements DateService {
 	public Date normaliseDate(Date date) {
 		GameDao gameDao = getGameDao();
 		Date normalisedDate;
-		Date earliestDate = gameDao.getFirstGame().getDatePlayed();
+		Date earliestDate = gameDao.getDateFirstGamePlayed();
 		if (date.compareTo(earliestDate) < 0) {
 			normalisedDate = earliestDate;
 		}
 		else {
-			Date latestDate = gameDao.getLastGame().getDatePlayed();
+			Date latestDate = gameDao.getDateLastGamePlayed();
 			normalisedDate = date.compareTo(latestDate) > 0?latestDate:date;
 		}
 		return normalisedDate;
 	}
 	
 	@Override
-	public InitialDatesView getInitialDates() {
+	public InitialDates getInitialDates() {
 		GameDao gameDao = getGameDao();
-		return new InitialDatesView(
-				normaliseDate(new Date()), gameDao.getFirstGame().getDatePlayed(), gameDao.getLastGame().getDatePlayed());
+		return new InitialDates(
+				normaliseDate(new Date()), gameDao.getDateFirstGamePlayed(), gameDao.getDateLastGamePlayed());
 	}
 	
 	protected SortedSet<Integer> asSortedSet(int first, int last) {
@@ -92,12 +90,12 @@ public class DateServiceImpl implements DateService {
 	}
 	
 	protected int getFirstYear(Calendar calendar) {
-		calendar.setTime(getGameDao().getFirstGame().getDatePlayed());
+		calendar.setTime(getGameDao().getDateFirstGamePlayed());
 		return calendar.get(Calendar.YEAR);
 	}
 	
 	protected int getLastYear(Calendar calendar) {
-		calendar.setTime(getGameDao().getLastGame().getDatePlayed());
+		calendar.setTime(getGameDao().getDateLastGamePlayed());
 		return calendar.get(Calendar.YEAR);
 	}
 	

@@ -1,13 +1,10 @@
 package uk.co.unclealex.rokta.server.process;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.SortedSet;
@@ -16,33 +13,22 @@ import java.util.TreeSet;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.collections15.CollectionUtils;
-import org.apache.commons.collections15.ComparatorUtils;
-import org.apache.commons.collections15.Predicate;
-import org.apache.commons.collections15.comparators.ComparableComparator;
 import org.apache.commons.collections15.comparators.ComparatorChain;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.co.unclealex.rokta.client.filter.GameFilter;
-import uk.co.unclealex.rokta.client.views.Delta;
-import uk.co.unclealex.rokta.client.views.InfiniteInteger;
-import uk.co.unclealex.rokta.client.views.League;
-import uk.co.unclealex.rokta.client.views.LeagueRow;
 import uk.co.unclealex.rokta.server.dao.GameDao;
 import uk.co.unclealex.rokta.server.model.Game;
 import uk.co.unclealex.rokta.server.model.Person;
 import uk.co.unclealex.rokta.server.model.Round;
-import uk.co.unclealex.rokta.server.quotient.DatePlayedQuotientTransformer;
-import uk.co.unclealex.rokta.server.quotient.DayDatePlayedQuotientTransformer;
-import uk.co.unclealex.rokta.server.quotient.InstantDatePlayedQuotientTransformer;
-import uk.co.unclealex.rokta.server.quotient.MonthDatePlayedQuotientTransformer;
-import uk.co.unclealex.rokta.server.quotient.QuotientPredicate;
-import uk.co.unclealex.rokta.server.quotient.WeekDatePlayedQuotientTransformer;
-import uk.co.unclealex.rokta.server.quotient.YearDatePlayedQuotientTransformer;
 import uk.co.unclealex.rokta.server.util.DateUtil;
+import uk.co.unclealex.rokta.shared.model.Delta;
+import uk.co.unclealex.rokta.shared.model.InfiniteInteger;
+import uk.co.unclealex.rokta.shared.model.League;
+import uk.co.unclealex.rokta.shared.model.LeagueRow;
 
-@Service
+import com.google.common.collect.Sets;
+
 @Transactional
 public class LeagueServiceImpl implements LeagueService {
 
@@ -57,27 +43,12 @@ public class LeagueServiceImpl implements LeagueService {
 	}
 	
 	@Override
-	public League generateLeague(GameFilter gameFilter, Date now) {
-		SortedMap<Game, League> leaguesForAllGames = generateAllLeagues(gameFilter, now);
-		if (leaguesForAllGames.isEmpty()) {
-			return new League();
-		}
-		Game lastGame = leaguesForAllGames.lastKey();
-		return leaguesForAllGames.get(lastGame);
-	}
-	
-	@Override
-	public LeaguesHolder generateLeagues(GameFilter gameFilter, int maximumLeagues, Date now) {
-		SortedMap<Game, League> leaguesForAllGames = generateAllLeagues(gameFilter, now);
-		return filterGranularity(leaguesForAllGames, maximumLeagues);
-	}
-
-	protected SortedMap<Game, League> generateAllLeagues(GameFilter gameFilter, Date now) {
+	public SortedSet<League> generateLeagues(GameFilter gameFilter, Date now) {
 		SortedSet<Game> games = getGameDao().getGamesByFilter(gameFilter);
 		SortedMap<Game, League> leaguesForAllGames = generateLeagues(games);
 		decorateWithDeltas(leaguesForAllGames);
 		decorateWithExemptionAndAbsence(leaguesForAllGames, now);
-		return leaguesForAllGames;
+		return Sets.newTreeSet(leaguesForAllGames.values());
 	}
 	
 	protected SortedMap<Game, League> generateLeagues(SortedSet<Game> games) {
@@ -110,7 +81,7 @@ public class LeagueServiceImpl implements LeagueService {
 					leagueRow.setGamesWon(leagueRow.getGamesWon() + 1);
 				}
 			}
-			League league = createLeague(rowMap.values(), totalGames, totalPlayers);
+			League league = createLeague(rowMap.values(), totalGames, totalPlayers, game);
 			leaguesByGame.put(game, league);
 			
 		}		
@@ -127,8 +98,9 @@ public class LeagueServiceImpl implements LeagueService {
 		return cnt;
 	}
 
-	protected League createLeague(Collection<LeagueRow> rows, int totalGames, int totalPlayers) {
+	protected League createLeague(Collection<LeagueRow> rows, int totalGames, int totalPlayers, Game game) {
 		League league = new League();
+		game.setDatePlayed(game.getDatePlayed());
 		league.setCurrent(false);
 		league.setTotalGames(totalGames);
 		league.setTotalPlayers(totalPlayers);
@@ -184,6 +156,7 @@ public class LeagueServiceImpl implements LeagueService {
 		if (leaguesByGame.isEmpty()) {
 			return;
 		}
+		SortedSet<String> currentPlayerNames = getPersonService().getCurrentPlayerNames(currentDate);
 		Game lastGamePlayed = getGameDao().getLastGame();
 		Game lastLeagueGame = leaguesByGame.lastKey();
 		// Exemptions only occur if the last game played was today.
@@ -197,7 +170,7 @@ public class LeagueServiceImpl implements LeagueService {
 				for (LeagueRow leagueRow : league.getRows()) {
 					String playerName = leagueRow.getPersonName();
 					leagueRow.setExempt(playerName.equals(exemptName));
-					leagueRow.setPlayingToday(getPersonService().currentlyPlaying(playerName, currentDate));
+					leagueRow.setPlayingToday(currentPlayerNames.contains(playerName));
 				}
 			}
 			LeagueRow previousRow = null;
@@ -257,44 +230,6 @@ public class LeagueServiceImpl implements LeagueService {
 		} while (lostBottom * playedTop > lostTop * playedBottom);
 		return gap;
 	}
-
-	protected LeaguesHolder filterGranularity(SortedMap<Game, League> leaguesForAllGames, int maximumLeagues) {
-		// We need to reverse the order of the games so we find the last game of a quotient.
-		SortedSet<Game> reversedGames = new TreeSet<Game>(ComparatorUtils.reversedComparator(ComparableComparator.getInstance()));
-		reversedGames.addAll(leaguesForAllGames.keySet());
-		List<DatePlayedQuotientTransformer> quotientTransformers =
-			Arrays.asList(new DatePlayedQuotientTransformer[] {
-				new InstantDatePlayedQuotientTransformer(),
-				new DayDatePlayedQuotientTransformer(),
-				new WeekDatePlayedQuotientTransformer(),
-				new MonthDatePlayedQuotientTransformer(),
-				new YearDatePlayedQuotientTransformer()
-			});
-		DatePlayedQuotientTransformer quotientTransformer = null;
-		SortedSet<Game> filteredGames = null;
-		
-		// Find which quotient to use.
-		for (Iterator<DatePlayedQuotientTransformer> iter = quotientTransformers.iterator(); filteredGames == null; ) {
-			quotientTransformer = iter.next();
-			SortedSet<Game> filteredGamesForQuotient = new TreeSet<Game>();
-			Predicate<Game> quotientPredicate = new QuotientPredicate<Game, Long>(quotientTransformer);
-			CollectionUtils.select(reversedGames, quotientPredicate, filteredGamesForQuotient);
-			if (!iter.hasNext() || filteredGamesForQuotient.size() <= maximumLeagues) {
-				filteredGames = filteredGamesForQuotient;
-			}
-		}
-		
-		// Replace the last filtered game with the actual last game
-		filteredGames.remove(filteredGames.last());
-		filteredGames.add(reversedGames.first());
-		
-		SortedMap<Game, League> leaguesByFilteredGames = new TreeMap<Game, League>();
-		for (Game game : filteredGames) {
-			leaguesByFilteredGames.put(game, leaguesForAllGames.get(game));
-		}
-		return new LeaguesHolder(quotientTransformer, leaguesByFilteredGames);
-	}
-
 
 	// Comparators for leagues - a smaller value on the LHS will mean a higher league placing.
 		

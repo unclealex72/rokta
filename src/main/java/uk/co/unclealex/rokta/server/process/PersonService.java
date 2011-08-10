@@ -5,6 +5,7 @@ package uk.co.unclealex.rokta.server.process;
 
 
 import java.util.Date;
+import java.util.SortedSet;
 
 import uk.co.unclealex.rokta.server.model.Person;
 
@@ -15,7 +16,7 @@ import uk.co.unclealex.rokta.server.model.Person;
 public interface PersonService {
 
 	public Person getExemptPlayer(Date date);
-	public boolean currentlyPlaying(String playerName, Date date);
+	public SortedSet<String> getCurrentPlayerNames(Date date);
 	
 	public boolean changePassword(String name, String currentPassword, String newPassword);
 }

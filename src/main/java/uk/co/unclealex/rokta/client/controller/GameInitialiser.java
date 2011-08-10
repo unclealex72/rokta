@@ -2,7 +2,7 @@ package uk.co.unclealex.rokta.client.controller;
 
 import java.util.Date;
 
-import uk.co.unclealex.rokta.client.views.Game;
+import uk.co.unclealex.rokta.shared.model.Game;
 
 public interface GameInitialiser {
 

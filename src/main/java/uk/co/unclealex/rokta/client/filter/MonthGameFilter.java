@@ -2,38 +2,18 @@ package uk.co.unclealex.rokta.client.filter;
 
 import java.util.Date;
 
-public class MonthGameFilter extends AbstractGameFilter {
+public class MonthGameFilter extends DateGameFilter {
 
-	private Date i_date;
-	
 	protected MonthGameFilter() {
-	}
-	
-	public MonthGameFilter(Date date) {
 		super();
-		i_date = date;
-	}
-
-	@Override
-	public boolean isContinuous() {
-		return true;
-	}
-
-	@Override
-	public String[] toStringArgs() {
-		return new String[] { Long.toString(getDate().getTime()) }; 
 	}
 	
+	public MonthGameFilter(Modifier modifier, Date date) {
+		super(modifier, date);
+	}
+
 	@Override
-	public <T> T accept(GameFilterVistor<T> gameFilterVisitor) {
+	public <T> T accept(GameFilterVisitor<T> gameFilterVisitor) {
 		return gameFilterVisitor.visit(this);
-	}
-
-	public Date getDate() {
-		return i_date;
-	}
-	
-	protected void setDate(Date date) {
-		i_date = date;
 	}
 }

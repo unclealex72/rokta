@@ -1,21 +1,23 @@
 package uk.co.unclealex.rokta.server.dao;
 
+import java.util.Date;
 import java.util.SortedSet;
 
 import uk.co.unclealex.hibernate.dao.KeyedDao;
 import uk.co.unclealex.rokta.client.filter.GameFilter;
 import uk.co.unclealex.rokta.server.model.Game;
-import uk.co.unclealex.rokta.server.model.Person;
 
 public interface GameDao extends KeyedDao<Game> {
 
 	public SortedSet<Game> getGamesByFilter(GameFilter gameFilter);
 
-	public Game getLastGameInYear(int year);
-	public Game getLastGame();
-	
-	public Game getLastGamePlayed(Person person);
+	public Date getDateLastGamePlayed();
 
-	public Game getFirstGameInYear(int year);
-	public Game getFirstGame();
+	public Date getDateFirstGamePlayed();
+
+	public Date getDateFirstGameInYearPlayed(int year);
+
+	public Date getDateLastGameInYearPlayed(int year);
+
+	public Game getLastGame();
 }

@@ -7,11 +7,11 @@
 	xmlns:jee="http://www.springframework.org/schema/jee"
 	xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd 
-    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
-    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
-    http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
-    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd"
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+    http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd"
   default-autowire="byName">
 
   <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager"/>
@@ -20,23 +20,23 @@
 	<jee:jndi-lookup id="dataSource"
 		jndi-name="rokta" resource-ref="true" proxy-interface="javax.sql.DataSource"/>
 	 -->
+	<context:annotation-config/>
+	<tx:annotation-driven/>
 	 
   <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
   	<property name="driverClassName" value="org.postgresql.Driver"/>
   	<property name="username" value="rokta"/>
   	<property name="password" value="r0kt@"/>
-  	<property name="url" value="jdbc:postgresql://hurst:5432/rokta"/>
+  	<property name="url" value="jdbc:postgresql://hurst:5432/rokta-ng"/>
   </bean>  
 
 	 
-	<tx:annotation-driven/>
-
 	<bean id="hibernateProperties"
 		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
 		<property name="properties">
 			<props>
 				<prop key="hibernate.hbm2ddl.auto">update</prop>
-				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.show_sql">true</prop>
 			</props>
 		</property>
 	</bean>
@@ -53,58 +53,24 @@
 		</property>
 	</bean>
 
-  <context:component-scan
-  	base-package="uk.co.unclealex.rokta"
-  	name-generator="uk.co.unclealex.spring.BeanNameGenerator"
-  	scope-resolver="uk.co.unclealex.spring.AnnotationScopeMetadataResolver"/>
-
-	<bean id="resourceBundle" class="uk.co.unclealex.rokta.server.spring.ResourceBundleFactory">
-		<property name="bundleName" value="resources"/>
-	</bean>
-	<!-- Caching  
-  <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-	  <property name="configLocation">
-	    <value>classpath:ehcache.xml</value>
-	  </property>
-	</bean>
+	<!-- DAOs -->
 	
-	<bean id="methodCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
-	  <property name="cacheManager">
-	    <ref local="cacheManager"/>
-	  </property>
-	  <property name="cacheName">
-	    <value>org.taha.cache.METHOD_CACHE</value>
-	  </property>
-	</bean>
-	<bean id="methodCacheInterceptor" class="uk.co.unclealex.rokta.server.cache.MethodCacheInterceptor">
-	  <property name="cache">
-	    <ref local="methodCache" />
-	  </property>
-	</bean>
+	<bean id="gameDao" class="uk.co.unclealex.rokta.server.dao.HibernateGameDao"/>
+	<bean id="colourDao" class="uk.co.unclealex.rokta.server.dao.HibernateColourDao"/>
+	<bean id="personDao" class="uk.co.unclealex.rokta.server.dao.HibernatePersonDao"/>
+	<bean id="playDao" class="uk.co.unclealex.rokta.server.dao.HibernatePlayDao"/>
+	<bean id="roundDao" class="uk.co.unclealex.rokta.server.dao.HibernateRoundDao"/>
+	<bean id="gameFilterSupport" class="uk.co.unclealex.rokta.server.dao.GameFilterSupportImpl"/>
 
-	<bean id="methodCachePointCut" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
-	  <property name="advice">
-	    <ref local="methodCacheInterceptor"/>
-	  </property>
-	  <property name="patterns">
-	    <list>
-	      <value>.*</value>
-	    </list>
-	  </property>
-	</bean>
+	<!-- Services -->
 	
-	<bean id="readOnlyRoktaFacade" class="org.springframework.aop.framework.ProxyFactoryBean">
-	  <property name="target">
-	   <bean class="uk.co.unclealex.rokta.server.facade.ReadOnlyRoktaFacadeImpl"/>
-	  </property>
-	  <property name="interceptorNames">
-	    <list>
-	      <value>methodCachePointCut</value>
-	    </list>
-	  </property>
-	</bean>
-	 -->
-
-	<bean id="readOnlyRoktaFacade" class="uk.co.unclealex.rokta.server.facade.ReadOnlyRoktaFacadeImpl"/>
+	<bean id="leagueService" class="uk.co.unclealex.rokta.server.process.LeagueServiceImpl"/>
+	<bean id="dateService" class="uk.co.unclealex.rokta.server.process.DateServiceImpl"/>
+	<bean id="importExportManager" class="uk.co.unclealex.rokta.server.process.ImportExportManagerImpl"/>
+	<bean id="personService" class="uk.co.unclealex.rokta.server.process.PersonServiceImpl"/>
+	<bean id="dateUtil" class="uk.co.unclealex.rokta.server.util.DateUtilImpl"/>
+	<bean id="profileManager" class="uk.co.unclealex.rokta.server.process.ProfileManagerImpl"/>
+	<bean id="statisticsService" class="uk.co.unclealex.rokta.server.process.StatisticsServiceImpl"/>
+		
 </beans>
 

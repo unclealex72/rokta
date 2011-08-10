@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+  default-autowire="byName">
+
+	<bean id="allGameFilter" class="uk.co.unclealex.rokta.filter.AllGameFilter" scope="prototype"/>
+	<bean id="beforeGameFilter" class="uk.co.unclealex.rokta.filter.BeforeGameFilter" scope="prototype"/>
+	<bean id="sinceGameFilter" class="uk.co.unclealex.rokta.filter.SinceGameFilter" scope="prototype"/>
+	<bean id="betweenGameFilter" class="uk.co.unclealex.rokta.filter.BetweenGameFilter" scope="prototype"/>
+	<bean id="weekGameFilter" class="uk.co.unclealex.rokta.filter.WeekGameFilter" scope="prototype"/>
+	<bean id="monthGameFilter" class="uk.co.unclealex.rokta.filter.MonthGameFilter" scope="prototype"/>
+	<bean id="yearGameFilter" class="uk.co.unclealex.rokta.filter.YearGameFilter" scope="prototype"/>
+	<bean id="predicateGameFilter" class="uk.co.unclealex.rokta.filter.PredicateGameFilter" scope="prototype">
+		<property name="gamePredicateFactory" ref="gamePredicateFactory"/>
+	</bean>
+
+	<bean
+		id="gameFilterFactory"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		scope="prototype">
+    <property name="target">
+	    <bean class="uk.co.unclealex.rokta.filter.GameFilterFactoryImpl">
+	    	<property name="encodableTemplates">
+	    		<list>
+	    			<ref bean="allGameFilter"/>
+	    			<ref bean="beforeGameFilter"/>
+	    			<ref bean="betweenGameFilter"/>
+	    			<ref bean="monthGameFilter"/>
+	    			<ref bean="predicateGameFilter"/>
+	    			<ref bean="sinceGameFilter"/>
+	    			<ref bean="weekGameFilter"/>
+	    			<ref bean="yearGameFilter"/>
+	    		</list>
+	    	</property>
+	    </bean>
+    </property>
+    <property name="transactionAttributes">
+      <props>
+        <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
+      </props>
+    </property>
+	</bean>
+	
+	<bean id="firstGameTheOfDayPredicate" class="uk.co.unclealex.rokta.predicate.FirstGameOfTheDayPredicate">
+		<property name="encodableFactory" ref="gamePredicateFactory"/>
+	</bean>
+
+	<bean id="firstGameTheOfWeekPredicate" class="uk.co.unclealex.rokta.predicate.FirstGameOfTheWeekPredicate">
+		<property name="encodableFactory" ref="gamePredicateFactory"/>
+	</bean>
+
+	<bean
+		id="gamePredicateFactory"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		scope="prototype">
+    <property name="target">
+	    <bean class="uk.co.unclealex.rokta.predicate.GamePredicateFactoryImpl">
+	    	<property name="encodableTemplates">
+	    		<list>
+	    		</list>
+	    	</property>
+	    </bean>
+    </property>
+    <property name="transactionAttributes">
+      <props>
+        <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
+      </props>
+    </property>
+	</bean>
+
+</beans>
+

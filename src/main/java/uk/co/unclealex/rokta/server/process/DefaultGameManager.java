@@ -10,11 +10,11 @@ import java.util.TreeSet;
 import org.apache.commons.lang.StringUtils;
 
 import uk.co.unclealex.rokta.client.exceptions.InvalidRoundException;
-import uk.co.unclealex.rokta.client.views.Hand;
 import uk.co.unclealex.rokta.server.model.Game;
 import uk.co.unclealex.rokta.server.model.Person;
 import uk.co.unclealex.rokta.server.model.Play;
 import uk.co.unclealex.rokta.server.model.Round;
+import uk.co.unclealex.rokta.shared.model.Hand;
 
 public class DefaultGameManager implements GameManager {
 

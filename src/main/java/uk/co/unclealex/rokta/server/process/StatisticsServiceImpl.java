@@ -16,12 +16,9 @@ import java.util.TreeSet;
 import org.apache.commons.collections15.CollectionUtils;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.co.unclealex.rokta.client.filter.GameFilter;
-import uk.co.unclealex.rokta.client.views.Streak;
-import uk.co.unclealex.rokta.client.views.WinLoseCounter;
 import uk.co.unclealex.rokta.server.dao.GameDao;
 import uk.co.unclealex.rokta.server.dao.PersonDao;
 import uk.co.unclealex.rokta.server.dao.PlayDao;
@@ -29,12 +26,13 @@ import uk.co.unclealex.rokta.server.dao.RoundDao;
 import uk.co.unclealex.rokta.server.model.Game;
 import uk.co.unclealex.rokta.server.model.Person;
 import uk.co.unclealex.rokta.server.model.Round;
+import uk.co.unclealex.rokta.shared.model.Streak;
+import uk.co.unclealex.rokta.shared.model.WinLoseCounter;
 
 /**
  * @author alex
  *
  */
-@Service
 @Transactional
 public class StatisticsServiceImpl implements StatisticsService {
 

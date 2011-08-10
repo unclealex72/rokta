@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.SortedSet;
 
 import uk.co.unclealex.rokta.client.exceptions.InvalidRoundException;
-import uk.co.unclealex.rokta.client.views.Hand;
 import uk.co.unclealex.rokta.server.model.Game;
 import uk.co.unclealex.rokta.server.model.Person;
+import uk.co.unclealex.rokta.shared.model.Hand;
 
 public interface GameManager extends Serializable {
 

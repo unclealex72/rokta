@@ -7,38 +7,13 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlType;
 
 import uk.co.unclealex.hibernate.model.KeyedBean;
-import uk.co.unclealex.rokta.client.views.Hand;
+import uk.co.unclealex.rokta.shared.model.Hand;
 
 @Entity
-@NamedQueries({
-	@NamedQuery(
-			name="play.countByPersonAndHand",
-			query="select count(p.id) from Play p where p.person = :person and p.hand = :hand"),
-	@NamedQuery(
-			name="play.countByPersonAndHandAfter",
-			query=
-				"select count(p.id) " +
-				"from Game g join g.rounds r join r.plays p " +
-				"where p.person = :person and p.hand = :hand and g.datePlayed >= :after"),
-	@NamedQuery(
-			name="play.countByPersonAndHandBefore",
-			query=
-				"select count(p.id) " +
-				"from Game g join g.rounds r join r.plays p " +
-				"where p.person = :person and p.hand = :hand and g.datePlayed <= :before"),
-	@NamedQuery(
-			name="play.countByPersonAndHandBetween",
-			query=
-				"select count(p.id) " +
-				"from Game g join g.rounds r join r.plays p " +
-				"where p.person = :person and p.hand = :hand and g.datePlayed <= :before and g.datePlayed >= :after")
-})
 @XmlType(propOrder={"person", "hand"})
 public class Play extends KeyedBean<Play> {
 

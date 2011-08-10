@@ -2,32 +2,28 @@ package uk.co.unclealex.rokta.client.filter;
 
 import java.util.Date;
 
-public class BetweenGameFilter extends AbstractGameFilter {
+public class BetweenGameFilter extends AbstractGameFilter<BetweenGameFilter> {
 
 	private Date i_from;
 	private Date i_to;
 
-	public BetweenGameFilter() {
+	protected BetweenGameFilter() {
+		super();
 	}
 	
-	public BetweenGameFilter(Date from, Date to) {
-		super();
+	public BetweenGameFilter(Modifier modifier, Date from, Date to) {
+		super(modifier);
 		i_from = from;
 		i_to = to;
 	}
 
 	@Override
-	public boolean isContinuous() {
-		return true;
-	}
-
-	@Override
-	public String[] toStringArgs() {
-		return new String[] { makeDateArgument(getFrom()), makeDateArgument(getTo()) };
+	protected boolean isEqual(BetweenGameFilter other) {
+		return getFrom().equals(other.getFrom()) && getTo().equals(other.getTo());
 	}
 	
 	@Override
-	public <T> T accept(GameFilterVistor<T> gameFilterVisitor) {
+	public <T> T accept(GameFilterVisitor<T> gameFilterVisitor) {
 		return gameFilterVisitor.visit(this);
 	}
 

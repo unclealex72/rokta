@@ -10,24 +10,22 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Required;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.co.unclealex.rokta.client.filter.GameFilter;
-import uk.co.unclealex.rokta.client.views.Hand;
-import uk.co.unclealex.rokta.client.views.WinLoseCounter;
 import uk.co.unclealex.rokta.server.dao.GameDao;
 import uk.co.unclealex.rokta.server.model.Game;
 import uk.co.unclealex.rokta.server.model.Person;
 import uk.co.unclealex.rokta.server.model.Play;
 import uk.co.unclealex.rokta.server.model.Round;
+import uk.co.unclealex.rokta.shared.model.Hand;
+import uk.co.unclealex.rokta.shared.model.WinLoseCounter;
 
 /**
  * @author alex
  *
  */
 @Transactional
-@Service
 public class ProfileManagerImpl implements ProfileManager {
 
 	private StatisticsService i_statisticsService;

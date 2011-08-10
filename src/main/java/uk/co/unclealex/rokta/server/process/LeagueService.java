@@ -4,9 +4,10 @@
 package uk.co.unclealex.rokta.server.process;
 
 import java.util.Date;
+import java.util.SortedSet;
 
 import uk.co.unclealex.rokta.client.filter.GameFilter;
-import uk.co.unclealex.rokta.client.views.League;
+import uk.co.unclealex.rokta.shared.model.League;
 
 /**
  * @author alex
@@ -14,11 +15,6 @@ import uk.co.unclealex.rokta.client.views.League;
  */
 public interface LeagueService {
 
-	/* (non-Javadoc)
-	 * @see uk.co.unclealex.rokta.process.LeagueManager#generateLeague(java.util.Date)
-	 */
-	public LeaguesHolder generateLeagues(GameFilter gameFilter, int maximumLeagues, Date now);
-
-	public League generateLeague(GameFilter gameFilter, Date now);
+	public SortedSet<League> generateLeagues(GameFilter gameFilter, Date now);
 
 }

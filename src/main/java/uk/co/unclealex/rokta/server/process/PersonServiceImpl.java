@@ -4,8 +4,9 @@
 package uk.co.unclealex.rokta.server.process;
 
 import java.util.Date;
+import java.util.SortedSet;
 
-import org.springframework.stereotype.Service;
+import org.joda.time.DateTime;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.co.unclealex.rokta.server.dao.GameDao;
@@ -19,7 +20,6 @@ import uk.co.unclealex.rokta.server.util.DateUtil;
  * @author alex
  *
  */
-@Service
 @Transactional
 public class PersonServiceImpl implements PersonService {
 
@@ -37,10 +37,9 @@ public class PersonServiceImpl implements PersonService {
 		return null;
 	}
 
-	public boolean currentlyPlaying(String playerName, Date date) {
-		Person player = getPersonDao().getPersonByName(playerName);
-		Game lastGamePlayed = getGameDao().getLastGamePlayed(player);
-		return (isGameOnDate(lastGamePlayed, date)); 
+	public SortedSet<String> getCurrentPlayerNames(final Date date) {
+		DateTime midnight = getDateUtil().getStartOfDay(new DateTime(date.getTime()));
+		return getPersonDao().getPlayerNamesWhoHavePlayedSince(new Date(midnight.getMillis()));
 	}
 
 	protected boolean isGameOnDate(Game game, Date date) {
