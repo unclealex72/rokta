@@ -1,0 +1,11 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<g:HTMLPanel>
+		Counter: <g:ListBox ui:field="counterListBox"/>
+		<g:FlexTable ui:field="playersTable"/>
+		<g:Button ui:field="nextButton">Next</g:Button>
+	</g:HTMLPanel>
+
+</ui:UiBinder>

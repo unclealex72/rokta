@@ -1,0 +1,46 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:a="urn:import:uk.co.unclealex.rokta.client.ui">
+
+	<g:DialogBox ui:field="popupPanel" glassEnabled="true" animationEnabled="true" autoHideEnabled="false">
+		<g:caption>Filters</g:caption>
+	  <g:HTMLPanel>
+	  	<a:UnorderedListPanel>
+	  		<g:HTMLPanel>
+	   		<g:RadioButton name="filter" ui:field="yearButton"/>
+	   		Year <a:YearValueListBox ui:field="yearSelect"/>
+	   	</g:HTMLPanel>
+	  		<g:HTMLPanel>
+	   		<g:RadioButton name="filter" ui:field="monthButton"/>
+	   		Month <a:MonthValueListBox ui:field="monthSelect"/> <a:YearValueListBox ui:field="monthYearSelect"/>
+	   		</g:HTMLPanel>
+	  		<g:HTMLPanel>
+	   		<g:RadioButton name="filter" ui:field="weekButton"/>
+	   		Week <g:Anchor ui:field="weekAnchor"/>
+	  		</g:HTMLPanel>
+	  		<g:HTMLPanel>
+	   		<g:RadioButton name="filter" ui:field="allButton"/>
+	  			All
+	  		</g:HTMLPanel>
+	  		<g:HTMLPanel>
+	  			<g:RadioButton name="filter" ui:field="betweenButton"/>
+	  				Between <g:Anchor ui:field="fromAnchor"/> to <g:Anchor ui:field="toAnchor"/>
+	  		</g:HTMLPanel>
+	  		<g:HTMLPanel>
+	  			<g:RadioButton name="filter" ui:field="sinceButton"/>
+	  				Since <g:Anchor ui:field="sinceAnchor"/>
+	  		</g:HTMLPanel>
+	  		<g:HTMLPanel>
+	  			<g:RadioButton name="filter" ui:field="beforeButton"/>
+	  			Before <g:Anchor ui:field="beforeAnchor"/>
+	  		</g:HTMLPanel>    		
+	  	</a:UnorderedListPanel>
+	  	<a:ModifierValueListBox ui:field="modifierSelect"/>
+	  	<div class="buttonBar">
+	  		<g:Button ui:field="submitButton">Submit</g:Button>
+	  		<g:Button ui:field="cancelButton">Cancel</g:Button>
+	  	</div>
+		</g:HTMLPanel>
+	</g:DialogBox>
+</ui:UiBinder>

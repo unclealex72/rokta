@@ -1,0 +1,28 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<g:HTMLPanel>
+		<p><g:Label ui:field="exemptPlayer"/> is exempt.</p>
+		<g:Grid>
+			<g:row>
+				<g:cell>
+					Instigator
+				</g:cell>
+				<g:customCell>
+					<g:ListBox ui:field="instigatorListBox" multiple="false"/>
+				</g:customCell>
+			</g:row>
+			<g:row>
+				<g:cell>
+					Players
+				</g:cell>
+				<g:customCell>
+					<g:ListBox ui:field="playersListBox" multiple="true"/>
+				</g:customCell>
+			</g:row>
+		</g:Grid>
+		<g:Button ui:field="startButton">Start</g:Button>
+	</g:HTMLPanel>
+
+</ui:UiBinder>

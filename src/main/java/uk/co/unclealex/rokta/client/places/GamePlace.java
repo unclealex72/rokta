@@ -1,71 +1,48 @@
 package uk.co.unclealex.rokta.client.places;
 
-import java.util.Collections;
-import java.util.List;
+import uk.co.unclealex.rokta.shared.model.Game;
 
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.gwt.place.shared.PlaceTokenizer;
 
 public class GamePlace extends RoktaPlace {
 
-	private final Iterable<Integer> i_players;
-	private final String i_plays;
+	private final Game i_game;
 
-	public GamePlace(Iterable<Integer> players, String plays) {
+	public GamePlace() {
+		this(new Game());
+	}
+	
+	public GamePlace(Game game) {
 		super();
-		i_players = players;
-		i_plays = plays;
+		i_game = game;
 	}
 
 	@Override
 	public boolean equals(Object other) {
 		return 
-				(other instanceof GamePlace) && 
-				(Iterables.elementsEqual(getPlayers(), ((GamePlace) other).getPlayers())) &&
-				(getPlays().equals(((GamePlace) other).getPlays()));
+				(other instanceof GamePlace) && getGame().equals(((GamePlace) other).getGame());
 	}
 	
 	@Override
-	public void accept(RoktaPlaceVisitor visitor) {
-		visitor.visit(this);
+	public <T> T accept(RoktaPlaceVisitor<T> visitor) {
+		return visitor.visit(this);
 	}
 	
 	public static class Tokenizer implements PlaceTokenizer<GamePlace> {
 
 		@Override
 		public GamePlace getPlace(String token) {
-			List<String> parts = Lists.newArrayList(Splitter.on(':').split(token));
-			String plays = parts.remove(parts.size() - 1);
-			Function<String, Integer> function = new Function<String, Integer>() {
-				public Integer apply(String hex) {
-					return Integer.parseInt(hex, 16);
-				}
-			};
-			return new GamePlace(Iterables.transform(parts, function), plays);
+			return new GamePlace(new Game(token));
 		}
 
 		@Override
 		public String getToken(GamePlace place) {
-			Function<Integer, String> function = new Function<Integer, String>() {
-				public String apply(Integer player) {
-					return Integer.toHexString(player);
-				}
-			};
-			return Joiner.on(':').join(
-				Iterables.concat(Iterables.transform(place.getPlayers(), function), Collections.singleton(place.getPlays())));
+			return place.getGame().asToken();
 		}
 
 	}
 
-	public Iterable<Integer> getPlayers() {
-		return i_players;
-	}
-
-	public String getPlays() {
-		return i_plays;
+	public Game getGame() {
+		return i_game;
 	}
 }

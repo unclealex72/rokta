@@ -1,0 +1,9 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<g:FlowPanel>
+		<g:SimplePanel ui:field="allStreaksPanel"/>
+		<g:SimplePanel ui:field="currentStreaksPanel"/>
+	</g:FlowPanel>
+</ui:UiBinder>

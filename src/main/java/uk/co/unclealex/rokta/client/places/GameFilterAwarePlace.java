@@ -1,6 +1,7 @@
 package uk.co.unclealex.rokta.client.places;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -167,15 +168,26 @@ public abstract class GameFilterAwarePlace extends RoktaPlace {
 		
 		@Override
 		public P getPlace(String token) {
-			return getPlace(parse(token));
+			List<String> tokenParts = Lists.newArrayList(Splitter.on('@').split(token));
+			int lastIndex = tokenParts.size() - 1;
+			List<String> tokens = tokenParts.subList(0, lastIndex);
+			String gameFilterToken = tokenParts.get(lastIndex);
+			return getPlace(tokens, parse(gameFilterToken));
 		}
 		
-		protected abstract P getPlace(GameFilter gameFilter);
+		protected abstract P getPlace(List<String> tokens, GameFilter gameFilter);
 
+		@Override
 		public String getToken(P place) {
-			return format(place.getGameFilter());
+			return 
+				Joiner.on('@').join(
+					Iterables.concat(formatTokens(place), Collections.singleton(format(place.getGameFilter()))));
 		}
 
+		protected Iterable<String> formatTokens(P place) {
+			return Collections.emptySet();
+		}
+		
 		protected GameFilter parse(String token) {
 			final String modifierPrefixToken = token.substring(0, 2);
 			Predicate<ModifierPrefix> predicate = new Predicate<ModifierPrefix>() {
@@ -218,7 +230,8 @@ public abstract class GameFilterAwarePlace extends RoktaPlace {
 							return DATE_FORMAT.format(date);
 						}
 					};
-					builder.append(Joiner.on(':').join(Iterables.transform(Arrays.asList(dates), function)));
+					builder.append(Joiner.on(':').join(
+						Iterables.concat(Collections.singleton(prefix), Iterables.transform(Arrays.asList(dates), function))));
 					return null;
 				}
 				

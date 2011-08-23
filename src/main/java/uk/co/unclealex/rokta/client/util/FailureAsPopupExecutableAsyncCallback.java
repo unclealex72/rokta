@@ -3,7 +3,6 @@
  */
 package uk.co.unclealex.rokta.client.util;
 
-import com.google.gwt.user.client.Window;
 
 /**
  * Copyright 2011 Alex Jones
@@ -28,10 +27,6 @@ import com.google.gwt.user.client.Window;
  * @author unclealex72
  *
  */
-public abstract class FailureAsPopupExecutableAsyncCallback<T> implements ExecutableAsyncCallback<T> {
+public abstract class FailureAsPopupExecutableAsyncCallback<T> extends FailureAsPopupAsyncCallback<T> implements ExecutableAsyncCallback<T> {
 
-	@Override
-	public void onFailure(Throwable cause) {
-		Window.alert("An unexpected error occurred: " + cause.getMessage());
-	}
 }

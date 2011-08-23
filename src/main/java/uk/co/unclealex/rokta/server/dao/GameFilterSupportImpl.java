@@ -241,6 +241,7 @@ public class GameFilterSupportImpl extends HibernateDaoSupport implements GameFi
 		if (grouper != null) {
 			String hql = 
 				String.format("%s.datePlayed in (select %s(datePlayed) from Game group by %s)",
+					gameAlias,	
 					grouper.isMax()?"max":"min",
 					Joiner.on(", ").join(grouper.getGroupColumns()));
 			QueryParameters groupingQueryParameters = new SimpleQueryParameters(hql) {

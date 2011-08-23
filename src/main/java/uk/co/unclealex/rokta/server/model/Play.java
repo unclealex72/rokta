@@ -10,6 +10,9 @@ import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlType;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import uk.co.unclealex.hibernate.model.KeyedBean;
 import uk.co.unclealex.rokta.shared.model.Hand;
 
@@ -31,6 +34,7 @@ public class Play extends KeyedBean<Play> {
 	
 	@ManyToOne
 	@XmlIDREF
+	@Fetch(FetchMode.JOIN)
 	public Person getPerson() {
 		return i_person;
 	}

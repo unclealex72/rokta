@@ -5,14 +5,16 @@ package uk.co.unclealex.rokta.client.places;
 
 import javax.inject.Inject;
 
+import uk.co.unclealex.rokta.client.factories.GamePresenterFactory;
+import uk.co.unclealex.rokta.client.factories.GraphPresenterFactory;
+import uk.co.unclealex.rokta.client.factories.HeadToHeadsPresenterFactory;
+import uk.co.unclealex.rokta.client.factories.LeaguePresenterFactory;
+import uk.co.unclealex.rokta.client.factories.LosingStreaksPresenterFactory;
+import uk.co.unclealex.rokta.client.factories.ProfilePresenterFactory;
+import uk.co.unclealex.rokta.client.factories.WinningStreaksPresenterFactory;
 import uk.co.unclealex.rokta.client.presenters.AdminPresenter;
-import uk.co.unclealex.rokta.client.presenters.GamePresenter;
-import uk.co.unclealex.rokta.client.presenters.HeadToHeadsPresenter;
-import uk.co.unclealex.rokta.client.presenters.LeaguePresenter;
-import uk.co.unclealex.rokta.client.presenters.LosingStreaksPresenter;
 import uk.co.unclealex.rokta.client.presenters.MainPresenter;
-import uk.co.unclealex.rokta.client.presenters.ProfilePresenter;
-import uk.co.unclealex.rokta.client.presenters.WinningStreaksPresenter;
+import uk.co.unclealex.rokta.client.util.TitleManager;
 
 import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.activity.shared.ActivityMapper;
@@ -46,39 +48,46 @@ import com.google.inject.Provider;
  */
 public class RoktaActivityMapper implements ActivityMapper {
 
-	private final Provider<LeaguePresenter> i_leaguePresenterProvider;
-	private final Provider<WinningStreaksPresenter> i_winningStreaksPresenterProvider;
-	private final Provider<LosingStreaksPresenter> i_losingStreaksPresenterProvider;
-	private final Provider<HeadToHeadsPresenter> i_headToHeadsPresenterProvider;
+	private final LeaguePresenterFactory i_leaguePresenterFactory;
+	private final GraphPresenterFactory i_graphPresenterFactory;
+	private final WinningStreaksPresenterFactory i_winningStreaksPresenterFactory;
+	private final LosingStreaksPresenterFactory i_losingStreaksPresenterFactory;
+	private final HeadToHeadsPresenterFactory i_headToHeadsPresenterFactory;
 	private final Provider<AdminPresenter> i_adminPresenterProvider;
 	private final Provider<MainPresenter> i_mainPresenterProvider;
-	private final Provider<GamePresenter> i_gamePresenterProvider;
-	private final Provider<ProfilePresenter> i_profilePresenterProvider;
-
+	private final GamePresenterFactory i_gamePresenterFactory;
+	private final ProfilePresenterFactory i_profilePresenterFactory;
+	private final TitleManager i_titleManager;
+	
 	@Inject
-	public RoktaActivityMapper(Provider<LeaguePresenter> leaguePresenterProvider,
-			Provider<WinningStreaksPresenter> winningStreaksPresenterProvider,
-			Provider<LosingStreaksPresenter> losingStreaksPresenterProvider,
-			Provider<HeadToHeadsPresenter> headToHeadsPresenterProvider, Provider<AdminPresenter> adminPresenterProvider,
-			Provider<MainPresenter> mainPresenterProvider, Provider<GamePresenter> gamePresenterProvider,
-			Provider<ProfilePresenter> profilePresenterProvider) {
+	public RoktaActivityMapper(LeaguePresenterFactory leaguePresenterFactory,
+			GraphPresenterFactory graphPresenterFactory, WinningStreaksPresenterFactory winningStreaksPresenterFactory,
+			LosingStreaksPresenterFactory losingStreaksPresenterFactory,
+			HeadToHeadsPresenterFactory headToHeadsPresenterFactory, Provider<AdminPresenter> adminPresenterProvider,
+			Provider<MainPresenter> mainPresenterProvider, GamePresenterFactory gamePresenterFactory,
+			ProfilePresenterFactory profilePresenterFactory, TitleManager titleManager) {
 		super();
-		i_leaguePresenterProvider = leaguePresenterProvider;
-		i_winningStreaksPresenterProvider = winningStreaksPresenterProvider;
-		i_losingStreaksPresenterProvider = losingStreaksPresenterProvider;
-		i_headToHeadsPresenterProvider = headToHeadsPresenterProvider;
+		i_leaguePresenterFactory = leaguePresenterFactory;
+		i_graphPresenterFactory = graphPresenterFactory;
+		i_winningStreaksPresenterFactory = winningStreaksPresenterFactory;
+		i_losingStreaksPresenterFactory = losingStreaksPresenterFactory;
+		i_headToHeadsPresenterFactory = headToHeadsPresenterFactory;
 		i_adminPresenterProvider = adminPresenterProvider;
 		i_mainPresenterProvider = mainPresenterProvider;
-		i_gamePresenterProvider = gamePresenterProvider;
-		i_profilePresenterProvider = profilePresenterProvider;
+		i_gamePresenterFactory = gamePresenterFactory;
+		i_profilePresenterFactory = profilePresenterFactory;
+		i_titleManager = titleManager;
 	}
-	
+
 	@Override
 	public Activity getActivity(Place place) {
+		if (place instanceof RoktaPlace) {
+			getTitleManager().updateTitle((RoktaPlace) place);
+		}
 		return new ActivityProvider(place).asActivity();
 	}
 	
-	protected class ActivityProvider implements RoktaPlaceVisitor, Activity {
+	protected class ActivityProvider implements RoktaPlaceVisitor<Activity>, Activity {
 
 		private final Place i_place;
 		private Activity i_activity;
@@ -91,7 +100,7 @@ public class RoktaActivityMapper implements ActivityMapper {
 		public Activity asActivity() {
 			Place place = getPlace();
 			if (place instanceof RoktaPlace) {
-				((RoktaPlace) place).accept(this);
+				setActivity(((RoktaPlace) place).accept(this));
 			}
 			else {
 				asDefault();
@@ -124,48 +133,55 @@ public class RoktaActivityMapper implements ActivityMapper {
 			getActivity().start(panel, eventBus);
 		}
 
-		public void asDefault() {
-			//new MainPlace().accept(this);
+		public Activity asDefault() {
+			//TODO Make sure default is set correctly.
+			return null;
 		}
 		
 		@Override
-		public void visit(RoktaPlace roktaPlace) {
-			asDefault();
+		public Activity visit(RoktaPlace roktaPlace) {
+
+			return asDefault();
 		}
 
 		@Override
-		public void visit(LeaguePlace leaguePlace) {
-			setActivity(getLeaguePresenterProvider().get());
+		public Activity visit(LeaguePlace leaguePlace) {
+			return getLeaguePresenterFactory().createLeaguePresenter(leaguePlace.getGameFilter());
+		}
+		
+		@Override
+		public Activity visit(GraphPlace graphPlace) {
+			return getGraphPresenterFactory().createGraphPresenter(graphPlace.getGameFilter());
 		}
 
 		@Override
-		public void visit(WinningStreaksPlace winningStreaksPlace) {
-			setActivity(getWinningStreaksPresenterProvider().get());
+		public Activity visit(WinningStreaksPlace winningStreaksPlace) {
+			return getWinningStreaksPresenterFactory().createWinningStreaksPresenter(winningStreaksPlace.getGameFilter());
 		}
 
 		@Override
-		public void visit(LosingStreaksPlace losingStreaksPlace) {
-			setActivity(getLosingStreaksPresenterProvider().get());
+		public Activity visit(LosingStreaksPlace losingStreaksPlace) {
+			return getLosingStreaksPresenterFactory().createLosingStreaksPresenter(losingStreaksPlace.getGameFilter());
 		}
 
 		@Override
-		public void visit(HeadToHeadsPlace headToHeadsPlace) {
-			setActivity(getHeadToHeadsPresenterProvider().get());
+		public Activity visit(HeadToHeadsPlace headToHeadsPlace) {
+			return getHeadToHeadsPresenterFactory().createHeadToHeadsPresenter(headToHeadsPlace.getGameFilter());
 		}
 
 		@Override
-		public void visit(AdminPlace adminPlace) {
-			setActivity(getAdminPresenterProvider().get());
+		public Activity visit(AdminPlace adminPlace) {
+			return getAdminPresenterProvider().get();
 		}
 
 		@Override
-		public void visit(GamePlace gamePlace) {
-			setActivity(getGamePresenterProvider().get());
+		public Activity visit(GamePlace gamePlace) {
+			return getGamePresenterFactory().createGamePresenter(gamePlace.getGame());
 		}
 
 		@Override
-		public void visit(ProfilePlace profilePlace) {
-			setActivity(getProfilePresenterProvider().get());
+		public Activity visit(ProfilePlace profilePlace) {
+			return getProfilePresenterFactory().createProfilePresenter(profilePlace.getGameFilter(), profilePlace.getUsername());
 		}
 		
 		public Activity getActivity() {
@@ -182,35 +198,45 @@ public class RoktaActivityMapper implements ActivityMapper {
 
 	}
 
-	public Provider<LeaguePresenter> getLeaguePresenterProvider() {
-		return i_leaguePresenterProvider;
-	}
-
 	public Provider<AdminPresenter> getAdminPresenterProvider() {
 		return i_adminPresenterProvider;
-	}
-
-	public Provider<WinningStreaksPresenter> getWinningStreaksPresenterProvider() {
-		return i_winningStreaksPresenterProvider;
-	}
-
-	public Provider<LosingStreaksPresenter> getLosingStreaksPresenterProvider() {
-		return i_losingStreaksPresenterProvider;
-	}
-
-	public Provider<HeadToHeadsPresenter> getHeadToHeadsPresenterProvider() {
-		return i_headToHeadsPresenterProvider;
 	}
 
 	public Provider<MainPresenter> getMainPresenterProvider() {
 		return i_mainPresenterProvider;
 	}
 
-	public Provider<GamePresenter> getGamePresenterProvider() {
-		return i_gamePresenterProvider;
+	public GamePresenterFactory getGamePresenterFactory() {
+		return i_gamePresenterFactory;
 	}
 
-	public Provider<ProfilePresenter> getProfilePresenterProvider() {
-		return i_profilePresenterProvider;
+	public ProfilePresenterFactory getProfilePresenterFactory() {
+		return i_profilePresenterFactory;
 	}
+
+	public LeaguePresenterFactory getLeaguePresenterFactory() {
+		return i_leaguePresenterFactory;
+	}
+
+	public GraphPresenterFactory getGraphPresenterFactory() {
+		return i_graphPresenterFactory;
+	}
+
+	public WinningStreaksPresenterFactory getWinningStreaksPresenterFactory() {
+		return i_winningStreaksPresenterFactory;
+	}
+
+	public LosingStreaksPresenterFactory getLosingStreaksPresenterFactory() {
+		return i_losingStreaksPresenterFactory;
+	}
+
+	public HeadToHeadsPresenterFactory getHeadToHeadsPresenterFactory() {
+		return i_headToHeadsPresenterFactory;
+	}
+
+	public TitleManager getTitleManager() {
+		return i_titleManager;
+	}
+
+	
 }

@@ -30,10 +30,9 @@ import com.google.gwt.place.shared.WithTokenizers;
  *
  */
 @WithTokenizers({ 
-	WinningStreaksPlace.Tokenizer.class, LosingStreaksPlace.Tokenizer.class,
-	HeadToHeadsPlace.Tokenizer.class, ProfilePlace.Tokenizer.class,
-	AdminPlace.Tokenizer.class, LeaguePlace.Tokenizer.class, 
-	GamePlace.Tokenizer.class })
+	LeaguePlace.Tokenizer.class, GraphPlace.Tokenizer.class,
+	WinningStreaksPlace.Tokenizer.class, LosingStreaksPlace.Tokenizer.class, HeadToHeadsPlace.Tokenizer.class,
+	ProfilePlace.Tokenizer.class, AdminPlace.Tokenizer.class, GamePlace.Tokenizer.class })
 public interface RoktaPlaceHistoryMapper extends PlaceHistoryMapper {
   // No extra method
 }

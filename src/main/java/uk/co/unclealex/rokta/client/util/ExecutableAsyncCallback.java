@@ -31,12 +31,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author unclealex72
  *
  */
-public interface ExecutableAsyncCallback<T> {
+public interface ExecutableAsyncCallback<T> extends AsyncCallback<T> {
 
-  void onSuccess(T result);
-
-  void onFailure(Throwable cause);
-  
   void execute(
   		AnonymousRoktaServiceAsync anonymousRoktaService, 
   		UserRoktaServiceAsync userRoktaService, 

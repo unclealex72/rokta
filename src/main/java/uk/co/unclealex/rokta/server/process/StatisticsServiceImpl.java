@@ -4,6 +4,8 @@
 package uk.co.unclealex.rokta.server.process;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -18,15 +20,15 @@ import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.co.unclealex.rokta.client.filter.GameFilter;
-import uk.co.unclealex.rokta.server.dao.GameDao;
 import uk.co.unclealex.rokta.server.dao.PersonDao;
 import uk.co.unclealex.rokta.server.dao.PlayDao;
 import uk.co.unclealex.rokta.server.dao.RoundDao;
 import uk.co.unclealex.rokta.server.model.Game;
 import uk.co.unclealex.rokta.server.model.Person;
 import uk.co.unclealex.rokta.server.model.Round;
+import uk.co.unclealex.rokta.shared.model.HeadToHeads;
 import uk.co.unclealex.rokta.shared.model.Streak;
+import uk.co.unclealex.rokta.shared.model.Streaks;
 import uk.co.unclealex.rokta.shared.model.WinLoseCounter;
 
 /**
@@ -39,87 +41,37 @@ public class StatisticsServiceImpl implements StatisticsService {
 	private PersonDao i_personDao;
 	private PlayDao i_playDao;
 	private RoundDao i_roundDao;
-	private GameDao i_gameDao;
 	
 	@Override
-	public SortedMap<Person, Integer> countGamesLostByPlayer(GameFilter gameFilter) {
-		SortedMap<Person,Integer> gamesLostByPerson = new TreeMap<Person, Integer>();
-		for (Game game : getGameDao().getGamesByFilter(gameFilter)) {
-			Person loser = game.getLoser();
-			Integer gamesLost = gamesLostByPerson.get(loser);
-			if (gamesLost == null) {
-				gamesLost = 0;
-			}
-			gamesLostByPerson.put(loser, gamesLost + 1);
-		}
-		return gamesLostByPerson;
-	}
-
-	@Override
-	public SortedSet<Streak> getCurrentWinningStreaks(GameFilter gameFilter) {
-		return getStreaks(gameFilter, null, true, true, null); 
-	}
-
-	@Override
-	public SortedSet<Streak> getCurrentLosingStreaks(GameFilter gameFilter) {
-		return getStreaks(gameFilter, null, false, true, null); 
-	}
-
-	@Override
-	public SortedSet<Streak> getWinningStreaks(GameFilter gameFilter, int targetSize) {
-		return getStreaks(gameFilter, null, true, false, targetSize); 
-	}
-	
-	@Override
-	public SortedSet<Streak> getLosingStreaks(GameFilter gameFilter, int targetSize) {
-		return getStreaks(gameFilter, null, false, false, targetSize); 
-	}
-
-	@Override
-	public SortedSet<Streak> getWinningStreaks(GameFilter gameFilter, String personName, int targetSize) {
-		return getStreaks(gameFilter, personName, true, false, targetSize); 
-	}
-	
-	@Override
-	public SortedSet<Streak> getLosingStreaks(GameFilter gameFilter, String personName, int targetSize) {
-		return getStreaks(gameFilter, personName, false, false, targetSize); 
-	}
-	
-	protected SortedSet<Streak> getStreaks(
-			GameFilter gameFilter, String personName, boolean isWinningStreak, boolean isCurrentOnly, final Integer targetSize) {
-		SortedMap<String, List<GameListingStreak>> streakListsByPersonName = getStreakListsByPersonName(gameFilter, isWinningStreak);
+	public Streaks getStreaks(SortedSet<Game> games, final int targetSize) {
+		Map<Boolean, SortedSet<Streak>> allStreaksByIsWinning = new HashMap<Boolean, SortedSet<Streak>>();
+		Map<Boolean, SortedSet<Streak>> currentStreaksByIsWinning = new HashMap<Boolean, SortedSet<Streak>>();
 		
-		// Filter by person name
-		List<GameListingStreak> streakListsForRequiredPersons;		
-		if (personName != null) {
-			streakListsForRequiredPersons = streakListsByPersonName.get(personName);
-			if (streakListsForRequiredPersons == null) {
-				streakListsForRequiredPersons = new LinkedList<GameListingStreak>();
-			}
-		}
-		else {
-			streakListsForRequiredPersons = new ArrayList<GameListingStreak>();
+		for (boolean isWinningStreak : new boolean[] { true, false }) {
+			SortedMap<String, List<GameListingStreak>> streakListsByPersonName = getStreakListsByPersonName(games, isWinningStreak);
+			List<GameListingStreak> allStreakLists = new ArrayList<GameListingStreak>();
 			for (List<GameListingStreak> streakLists : streakListsByPersonName.values()) {
-				streakListsForRequiredPersons.addAll(streakLists);
+				allStreakLists.addAll(streakLists);
 			}
-		}
-		
-		// Filter if only current streaks are needed.
-		if (isCurrentOnly) {
-			Predicate<GameListingStreak> nonCurrentPredicate = new Predicate<GameListingStreak>() {
+
+			Predicate<GameListingStreak> currentPredicate = new Predicate<GameListingStreak>() {
 				@Override
 				public boolean evaluate(GameListingStreak gameListingStreak) {
-					return !gameListingStreak.isCurrent();
+					return gameListingStreak.isCurrent();
 				}
 			};
-			streakListsForRequiredPersons.removeAll(CollectionUtils.select(streakListsForRequiredPersons, nonCurrentPredicate));
-		}
+			
+			List<GameListingStreak> currentGameStreaks = 
+					CollectionUtils.select(allStreakLists, currentPredicate, new ArrayList<GameListingStreak>());
+			SortedSet<Streak> currentStreaks = 
+				CollectionUtils.collect(
+					new TreeSet<GameListingStreak>(currentGameStreaks), new StreakTransformer(), new TreeSet<Streak>());
+
 		
-		// Sort the game listing streaks and turn them in to streaks.
-		SortedSet<Streak> streaks = new TreeSet<Streak>();
-		CollectionUtils.collect(new TreeSet<GameListingStreak>(streakListsForRequiredPersons), new StreakTransformer(), streaks);
-		
-		if (targetSize != null) {
+			// Sort the game listing streaks and turn them in to streaks.
+			SortedSet<Streak> streaks = new TreeSet<Streak>();
+			CollectionUtils.collect(new TreeSet<GameListingStreak>(allStreakLists), new StreakTransformer(), streaks);
+			
 			Predicate<Streak> tooHighRank = new Predicate<Streak>() {
 				@Override
 				public boolean evaluate(Streak streak) {
@@ -127,15 +79,19 @@ public class StatisticsServiceImpl implements StatisticsService {
 				}
 			};
 			streaks.removeAll(CollectionUtils.select(streaks, tooHighRank));
+			allStreaksByIsWinning.put(isWinningStreak, streaks);
+			currentStreaksByIsWinning.put(isWinningStreak, currentStreaks);
 		}
-		return streaks;
+		return new Streaks(
+			allStreaksByIsWinning.get(Boolean.TRUE), allStreaksByIsWinning.get(Boolean.FALSE), 
+			currentStreaksByIsWinning.get(Boolean.TRUE), currentStreaksByIsWinning.get(Boolean.FALSE));
 	}
 
-	protected SortedMap<String, List<GameListingStreak>> getStreakListsByPersonName(GameFilter gameFilter, boolean isWinningStreak) {
+	protected SortedMap<String, List<GameListingStreak>> getStreakListsByPersonName(SortedSet<Game> games, boolean isWinningStreak) {
 		SortedMap<String, List<GameListingStreak>> streaksByPerson = new TreeMap<String, List<GameListingStreak>>();
 		SortedMap<String, SortedSet<Game>> currentStreaksByPerson = new TreeMap<String, SortedSet<Game>>();
 		
-		for (Game game : getGameDao().getGamesByFilter(gameFilter)) {
+		for (Game game : games) {
 			for (Person person : game.getParticipants()) {
 				String personName = person.getName();
 				if (person.equals(game.getLoser()) == isWinningStreak) {
@@ -185,10 +141,10 @@ public class StatisticsServiceImpl implements StatisticsService {
 	}
 
 	@Override
-	public SortedMap<Person, SortedMap<Person, WinLoseCounter>> getHeadToHeadResultsByPerson(GameFilter gameFilter) {
-		SortedMap<Person, SortedMap<Person, WinLoseCounter>> headToHeadResultsByPerson =
-			new TreeMap<Person, SortedMap<Person,WinLoseCounter>>();
-		for (Game game : getGameDao().getGamesByFilter(gameFilter)) {
+	public HeadToHeads getHeadToHeadResultsByPerson(SortedSet<Game> games) {
+		SortedMap<String, SortedMap<String, WinLoseCounter>> headToHeadResultsByPerson =
+			new TreeMap<String, SortedMap<String,WinLoseCounter>>();
+		for (Game game : games) {
       Round round = game.getRounds().last();
 			Set<Person> participants = round.getParticipants();
 			if (participants.size() == 2) {
@@ -200,7 +156,24 @@ public class StatisticsServiceImpl implements StatisticsService {
 				getWinLoseCounter(headToHeadResultsByPerson, loser, winner).addLoss();
 			}
 		}
-		return headToHeadResultsByPerson;
+		Predicate<WinLoseCounter> nonEmptyWinLoseCounterPredicate = new Predicate<WinLoseCounter>() {
+			@Override
+			public boolean evaluate(WinLoseCounter winLoseCounter) {
+				return winLoseCounter.getWinCount() != 0 || winLoseCounter.getLossCount() != 0;
+			}
+		};
+		Set<WinLoseCounter> winLoseCounters = new HashSet<WinLoseCounter>();
+		for (SortedMap<String, WinLoseCounter> map : headToHeadResultsByPerson.values()) {
+			CollectionUtils.select(map.values(), nonEmptyWinLoseCounterPredicate, winLoseCounters);
+		}
+		Transformer<WinLoseCounter, String> playerTransformer = new Transformer<WinLoseCounter, String>() {
+			@Override
+			public String transform(WinLoseCounter winLoseCounter) {
+				return winLoseCounter.getWinner();
+			}
+		};
+		SortedSet<String> playerNames = CollectionUtils.collect(winLoseCounters, playerTransformer, new TreeSet<String>());
+		return new HeadToHeads(playerNames, winLoseCounters);
 	}
 
 	/**
@@ -210,15 +183,17 @@ public class StatisticsServiceImpl implements StatisticsService {
 	 * @return
 	 */
 	protected WinLoseCounter getWinLoseCounter(
-			SortedMap<Person, SortedMap<Person, WinLoseCounter>> headToHeadResultsByPerson, Person first, Person second) {
-		if (headToHeadResultsByPerson.get(first) == null) {
-			headToHeadResultsByPerson.put(first, new TreeMap<Person, WinLoseCounter>());
+			SortedMap<String, SortedMap<String, WinLoseCounter>> headToHeadResultsByPerson, Person first, Person second) {
+		String firstName = first.getName();
+		String secondName = second.getName();
+		if (headToHeadResultsByPerson.get(firstName) == null) {
+			headToHeadResultsByPerson.put(firstName, new TreeMap<String, WinLoseCounter>());
 		}
-		SortedMap<Person, WinLoseCounter> results = headToHeadResultsByPerson.get(first);
-		if (results.get(second) == null) {
-			results.put(second, new WinLoseCounter());
+		SortedMap<String, WinLoseCounter> results = headToHeadResultsByPerson.get(firstName);
+		if (results.get(secondName) == null) {
+			results.put(secondName, new WinLoseCounter(firstName, 0, secondName, 0));
 		}
-		return results.get(second);
+		return results.get(secondName);
 	}
 
 	protected class StreakTransformer implements Transformer<GameListingStreak, Streak> {
@@ -313,13 +288,5 @@ public class StatisticsServiceImpl implements StatisticsService {
 	 */
 	public void setRoundDao(RoundDao roundDao) {
 		i_roundDao = roundDao;
-	}
-
-	public GameDao getGameDao() {
-		return i_gameDao;
-	}
-
-	public void setGameDao(GameDao gameDao) {
-		i_gameDao = gameDao;
 	}
 }

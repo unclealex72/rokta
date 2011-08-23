@@ -1,5 +1,7 @@
 package uk.co.unclealex.rokta.client.places;
 
+import java.util.List;
+
 import uk.co.unclealex.rokta.client.filter.GameFilter;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
@@ -22,14 +24,14 @@ public class AdminPlace extends GameFilterAwarePlace {
 	}
 	
 	@Override
-	public void accept(RoktaPlaceVisitor visitor) {
-		visitor.visit(this);
+	public <T> T accept(RoktaPlaceVisitor<T> visitor) {
+		return visitor.visit(this);
 	}
 	
 	public static class Tokenizer extends GameFilterAwarePlace.Tokenizer<AdminPlace> implements PlaceTokenizer<AdminPlace> {
 
 		@Override
-		protected AdminPlace getPlace(GameFilter gameFilter) {
+		protected AdminPlace getPlace(List<String> tokens, GameFilter gameFilter) {
 			return new AdminPlace(gameFilter);
 		}
 	}

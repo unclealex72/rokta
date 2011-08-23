@@ -2,26 +2,21 @@ package uk.co.unclealex.rokta.shared.service;
 
 import java.util.Date;
 
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-
 import uk.co.unclealex.rokta.client.filter.GameFilter;
+import uk.co.unclealex.rokta.shared.model.CurrentInformation;
 import uk.co.unclealex.rokta.shared.model.HandDistribution;
 import uk.co.unclealex.rokta.shared.model.InitialDates;
-import uk.co.unclealex.rokta.shared.model.League;
-import uk.co.unclealex.rokta.shared.model.StreaksLeague;
+
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("anonymous")
 public interface AnonymousRoktaService extends RemoteService {
 
-	public League[] getLeague(GameFilter gameFilter, Date now);
-
-	public StreaksLeague getWinningStreaks(GameFilter gameFilter, int targetSize);
-	public StreaksLeague getLosingStreaks(GameFilter gameFilter, int targetSize);
-	public StreaksLeague getCurrentWinningStreaks(GameFilter gameFilter);
-	public StreaksLeague getCurrentLosingStreaks(GameFilter gameFilter);
-	public StreaksLeague getLosingStreaksForPerson(GameFilter gameFilter, String personName, int targetSize);
-	public StreaksLeague getWinningStreaksForPerson(GameFilter gameFilter, String personName, int targetSize);
+	public Date getDateFirstGamePlayed();
+	public Date getDateLastGamePlayed();
+	
+	public CurrentInformation getCurrentInformation(GameFilter gameFilter, int currentYear, int currentMonth, int currentDay, int targetStreaksSize);
 
 	public HandDistribution createHandDistributionGraph(GameFilter gameFilter, String personName);
 	public HandDistribution createOpeningHandDistributionGraph(GameFilter gameFilter, String personName);	

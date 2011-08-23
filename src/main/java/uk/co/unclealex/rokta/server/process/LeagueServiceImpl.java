@@ -16,16 +16,16 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.collections15.comparators.ComparatorChain;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.co.unclealex.rokta.client.filter.GameFilter;
 import uk.co.unclealex.rokta.server.dao.GameDao;
+import uk.co.unclealex.rokta.server.dao.PersonDao;
 import uk.co.unclealex.rokta.server.model.Game;
 import uk.co.unclealex.rokta.server.model.Person;
 import uk.co.unclealex.rokta.server.model.Round;
 import uk.co.unclealex.rokta.server.util.DateUtil;
-import uk.co.unclealex.rokta.shared.model.Delta;
 import uk.co.unclealex.rokta.shared.model.InfiniteInteger;
 import uk.co.unclealex.rokta.shared.model.League;
 import uk.co.unclealex.rokta.shared.model.LeagueRow;
+import uk.co.unclealex.rokta.shared.model.Leagues;
 
 import com.google.common.collect.Sets;
 
@@ -36,6 +36,7 @@ public class LeagueServiceImpl implements LeagueService {
 	private DateUtil i_dateUtil;
 	private PersonService i_personService;
 	private Comparator<LeagueRow> i_leagueRowComparator;
+	private PersonDao i_personDao;
 	
 	@PostConstruct
 	public void initialise() {
@@ -43,19 +44,20 @@ public class LeagueServiceImpl implements LeagueService {
 	}
 	
 	@Override
-	public SortedSet<League> generateLeagues(GameFilter gameFilter, Date now) {
-		SortedSet<Game> games = getGameDao().getGamesByFilter(gameFilter);
-		SortedMap<Game, League> leaguesForAllGames = generateLeagues(games);
+	public Leagues generateLeagues(SortedSet<Game> games, Date now) {
+		SortedMap<Game, League> leaguesForAllGames = new TreeMap<Game, League>();
+		SortedMap<String, String> coloursByUsername = new TreeMap<String, String>();
+		generateLeagues(games, leaguesForAllGames, coloursByUsername);
 		decorateWithDeltas(leaguesForAllGames);
 		decorateWithExemptionAndAbsence(leaguesForAllGames, now);
-		return Sets.newTreeSet(leaguesForAllGames.values());
+		return new Leagues(coloursByUsername, Sets.newTreeSet(leaguesForAllGames.values()));
 	}
 	
-	protected SortedMap<Game, League> generateLeagues(SortedSet<Game> games) {
+	protected SortedMap<Game, League> generateLeagues(
+			SortedSet<Game> games, SortedMap<Game, League> leaguesByGame, SortedMap<String, String> coloursByUsername) {
 		int totalGames = 0;
 		int totalPlayers = 0;
 		Map<Person, LeagueRow> rowMap = new HashMap<Person, LeagueRow>();
-		SortedMap<Game, League> leaguesByGame = new TreeMap<Game, League>();
 		for (Game game : games) {
 			totalGames++;
 			Person loser = game.getLoser();
@@ -63,10 +65,11 @@ public class LeagueServiceImpl implements LeagueService {
 			int participantCount = participants.size();
 			totalPlayers += participantCount;
 			for (Person participant : participants) {
+				coloursByUsername.put(participant.getName(), participant.getColour().getHtmlName());
 				if (!rowMap.containsKey(participant)) {
 					LeagueRow newLeagueRow = new LeagueRow();
 					newLeagueRow.setPersonName(participant.getName());
-					newLeagueRow.setDelta(Delta.NONE);
+					newLeagueRow.setDelta(0);
 					rowMap.put(participant, newLeagueRow);
 				}
 				LeagueRow leagueRow = rowMap.get(participant);
@@ -100,7 +103,7 @@ public class LeagueServiceImpl implements LeagueService {
 
 	protected League createLeague(Collection<LeagueRow> rows, int totalGames, int totalPlayers, Game game) {
 		League league = new League();
-		game.setDatePlayed(game.getDatePlayed());
+		league.setLastGameDate(game.getDatePlayed());
 		league.setCurrent(false);
 		league.setTotalGames(totalGames);
 		league.setTotalPlayers(totalPlayers);
@@ -140,14 +143,7 @@ public class LeagueServiceImpl implements LeagueService {
 				String personName = row.getPersonName();
 				Integer currentPosition = newPositions.get(personName);
 				Integer previousPosition = oldPositions.get(personName);
-				if (previousPosition != null) {
-					if (currentPosition < previousPosition) {
-						row.setDelta(Delta.UP);
-					}
-					if (previousPosition < currentPosition) {
-						row.setDelta(Delta.DOWN);
-					}
-				}
+				row.setDelta(previousPosition == null?0: previousPosition - currentPosition);
 			}
 		}		
 	}	
@@ -156,7 +152,7 @@ public class LeagueServiceImpl implements LeagueService {
 		if (leaguesByGame.isEmpty()) {
 			return;
 		}
-		SortedSet<String> currentPlayerNames = getPersonService().getCurrentPlayerNames(currentDate);
+		SortedSet<String> currentPlayerNames = getPersonDao().getAllPlayerNames();
 		Game lastGamePlayed = getGameDao().getLastGame();
 		Game lastLeagueGame = leaguesByGame.lastKey();
 		// Exemptions only occur if the last game played was today.
@@ -333,5 +329,13 @@ public class LeagueServiceImpl implements LeagueService {
 
 	public void setLeagueRowComparator(Comparator<LeagueRow> leagueRowComparator) {
 		i_leagueRowComparator = leagueRowComparator;
+	}
+
+	public PersonDao getPersonDao() {
+		return i_personDao;
+	}
+
+	public void setPersonDao(PersonDao personDao) {
+		i_personDao = personDao;
 	}
 }

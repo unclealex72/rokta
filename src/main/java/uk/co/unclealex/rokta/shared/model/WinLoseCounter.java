@@ -3,19 +3,23 @@
  */
 package uk.co.unclealex.rokta.shared.model;
 
+import java.io.Serializable;
+
 /**
  * @author alex
  *
  */
-public class WinLoseCounter {
+public class WinLoseCounter implements Serializable {
 
 	private int i_winCount;
 	private int i_lossCount;
-
+	private String i_winner;
+	private String i_loser;
+	
 	/**
 	 * 
 	 */
-	public WinLoseCounter() {
+	protected WinLoseCounter() {
 		super();
 	}
 	
@@ -23,9 +27,11 @@ public class WinLoseCounter {
 	 * @param winCount
 	 * @param lossCount
 	 */
-	public WinLoseCounter(int winCount, int lossCount) {
+	public WinLoseCounter(String winner, int winCount, String loser, int lossCount) {
 		super();
+		i_winner = winner;
 		i_winCount = winCount;
+		i_loser = loser;
 		i_lossCount = lossCount;
 	}
 	
@@ -51,7 +57,7 @@ public class WinLoseCounter {
 	
 	@Override
 	public String toString() {
-		return "[W:" + getWinCount() + ",L:" + getLossCount() + "]";
+		return "[W:" + getWinner() + ":" + getWinCount() + ",L:" + getLoser() + ":" + getLossCount() + "]";
 	}
 /**
 	 * @return the lossCount
@@ -77,5 +83,17 @@ public class WinLoseCounter {
 	 */
 	public void setWinCount(int winCount) {
 		i_winCount = winCount;
+	}
+
+	public String getWinner() {
+		return i_winner;
+	}
+
+	public void setWinner(String winner) {
+		i_winner = winner;
+	}
+
+	public String getLoser() {
+		return i_loser;
 	}
 }

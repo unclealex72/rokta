@@ -89,7 +89,7 @@ public class ProfileManagerImpl implements ProfileManager {
 
 	@Override
 	public SortedMap<Person, WinLoseCounter> getHeadToHeadRoundWinRate(GameFilter gameFilter, Person person) {
-		return getStatisticsService().getHeadToHeadResultsByPerson(gameFilter).get(person);
+		return null; //getStatisticsService().getHeadToHeadResultsByPerson(gameFilter).get(person);
 	}
 
 	/**

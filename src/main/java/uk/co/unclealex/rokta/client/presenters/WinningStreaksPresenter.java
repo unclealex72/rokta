@@ -1,15 +1,34 @@
 package uk.co.unclealex.rokta.client.presenters;
 
-import com.google.gwt.activity.shared.AbstractActivity;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import java.util.SortedSet;
 
-public class WinningStreaksPresenter extends AbstractActivity {
+import javax.inject.Inject;
 
-	@Override
-	public void start(AcceptsOneWidget panel, EventBus eventBus) {
-		// TODO Auto-generated method stub
-		
+import uk.co.unclealex.rokta.client.cache.InformationCache;
+import uk.co.unclealex.rokta.client.factories.StreaksTablePresenterFactory;
+import uk.co.unclealex.rokta.client.filter.GameFilter;
+import uk.co.unclealex.rokta.shared.model.Streak;
+import uk.co.unclealex.rokta.shared.model.Streaks;
+
+import com.google.inject.assistedinject.Assisted;
+
+public class WinningStreaksPresenter extends StreaksPresenter {
+
+	@Inject
+	public WinningStreaksPresenter(@Assisted GameFilter gameFilter, InformationCache informationCache,
+			StreaksTablePresenterFactory streaksTablePresenterFactory, Display display) {
+		super(gameFilter, informationCache, streaksTablePresenterFactory, display);
 	}
 
+	@Override
+	protected SortedSet<Streak> getAllStreaks(Streaks streaks) {
+		return streaks.getWinningStreaks();
+	}
+
+	@Override
+	protected SortedSet<Streak> getCurrentStreaks(Streaks streaks) {
+		return streaks.getCurrentWinningStreaks();
+	}
+
+	
 }

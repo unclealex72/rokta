@@ -59,10 +59,10 @@ public class RoktaInternalModule extends AbstractGinModule {
 	protected void configure() {
 		bind(EventBus.class).to(SimpleEventBus.class).in(Singleton.class);
 		bind(SimplePanel.class).in(Singleton.class);
-		bind(PlaceHistoryMapper.class).to(RoktaPlaceHistoryMapper.class).in(
-				Singleton.class);
-		bind(ActivityMapper.class).to(RoktaActivityMapper.class).in(
-				Singleton.class);
+		bind(PlaceHistoryMapper.class).to(RoktaPlaceHistoryMapper.class).in(Singleton.class);
+
+		bind(ActivityMapper.class).to(RoktaActivityMapper.class).in(Singleton.class);
+		
 		bind(AsyncCallbackExecutor.class).to(SecureAsyncCallbackExecutor.class).in(Singleton.class);
 		bind(AuthenticationManager.class).to(AuthenticationManagerImpl.class).in(Singleton.class);
 		bind(CanWaitSupport.class).to(CanWaitSupportImpl.class);

@@ -13,7 +13,7 @@ public class LeagueRow implements Serializable {
 	private boolean i_exempt = false;
 	private boolean i_playingToday = true;
 	private InfiniteInteger i_gap;
-	private Delta i_delta;
+	private int i_delta;
 	private League i_league;
 	
 	public LeagueRow() {
@@ -32,7 +32,7 @@ public class LeagueRow implements Serializable {
 	 */
 	public LeagueRow(
 			String personName, int gamesLost, int gamesWon, int roundsPlayedInWonGames, int roundsPlayedInLostGames,
-			int totalParticipants, boolean exempt, boolean playingToday, InfiniteInteger gap, Delta delta, League league) {
+			int totalParticipants, boolean exempt, boolean playingToday, InfiniteInteger gap, int delta, League league) {
 		super();
 		i_personName = personName;
 		i_gamesLost = gamesLost;
@@ -113,11 +113,11 @@ public class LeagueRow implements Serializable {
 		return i_roundsPlayedInLostGames + i_roundsPlayedInWonGames;
 	}
 
-	public Delta getDelta() {
+	public int getDelta() {
 		return i_delta;
 	}
 
-	public void setDelta(Delta delta) {
+	public void setDelta(int delta) {
 		i_delta = delta;
 	}
 

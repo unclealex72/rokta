@@ -6,7 +6,6 @@ package uk.co.unclealex.rokta.server.process;
 import java.util.Date;
 import java.util.SortedSet;
 
-import org.joda.time.DateTime;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.co.unclealex.rokta.server.dao.GameDao;
@@ -37,11 +36,16 @@ public class PersonServiceImpl implements PersonService {
 		return null;
 	}
 
-	public SortedSet<String> getCurrentPlayerNames(final Date date) {
-		DateTime midnight = getDateUtil().getStartOfDay(new DateTime(date.getTime()));
-		return getPersonDao().getPlayerNamesWhoHavePlayedSince(new Date(midnight.getMillis()));
+	@Override
+	public SortedSet<String> getAllUsernames() {
+		return getPersonDao().getAllUsernames();
 	}
-
+	
+	@Override
+	public SortedSet<String> getAllPlayerNames() {
+		return getPersonDao().getAllPlayerNames();
+	}
+	
 	protected boolean isGameOnDate(Game game, Date date) {
 		return getDateUtil().areSameDay(game.getDatePlayed(), date);
 	}

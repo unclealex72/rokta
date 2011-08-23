@@ -1,0 +1,10 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<g:HTMLPanel>
+		<p><g:Label ui:field="loser"/> has lost.</p>
+		<g:Button ui:field="submitButton">Submit</g:Button>
+	</g:HTMLPanel>
+
+</ui:UiBinder>

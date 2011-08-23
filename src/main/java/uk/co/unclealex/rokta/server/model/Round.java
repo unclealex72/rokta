@@ -24,6 +24,8 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import uk.co.unclealex.hibernate.model.KeyedBean;
 import uk.co.unclealex.rokta.shared.model.Hand;
@@ -109,6 +111,7 @@ public class Round extends KeyedBean<Round> {
 	@Column(nullable=false)
 	@XmlElementWrapper(name="plays")
 	@XmlElement(name="play")
+	@Fetch(FetchMode.JOIN)
 	public Set<Play> getPlays() {
 		return i_plays;
 	}

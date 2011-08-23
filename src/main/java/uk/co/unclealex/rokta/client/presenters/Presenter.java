@@ -1,9 +1,9 @@
 package uk.co.unclealex.rokta.client.presenters;
 
-import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public interface Presenter {
 
-	void show(HasWidgets container);
+	void show(AcceptsOneWidget container);
 
 }

@@ -21,6 +21,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
@@ -92,6 +94,7 @@ public class Game extends KeyedBean<Game> {
 	@Sort(type = SortType.NATURAL)
 	@XmlElementWrapper(name="rounds")
 	@XmlElement(name="round")
+	@Fetch(FetchMode.JOIN)
 	public SortedSet<Round> getRounds() {
 		return i_rounds;
 	}

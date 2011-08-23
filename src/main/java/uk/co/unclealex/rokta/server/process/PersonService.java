@@ -15,8 +15,8 @@ import uk.co.unclealex.rokta.server.model.Person;
  */
 public interface PersonService {
 
-	public Person getExemptPlayer(Date date);
-	public SortedSet<String> getCurrentPlayerNames(Date date);
-	
+	public Person getExemptPlayer(Date date);	
 	public boolean changePassword(String name, String currentPassword, String newPassword);
+	public SortedSet<String> getAllUsernames();
+	public SortedSet<String> getAllPlayerNames();
 }
