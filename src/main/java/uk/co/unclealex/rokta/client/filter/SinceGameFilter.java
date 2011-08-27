@@ -9,7 +9,7 @@ public class SinceGameFilter extends DateGameFilter {
 		super();
 	}
 	
-	public SinceGameFilter(Modifier modifier, Date since) {
+	SinceGameFilter(Modifier modifier, Date since) {
 		super(modifier, since);
 	}
 

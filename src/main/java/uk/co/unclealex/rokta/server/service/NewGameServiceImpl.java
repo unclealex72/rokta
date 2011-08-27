@@ -1,7 +1,6 @@
 package uk.co.unclealex.rokta.server.service;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
@@ -13,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import uk.co.unclealex.rokta.server.dao.GameDao;
 import uk.co.unclealex.rokta.server.dao.PersonDao;
+import uk.co.unclealex.rokta.server.model.Day;
 import uk.co.unclealex.rokta.server.model.Person;
 import uk.co.unclealex.rokta.server.model.Play;
 import uk.co.unclealex.rokta.server.model.Round;
@@ -26,6 +26,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.googlecode.ehcache.annotations.Cacheable;
 
 @Transactional
 public class NewGameServiceImpl implements NewGameService {
@@ -37,8 +38,9 @@ public class NewGameServiceImpl implements NewGameService {
 	private PersonService i_personService;
 	
 	@Override
-	public InitialPlayers getInitialPlayers(Date date) {
-		Person exemptPlayer = getPersonService().getExemptPlayer(date);
+	@Cacheable(cacheName=CacheService.CACHE_NAME)
+	public InitialPlayers getInitialPlayers(Day day) {
+		Person exemptPlayer = getPersonService().getExemptPlayer(day.asDate());
 		SortedSet<String> currentPlayerNames = getPersonDao().getAllPlayerNames();
 		SortedSet<String> users = getPersonService().getAllUsernames();
 		return new InitialPlayers(
@@ -79,6 +81,7 @@ public class NewGameServiceImpl implements NewGameService {
 			newRounds.add(newRound);
 		}
 		getGameDao().store(newGame);
+		getCacheService().clearCache();
 	}
 	
 	protected Map<String, Person> getPeopleByName() {
@@ -91,6 +94,12 @@ public class NewGameServiceImpl implements NewGameService {
 		return Maps.uniqueIndex(getPersonDao().getAll(), keyFunction);
 	}
 
+	@Override
+	public void removeLastGame() {
+		GameDao gameDao = getGameDao();
+		gameDao.remove(gameDao.getLastGame());
+	}
+	
 	public CacheService getCacheService() {
 		return i_cacheService;
 	}

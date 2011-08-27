@@ -8,11 +8,11 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasOneWidget;
+import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 
-public class Main extends Composite implements Display {
+public class Main extends ResizeComposite implements Display {
 
   @UiTemplate("Main.ui.xml")
 	public interface Binder extends UiBinder<Widget, Main> {

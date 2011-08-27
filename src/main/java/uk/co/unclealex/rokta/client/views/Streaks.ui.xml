@@ -2,8 +2,20 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-	<g:FlowPanel>
-		<g:SimplePanel ui:field="allStreaksPanel"/>
-		<g:SimplePanel ui:field="currentStreaksPanel"/>
-	</g:FlowPanel>
+	<ui:style>
+		.streaks {
+			width: 490px;
+		}
+	</ui:style>
+	
+	<g:HTMLPanel>
+		<div>
+			<h1><g:Label ui:field="allStreaksTitle"/></h1>
+			<g:SimplePanel ui:field="allStreaksPanel" addStyleNames="{style.streaks}"/>
+		</div>
+		<div>
+			<h1><g:Label ui:field="currentStreaksTitle"/></h1>
+			<g:SimplePanel ui:field="currentStreaksPanel" addStyleNames="{style.streaks}"/>
+		</div>
+	</g:HTMLPanel>
 </ui:UiBinder>

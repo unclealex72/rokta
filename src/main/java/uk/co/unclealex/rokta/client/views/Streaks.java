@@ -8,6 +8,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasOneWidget;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 
 public class Streaks extends Composite implements Display {
@@ -21,6 +22,8 @@ public class Streaks extends Composite implements Display {
 
 	@UiField HasOneWidget allStreaksPanel;
 	@UiField HasOneWidget currentStreaksPanel;
+	@UiField HasText allStreaksTitle;
+	@UiField HasText currentStreaksTitle;
 	
 	public Streaks() {
 		initWidget(binder.createAndBindUi(this));
@@ -32,6 +35,14 @@ public class Streaks extends Composite implements Display {
 
 	public HasOneWidget getCurrentStreaksPanel() {
 		return currentStreaksPanel;
+	}
+
+	public HasText getAllStreaksTitle() {
+		return allStreaksTitle;
+	}
+
+	public HasText getCurrentStreaksTitle() {
+		return currentStreaksTitle;
 	}
 
 

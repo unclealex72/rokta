@@ -1,11 +1,13 @@
 package uk.co.unclealex.rokta.server.service;
 
+import com.googlecode.ehcache.annotations.TriggersRemove;
+
 public class CacheServiceImpl implements CacheService {
 
 	@Override
-	public void invalidate() {
-		// TODO Auto-generated method stub
-
+	@TriggersRemove(cacheName=CACHE_NAME, removeAll=true)
+	public void clearCache() {
+		// Nothing doing!
 	}
 
 }

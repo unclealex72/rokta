@@ -2,12 +2,14 @@ package uk.co.unclealex.rokta.client.filter;
 
 import java.util.Date;
 
+import com.google.common.base.Objects;
+
 public class BetweenGameFilter extends AbstractGameFilter<BetweenGameFilter> {
 
 	private Date i_from;
 	private Date i_to;
 
-	protected BetweenGameFilter() {
+	BetweenGameFilter() {
 		super();
 	}
 	
@@ -19,9 +21,17 @@ public class BetweenGameFilter extends AbstractGameFilter<BetweenGameFilter> {
 
 	@Override
 	protected boolean isEqual(BetweenGameFilter other) {
-		return getFrom().equals(other.getFrom()) && getTo().equals(other.getTo());
+		return isSameDay(getFrom(), other.getFrom()) && isSameDay(getTo(), other.getTo());
 	}
 	
+	@SuppressWarnings("deprecation")
+	@Override
+	public int completeHash() {
+		Date from = getFrom();
+		Date to = getTo();
+		return Objects.hashCode(from.getYear(), from.getMonth(), from.getDate(), to.getYear(), to.getMonth(), to.getDate());
+	}
+
 	@Override
 	public <T> T accept(GameFilterVisitor<T> gameFilterVisitor) {
 		return gameFilterVisitor.visit(this);

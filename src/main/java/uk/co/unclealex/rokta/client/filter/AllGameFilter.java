@@ -8,10 +8,15 @@ public class AllGameFilter extends AbstractGameFilter<AllGameFilter> {
 		super();
 	}
 
-	public AllGameFilter(Modifier modifier) {
+	AllGameFilter(Modifier modifier) {
 		super(modifier);
 	}
 
+	@Override
+	public int completeHash() {
+		return 0;
+	}
+	
 	@Override
 	protected boolean isEqual(AllGameFilter other) {
 		return true;

@@ -2,5 +2,7 @@ package uk.co.unclealex.rokta.server.service;
 
 public interface CacheService {
 
-	public void invalidate();
+	public String CACHE_NAME = "roktaCache";
+	
+	public void clearCache();
 }

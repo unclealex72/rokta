@@ -19,6 +19,7 @@ import uk.co.unclealex.rokta.client.filter.FirstGameOfTheMonthModifier;
 import uk.co.unclealex.rokta.client.filter.FirstGameOfTheWeekModifier;
 import uk.co.unclealex.rokta.client.filter.FirstGameOfTheYearModifier;
 import uk.co.unclealex.rokta.client.filter.GameFilter;
+import uk.co.unclealex.rokta.client.filter.GameFilterFactory;
 import uk.co.unclealex.rokta.client.filter.GameFilterVisitor;
 import uk.co.unclealex.rokta.client.filter.LastGameOfTheDayModifier;
 import uk.co.unclealex.rokta.client.filter.LastGameOfTheMonthModifier;
@@ -134,7 +135,7 @@ public class FiltersPresenter extends AbstractPopupPresenter<DialogBox, Display>
 				anonymousRoktaService.getDateFirstGamePlayed(callback);
 			}
 		};
-		getAsyncCallbackExecutor().execute(callback);
+		getAsyncCallbackExecutor().executeAndWait(callback);
 	}
 	
 	protected void prepare(Display display, Date dateFirstGamePlayed) {
@@ -241,7 +242,7 @@ public class FiltersPresenter extends AbstractPopupPresenter<DialogBox, Display>
 			gameFilter = ((GameFilterAwarePlace) roktaPlace).getGameFilter();
 		}
 		else {
-			gameFilter = new YearGameFilter(new NoOpModifier(), new Date());
+			gameFilter = GameFilterFactory.createDefaultGameFilter();
 		}
 		final Display display = getDisplay();
 		GameFilterVisitor<HasValue<Boolean>> gameFilterVisitor = new GameFilterVisitor<HasValue<Boolean>>() {
@@ -292,42 +293,42 @@ public class FiltersPresenter extends AbstractPopupPresenter<DialogBox, Display>
 	}
 
 	protected void initialiseFilterButtons(final Display display) {
-		final Map<HasValue<Boolean>, GameFilterFactory> gameFilterFactories = new HashMap<HasValue<Boolean>, GameFilterFactory>();
-		gameFilterFactories.put(display.getAllButton(), new GameFilterFactory() {
+		final Map<HasValue<Boolean>, InternalGameFilterFactory> gameFilterFactories = new HashMap<HasValue<Boolean>, InternalGameFilterFactory>();
+		gameFilterFactories.put(display.getAllButton(), new InternalGameFilterFactory() {
 			public GameFilter createGameFilter(Modifier modifier) {
-				return new AllGameFilter(modifier);
+				return GameFilterFactory.createAllGameFilter(modifier);
 			}
 		});
-		gameFilterFactories.put(display.getBeforeButton(), new GameFilterFactory() {
+		gameFilterFactories.put(display.getBeforeButton(), new InternalGameFilterFactory() {
 			public GameFilter createGameFilter(Modifier modifier) {
-				return new BeforeGameFilter(modifier, getBeforeDatePickingLink().getDate());
+				return GameFilterFactory.createBeforeGameFilter(modifier, getBeforeDatePickingLink().getDate());
 			}
 		});
-		gameFilterFactories.put(display.getBetweenButton(), new GameFilterFactory() {
+		gameFilterFactories.put(display.getBetweenButton(), new InternalGameFilterFactory() {
 			public GameFilter createGameFilter(Modifier modifier) {
-				return new BetweenGameFilter(modifier, getFromDatePickingLink().getDate(), getToDatePickingLink().getDate());
+				return GameFilterFactory.createBetweenGameFilter(modifier, getFromDatePickingLink().getDate(), getToDatePickingLink().getDate());
 			}
 		});
-		gameFilterFactories.put(display.getMonthButton(), new GameFilterFactory() {
+		gameFilterFactories.put(display.getMonthButton(), new InternalGameFilterFactory() {
 			@SuppressWarnings("deprecation")
 			public GameFilter createGameFilter(Modifier modifier) {
-				return new MonthGameFilter(modifier, new Date(display.getMonthYearSelect().getValue() - 1900, display.getMonthSelect().getValue(), 1));
+				return GameFilterFactory.createMonthGameFilter(modifier, new Date(display.getMonthYearSelect().getValue() - 1900, display.getMonthSelect().getValue(), 1));
 			}
 		});
-		gameFilterFactories.put(display.getSinceButton(), new GameFilterFactory() {
+		gameFilterFactories.put(display.getSinceButton(), new InternalGameFilterFactory() {
 			public GameFilter createGameFilter(Modifier modifier) {
-				return new SinceGameFilter(modifier, getSinceDatePickingLink().getDate());
+				return GameFilterFactory.createSinceGameFilter(modifier, getSinceDatePickingLink().getDate());
 			}
 		});
-		gameFilterFactories.put(display.getWeekButton(), new GameFilterFactory() {
+		gameFilterFactories.put(display.getWeekButton(), new InternalGameFilterFactory() {
 			public GameFilter createGameFilter(Modifier modifier) {
-				return new WeekGameFilter(modifier, getWeekDatePickingLink().getDate());
+				return GameFilterFactory.createWeekGameFilter(modifier, getWeekDatePickingLink().getDate());
 			}
 		});
-		gameFilterFactories.put(display.getYearButton(), new GameFilterFactory() {
+		gameFilterFactories.put(display.getYearButton(), new InternalGameFilterFactory() {
 			@SuppressWarnings("deprecation")
 			public GameFilter createGameFilter(Modifier modifier) {
-				return new YearGameFilter(modifier, new Date(display.getYearSelect().getValue() - 1900, 0, 1));
+				return GameFilterFactory.createYearGameFilter(modifier, new Date(display.getYearSelect().getValue() - 1900, 0, 1));
 			}
 		});
 		final Predicate<HasValue<Boolean>> selectionFindingPredicate = new Predicate<HasValue<Boolean>>() {
@@ -385,7 +386,7 @@ public class FiltersPresenter extends AbstractPopupPresenter<DialogBox, Display>
 		populateValueListBox(modifierListBox, modifiers);
 	}
 	
-	interface GameFilterFactory {
+	interface InternalGameFilterFactory {
 		public GameFilter createGameFilter(Modifier modifier);
 	}
 	

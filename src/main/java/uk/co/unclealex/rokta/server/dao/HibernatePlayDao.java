@@ -5,16 +5,16 @@ package uk.co.unclealex.rokta.server.dao;
 
 import java.util.List;
 import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.hibernate.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.co.unclealex.hibernate.dao.HibernateKeyedDao;
 import uk.co.unclealex.rokta.client.filter.GameFilter;
-import uk.co.unclealex.rokta.server.model.Person;
 import uk.co.unclealex.rokta.server.model.Play;
 import uk.co.unclealex.rokta.shared.model.Hand;
+
+import com.google.common.collect.Maps;
 
 /**
  * @author alex
@@ -31,47 +31,45 @@ public class HibernatePlayDao extends HibernateKeyedDao<Play> implements PlayDao
 	}
 
 	@Override
-	public SortedMap<Hand, Integer> countPlaysByPersonAndHand(GameFilter gameFilter, Person person) {
-		return countPlaysByPersonAndHand(gameFilter, person, new EmptyQueryParameters());
+	public SortedMap<String, SortedMap<Hand, Long>> countPlaysByPersonAndHand(GameFilter gameFilter) {
+		return countPlaysByPersonAndHand(gameFilter, new EmptyQueryParameters());
 	}
 
 	@Override
-	public SortedMap<Hand, Integer> countOpeningPlaysByPersonAndHand(GameFilter gameFilter, Person person) {
+	public SortedMap<String, SortedMap<Hand, Long>> countOpeningPlaysByPersonAndHand(GameFilter gameFilter) {
 		QueryParameters queryParameters = new SimpleQueryParameters("r.round = 1") {
 			@Override
 			public void addRestrictions(Query query) {
 				// Do nothing
 			}
 		};
-		return countPlaysByPersonAndHand(gameFilter, person, queryParameters);
+		return countPlaysByPersonAndHand(gameFilter, queryParameters);
 	}
 
-	protected SortedMap<Hand, Integer> countPlaysByPersonAndHand(GameFilter gameFilter, final Person person,
-			QueryParameters extraQueryParameters) {
-		QueryParameters queryParameters = new SimpleQueryParameters("p.person = :person") {
-			@Override
-			public void addRestrictions(Query query) {
-				query.setEntity("person", person);
-			}
-		};
+	protected SortedMap<String, SortedMap<Hand, Long>> countPlaysByPersonAndHand(GameFilter gameFilter,
+			QueryParameters queryParameters) {
 		Query query = getGameFilterSupport().createQuery(
 				gameFilter,
-				"select count(*), p.hand from Game g join g.rounds as r join r.plays as p", 
-				new JoinQueryParameters(queryParameters, extraQueryParameters), "group by p.hand");
-		return asMap(query);
+				"select p.person.name, p.hand, count(*) from Game g join g.rounds as r join r.plays as p", 
+				queryParameters, "group by p.hand, p.person.name");
+		@SuppressWarnings("unchecked")
+		List<Object[]> results = query.list();
+		SortedMap<String, SortedMap<Hand, Long>> personMap = Maps.newTreeMap();
+		for (Object[] result : results) {
+			String person = (String) result[0];
+			Hand hand = (Hand) result[1];
+			Long count = (Long) result[2];
+			SortedMap<Hand, Long> handMap = personMap.get(person);
+			if (handMap == null) {
+				handMap = Maps.newTreeMap();
+				personMap.put(person, handMap);
+			}
+			handMap.put(hand, count);
+		}
+		return personMap;
 	}
 
 	
-	protected SortedMap<Hand, Integer> asMap(Query query) {
-		@SuppressWarnings("unchecked")
-		List<Object[]> results = query.list();
-		SortedMap<Hand, Integer> map = new TreeMap<Hand, Integer>();
-		for (Object[] result : results) {
-			map.put((Hand) result[0], (Integer) result[1]);
-		}
-		return map;
-	}
-
 	public GameFilterSupport getGameFilterSupport() {
 		return i_gameFilterSupport;
 	}

@@ -4,8 +4,6 @@ import java.util.Date;
 
 import uk.co.unclealex.rokta.client.filter.GameFilter;
 import uk.co.unclealex.rokta.shared.model.CurrentInformation;
-import uk.co.unclealex.rokta.shared.model.HandDistribution;
-import uk.co.unclealex.rokta.shared.model.InitialDates;
 import uk.co.unclealex.rokta.shared.service.AnonymousRoktaService;
 
 public class AnonymousRoktaServlet extends AbstractRoktaServlet<AnonymousRoktaService> implements AnonymousRoktaService {
@@ -26,22 +24,10 @@ public class AnonymousRoktaServlet extends AbstractRoktaServlet<AnonymousRoktaSe
 	}
 
 	@Override
-	public CurrentInformation getCurrentInformation(GameFilter gameFilter, int currentYear, int currentMonth,
-			int currentDay, int targetStreaksSize) {
-		return createRoktaService().getCurrentInformation(gameFilter, currentYear, currentMonth, currentDay, targetStreaksSize);
+	public CurrentInformation getCurrentInformation(GameFilter gameFilter, Date currentDate, int targetStreaksSize) {
+		return createRoktaService().getCurrentInformation(gameFilter, currentDate, targetStreaksSize);
 	}
 	
-
-	@Override
-	public HandDistribution createHandDistributionGraph(GameFilter gameFilter, String personName) {
-		return createRoktaService().createHandDistributionGraph(gameFilter, personName);
-	}
-
-	@Override
-	public HandDistribution createOpeningHandDistributionGraph(GameFilter gameFilter, String personName) {
-		return createRoktaService().createOpeningHandDistributionGraph(gameFilter, personName);
-	}
-
 	@Override
 	public String[] getAllUsersNames() {
 		return createRoktaService().getAllUsersNames();
@@ -50,11 +36,6 @@ public class AnonymousRoktaServlet extends AbstractRoktaServlet<AnonymousRoktaSe
 	@Override
 	public String[] getAllPlayerNames() {
 		return createRoktaService().getAllPlayerNames();
-	}
-
-	@Override
-	public InitialDates getInitialDates() {
-		return createRoktaService().getInitialDates();
 	}
 
 	@Override

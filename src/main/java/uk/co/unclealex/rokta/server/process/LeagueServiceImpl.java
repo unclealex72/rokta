@@ -27,6 +27,8 @@ import uk.co.unclealex.rokta.shared.model.League;
 import uk.co.unclealex.rokta.shared.model.LeagueRow;
 import uk.co.unclealex.rokta.shared.model.Leagues;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 
 @Transactional
@@ -152,12 +154,19 @@ public class LeagueServiceImpl implements LeagueService {
 		if (leaguesByGame.isEmpty()) {
 			return;
 		}
-		SortedSet<String> currentPlayerNames = getPersonDao().getAllPlayerNames();
 		Game lastGamePlayed = getGameDao().getLastGame();
+		lastGamePlayed.getParticipants();
 		Game lastLeagueGame = leaguesByGame.lastKey();
 		// Exemptions only occur if the last game played was today.
 		// If the last game was played today we can also see who hasn't played today
 		if (lastLeagueGame.equals(lastGamePlayed)) {
+			Function<Person, String> nameFunction = new Function<Person, String>() {
+				public String apply(Person person) {
+					return person.getName();
+				}
+			};
+			Collection<String> currentPlayerNames = 
+					Sets.newHashSet(Iterables.transform(lastGamePlayed.getParticipants(), nameFunction));
 			League league = leaguesByGame.get(lastLeagueGame);
 			league.setCurrent(true);
 			if (getDateUtil().areSameDay(lastGamePlayed.getDatePlayed(), currentDate)) {

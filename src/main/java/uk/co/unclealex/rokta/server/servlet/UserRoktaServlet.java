@@ -23,5 +23,13 @@ public class UserRoktaServlet extends AbstractRoktaServlet<UserRoktaService> imp
 		createRoktaService().submitGame(game);
 	}
 	
-
+	@Override
+	public void removeLastGame() {
+		createRoktaService().removeLastGame();
+	}
+	
+	@Override
+	public void clearCache() {
+		createRoktaService().clearCache();
+	}
 }

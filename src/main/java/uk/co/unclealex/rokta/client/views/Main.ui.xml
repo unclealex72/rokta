@@ -3,30 +3,14 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
 	<g:DockLayoutPanel unit="PX">
-		<g:north size="35">
+		<g:north size="50">
 			<g:SimplePanel ui:field="titlePanel"/>
 		</g:north>
 		<g:west size="180">
 		  <g:SimpleLayoutPanel ui:field="navigationPanel"/>		
 		</g:west>
 		<g:center>
-			<g:SimplePanel ui:field="mainPanel"/>
+			<g:SimpleLayoutPanel ui:field="mainPanel"/>
 		</g:center>
 	</g:DockLayoutPanel>
-	<!--
-	<g:ScrollPanel>
-		<g:HTMLPanel>
-			<div id="hdr">
-				<g:SimplePanel ui:field="titlePanel"/>
-			</div>
-			<div id="lh-col">
-				<g:SimpleLayoutPanel ui:field="navigationPanel"/>
-			</div>
-			<div id="rh-col">
-			  <g:SimplePanel ui:field="mainPanel"/>
-			</div>
-
-		</g:HTMLPanel>
-	</g:ScrollPanel>
-	-->
 </ui:UiBinder>

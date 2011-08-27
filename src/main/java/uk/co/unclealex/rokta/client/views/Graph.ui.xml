@@ -5,9 +5,11 @@
 	
 	<ui:style>
 		.container {
-	    width: 90%;
-	    height: 90%;
-	    margin: 5%;
+	    width: 98%;
+	    height: 98%;
+	    margin-top: 2%;
+	    margin-bottom: 2%;
+	    margin-right: 2%;	    
 		}
 		.graph {
 	    width: 100%;

@@ -8,7 +8,7 @@ public class BeforeGameFilter extends DateGameFilter {
 		super();
 	}
 	
-	public BeforeGameFilter(Modifier modifier, Date before) {
+	BeforeGameFilter(Modifier modifier, Date before) {
 		super(modifier, before);
 	}
 

@@ -1,14 +1,16 @@
 package uk.co.unclealex.rokta.server.service;
 
-import java.util.Date;
 
+import uk.co.unclealex.rokta.server.model.Day;
 import uk.co.unclealex.rokta.shared.model.Game;
 import uk.co.unclealex.rokta.shared.model.InitialPlayers;
 
 public interface NewGameService {
 
-	public InitialPlayers getInitialPlayers(Date date);
+	public InitialPlayers getInitialPlayers(Day day);
 
 	public void submitGame(Game game);
+
+	public void removeLastGame();
 
 }

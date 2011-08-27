@@ -4,30 +4,25 @@ import java.util.SortedSet;
 
 import javax.inject.Inject;
 
-import uk.co.unclealex.rokta.client.visualisation.Visualisation;
-import uk.co.unclealex.rokta.client.visualisation.VisualisationDisplay;
-import uk.co.unclealex.rokta.client.visualisation.VisualisationProvider;
+import uk.co.unclealex.rokta.client.model.Table;
+import uk.co.unclealex.rokta.client.visualisation.TableDisplay;
 import uk.co.unclealex.rokta.shared.model.Streak;
 
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
-import com.google.gwt.visualization.client.DataTable;
 import com.google.inject.assistedinject.Assisted;
 
-public class StreaksTablePresenter implements Presenter, VisualisationProvider {
+public class StreaksTablePresenter implements Presenter {
 
-	public static interface Display extends VisualisationDisplay {
-		
+	public static interface Display extends TableDisplay {
+		String HEADER = "header";
 	}
 
 	private final Display i_display;
 	private final SortedSet<Streak> i_streaks;
-	private final Visualisation i_visualisation;
 	
 	@Inject
-	public StreaksTablePresenter(Display display, Visualisation visualisation, @Assisted SortedSet<Streak> streaks) {
+	public StreaksTablePresenter(Display display, @Assisted SortedSet<Streak> streaks) {
 		i_display = display;
-		i_visualisation = visualisation;
 		i_streaks = streaks;
 	}
 
@@ -36,28 +31,17 @@ public class StreaksTablePresenter implements Presenter, VisualisationProvider {
 	public void show(AcceptsOneWidget container) {
 		Display display = getDisplay();
 		container.setWidget(display);
-		getVisualisation().draw(display, this);
+		display.draw(createStreaksTable(), null, null);
 	}
 
-	@Override
-	public DataTable createDataTable() {
-		DataTable dataTable = DataTable.create();
-		//Rank	Player	Games	From	To
-		dataTable.addColumn(ColumnType.NUMBER, "Rank");
-		dataTable.addColumn(ColumnType.STRING, "Player");
-		dataTable.addColumn(ColumnType.NUMBER, "Games");
-		dataTable.addColumn(ColumnType.DATETIME, "From");
-		dataTable.addColumn(ColumnType.DATETIME, "To");
+	public Table createStreaksTable() {
+		Table streaksTable = new Table();
+		streaksTable.addRow(Display.HEADER, "Rank", "Player", "Games", "From", "To");
 		for (Streak streak : getStreaks()) {
-			int row = dataTable.addRow();
-			int col = 0;
-			dataTable.setValue(row, col++, streak.getRank());
-			dataTable.setValue(row, col++, streak.getPersonName());
-			dataTable.setValue(row, col++, streak.getLength());
-			dataTable.setValue(row, col++, streak.getStartDate());
-			dataTable.setValue(row, col++, streak.getEndDate());
+			streaksTable.addRow(
+					null, streak.getRank(), streak.getPersonName(), streak.getLength(), streak.getStartDate(), streak.getEndDate());
 		}
-		return dataTable;
+		return streaksTable;
 	}
 	
 	public SortedSet<Streak> getStreaks() {
@@ -68,10 +52,4 @@ public class StreaksTablePresenter implements Presenter, VisualisationProvider {
 	public Display getDisplay() {
 		return i_display;
 	}
-
-
-	public Visualisation getVisualisation() {
-		return i_visualisation;
-	}
-
 }

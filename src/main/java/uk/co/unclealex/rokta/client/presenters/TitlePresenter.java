@@ -1,5 +1,7 @@
 package uk.co.unclealex.rokta.client.presenters;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import uk.co.unclealex.rokta.client.filter.AllGameFilter;
@@ -35,32 +37,66 @@ import uk.co.unclealex.rokta.client.places.RoktaPlace;
 import uk.co.unclealex.rokta.client.places.RoktaPlaceVisitor;
 import uk.co.unclealex.rokta.client.places.WinningStreaksPlace;
 import uk.co.unclealex.rokta.client.util.TitleManager;
+import uk.co.unclealex.rokta.client.util.WaitingController;
+import uk.co.unclealex.rokta.client.util.WaitingListener;
+import uk.co.unclealex.rokta.shared.model.Game;
+import uk.co.unclealex.rokta.shared.model.Game.Round;
 
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 
-public class TitlePresenter implements Presenter, TitleManager {
+public class TitlePresenter implements Presenter, TitleManager, WaitingListener {
 
 	public static interface Display extends IsWidget {
 	
 		HasText getMainTitle();
+		Image getWaitingImage();
+		void showWaitingImage();
+		void hideWaitingImage();
+	}
+	
+	public interface WaitingImages extends ClientBundle {
+		
+		@Source("images/waiting/pacman.gif")
+		ImageResource pacman();
+		@Source("images/waiting/flowery.gif")
+		ImageResource flowery();
+		@Source("images/waiting/snake.gif")
+		ImageResource snake();
+		@Source("images/waiting/bar.gif")
+		ImageResource bar();
+		@Source("images/waiting/led-bar.gif")
+		ImageResource ledBar();
 	}
 	
 	private final Display i_display;
 	private final TitleMessages i_titleMessages;
+	private final ImageResource[] i_waitingImages;
 	
 	@Inject
-	public TitlePresenter(Display display, TitleMessages titleMessages) {
+	public TitlePresenter(
+			Display display, TitleMessages titleMessages, WaitingController waitingController, WaitingImages waitingImages) {
 		super();
 		i_display = display;
 		i_titleMessages = titleMessages;
+		i_waitingImages = new ImageResource[] {
+			waitingImages.pacman(),
+			waitingImages.flowery(), 
+			waitingImages.snake(),
+			waitingImages.bar(),
+			waitingImages.ledBar() };
+		waitingController.addWaitingListener(this);
 	}
 
 	@Override
 	public void show(AcceptsOneWidget container) {
-		container.setWidget(getDisplay());
+		Display display = getDisplay();
+		container.setWidget(display);
 	}
 
 	protected String makeTitle(RoktaPlace roktaPlace) {
@@ -73,7 +109,7 @@ public class TitlePresenter implements Presenter, TitleManager {
 				return makeGameFilterTitle(titleMessages.admin(), adminPlace);
 			}
 			public String visit(GamePlace gamePlace) {
-				return getTitleMessages().title(titleMessages.game());
+				return makeGameTitle(gamePlace.getGame());
 			}
 			public String visit(ProfilePlace profilePlace) {
 				return makeGameFilterTitle(titleMessages.profile(profilePlace.getUsername()), profilePlace);
@@ -97,6 +133,30 @@ public class TitlePresenter implements Presenter, TitleManager {
 		return roktaPlace.accept(visitor);
 	}
 	
+	protected String makeGameTitle(Game game) {
+		TitleMessages titleMessages = getTitleMessages();
+		String title;
+		if (!game.isStarted()) {
+			title = titleMessages.newGame();
+		}
+		else if (game.isLost()) {
+			String loser = game.getLoser();
+			String[] possibleTitles = new String[] { 
+				titleMessages.gameLostOne(loser), 
+				titleMessages.gameLostTwo(loser), 
+				titleMessages.gameLostThree(loser), 
+				titleMessages.gameLostFour(loser) };
+			int rnd = (int) (Math.random() * possibleTitles.length);
+			title = possibleTitles[rnd];
+		}
+		else {
+			List<Round> rounds = game.getRounds();
+			int round = rounds==null?1:rounds.size() + 1;
+			title = titleMessages.gameRound(round);
+		}
+		return titleMessages.title(title);
+	}
+
 	protected String makeGameFilterTitle(String placeTitle, GameFilterAwarePlace place) {
 		final TitleMessages titleMessages = getTitleMessages();
 		GameFilterVisitor<String> gameFilterVisitor = new GameFilterVisitor<String>() {
@@ -170,6 +230,20 @@ public class TitlePresenter implements Presenter, TitleManager {
 		Window.setTitle(title);
 	}
 	
+	@Override
+	public void startWaiting() {
+		ImageResource[] waitingImages = getWaitingImages();
+		int rnd = (int) (Math.random() * waitingImages.length);
+		Display display = getDisplay();
+		display.getWaitingImage().setResource(waitingImages[rnd]);
+		display.showWaitingImage();
+	}
+	
+	@Override
+	public void stopWaiting() {
+		getDisplay().hideWaitingImage();
+	}
+	
 	public Display getDisplay() {
 		return i_display;
 	}
@@ -177,6 +251,10 @@ public class TitlePresenter implements Presenter, TitleManager {
 
 	public TitleMessages getTitleMessages() {
 		return i_titleMessages;
+	}
+
+	public ImageResource[] getWaitingImages() {
+		return i_waitingImages;
 	}
 
 }

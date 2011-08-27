@@ -3,12 +3,9 @@
  */
 package uk.co.unclealex.rokta.client.gin;
 
-import java.util.Date;
-
 import javax.inject.Singleton;
 
-import uk.co.unclealex.rokta.client.filter.NoOpModifier;
-import uk.co.unclealex.rokta.client.filter.YearGameFilter;
+import uk.co.unclealex.rokta.client.filter.GameFilterFactory;
 import uk.co.unclealex.rokta.client.places.LeaguePlace;
 import uk.co.unclealex.rokta.client.places.RoktaActivityMapper;
 import uk.co.unclealex.rokta.client.places.RoktaPlaceHistoryMapper;
@@ -82,7 +79,10 @@ public class RoktaInternalModule extends AbstractGinModule {
 		 */
 		PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(
 				historyMapper);
-		historyHandler.register(placeController, eventBus, new LeaguePlace(new YearGameFilter(new NoOpModifier(), new Date())));
+		historyHandler.register(
+				placeController, 
+				eventBus, 
+				new LeaguePlace(GameFilterFactory.createDefaultGameFilter()));
 		return historyHandler;
 	}
 

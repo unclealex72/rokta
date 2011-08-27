@@ -3,8 +3,21 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:a="urn:import:uk.co.unclealex.rokta.client.ui">
 
-	<g:FlowPanel>
+  <ui:style type='uk.co.unclealex.rokta.client.views.League.Style'>
+    .header { font-weight: bold; }
+    .notPlaying { font-style: italic; }
+    .exempt { color : blue; }
+    .movementImage { vertical-align: middle; }
+    .league td {
+			vertical-align: middle;
+			text-align: right;
+		}
+  </ui:style>
+
+	<g:HTMLPanel>
 		<g:Label ui:field="exemptPlayer"/>
-		<g:SimplePanel ui:field="league"/>
-	</g:FlowPanel>
+		<g:Grid ui:field="league" addStyleNames="{style.league}">
+			
+		</g:Grid>
+	</g:HTMLPanel>
 </ui:UiBinder>

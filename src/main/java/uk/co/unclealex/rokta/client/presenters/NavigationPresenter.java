@@ -9,8 +9,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import uk.co.unclealex.rokta.client.filter.GameFilter;
-import uk.co.unclealex.rokta.client.filter.NoOpModifier;
-import uk.co.unclealex.rokta.client.filter.YearGameFilter;
+import uk.co.unclealex.rokta.client.filter.GameFilterFactory;
 import uk.co.unclealex.rokta.client.places.AdminPlace;
 import uk.co.unclealex.rokta.client.places.GameFilterAwarePlace;
 import uk.co.unclealex.rokta.client.places.GamePlace;
@@ -108,7 +107,7 @@ public class NavigationPresenter implements Presenter {
 				anonymousRoktaService.getDateFirstGamePlayed(callback);
 			}
 		};
-		getAsyncCallbackExecutor().execute(callback);
+		getAsyncCallbackExecutor().executeAndWait(callback);
 	}
 	
 	public void show(AcceptsOneWidget container, Date dateFirstGamePlayed) {
@@ -166,21 +165,20 @@ public class NavigationPresenter implements Presenter {
 				anonymousRoktaService.getAllPlayerNames(callback);
 			}
 		};
-		getAsyncCallbackExecutor().execute(callback);
+		getAsyncCallbackExecutor().executeAndWait(callback);
 	}
 
 	protected void bindGameFilterLinks(final Map<HasClickHandlers, Function<GameFilter, RoktaPlace>> roktaPlaceLinkMap) {
 		ClickHandler gameFilterHandler = new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				Date now = new Date();
 				Place where = getPlaceController().getWhere();
 				GameFilter gameFilter;
 				if (where instanceof GameFilterAwarePlace) {
 					gameFilter = ((GameFilterAwarePlace) where).getGameFilter();
 				}
 				else {
-					gameFilter = new YearGameFilter(new NoOpModifier(), now);
+					gameFilter = GameFilterFactory.createDefaultGameFilter();
 				}
 				getPlaceController().goTo(roktaPlaceLinkMap.get(event.getSource()).apply(gameFilter));
 			}

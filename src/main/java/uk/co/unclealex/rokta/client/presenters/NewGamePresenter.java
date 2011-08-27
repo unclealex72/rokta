@@ -61,7 +61,7 @@ public class NewGamePresenter extends AllUsersAwarePresenter {
 				userRoktaService.getInitialPlayers(new Date(), callback);
 			}
 		};
-		getAsyncCallbackExecutor().execute(initialPlayersCallback);
+		getAsyncCallbackExecutor().executeAndWait(initialPlayersCallback);
 	}
 
 	protected void show(AcceptsOneWidget container, List<String> usernames, InitialPlayers initialPlayers) {

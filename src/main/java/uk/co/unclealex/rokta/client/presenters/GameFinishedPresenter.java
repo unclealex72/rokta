@@ -1,11 +1,8 @@
 package uk.co.unclealex.rokta.client.presenters;
 
-import java.util.Date;
-
 import javax.inject.Inject;
 
-import uk.co.unclealex.rokta.client.filter.NoOpModifier;
-import uk.co.unclealex.rokta.client.filter.YearGameFilter;
+import uk.co.unclealex.rokta.client.filter.GameFilterFactory;
 import uk.co.unclealex.rokta.client.places.LeaguePlace;
 import uk.co.unclealex.rokta.client.util.AsyncCallbackExecutor;
 import uk.co.unclealex.rokta.client.util.ExecutableAsyncCallback;
@@ -63,7 +60,8 @@ public class GameFinishedPresenter implements Presenter {
 		ExecutableAsyncCallback<Void> callback = new FailureAsPopupExecutableAsyncCallback<Void>() {
 			@Override
 			public void onSuccess(Void result) {
-				getPlaceController().goTo(new LeaguePlace(new YearGameFilter(new NoOpModifier(), new Date())));
+				getPlaceController().goTo(
+						new LeaguePlace(GameFilterFactory.createDefaultGameFilter()));
 			}
 			@Override
 			public void execute(AnonymousRoktaServiceAsync anonymousRoktaService, UserRoktaServiceAsync userRoktaService,
@@ -71,7 +69,7 @@ public class GameFinishedPresenter implements Presenter {
 				userRoktaService.submitGame(getGame(), callback);
 			}
 		};
-		getAsyncCallbackExecutor().execute(callback);
+		getAsyncCallbackExecutor().executeAndWait(callback);
 	}
 
 	public AsyncCallbackExecutor getAsyncCallbackExecutor() {

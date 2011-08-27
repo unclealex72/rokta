@@ -7,7 +7,7 @@ public class WeekGameFilter extends DateGameFilter {
 	protected WeekGameFilter() {
 	}
 	
-	public WeekGameFilter(Modifier modifier, Date date) {
+	WeekGameFilter(Modifier modifier, Date date) {
 		super(modifier, date);
 	}
 

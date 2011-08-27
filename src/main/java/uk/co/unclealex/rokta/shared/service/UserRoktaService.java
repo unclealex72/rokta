@@ -13,4 +13,8 @@ public interface UserRoktaService extends RemoteService {
 	
 	public InitialPlayers getInitialPlayers(Date date);
 	public void submitGame(Game game);
+	
+	public void clearCache();
+	
+	public void removeLastGame();
 }

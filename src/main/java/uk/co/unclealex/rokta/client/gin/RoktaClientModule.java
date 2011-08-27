@@ -10,6 +10,7 @@ import uk.co.unclealex.rokta.client.cache.InformationCacheImpl;
 import uk.co.unclealex.rokta.client.factories.GameFinishedPresenterFactory;
 import uk.co.unclealex.rokta.client.factories.GamePresenterFactory;
 import uk.co.unclealex.rokta.client.factories.GraphPresenterFactory;
+import uk.co.unclealex.rokta.client.factories.HandCountPresenterFactory;
 import uk.co.unclealex.rokta.client.factories.HeadToHeadsPresenterFactory;
 import uk.co.unclealex.rokta.client.factories.LeaguePresenterFactory;
 import uk.co.unclealex.rokta.client.factories.LoginPresenterFactory;
@@ -23,6 +24,7 @@ import uk.co.unclealex.rokta.client.presenters.FiltersPresenter;
 import uk.co.unclealex.rokta.client.presenters.GameFinishedPresenter;
 import uk.co.unclealex.rokta.client.presenters.GamePresenter;
 import uk.co.unclealex.rokta.client.presenters.GraphPresenter;
+import uk.co.unclealex.rokta.client.presenters.HandCountPresenter;
 import uk.co.unclealex.rokta.client.presenters.HeadToHeadsPresenter;
 import uk.co.unclealex.rokta.client.presenters.LeaguePresenter;
 import uk.co.unclealex.rokta.client.presenters.LoginPresenter;
@@ -35,15 +37,17 @@ import uk.co.unclealex.rokta.client.presenters.ProfilePresenter;
 import uk.co.unclealex.rokta.client.presenters.StreaksPresenter;
 import uk.co.unclealex.rokta.client.presenters.StreaksTablePresenter;
 import uk.co.unclealex.rokta.client.presenters.TitlePresenter;
-import uk.co.unclealex.rokta.client.presenters.WaitingPresenter;
 import uk.co.unclealex.rokta.client.presenters.WinningStreaksPresenter;
 import uk.co.unclealex.rokta.client.util.ClickHelper;
 import uk.co.unclealex.rokta.client.util.ClickHelperImpl;
 import uk.co.unclealex.rokta.client.util.TitleManager;
+import uk.co.unclealex.rokta.client.util.WaitingController;
+import uk.co.unclealex.rokta.client.util.WaitingControllerImpl;
 import uk.co.unclealex.rokta.client.views.Filters;
 import uk.co.unclealex.rokta.client.views.Game;
 import uk.co.unclealex.rokta.client.views.GameFinished;
 import uk.co.unclealex.rokta.client.views.Graph;
+import uk.co.unclealex.rokta.client.views.HandCount;
 import uk.co.unclealex.rokta.client.views.HeadToHeads;
 import uk.co.unclealex.rokta.client.views.League;
 import uk.co.unclealex.rokta.client.views.Login;
@@ -55,7 +59,6 @@ import uk.co.unclealex.rokta.client.views.Profile;
 import uk.co.unclealex.rokta.client.views.Streaks;
 import uk.co.unclealex.rokta.client.views.StreaksTable;
 import uk.co.unclealex.rokta.client.views.Title;
-import uk.co.unclealex.rokta.client.views.Waiting;
 import uk.co.unclealex.rokta.client.visualisation.Visualisation;
 
 import com.google.gwt.inject.client.AbstractGinModule;
@@ -88,6 +91,9 @@ public class RoktaClientModule extends AbstractGinModule {
 
 	@Override
 	protected void configure() {
+		
+		bind(WaitingController.class).to(WaitingControllerImpl.class).in(Singleton.class);
+		
 		bind(MainPresenter.Display.class).to(Main.class).in(Singleton.class);
 		bind(MainPresenter.class).in(Singleton.class);
 		
@@ -97,9 +103,6 @@ public class RoktaClientModule extends AbstractGinModule {
 		
 		bind(NavigationPresenter.Display.class).to(Navigation.class).in(Singleton.class);
 		bind(NavigationPresenter.class).in(Singleton.class);
-
-    bind(WaitingPresenter.Display.class).to(Waiting.class).in(Singleton.class);
-		bind(WaitingPresenter.class).asEagerSingleton();
 
 		bind(LoginPresenter.Display.class).to(Login.class);
 		bind(LoginPresenterFactory.class).to(LoginPresenterFactoryImpl.class);
@@ -140,6 +143,10 @@ public class RoktaClientModule extends AbstractGinModule {
 		bindPresenterWithDisplay(
 				HeadToHeadsPresenter.Display.class, HeadToHeads.class, 
 				HeadToHeadsPresenter.class, HeadToHeadsPresenterFactory.class);
+		
+		bindPresenterWithDisplay(
+				HandCountPresenter.Display.class, HandCount.class,
+				HandCountPresenter.class, HandCountPresenterFactory.class);
 		
 		bind(NewGamePresenter.class);
 		bindDisplay(NewGamePresenter.Display.class, NewGame.class);

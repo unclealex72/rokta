@@ -29,7 +29,7 @@ package uk.co.unclealex.rokta.client.util;
  */
 public interface AsyncCallbackExecutor {
 
+	public <T> void executeAndWait(ExecutableAsyncCallback<T> callback, CanWait... canWaits);
+
 	public <T> void execute(ExecutableAsyncCallback<T> callback);
-	
-	public <T> void executeAndWait(ExecutableAsyncCallback<T> callback, CanWait canWait);
 }

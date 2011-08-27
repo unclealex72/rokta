@@ -53,7 +53,7 @@ public class InformationCacheImpl implements InformationCache {
 					anonymousRoktaService.getDateLastGamePlayed(callback);
 				}
 			};
-			getAsyncCallbackExecutor().execute(lastDateCallback);
+			getAsyncCallbackExecutor().executeAndWait(lastDateCallback);
 		}
 	}
 
@@ -72,15 +72,13 @@ public class InformationCacheImpl implements InformationCache {
 			public void onFailure(Throwable cause) {
 				callback.onFailure(cause);
 			}
-			@SuppressWarnings("deprecation")
 			@Override
 			public void execute(AnonymousRoktaServiceAsync anonymousRoktaService, UserRoktaServiceAsync userRoktaService,
 					AsyncCallback<CurrentInformation> callback) {
-				anonymousRoktaService.getCurrentInformation(
-						gameFilter, now.getYear() + 1900, now.getMonth(), now.getDay(), targetStreaksSize, callback);
+				anonymousRoktaService.getCurrentInformation(gameFilter, now, targetStreaksSize, callback);
 			}
 		};
-		getAsyncCallbackExecutor().execute(currentInformationCallback);
+		getAsyncCallbackExecutor().executeAndWait(currentInformationCallback);
 	}
 
 	public AsyncCallbackExecutor getAsyncCallbackExecutor() {

@@ -2,17 +2,16 @@ package uk.co.unclealex.rokta.server.service;
 
 import java.util.Date;
 
-import com.google.common.collect.Iterables;
-
 import uk.co.unclealex.rokta.client.filter.GameFilter;
+import uk.co.unclealex.rokta.server.model.Day;
 import uk.co.unclealex.rokta.server.process.PersonService;
 import uk.co.unclealex.rokta.shared.model.CurrentInformation;
 import uk.co.unclealex.rokta.shared.model.Game;
-import uk.co.unclealex.rokta.shared.model.HandDistribution;
-import uk.co.unclealex.rokta.shared.model.InitialDates;
 import uk.co.unclealex.rokta.shared.model.InitialPlayers;
 import uk.co.unclealex.rokta.shared.service.AnonymousRoktaService;
 import uk.co.unclealex.rokta.shared.service.UserRoktaService;
+
+import com.google.common.collect.Iterables;
 
 public class RoktaServiceImpl implements AnonymousRoktaService, UserRoktaService {
 
@@ -23,7 +22,7 @@ public class RoktaServiceImpl implements AnonymousRoktaService, UserRoktaService
 	
 	@Override
 	public InitialPlayers getInitialPlayers(Date date) {
-		return getNewGameService().getInitialPlayers(date);
+		return getNewGameService().getInitialPlayers(new Day(date));
 	}
 
 	@Override
@@ -42,21 +41,8 @@ public class RoktaServiceImpl implements AnonymousRoktaService, UserRoktaService
 	}
 	
 	@Override
-	public CurrentInformation getCurrentInformation(GameFilter gameFilter, int currentYear, int currentMonth,
-			int currentDay, int targetStreaksSize) {
-		return getInformationService().getCurrentInformation(gameFilter, currentYear, currentMonth, currentDay, targetStreaksSize);
-	}
-
-	@Override
-	public HandDistribution createHandDistributionGraph(GameFilter gameFilter, String personName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public HandDistribution createOpeningHandDistributionGraph(GameFilter gameFilter, String personName) {
-		// TODO Auto-generated method stub
-		return null;
+	public CurrentInformation getCurrentInformation(GameFilter gameFilter, Date currentDate, int targetStreaksSize) {
+		return getInformationService().getCurrentInformation(gameFilter, new Day(currentDate), targetStreaksSize);
 	}
 
 	@Override
@@ -70,11 +56,15 @@ public class RoktaServiceImpl implements AnonymousRoktaService, UserRoktaService
 	}
 
 	@Override
-	public InitialDates getInitialDates() {
-		// TODO Auto-generated method stub
-		return null;
+	public void clearCache() {
+		getCacheService().clearCache();
 	}
-
+	
+	@Override
+	public void removeLastGame() {
+		getNewGameService().removeLastGame();
+	}
+	
 	@Override
 	public boolean authenticate(String username, String password) {
 		// TODO Auto-generated method stub

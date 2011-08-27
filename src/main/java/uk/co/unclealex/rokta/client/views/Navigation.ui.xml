@@ -3,14 +3,55 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:a="urn:import:uk.co.unclealex.rokta.client.ui">
 
-	<g:HTMLPanel>
-		<h1>Erm...</h1>
+	<ui:style>
+		.navigation {
+			width: 100%;
+			float: left;
+			background-color: #eeeeee;
+		}
+		
+		.navigation ul {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+			width: 100%; /* Width of Menu Items */
+			}
+		
+		.navigation li {
+			position: relative;
+			width: 100%;
+			height: 26px;
+		}
+		
+		/* Styles for Menu Items */
+		.navigation li a {
+			display: block;
+			text-decoration: none;
+			color: black;
+			padding-left: 10px;
+			padding-top: 5px;
+			padding-bottom: 5px;
+			height: 25px;
+			border-bottom: 0;
+			}
+		
+		.navigation li:hover {
+			background-color: #6699cc;
+		}
+		
+		.navigation li:hover a {
+			color: white;
+		}
+	</ui:style>
+	
+	<g:HTMLPanel addStyleNames="{style.navigation}">
+		<h2>Erm...</h2>
 		<a:UnorderedListPanel>
 			<g:Anchor ui:field="newGameLink">New Game</g:Anchor>
 			<g:Anchor ui:field="adminLink">Administer</g:Anchor>
       <g:Anchor ui:field="filtersLink">Filters</g:Anchor>
 		</a:UnorderedListPanel>
-		<h1>Statistics</h1>
+		<h2>Statistics</h2>
 		<a:UnorderedListPanel>
       <g:Anchor ui:field="leagueLink">League</g:Anchor>
       <g:Anchor ui:field="graphLink">Graph</g:Anchor>
@@ -18,7 +59,7 @@
       <g:Anchor ui:field="losingStreaksLink">Losing Streaks</g:Anchor>
       <g:Anchor ui:field="headToHeadsLink">Head To Heads</g:Anchor>
 		</a:UnorderedListPanel>
-		<h1>Profiles</h1>
+		<h2>Profiles</h2>
 		<a:UnorderedListPanel ui:field="profilesPanel"/>
 	</g:HTMLPanel>
 

@@ -3,5 +3,9 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:a="urn:import:uk.co.unclealex.rokta.client.ui">
 
-	<g:SimplePanel ui:field="streaks"/>
+  <ui:style type='uk.co.unclealex.rokta.client.views.StreaksTable.Style'>
+    .header { font-weight: bold; }
+  </ui:style>
+
+	<g:Grid ui:field="streaks"/>
 </ui:UiBinder>

@@ -8,7 +8,7 @@ public class MonthGameFilter extends DateGameFilter {
 		super();
 	}
 	
-	public MonthGameFilter(Modifier modifier, Date date) {
+	MonthGameFilter(Modifier modifier, Date date) {
 		super(modifier, date);
 	}
 

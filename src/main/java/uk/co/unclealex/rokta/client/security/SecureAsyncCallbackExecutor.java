@@ -3,13 +3,16 @@
  */
 package uk.co.unclealex.rokta.client.security;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import uk.co.unclealex.rokta.client.factories.LoginPresenterFactory;
-import uk.co.unclealex.rokta.client.presenters.WaitingPresenter;
 import uk.co.unclealex.rokta.client.util.AsyncCallbackExecutor;
 import uk.co.unclealex.rokta.client.util.CanWait;
 import uk.co.unclealex.rokta.client.util.ExecutableAsyncCallback;
+import uk.co.unclealex.rokta.client.util.WaitingController;
 import uk.co.unclealex.rokta.shared.service.AnonymousRoktaServiceAsync;
 import uk.co.unclealex.rokta.shared.service.UserRoktaServiceAsync;
 
@@ -43,16 +46,16 @@ import com.google.gwt.user.client.rpc.StatusCodeException;
  */
 public class SecureAsyncCallbackExecutor implements AsyncCallbackExecutor {
 
-  private final WaitingPresenter i_waitingPresenter;
+  private final WaitingController i_waitingController;
 	private final LoginPresenterFactory i_loginPresenterFactory;
 	private final AnonymousRoktaServiceAsync i_anonymousRoktaService;
 	private final UserRoktaServiceAsync i_userRoktaService;
 
 	@Inject
-	public SecureAsyncCallbackExecutor(WaitingPresenter waitingPresenter, LoginPresenterFactory loginPresenterFactory,
+	public SecureAsyncCallbackExecutor(WaitingController waitingController, LoginPresenterFactory loginPresenterFactory,
 			AnonymousRoktaServiceAsync anonymousRoktaService, UserRoktaServiceAsync userRoktaService) {
 		super();
-		i_waitingPresenter = waitingPresenter;
+		i_waitingController = waitingController;
 		i_loginPresenterFactory = loginPresenterFactory;
 		i_anonymousRoktaService = anonymousRoktaService;
 		i_userRoktaService = userRoktaService;
@@ -111,17 +114,19 @@ public class SecureAsyncCallbackExecutor implements AsyncCallbackExecutor {
 	}
 
 	@Override
-	public <T> void executeAndWait(final ExecutableAsyncCallback<T> executableAsyncCallback, final CanWait canWait) {
+	public <T> void executeAndWait(final ExecutableAsyncCallback<T> executableAsyncCallback, final CanWait... canWaits) {
+    final WaitingController waitingController = getWaitingController();
+		final List<CanWait> canWaitList = Arrays.asList(canWaits);
 	  ExecutableAsyncCallback<T> waitCallback = new ExecutableAsyncCallback<T>() {
 	    @Override
 	    public void onSuccess(T result) {
-	      stopWaiting(canWait);
+				waitingController.stopWaiting(canWaitList);
 	      executableAsyncCallback.onSuccess(result);
 	    }
 
 	    @Override
 	    public void onFailure(Throwable cause) {
-	      stopWaiting(canWait);
+	      waitingController.stopWaiting(canWaitList);
 	      executableAsyncCallback.onFailure(cause);
 	    }
 	    
@@ -129,19 +134,9 @@ public class SecureAsyncCallbackExecutor implements AsyncCallbackExecutor {
 	    public void execute(AnonymousRoktaServiceAsync anonymousRoktaService,
 	        UserRoktaServiceAsync userRoktaService,
 	        AsyncCallback<T> callback) {
-	      startWaiting(canWait);
+	      waitingController.startWaiting(canWaitList);
 	      executableAsyncCallback.execute(anonymousRoktaService, userRoktaService, callback);
 
-	    }
-
-	    protected void startWaiting(CanWait canWait) {
-	      getWaitingPresenter().registerAsWaiting(canWait);
-	      canWait.startWaiting();
-	    }
-
-	    protected void stopWaiting(CanWait canWait) {
-	      canWait.stopWaiting();
-	      getWaitingPresenter().unregisterAsWaiting(canWait);
 	    }
     };
     execute(waitCallback);
@@ -151,9 +146,8 @@ public class SecureAsyncCallbackExecutor implements AsyncCallbackExecutor {
 		return i_loginPresenterFactory;
 	}
 
-
-  public WaitingPresenter getWaitingPresenter() {
-    return i_waitingPresenter;
+  public WaitingController getWaitingController() {
+    return i_waitingController;
   }
 
 	public AnonymousRoktaServiceAsync getAnonymousRoktaService() {

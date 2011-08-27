@@ -54,6 +54,11 @@ public class Game implements Serializable {
 		}
 	
 		@Override
+		public int hashCode() {
+			return Objects.hashCode(getCounter(), getPlays());
+		}
+		
+		@Override
 		public boolean equals(Object obj) {
 			if (!(obj instanceof Round)) {
 				return false;
@@ -255,6 +260,11 @@ public class Game implements Serializable {
 		return currentPlayers.size() == 1?currentPlayers.first():null;
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getInstigator(), getPlayers(), getRounds());
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof Game)) {
