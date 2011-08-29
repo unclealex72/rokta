@@ -95,6 +95,20 @@ public class NewGameServiceImpl implements NewGameService {
 	}
 
 	@Override
+	public void updateGames() {
+		GameDao gameDao = getGameDao();
+		for (uk.co.unclealex.rokta.server.model.Game game : gameDao.getAll()) {
+			Calendar cal = new GregorianCalendar();
+			cal.setTime(game.getDatePlayed());
+			game.setYearPlayed(cal.get(Calendar.YEAR));
+			game.setMonthPlayed(cal.get(Calendar.MONTH));
+			game.setDayPlayed(cal.get(Calendar.DAY_OF_MONTH));
+			game.setWeekPlayed(cal.get(Calendar.WEEK_OF_YEAR));
+			gameDao.store(game);
+		}
+	}
+	
+	@Override
 	public void removeLastGame() {
 		GameDao gameDao = getGameDao();
 		gameDao.remove(gameDao.getLastGame());

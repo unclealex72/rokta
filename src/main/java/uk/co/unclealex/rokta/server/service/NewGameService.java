@@ -13,4 +13,6 @@ public interface NewGameService {
 
 	public void removeLastGame();
 
+	public void updateGames();
+
 }

@@ -1,6 +1,7 @@
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import uk.co.unclealex.rokta.server.process.PersonService;
+import uk.co.unclealex.rokta.server.service.NewGameService;
 
 
 public class ResetPasswords {
@@ -10,8 +11,8 @@ public class ResetPasswords {
 	 */
 	public static void main(String[] args) {
 		ClassPathXmlApplicationContext ctxt = new ClassPathXmlApplicationContext("applicationContext-rokta-core.xml");
-		PersonService personService = ctxt.getBean(PersonService.class);
-		personService.resetAllPasswords();
+		ctxt.getBean(PersonService.class).resetAllPasswords();
+		ctxt.getBean(NewGameService.class).updateGames();
 		ctxt.close();
 	}
 
