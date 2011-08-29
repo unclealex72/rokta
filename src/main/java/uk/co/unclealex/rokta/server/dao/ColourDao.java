@@ -7,4 +7,5 @@ public interface ColourDao extends KeyedDao<Colour> {
 
 	public Colour getColourByName(String name);
 	public Colour getColourByHtmlName(String name);
+	public Colour getColourForUser(String username);
 }

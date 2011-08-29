@@ -5,6 +5,7 @@ package uk.co.unclealex.rokta.client.places;
 
 import javax.inject.Inject;
 
+import uk.co.unclealex.rokta.client.factories.AdminPresenterFactory;
 import uk.co.unclealex.rokta.client.factories.GamePresenterFactory;
 import uk.co.unclealex.rokta.client.factories.GraphPresenterFactory;
 import uk.co.unclealex.rokta.client.factories.HeadToHeadsPresenterFactory;
@@ -12,7 +13,6 @@ import uk.co.unclealex.rokta.client.factories.LeaguePresenterFactory;
 import uk.co.unclealex.rokta.client.factories.LosingStreaksPresenterFactory;
 import uk.co.unclealex.rokta.client.factories.ProfilePresenterFactory;
 import uk.co.unclealex.rokta.client.factories.WinningStreaksPresenterFactory;
-import uk.co.unclealex.rokta.client.presenters.AdminPresenter;
 import uk.co.unclealex.rokta.client.presenters.MainPresenter;
 import uk.co.unclealex.rokta.client.util.TitleManager;
 
@@ -53,7 +53,7 @@ public class RoktaActivityMapper implements ActivityMapper {
 	private final WinningStreaksPresenterFactory i_winningStreaksPresenterFactory;
 	private final LosingStreaksPresenterFactory i_losingStreaksPresenterFactory;
 	private final HeadToHeadsPresenterFactory i_headToHeadsPresenterFactory;
-	private final Provider<AdminPresenter> i_adminPresenterProvider;
+	private final AdminPresenterFactory i_adminPresenterFactory;
 	private final Provider<MainPresenter> i_mainPresenterProvider;
 	private final GamePresenterFactory i_gamePresenterFactory;
 	private final ProfilePresenterFactory i_profilePresenterFactory;
@@ -63,7 +63,7 @@ public class RoktaActivityMapper implements ActivityMapper {
 	public RoktaActivityMapper(LeaguePresenterFactory leaguePresenterFactory,
 			GraphPresenterFactory graphPresenterFactory, WinningStreaksPresenterFactory winningStreaksPresenterFactory,
 			LosingStreaksPresenterFactory losingStreaksPresenterFactory,
-			HeadToHeadsPresenterFactory headToHeadsPresenterFactory, Provider<AdminPresenter> adminPresenterProvider,
+			HeadToHeadsPresenterFactory headToHeadsPresenterFactory, AdminPresenterFactory adminPresenterFactory,
 			Provider<MainPresenter> mainPresenterProvider, GamePresenterFactory gamePresenterFactory,
 			ProfilePresenterFactory profilePresenterFactory, TitleManager titleManager) {
 		super();
@@ -72,11 +72,11 @@ public class RoktaActivityMapper implements ActivityMapper {
 		i_winningStreaksPresenterFactory = winningStreaksPresenterFactory;
 		i_losingStreaksPresenterFactory = losingStreaksPresenterFactory;
 		i_headToHeadsPresenterFactory = headToHeadsPresenterFactory;
-		i_adminPresenterProvider = adminPresenterProvider;
 		i_mainPresenterProvider = mainPresenterProvider;
 		i_gamePresenterFactory = gamePresenterFactory;
 		i_profilePresenterFactory = profilePresenterFactory;
 		i_titleManager = titleManager;
+		i_adminPresenterFactory = adminPresenterFactory;
 	}
 
 	@Override
@@ -171,7 +171,7 @@ public class RoktaActivityMapper implements ActivityMapper {
 
 		@Override
 		public Activity visit(AdminPlace adminPlace) {
-			return getAdminPresenterProvider().get();
+			return getAdminPresenterFactory().createAdminPresenter(adminPlace.getGameFilter());
 		}
 
 		@Override
@@ -196,10 +196,6 @@ public class RoktaActivityMapper implements ActivityMapper {
 			return i_place;
 		}
 
-	}
-
-	public Provider<AdminPresenter> getAdminPresenterProvider() {
-		return i_adminPresenterProvider;
 	}
 
 	public Provider<MainPresenter> getMainPresenterProvider() {
@@ -238,5 +234,8 @@ public class RoktaActivityMapper implements ActivityMapper {
 		return i_titleManager;
 	}
 
-	
+	public AdminPresenterFactory getAdminPresenterFactory() {
+		return i_adminPresenterFactory;
+	}
+
 }

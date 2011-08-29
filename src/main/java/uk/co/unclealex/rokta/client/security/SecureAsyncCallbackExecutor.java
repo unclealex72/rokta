@@ -114,19 +114,25 @@ public class SecureAsyncCallbackExecutor implements AsyncCallbackExecutor {
 	}
 
 	@Override
-	public <T> void executeAndWait(final ExecutableAsyncCallback<T> executableAsyncCallback, final CanWait... canWaits) {
+	public <T> void executeAndWait(
+			final ExecutableAsyncCallback<T> executableAsyncCallback, final String message, final CanWait... canWaits) {
     final WaitingController waitingController = getWaitingController();
 		final List<CanWait> canWaitList = Arrays.asList(canWaits);
 	  ExecutableAsyncCallback<T> waitCallback = new ExecutableAsyncCallback<T>() {
+	  	Integer waitingHandler;
 	    @Override
 	    public void onSuccess(T result) {
-				waitingController.stopWaiting(canWaitList);
+	    	if (waitingHandler != null) {
+	    		waitingController.stopWaiting(waitingHandler, canWaitList);
+	    	}
 	      executableAsyncCallback.onSuccess(result);
 	    }
 
 	    @Override
 	    public void onFailure(Throwable cause) {
-	      waitingController.stopWaiting(canWaitList);
+	    	if (waitingHandler != null) {
+	    		waitingController.stopWaiting(waitingHandler, canWaitList);
+	    	}
 	      executableAsyncCallback.onFailure(cause);
 	    }
 	    
@@ -134,7 +140,9 @@ public class SecureAsyncCallbackExecutor implements AsyncCallbackExecutor {
 	    public void execute(AnonymousRoktaServiceAsync anonymousRoktaService,
 	        UserRoktaServiceAsync userRoktaService,
 	        AsyncCallback<T> callback) {
-	      waitingController.startWaiting(canWaitList);
+	    	if (waitingHandler == null) {
+	    		waitingHandler = waitingController.startWaiting(message, canWaitList);
+	    	}
 	      executableAsyncCallback.execute(anonymousRoktaService, userRoktaService, callback);
 
 	    }

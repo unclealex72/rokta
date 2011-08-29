@@ -3,16 +3,23 @@
  */
 package uk.co.unclealex.rokta.server.process;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.Set;
 import java.util.SortedSet;
 
+import org.springframework.security.authentication.dao.SaltSource;
+import org.springframework.security.authentication.encoding.PasswordEncoder;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.transaction.annotation.Transactional;
 
+import uk.co.unclealex.rokta.server.dao.ColourDao;
 import uk.co.unclealex.rokta.server.dao.GameDao;
 import uk.co.unclealex.rokta.server.dao.PersonDao;
+import uk.co.unclealex.rokta.server.model.Colour;
 import uk.co.unclealex.rokta.server.model.Game;
 import uk.co.unclealex.rokta.server.model.Person;
-import uk.co.unclealex.rokta.server.security.PasswordEncoder;
 import uk.co.unclealex.rokta.server.util.DateUtil;
 
 /**
@@ -22,11 +29,13 @@ import uk.co.unclealex.rokta.server.util.DateUtil;
 @Transactional
 public class PersonServiceImpl implements PersonService {
 
-	protected PersonDao i_personDao;
-	protected GameDao i_gameDao;
-	protected PasswordEncoder i_passwordEncoder;
+	private PersonDao i_personDao;
+	private GameDao i_gameDao;
+	private PasswordEncoder i_passwordEncoder;
+	private SaltSource i_saltSource;
+	private ColourDao i_colourDao;
 	
-	protected DateUtil i_dateUtil;
+	private DateUtil i_dateUtil;
 	
 	public Person getExemptPlayer(Date date) {
 		Game lastGame = getGameDao().getLastGame();
@@ -50,18 +59,38 @@ public class PersonServiceImpl implements PersonService {
 		return getDateUtil().areSameDay(game.getDatePlayed(), date);
 	}
 	
-	public boolean changePassword(String name, String currentPassword, String newPassword) {
+	@Override
+	public void changePassword(String name, String newPassword) {
 		PersonDao personDao = getPersonDao();
-		PasswordEncoder passwordEncoder = getPasswordEncoder(); 
-		Person person = personDao.findPersonByNameAndPassword(name, passwordEncoder.encode(currentPassword));
-		if (person == null) {
-			return false;
+		Person person = personDao.getPersonByName(name);
+		if (person != null) {
+			person.setPassword(encryptPassword(name, newPassword));
+			personDao.store(person);
 		}
-		person.setPassword(passwordEncoder.encode(newPassword));
-		personDao.store(person);
-		return true;
+	}
+
+	@Override
+	public void resetAllPasswords() {
+		for (String username : getAllUsernames()) {
+			changePassword(username, username);
+		}
 	}
 	
+	@Override
+	public void changeGraphingColour(String name, String colourName) {
+		PersonDao personDao = getPersonDao();
+		Person person = personDao.getPersonByName(name);
+		Colour colour = getColourDao().getColourByName(colourName);
+		person.setColour(colour);
+		personDao.store(person);
+	}
+	
+  protected String encryptPassword(String username, String password) {
+		Set<GrantedAuthority> emptySet = Collections.emptySet();
+		User user = new User(username, password, true, true, true, true, emptySet);
+		return getPasswordEncoder().encodePassword(password, getSaltSource().getSalt(user));
+	}
+
 	/**
 	 * @return the gameDao
 	 */
@@ -110,6 +139,22 @@ public class PersonServiceImpl implements PersonService {
 
 	public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
 		i_passwordEncoder = passwordEncoder;
+	}
+
+	public SaltSource getSaltSource() {
+		return i_saltSource;
+	}
+
+	public void setSaltSource(SaltSource saltSource) {
+		i_saltSource = saltSource;
+	}
+
+	public ColourDao getColourDao() {
+		return i_colourDao;
+	}
+
+	public void setColourDao(ColourDao colourDao) {
+		i_colourDao = colourDao;
 	}
 
 }

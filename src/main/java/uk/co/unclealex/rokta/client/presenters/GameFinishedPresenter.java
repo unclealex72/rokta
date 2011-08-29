@@ -69,7 +69,7 @@ public class GameFinishedPresenter implements Presenter {
 				userRoktaService.submitGame(getGame(), callback);
 			}
 		};
-		getAsyncCallbackExecutor().executeAndWait(callback);
+		getAsyncCallbackExecutor().executeAndWait(callback, "Submitting the new game");
 	}
 
 	public AsyncCallbackExecutor getAsyncCallbackExecutor() {

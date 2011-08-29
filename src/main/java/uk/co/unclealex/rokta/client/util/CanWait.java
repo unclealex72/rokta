@@ -28,7 +28,7 @@ package uk.co.unclealex.rokta.client.util;
  */
 public interface CanWait {
 
-	public void startWaiting();
+	public void startWaiting(String message, int waitingHandler);
 	
-	public void stopWaiting();
+	public void stopWaiting(int waitingHandler);
 }

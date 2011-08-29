@@ -107,7 +107,7 @@ public class NavigationPresenter implements Presenter {
 				anonymousRoktaService.getDateFirstGamePlayed(callback);
 			}
 		};
-		getAsyncCallbackExecutor().executeAndWait(callback);
+		getAsyncCallbackExecutor().executeAndWait(callback, "Finding the date the first game was played");
 	}
 	
 	public void show(AcceptsOneWidget container, Date dateFirstGamePlayed) {
@@ -165,7 +165,7 @@ public class NavigationPresenter implements Presenter {
 				anonymousRoktaService.getAllPlayerNames(callback);
 			}
 		};
-		getAsyncCallbackExecutor().executeAndWait(callback);
+		getAsyncCallbackExecutor().executeAndWait(callback, "Getting all player names");
 	}
 
 	protected void bindGameFilterLinks(final Map<HasClickHandlers, Function<GameFilter, RoktaPlace>> roktaPlaceLinkMap) {

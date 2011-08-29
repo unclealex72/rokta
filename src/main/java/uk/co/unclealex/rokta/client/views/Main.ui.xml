@@ -4,7 +4,10 @@
 
 	<g:DockLayoutPanel unit="PX">
 		<g:north size="50">
-			<g:SimplePanel ui:field="titlePanel"/>
+			<g:HTMLPanel>
+				<g:SimplePanel ui:field="authenticationPanel"/>
+				<g:SimplePanel ui:field="titlePanel"/>
+			</g:HTMLPanel>
 		</g:north>
 		<g:west size="180">
 		  <g:SimpleLayoutPanel ui:field="navigationPanel"/>		

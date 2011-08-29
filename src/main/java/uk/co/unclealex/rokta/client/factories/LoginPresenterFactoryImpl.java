@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import uk.co.unclealex.rokta.client.presenters.LoginPresenter;
 import uk.co.unclealex.rokta.client.presenters.LoginPresenter.Display;
 import uk.co.unclealex.rokta.client.security.AuthenticationManager;
+import uk.co.unclealex.rokta.client.util.AsyncCallbackExecutor;
 import uk.co.unclealex.rokta.client.util.ClickHelper;
 import uk.co.unclealex.rokta.shared.service.AnonymousRoktaServiceAsync;
 
@@ -42,15 +43,19 @@ public class LoginPresenterFactoryImpl implements LoginPresenterFactory {
 	private final Provider<AnonymousRoktaServiceAsync> i_anonymousRoktaServiceProvider;
 	private final Provider<AuthenticationManager> i_authenticationManagerProvider;
 	private final Provider<ClickHelper> i_clickHelperProvider;
+	private final Provider<AsyncCallbackExecutor> i_asyncCallbackExecutorProvider;
+	
 	@Inject
 	public LoginPresenterFactoryImpl(Provider<Display> displayProvider,
 			Provider<AnonymousRoktaServiceAsync> anonymousRoktaServiceProvider,
+			Provider<AsyncCallbackExecutor> asyncCallbackExecutorProvider,
 			Provider<AuthenticationManager> authenticationManagerProvider, Provider<ClickHelper> clickHelperProvider) {
 		super();
 		i_displayProvider = displayProvider;
 		i_anonymousRoktaServiceProvider = anonymousRoktaServiceProvider;
 		i_authenticationManagerProvider = authenticationManagerProvider;
 		i_clickHelperProvider = clickHelperProvider;
+		i_asyncCallbackExecutorProvider = asyncCallbackExecutorProvider;
 	}
 
 
@@ -59,6 +64,7 @@ public class LoginPresenterFactoryImpl implements LoginPresenterFactory {
 		return new LoginPresenter(
 				getDisplayProvider().get(), 
 				getAnonymousRoktaServiceProvider().get(), 
+				getAsyncCallbackExecutorProvider().get(), 
 				getAuthenticationManagerProvider().get(), 
 				getClickHelperProvider().get(),
 				originalAction);
@@ -80,6 +86,11 @@ public class LoginPresenterFactoryImpl implements LoginPresenterFactory {
 
 	public Provider<AnonymousRoktaServiceAsync> getAnonymousRoktaServiceProvider() {
 		return i_anonymousRoktaServiceProvider;
+	}
+
+
+	public Provider<AsyncCallbackExecutor> getAsyncCallbackExecutorProvider() {
+		return i_asyncCallbackExecutorProvider;
 	}
 
 }

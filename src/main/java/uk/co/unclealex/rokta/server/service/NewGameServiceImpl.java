@@ -98,6 +98,7 @@ public class NewGameServiceImpl implements NewGameService {
 	public void removeLastGame() {
 		GameDao gameDao = getGameDao();
 		gameDao.remove(gameDao.getLastGame());
+		getCacheService().clearCache();
 	}
 	
 	public CacheService getCacheService() {

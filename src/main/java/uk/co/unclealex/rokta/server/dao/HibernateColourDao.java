@@ -1,5 +1,6 @@
 package uk.co.unclealex.rokta.server.dao;
 
+import org.hibernate.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.co.unclealex.hibernate.dao.HibernateKeyedDao;
@@ -16,6 +17,13 @@ public class HibernateColourDao extends HibernateKeyedDao<Colour> implements Col
 		return uniqueResult(getSession().getNamedQuery("colour.byHtmlName").setString("name", name));
 	}
 
+	@Override
+	public Colour getColourForUser(String username) {
+		Query query = getSession().createQuery("select p.colour from Person p where p.name = :username");
+		query.setString("username", username);
+		return uniqueResult(query);
+	}
+	
 	@Override
 	public Colour createExampleBean() {
 		return new Colour();

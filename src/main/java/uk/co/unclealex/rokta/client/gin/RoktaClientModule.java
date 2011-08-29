@@ -7,6 +7,7 @@ import javax.inject.Singleton;
 
 import uk.co.unclealex.rokta.client.cache.InformationCache;
 import uk.co.unclealex.rokta.client.cache.InformationCacheImpl;
+import uk.co.unclealex.rokta.client.factories.AdminPresenterFactory;
 import uk.co.unclealex.rokta.client.factories.GameFinishedPresenterFactory;
 import uk.co.unclealex.rokta.client.factories.GamePresenterFactory;
 import uk.co.unclealex.rokta.client.factories.GraphPresenterFactory;
@@ -20,6 +21,8 @@ import uk.co.unclealex.rokta.client.factories.NextRoundPresenterFactory;
 import uk.co.unclealex.rokta.client.factories.ProfilePresenterFactory;
 import uk.co.unclealex.rokta.client.factories.StreaksTablePresenterFactory;
 import uk.co.unclealex.rokta.client.factories.WinningStreaksPresenterFactory;
+import uk.co.unclealex.rokta.client.presenters.AdminPresenter;
+import uk.co.unclealex.rokta.client.presenters.AuthenticationPresenter;
 import uk.co.unclealex.rokta.client.presenters.FiltersPresenter;
 import uk.co.unclealex.rokta.client.presenters.GameFinishedPresenter;
 import uk.co.unclealex.rokta.client.presenters.GamePresenter;
@@ -43,6 +46,8 @@ import uk.co.unclealex.rokta.client.util.ClickHelperImpl;
 import uk.co.unclealex.rokta.client.util.TitleManager;
 import uk.co.unclealex.rokta.client.util.WaitingController;
 import uk.co.unclealex.rokta.client.util.WaitingControllerImpl;
+import uk.co.unclealex.rokta.client.views.Admin;
+import uk.co.unclealex.rokta.client.views.Authentication;
 import uk.co.unclealex.rokta.client.views.Filters;
 import uk.co.unclealex.rokta.client.views.Game;
 import uk.co.unclealex.rokta.client.views.GameFinished;
@@ -97,6 +102,9 @@ public class RoktaClientModule extends AbstractGinModule {
 		bind(MainPresenter.Display.class).to(Main.class).in(Singleton.class);
 		bind(MainPresenter.class).in(Singleton.class);
 		
+		bind(AuthenticationPresenter.Display.class).to(Authentication.class).in(Singleton.class);
+		bind(AuthenticationPresenter.class).in(Singleton.class);
+
 		bind(TitlePresenter.Display.class).to(Title.class).in(Singleton.class);
 		bind(TitlePresenter.class).in(Singleton.class);
 		bind(TitleManager.class).to(TitlePresenter.class).in(Singleton.class);
@@ -159,6 +167,10 @@ public class RoktaClientModule extends AbstractGinModule {
 				GameFinishedPresenter.Display.class, GameFinished.class, 
 				GameFinishedPresenter.class, GameFinishedPresenterFactory.class);
 		
+		bindPresenterWithDisplay(
+				AdminPresenter.Display.class, Admin.class, 
+				AdminPresenter.class, AdminPresenterFactory.class);
+
 		bind(Visualisation.class);
 		
 		bind(InformationCache.class).to(InformationCacheImpl.class).in(Singleton.class);

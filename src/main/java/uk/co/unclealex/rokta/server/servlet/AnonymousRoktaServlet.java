@@ -3,16 +3,13 @@ package uk.co.unclealex.rokta.server.servlet;
 import java.util.Date;
 
 import uk.co.unclealex.rokta.client.filter.GameFilter;
+import uk.co.unclealex.rokta.shared.model.ColourView;
 import uk.co.unclealex.rokta.shared.model.CurrentInformation;
+import uk.co.unclealex.rokta.shared.model.GameSummary;
 import uk.co.unclealex.rokta.shared.service.AnonymousRoktaService;
 
-public class AnonymousRoktaServlet extends AbstractRoktaServlet<AnonymousRoktaService> implements AnonymousRoktaService {
+public class AnonymousRoktaServlet extends AbstractRoktaServlet implements AnonymousRoktaService {
 
-	@Override
-	protected Class<AnonymousRoktaService> getRoktaServiceClass() {
-		return AnonymousRoktaService.class;
-	}
-	
 	@Override
 	public Date getDateFirstGamePlayed() {
 		return createRoktaService().getDateFirstGamePlayed();
@@ -26,6 +23,21 @@ public class AnonymousRoktaServlet extends AbstractRoktaServlet<AnonymousRoktaSe
 	@Override
 	public CurrentInformation getCurrentInformation(GameFilter gameFilter, Date currentDate, int targetStreaksSize) {
 		return createRoktaService().getCurrentInformation(gameFilter, currentDate, targetStreaksSize);
+	}
+
+	@Override
+	public String getUserPrincipal() {
+		return createRoktaService().getUserPrincipal();
+	}
+	
+	@Override
+	public GameSummary getLastGameSummary() {
+		return createRoktaService().getLastGameSummary();
+	}
+	
+	@Override
+	public void logout() {
+		createRoktaService().logout();
 	}
 	
 	@Override
@@ -43,4 +55,8 @@ public class AnonymousRoktaServlet extends AbstractRoktaServlet<AnonymousRoktaSe
 		return createRoktaService().authenticate(username, password);
 	}
 
+	@Override
+	public ColourView[] getAllColourViews() {
+		return createRoktaService().getAllColourViews();
+	}
 }

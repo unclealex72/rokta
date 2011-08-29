@@ -34,7 +34,7 @@ public abstract class AllUsersAwarePresenter implements Presenter {
 				anonymousRoktaService.getAllUsersNames(callback);
 			}
 		};
-		getAsyncCallbackExecutor().executeAndWait(callback);
+		getAsyncCallbackExecutor().executeAndWait(callback, "Finding all usernames");
  	}
 
 	protected abstract void show(AcceptsOneWidget container, List<String> usernames);

@@ -19,7 +19,9 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.google.gwt.user.client.rpc.RemoteService;
+import uk.co.unclealex.rokta.server.service.RoktaService;
+import uk.co.unclealex.rokta.shared.service.SecurityInvalidator;
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
@@ -45,7 +47,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  * @author unclealex72
  *
  */
-public abstract class AbstractRoktaServlet<I extends RemoteService> extends RemoteServiceServlet {
+public abstract class AbstractRoktaServlet extends RemoteServiceServlet {
 
 	private BeanFactory i_beanFactory;
 	
@@ -62,9 +64,15 @@ public abstract class AbstractRoktaServlet<I extends RemoteService> extends Remo
 		return super.readContent(request);
 	}
 
-	@SuppressWarnings("unchecked")
-	protected I createRoktaService() {
-		final I roktaService = getBeanFactory().getBean("roktaService", getRoktaServiceClass());
+	protected RoktaService createRoktaService() {
+		final RoktaService roktaService = getBeanFactory().getBean("roktaService", RoktaService.class);
+		SecurityInvalidator securityInvalidator = new SecurityInvalidator() {
+			@Override
+			public void invalidate() {
+				getThreadLocalRequest().getSession().invalidate();
+			}
+		};
+		roktaService.setSecurityInvalidator(securityInvalidator);
 		final Logger log = LoggerFactory.getLogger(getClass());
 		InvocationHandler handler = new InvocationHandler() {
 			@Override
@@ -83,11 +91,9 @@ public abstract class AbstractRoktaServlet<I extends RemoteService> extends Remo
 				}
 			}
 		};
-		return (I) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { getRoktaServiceClass()}, handler);
+		return (RoktaService) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { RoktaService.class }, handler);
 	}
 	
-	protected abstract Class<I> getRoktaServiceClass();
-
 	public BeanFactory getBeanFactory() {
 		return i_beanFactory;
 	}

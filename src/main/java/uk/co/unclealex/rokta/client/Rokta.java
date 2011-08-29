@@ -25,6 +25,7 @@ public class Rokta implements EntryPoint {
 		mainPresenter.show(parent);
 		Display mainDisplay = mainPresenter.getDisplay();
 		injector.getTitlePresenter().show(mainDisplay.getTitlePanel());
+		injector.getAuthenticationPresenter().show(mainDisplay.getAuthenticationPanel());
 		injector.getNavigationPresenter().show(mainDisplay.getNavigationPanel());
 		injector.getActivityMapper().setDisplay(mainDisplay.getMainPanel());
 		

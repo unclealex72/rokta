@@ -24,6 +24,7 @@ public class Main extends ResizeComposite implements Display {
 	@UiField HasOneWidget mainPanel;
 	@UiField HasOneWidget titlePanel;
 	@UiField HasOneWidget navigationPanel;
+	@UiField HasOneWidget authenticationPanel;
 	
 	@Inject
 	public Main() {
@@ -43,6 +44,10 @@ public class Main extends ResizeComposite implements Display {
 	@Override
 	public HasOneWidget getNavigationPanel() {
 		return navigationPanel;
+	}
+
+	public HasOneWidget getAuthenticationPanel() {
+		return authenticationPanel;
 	}
 
 }

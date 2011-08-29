@@ -8,6 +8,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
   <param-name>contextConfigLocation</param-name>
   <param-value>
   	classpath:applicationContext-rokta-core.xml
+  	classpath:applicationContext-rokta-security.xml
   </param-value>
  </context-param>
 
@@ -25,7 +26,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
   <url-pattern>/*</url-pattern>
  </filter-mapping>
 
-	<!--  
 	<filter>
         <filter-name>springSecurityFilterChain</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
@@ -35,7 +35,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
       <filter-name>springSecurityFilterChain</filter-name>
       <url-pattern>/*</url-pattern>
     </filter-mapping>
- -->
+	
  <listener>
   <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
  </listener>

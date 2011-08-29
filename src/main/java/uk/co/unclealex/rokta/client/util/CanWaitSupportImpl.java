@@ -44,7 +44,7 @@ public class CanWaitSupportImpl implements CanWaitSupport {
 	private final List<HasEnabled> i_hasEnableds = new ArrayList<HasEnabled>();
 	
 	@Override
-	public void startWaiting() {
+	public void startWaiting(String message, int waitingHandler) {
 		getStatesByHasEnabled().clear();
 		for (HasEnabled hasEnabled : getHasEnableds()) {
 			getStatesByHasEnabled().put(hasEnabled, hasEnabled.isEnabled());
@@ -53,7 +53,7 @@ public class CanWaitSupportImpl implements CanWaitSupport {
 	}
 
 	@Override
-	public void stopWaiting() {
+	public void stopWaiting(int waitingHandler) {
 		for (Entry<HasEnabled, Boolean> entry : getStatesByHasEnabled().entrySet()) {
 			entry.getKey().setEnabled(entry.getValue());
 		}

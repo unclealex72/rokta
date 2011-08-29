@@ -135,7 +135,7 @@ public class FiltersPresenter extends AbstractPopupPresenter<DialogBox, Display>
 				anonymousRoktaService.getDateFirstGamePlayed(callback);
 			}
 		};
-		getAsyncCallbackExecutor().executeAndWait(callback);
+		getAsyncCallbackExecutor().executeAndWait(callback, "Finding the date the first game was played");
 	}
 	
 	protected void prepare(Display display, Date dateFirstGamePlayed) {

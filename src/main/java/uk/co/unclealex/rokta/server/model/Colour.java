@@ -3,8 +3,6 @@
  */
 package uk.co.unclealex.rokta.server.model;
 
-import java.awt.Color;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -34,14 +32,10 @@ public class Colour extends KeyedBean<Colour> {
 
 	private String i_htmlName;
 	private String i_name;
-	private short i_red;
-	private short i_green;
-	private short i_blue;
+	private Short i_red;
+	private Short i_green;
+	private Short i_blue;
 
-	public Color toColor() {
-		return new Color(getRed(), getGreen(), getBlue());
-	}
-	
 	@Override
 	public int compareTo(Colour o) {
 		return getName().compareTo(o.getName());
@@ -49,7 +43,12 @@ public class Colour extends KeyedBean<Colour> {
 	
 	@Override
 	public boolean equals(Object obj) {
-		return obj instanceof Colour && getName().equals(((Colour) obj).getName());
+		return obj instanceof Colour && compareTo((Colour) obj) == 0;
+	}
+	
+	@Override
+	public int hashCode() {
+		return getName().hashCode();
 	}
 	
 	@Override
@@ -77,14 +76,14 @@ public class Colour extends KeyedBean<Colour> {
 	 * @return the blue
 	 */
 	@Column(nullable=false)
-	public short getBlue() {
+	public Short getBlue() {
 		return i_blue;
 	}
 
 	/**
 	 * @param blue the blue to set
 	 */
-	public void setBlue(short blue) {
+	public void setBlue(Short blue) {
 		i_blue = blue;
 	}
 
@@ -92,14 +91,14 @@ public class Colour extends KeyedBean<Colour> {
 	 * @return the green
 	 */
 	@Column(nullable=false)
-	public short getGreen() {
+	public Short getGreen() {
 		return i_green;
 	}
 
 	/**
 	 * @param green the green to set
 	 */
-	public void setGreen(short green) {
+	public void setGreen(Short green) {
 		i_green = green;
 	}
 
@@ -123,14 +122,14 @@ public class Colour extends KeyedBean<Colour> {
 	 * @return the red
 	 */
 	@Column(nullable=false)
-	public short getRed() {
+	public Short getRed() {
 		return i_red;
 	}
 
 	/**
 	 * @param red the red to set
 	 */
-	public void setRed(short red) {
+	public void setRed(Short red) {
 		i_red = red;
 	}
 }

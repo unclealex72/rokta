@@ -1,8 +1,7 @@
 /**
  * 
  */
-package uk.co.unclealex.rokta.client.util;
-
+package uk.co.unclealex.rokta.shared.service;
 
 /**
  * Copyright 2011 Alex Jones
@@ -27,9 +26,7 @@ package uk.co.unclealex.rokta.client.util;
  * @author unclealex72
  *
  */
-public interface AsyncCallbackExecutor {
+public interface SecurityInvalidator {
 
-	public <T> void executeAndWait(ExecutableAsyncCallback<T> callback, String description, CanWait... canWaits);
-
-	public <T> void execute(ExecutableAsyncCallback<T> callback);
+	public void invalidate();
 }

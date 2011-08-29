@@ -370,7 +370,7 @@
 					<!-- i18nMessagesBundle>${project.groupId}.client.Messages</i18nMessagesBundle -->
 					<servicePattern>uk/co/unclealex/rokta/shared/service/*.java</servicePattern>
 					<debugSuspend>false</debugSuspend>
-					<extraJvmArgs>-Xmx1024M -XX:+CMSClassUnloadingEnabled -XX:+CMSPermGenSweepingEnabled</extraJvmArgs>
+					<extraJvmArgs>-Xmx1024M -XX:+CMSClassUnloadingEnabled</extraJvmArgs>
 				</configuration>
 				<dependencies>
 					<dependency>

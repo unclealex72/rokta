@@ -20,6 +20,7 @@ import uk.co.unclealex.rokta.server.model.Person;
 import uk.co.unclealex.rokta.server.process.LeagueService;
 import uk.co.unclealex.rokta.server.process.StatisticsService;
 import uk.co.unclealex.rokta.shared.model.CurrentInformation;
+import uk.co.unclealex.rokta.shared.model.GameSummary;
 import uk.co.unclealex.rokta.shared.model.Hand;
 import uk.co.unclealex.rokta.shared.model.HeadToHeads;
 import uk.co.unclealex.rokta.shared.model.Leagues;
@@ -51,6 +52,13 @@ public class InformationServiceImpl implements InformationService {
 		return getGameDao().getDateLastGamePlayed();
 	}
 
+	@Override
+	@Cacheable(cacheName=CacheService.CACHE_NAME)
+	public GameSummary getLastGameSummary() {
+		Game lastGame = getGameDao().getLastGame();
+		return new GameSummary(lastGame.getLoser().getName(), lastGame.getDatePlayed());
+	}
+	
 	@Override
 	@Cacheable(cacheName=CacheService.CACHE_NAME)
 	public CurrentInformation getCurrentInformation(GameFilter gameFilter, Day day, int targetStreakSize) {

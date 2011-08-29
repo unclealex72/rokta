@@ -14,6 +14,7 @@ import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -53,7 +54,7 @@ public class Login extends SimplePanel implements Display {
 	@UiField PopupPanel popupPanel;
 	@UiField Label failureLabel;
 	@UiField HasText password;
-	@UiField HasText username;
+	@UiField ListBox username;
 	@UiField Button login;
 	@UiField Button cancel;
 	
@@ -66,7 +67,7 @@ public class Login extends SimplePanel implements Display {
 		return password;
 	}
 
-	public HasText getUsername() {
+	public ListBox getUsername() {
 		return username;
 	}
 

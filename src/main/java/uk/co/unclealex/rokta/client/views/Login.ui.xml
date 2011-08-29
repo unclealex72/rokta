@@ -14,7 +14,7 @@
 			<g:Grid>
 				<g:row>
 					<g:cell>Username</g:cell>
-					<g:customCell><g:TextBox ui:field="username"/></g:customCell>
+					<g:customCell><g:ListBox ui:field="username"/></g:customCell>
 				</g:row>
 				<g:row>
 					<g:cell>Password</g:cell>

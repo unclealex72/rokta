@@ -1,5 +1,6 @@
 package uk.co.unclealex.rokta.client.gin;
 
+import uk.co.unclealex.rokta.client.presenters.AuthenticationPresenter;
 import uk.co.unclealex.rokta.client.presenters.MainPresenter;
 import uk.co.unclealex.rokta.client.presenters.NavigationPresenter;
 import uk.co.unclealex.rokta.client.presenters.TitlePresenter;
@@ -17,4 +18,5 @@ public interface RoktaGinjector extends Ginjector {
 	PlaceHistoryHandler getPlaceHistoryHandler();
 	ActivityManager getActivityMapper();
 	NavigationPresenter getNavigationPresenter();
+	AuthenticationPresenter getAuthenticationPresenter();
 }

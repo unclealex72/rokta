@@ -5,8 +5,12 @@ package uk.co.unclealex.rokta.client.presenters;
 
 import uk.co.unclealex.rokta.client.presenters.LoginPresenter.Display;
 import uk.co.unclealex.rokta.client.security.AuthenticationManager;
+import uk.co.unclealex.rokta.client.util.AsyncCallbackExecutor;
 import uk.co.unclealex.rokta.client.util.ClickHelper;
+import uk.co.unclealex.rokta.client.util.ExecutableAsyncCallback;
+import uk.co.unclealex.rokta.client.util.FailureAsPopupExecutableAsyncCallback;
 import uk.co.unclealex.rokta.shared.service.AnonymousRoktaServiceAsync;
+import uk.co.unclealex.rokta.shared.service.UserRoktaServiceAsync;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -15,6 +19,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
@@ -44,7 +49,7 @@ public class LoginPresenter extends AbstractPopupPresenter<PopupPanel, Display> 
 
 	public static interface Display extends AbstractPopupPresenter.Display<PopupPanel> {
 		public HasText getPassword();
-		public HasText getUsername();
+		public ListBox getUsername();
 		public Button getLogin();
 		public Button getCancel();
 		public Label getFailureLabel();
@@ -53,11 +58,12 @@ public class LoginPresenter extends AbstractPopupPresenter<PopupPanel, Display> 
 	private final Display i_display;
 	private final AnonymousRoktaServiceAsync i_anonymousRoktaService;
 	private final AuthenticationManager i_authenticationManager;
+	private final AsyncCallbackExecutor i_asyncCallbackExecutor;
 	private final Runnable i_originalAction;
 	private final ClickHelper i_clickHelper;
 	
 	public LoginPresenter(
-			Display display, AnonymousRoktaServiceAsync anonymousRoktaService, 
+			Display display, AnonymousRoktaServiceAsync anonymousRoktaService, AsyncCallbackExecutor asyncCallbackExecutor,
 			AuthenticationManager authenticationManager, ClickHelper clickHelper, Runnable originalAction) {
 		super();
 		i_display = display;
@@ -65,15 +71,35 @@ public class LoginPresenter extends AbstractPopupPresenter<PopupPanel, Display> 
 		i_authenticationManager = authenticationManager;
 		i_originalAction = originalAction;
 		i_clickHelper = clickHelper;
+		i_asyncCallbackExecutor = asyncCallbackExecutor;
 	}
 
-	
 	@Override
-	public void prepare(final Display display) {
+	protected void prepare(final Display display) {
+		ExecutableAsyncCallback<String[]> callback = new FailureAsPopupExecutableAsyncCallback<String[]>() {
+			@Override
+			public void onSuccess(String[] usernames) {
+				prepare(display, usernames);
+			}
+			@Override
+			public void execute(AnonymousRoktaServiceAsync anonymousRoktaService,
+					UserRoktaServiceAsync userRoktaService, AsyncCallback<String[]> callback) {
+				anonymousRoktaService.getAllUsersNames(callback);
+			}
+		};
+		getAsyncCallbackExecutor().executeAndWait(callback, "Getting a list of all usernames");
+	}
+	
+	protected void prepare(final Display display, String[] usernames) {
+		final ListBox usernameListBox = display.getUsername();
+		for (String username : usernames) {
+			usernameListBox.addItem(username);
+		}
 		ClickHandler loginHandler = new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				authenticate(display.getUsername().getText(), display.getPassword().getText());
+				String username = usernameListBox.getValue(usernameListBox.getSelectedIndex());
+				authenticate(username, display.getPassword().getText());
 			}
 		};
 		display.getLogin().addClickHandler(loginHandler);
@@ -139,4 +165,8 @@ public class LoginPresenter extends AbstractPopupPresenter<PopupPanel, Display> 
   public ClickHelper getClickHelper() {
     return i_clickHelper;
   }
+
+	public AsyncCallbackExecutor getAsyncCallbackExecutor() {
+		return i_asyncCallbackExecutor;
+	}
 }

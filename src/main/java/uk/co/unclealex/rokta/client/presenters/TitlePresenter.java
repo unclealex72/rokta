@@ -1,6 +1,7 @@
 package uk.co.unclealex.rokta.client.presenters;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -42,6 +43,8 @@ import uk.co.unclealex.rokta.client.util.WaitingListener;
 import uk.co.unclealex.rokta.shared.model.Game;
 import uk.co.unclealex.rokta.shared.model.Game.Round;
 
+import com.google.common.base.Joiner;
+import com.google.common.collect.Maps;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Window;
@@ -77,6 +80,7 @@ public class TitlePresenter implements Presenter, TitleManager, WaitingListener 
 	private final Display i_display;
 	private final TitleMessages i_titleMessages;
 	private final ImageResource[] i_waitingImages;
+	private final Map<Integer, String> i_waitingMessagesByHandler = Maps.newLinkedHashMap();
 	
 	@Inject
 	public TitlePresenter(
@@ -231,17 +235,26 @@ public class TitlePresenter implements Presenter, TitleManager, WaitingListener 
 	}
 	
 	@Override
-	public void startWaiting() {
-		ImageResource[] waitingImages = getWaitingImages();
-		int rnd = (int) (Math.random() * waitingImages.length);
+	public void startWaiting(String message, int waitingHandler) {
 		Display display = getDisplay();
-		display.getWaitingImage().setResource(waitingImages[rnd]);
-		display.showWaitingImage();
+		Map<Integer, String> waitingMessagesByHandler = getWaitingMessagesByHandler();
+		if (waitingMessagesByHandler.isEmpty()) {
+			ImageResource[] waitingImages = getWaitingImages();
+			int rnd = (int) (Math.random() * waitingImages.length);
+			display.getWaitingImage().setResource(waitingImages[rnd]);
+			display.showWaitingImage();
+		}
+		waitingMessagesByHandler.put(waitingHandler, message);
+		display.getWaitingImage().setTitle(Joiner.on('\n').join(waitingMessagesByHandler.values()));
 	}
 	
 	@Override
-	public void stopWaiting() {
-		getDisplay().hideWaitingImage();
+	public void stopWaiting(int waitingHandler) {
+		Map<Integer, String> waitingMessagesByHandler = getWaitingMessagesByHandler();
+		waitingMessagesByHandler.remove(waitingHandler);
+		if (waitingMessagesByHandler.isEmpty()) {
+			getDisplay().hideWaitingImage();
+		}
 	}
 	
 	public Display getDisplay() {
@@ -255,6 +268,10 @@ public class TitlePresenter implements Presenter, TitleManager, WaitingListener 
 
 	public ImageResource[] getWaitingImages() {
 		return i_waitingImages;
+	}
+
+	public Map<Integer, String> getWaitingMessagesByHandler() {
+		return i_waitingMessagesByHandler;
 	}
 
 }

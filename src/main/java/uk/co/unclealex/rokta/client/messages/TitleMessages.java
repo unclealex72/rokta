@@ -131,4 +131,7 @@ public interface TitleMessages extends Messages {
 
 	@DefaultMessage("Win next game {0,number,#.##}%, lose next game {1,number,#.##}%")
 	String nextGame(double winNext, double loseNext);
+
+	@DefaultMessage("Do you want to remove the last game that was played at {0,date,HH:mm dd/MM/yyyy} and lost by {1}?")
+	String deleteLastGame(Date datePlayed, String loser);
 }

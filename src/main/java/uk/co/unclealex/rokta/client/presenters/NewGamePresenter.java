@@ -61,7 +61,7 @@ public class NewGamePresenter extends AllUsersAwarePresenter {
 				userRoktaService.getInitialPlayers(new Date(), callback);
 			}
 		};
-		getAsyncCallbackExecutor().executeAndWait(initialPlayersCallback);
+		getAsyncCallbackExecutor().executeAndWait(initialPlayersCallback, "Finding the initial players");
 	}
 
 	protected void show(AcceptsOneWidget container, List<String> usernames, InitialPlayers initialPlayers) {
@@ -74,15 +74,15 @@ public class NewGamePresenter extends AllUsersAwarePresenter {
 		allUserList.addAll(allBarExemptPlayers);
 		List<String> nonPlayers = Lists.newArrayList(initialPlayers.getAllUsers());
 		nonPlayers.removeAll(allBarExemptPlayers);
-		if (exemptPlayer != null) {
-			nonPlayers.remove(exemptPlayer);
-		}
 		allUserList.addAll(nonPlayers);
 		ListBox instigatorListBox = display.getInstigatorListBox();
 		for (String name : usernames) {
 			instigatorListBox.addItem(name);
 		}
 		ListBox playersListBox = display.getPlayersListBox();
+		if (exemptPlayer != null) {
+			allUserList.remove(exemptPlayer);
+		}
 		for (String name : allUserList) {
 			playersListBox.addItem(name);
 		}

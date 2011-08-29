@@ -12,7 +12,8 @@ public class MainPresenter implements Presenter {
 
 		HasOneWidget getTitlePanel();
 		HasOneWidget getMainPanel();
-		public abstract HasOneWidget getNavigationPanel();
+		HasOneWidget getNavigationPanel();
+		AcceptsOneWidget getAuthenticationPanel();
 		
 	}
 	

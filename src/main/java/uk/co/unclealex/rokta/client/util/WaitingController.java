@@ -7,6 +7,6 @@ public interface WaitingController {
 	public void addWaitingListener(WaitingListener waitingListener);
 	public void removeWaitingListener(WaitingListener waitingListener);
 
-	public void startWaiting(Collection<CanWait> canWaits);
-	public void stopWaiting(Collection<CanWait> canWaits);
+	public int startWaiting(String message, Collection<CanWait> canWaits);
+	public void stopWaiting(int handler, Collection<CanWait> canWaits);
 }
