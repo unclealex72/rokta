@@ -9,7 +9,7 @@
   <artifactId>rokta</artifactId>
   <packaging>war</packaging>
   <name>rokta</name>
-  <version>3.0.0</version>
+  <version>3.0.0-SNAPSHOT</version>
   <description>Rokta</description>
 
 	<licenses>
@@ -34,9 +34,9 @@
 	</properties>
 	
   <scm>
-  	<connection>scm:svn:http://west-ham-calendar.googlecode.com/svn/tags/personal/rokta/3.0.0</connection>
-  	<developerConnection>scm:svn:https://west-ham-calendar.googlecode.com/svn/tags/personal/rokta/3.0.0</developerConnection>
-  	<url>http://west-ham-calendar.googlecode.com/svn/tags/personal/rokta/3.0.0</url>
+  	<connection>scm:svn:http://west-ham-calendar.googlecode.com/svn/trunk/west-ham-calendar</connection>
+  	<developerConnection>scm:svn:https://west-ham-calendar.googlecode.com/svn/trunk/west-ham-calendar</developerConnection>
+  	<url>http://west-ham-calendar.googlecode.com/svn/trunk/west-ham-calendar</url>
   </scm>
 
   <dependencies>
