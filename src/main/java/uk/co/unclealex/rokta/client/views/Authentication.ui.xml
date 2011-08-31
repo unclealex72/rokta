@@ -6,17 +6,23 @@
 	<ui:style>
 		.authentication {
 			float: right;
-			width: 100%;
+			margin: 4px;
 		}
 		.authentication div {
 			display: inline;
 		}
+		.styling {
+			clear: both;
+		}
 	</ui:style>
 	
-	<g:HTMLPanel addStyleNames="{style.authentication}">
-		<g:Anchor ui:field="signIn">Sign in</g:Anchor>
-		<g:Label ui:field="currentUser"/>
-		<g:Anchor ui:field="signOut">Sign out</g:Anchor>
+	<g:HTMLPanel>
+		<div class="{style.authentication}">
+			<g:Anchor ui:field="signIn">Sign in</g:Anchor>
+			<g:Label ui:field="currentUser"/>
+			<g:Anchor ui:field="signOut">Sign out</g:Anchor>
+		</div>
+		<div class="{style.styling}"/>
 	</g:HTMLPanel>
 
 </ui:UiBinder>

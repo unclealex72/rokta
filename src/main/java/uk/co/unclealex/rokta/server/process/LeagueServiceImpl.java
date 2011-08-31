@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -18,8 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import uk.co.unclealex.rokta.server.dao.GameDao;
 import uk.co.unclealex.rokta.server.dao.PersonDao;
+import uk.co.unclealex.rokta.server.model.Day;
 import uk.co.unclealex.rokta.server.model.Game;
 import uk.co.unclealex.rokta.server.model.Person;
+import uk.co.unclealex.rokta.server.model.Play;
 import uk.co.unclealex.rokta.server.model.Round;
 import uk.co.unclealex.rokta.server.util.DateUtil;
 import uk.co.unclealex.rokta.shared.model.InfiniteInteger;
@@ -27,7 +30,7 @@ import uk.co.unclealex.rokta.shared.model.League;
 import uk.co.unclealex.rokta.shared.model.LeagueRow;
 import uk.co.unclealex.rokta.shared.model.Leagues;
 
-import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 
@@ -160,13 +163,7 @@ public class LeagueServiceImpl implements LeagueService {
 		// Exemptions only occur if the last game played was today.
 		// If the last game was played today we can also see who hasn't played today
 		if (lastLeagueGame.equals(lastGamePlayed)) {
-			Function<Person, String> nameFunction = new Function<Person, String>() {
-				public String apply(Person person) {
-					return person.getName();
-				}
-			};
-			Collection<String> currentPlayerNames = 
-					Sets.newHashSet(Iterables.transform(lastGamePlayed.getParticipants(), nameFunction));
+			Collection<String> currentPlayerNames = getCurrentPlayerNames(leaguesByGame.keySet(), currentDate);
 			League league = leaguesByGame.get(lastLeagueGame);
 			league.setCurrent(true);
 			if (getDateUtil().areSameDay(lastGamePlayed.getDatePlayed(), currentDate)) {
@@ -188,6 +185,31 @@ public class LeagueServiceImpl implements LeagueService {
 		}		
 	}
 	
+	protected Collection<String> getCurrentPlayerNames(Set<Game> games, Date currentDate) {
+		Day currentDay = new Day(currentDate);
+		final int day = currentDay.getDay();
+		final int month = currentDay.getMonth();
+		final int year = currentDay.getYear();
+		Predicate<Game> currentGamePredicate = new Predicate<Game>() {
+			@Override
+			public boolean apply(Game game) {
+				return
+					game.getDayPlayed().intValue() == day && game.getMonthPlayed().intValue() == month &&
+					game.getYearPlayed().intValue() == year;
+			}
+		};
+		Iterable<Game> currentDaysGames = Iterables.filter(games, currentGamePredicate);
+		Set<String> playerNames = Sets.newHashSet();
+		for (Game game : currentDaysGames) {
+			for (Round round : game.getRounds()) {
+				for (Play play : round.getPlays()) {
+					playerNames.add(play.getPerson().getName());
+				}
+			}
+		}
+		return playerNames;
+	}
+
 	protected InfiniteInteger calculateGap(LeagueRow higherRow, LeagueRow lowerRow) {
 		int playedTop = higherRow.getGamesPlayed();
 		int lostTop = higherRow.getGamesLost();

@@ -3,7 +3,7 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
 	<g:DockLayoutPanel unit="PX">
-		<g:north size="50">
+		<g:north size="58">
 			<g:HTMLPanel>
 				<g:SimplePanel ui:field="authenticationPanel"/>
 				<g:SimplePanel ui:field="titlePanel"/>
