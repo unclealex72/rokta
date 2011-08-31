@@ -2,9 +2,21 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
+	<ui:style>
+		.navExtension {
+			position: absolute;
+			left: 0px;
+			top: 0px;
+			width: 180px;
+			height: 58px;
+			background: #eeeeee;
+			z-index: -1;
+	  }
+	</ui:style>
 	<g:DockLayoutPanel unit="PX">
 		<g:north size="58">
 			<g:HTMLPanel>
+				<div class="{style.navExtension}"/>
 				<g:SimplePanel ui:field="authenticationPanel"/>
 				<g:SimplePanel ui:field="titlePanel"/>
 			</g:HTMLPanel>

@@ -11,6 +11,11 @@
     .league td {
 			vertical-align: middle;
 			text-align: right;
+			margin: 5px 5px 5px 5px;
+		}
+		.league {
+			margin-top: 50px;
+			margin-left: 50px;
 		}
   </ui:style>
 
