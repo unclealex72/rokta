@@ -5,7 +5,7 @@
 
   <ui:style type='uk.co.unclealex.rokta.client.views.League.Style'>
     .header { font-weight: bold; }
-    .notPlaying { font-style: italic; }
+    .notPlaying { color: gray; }
     .exempt { color : blue; }
     .movementImage { vertical-align: middle; }
     .league td {
