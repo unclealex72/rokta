@@ -2,9 +2,18 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
+	<ui:style src="Game.css">
+		.loser {
+			font-size: larger;
+			font-weight: bold;
+		}
+	</ui:style>
+
 	<g:HTMLPanel>
-		<p><g:Label ui:field="loser"/> has lost.</p>
-		<g:Button ui:field="submitButton">Submit</g:Button>
+		<fieldset class="{style.selectBox}">
+			<p class="{style.loser}"><g:InlineLabel ui:field="loser"/> has lost.</p>
+			<g:Button ui:field="submitButton">Submit</g:Button>
+		</fieldset>
 	</g:HTMLPanel>
 
 </ui:UiBinder>

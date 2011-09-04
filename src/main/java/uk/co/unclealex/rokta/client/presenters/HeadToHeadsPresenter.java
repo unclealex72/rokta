@@ -13,7 +13,7 @@ import uk.co.unclealex.rokta.client.filter.GameFilter;
 import uk.co.unclealex.rokta.client.messages.TitleMessages;
 import uk.co.unclealex.rokta.client.model.Row;
 import uk.co.unclealex.rokta.client.model.Table;
-import uk.co.unclealex.rokta.client.visualisation.TableDisplay;
+import uk.co.unclealex.rokta.client.views.TableDisplay;
 import uk.co.unclealex.rokta.shared.model.CurrentInformation;
 import uk.co.unclealex.rokta.shared.model.HeadToHeads;
 import uk.co.unclealex.rokta.shared.model.WinLoseCounter;

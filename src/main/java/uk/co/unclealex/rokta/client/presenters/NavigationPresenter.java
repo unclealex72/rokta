@@ -3,6 +3,7 @@
  */
 package uk.co.unclealex.rokta.client.presenters;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ import uk.co.unclealex.rokta.client.places.LeaguePlace;
 import uk.co.unclealex.rokta.client.places.LosingStreaksPlace;
 import uk.co.unclealex.rokta.client.places.ProfilePlace;
 import uk.co.unclealex.rokta.client.places.RoktaPlace;
+import uk.co.unclealex.rokta.client.places.RoktaPlaceVisitor;
 import uk.co.unclealex.rokta.client.places.WinningStreaksPlace;
 import uk.co.unclealex.rokta.client.security.AuthenticationManager;
 import uk.co.unclealex.rokta.client.util.AsyncCallbackExecutor;
@@ -28,11 +30,14 @@ import uk.co.unclealex.rokta.shared.service.AnonymousRoktaServiceAsync;
 import uk.co.unclealex.rokta.shared.service.UserRoktaServiceAsync;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
@@ -62,7 +67,7 @@ import com.google.inject.Provider;
  * @author unclealex72
  *
  */
-public class NavigationPresenter implements Presenter {
+public class NavigationPresenter implements Presenter, PlaceChangeEvent.Handler, RoktaPlaceVisitor<HasClickHandlers> {
 
 	public interface Display extends IsWidget {
 		HasClickHandlers getNewGameLink();
@@ -74,6 +79,8 @@ public class NavigationPresenter implements Presenter {
 		HasClickHandlers getFiltersLink();
 		HasClickHandlers getAdminLink();
 		HasClickHandlers addProfileLink(String playerName);
+		void addStyleName(HasClickHandlers widget);
+		void removeStyleName(HasClickHandlers widget);
 	}
 
 	private final PlaceController i_placeController;
@@ -81,17 +88,19 @@ public class NavigationPresenter implements Presenter {
 	private final AuthenticationManager i_authenticationManager;
 	private final AsyncCallbackExecutor i_asyncCallbackExecutor;
 	private final Provider<FiltersPresenter> i_filtersPresenterProvider;
+	private final Map<String, HasClickHandlers> profileHandlersByPlayerName = Maps.newHashMap();
 	
 	@Inject
 	public NavigationPresenter(PlaceController placeController, Display display,
 			AsyncCallbackExecutor asyncCallbackExecutor, Provider<FiltersPresenter> filtersPresenterProvider,
-			AuthenticationManager authenticationManager) {
+			AuthenticationManager authenticationManager, EventBus eventBus) {
 		super();
 		i_placeController = placeController;
 		i_display = display;
 		i_filtersPresenterProvider = filtersPresenterProvider;
 		i_asyncCallbackExecutor = asyncCallbackExecutor;
 		i_authenticationManager = authenticationManager;
+		eventBus.addHandler(PlaceChangeEvent.TYPE, this);
 	}
 
 	@Override
@@ -144,11 +153,13 @@ public class NavigationPresenter implements Presenter {
 				display.getAdminLink(),
 				new Function<GameFilter, RoktaPlace>() { 
 					public RoktaPlace apply(GameFilter gameFilter) { return new AdminPlace(gameFilter); }});
+		final Map<String, HasClickHandlers> profileHandlersByPlayerName = getProfileHandlersByPlayerName();
 		ExecutableAsyncCallback<String[]> callback = new FailureAsPopupExecutableAsyncCallback<String[]>() {
 			@Override
 			public void onSuccess(String[] playerNames) {
 				for (final String playerName : playerNames) {
 					HasClickHandlers profileLink = display.addProfileLink(playerName);
+					profileHandlersByPlayerName.put(playerName, profileLink);
 					Function<GameFilter, RoktaPlace> function = new Function<GameFilter, RoktaPlace>() {
 						@Override
 						public RoktaPlace apply(GameFilter gameFilter) {
@@ -208,6 +219,79 @@ public class NavigationPresenter implements Presenter {
 		display.getNewGameLink().addClickHandler(newGameHandler);
 	}
 
+	@Override
+	public void onPlaceChange(PlaceChangeEvent event) {
+		Place newPlace = event.getNewPlace();
+		if (newPlace instanceof RoktaPlace) {
+			HasClickHandlers selected = ((RoktaPlace) newPlace).accept(this);
+			if (selected != null) {
+				selectLink(selected);
+			}
+		}
+	}
+
+	protected void selectLink(HasClickHandlers selected) {
+		Display display = getDisplay();
+		HasClickHandlers[] handlers = new HasClickHandlers[] { 
+				display.getAdminLink(), display.getFiltersLink(), display.getGraphLink(), display.getHeadToHeadsLink(), 
+				display.getLeagueLink(), display.getLosingStreaksLink(), display.getNewGameLink(), 
+				display.getWinningStreaksLink() };
+		Iterable<HasClickHandlers> all = Iterables.concat(Arrays.asList(handlers), getProfileHandlersByPlayerName().values());
+		for (HasClickHandlers hasClickHandlers : all) {
+			if (hasClickHandlers == selected) {
+				display.addStyleName(hasClickHandlers);
+			}
+			else {
+				display.removeStyleName(hasClickHandlers);
+			}
+		}
+	}
+
+	@Override
+	public HasClickHandlers visit(AdminPlace adminPlace) {
+		return getDisplay().getAdminLink();
+	}
+	
+	@Override
+	public HasClickHandlers visit(GamePlace gamePlace) {
+		return getDisplay().getNewGameLink();
+	}
+	
+	@Override
+	public HasClickHandlers visit(GraphPlace graphPlace) {
+		return getDisplay().getGraphLink();
+	}
+	
+	@Override
+	public HasClickHandlers visit(HeadToHeadsPlace headToHeadsPlace) {
+		return getDisplay().getHeadToHeadsLink();
+	}
+	
+	@Override
+	public HasClickHandlers visit(LeaguePlace leaguePlace) {
+		return getDisplay().getLeagueLink();
+	}
+	
+	@Override
+	public HasClickHandlers visit(LosingStreaksPlace losingStreaksPlace) {
+		return getDisplay().getLosingStreaksLink();
+	}
+	
+	@Override
+	public HasClickHandlers visit(ProfilePlace profilePlace) {
+		return getProfileHandlersByPlayerName().get(profilePlace.getUsername());
+	}
+	
+	@Override
+	public HasClickHandlers visit(RoktaPlace roktaPlace) {
+		throw new IllegalArgumentException(roktaPlace.getClass().getName());
+	}
+	
+	@Override
+	public HasClickHandlers visit(WinningStreaksPlace winningStreaksPlace) {
+		return getDisplay().getWinningStreaksLink();
+	}
+	
 	public Display getDisplay() {
 		return i_display;
 	}
@@ -226,6 +310,10 @@ public class NavigationPresenter implements Presenter {
 
 	public Provider<FiltersPresenter> getFiltersPresenterProvider() {
 		return i_filtersPresenterProvider;
+	}
+
+	public Map<String, HasClickHandlers> getProfileHandlersByPlayerName() {
+		return profileHandlersByPlayerName;
 	}
 
 }

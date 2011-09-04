@@ -7,6 +7,6 @@ import uk.co.unclealex.rokta.shared.model.Hand;
 
 public interface HandCountPresenterFactory {
 
-	HandCountPresenter createHandCountPresenter(Map<Hand, Long> openingHandCounts);
+	HandCountPresenter createHandCountPresenter(String title, Map<Hand, Long> openingHandCounts);
 
 }

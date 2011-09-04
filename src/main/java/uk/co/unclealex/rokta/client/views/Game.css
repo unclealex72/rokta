@@ -1,0 +1,9 @@
+.selectBox {
+	width: 20em;
+	background-color: #f7fff7;
+}
+
+.selectBox button {
+	float: right;
+	margin-top: 1em;
+}

@@ -11,9 +11,11 @@
     .league td {
 			vertical-align: middle;
 			text-align: right;
-			margin: 5px 5px 5px 5px;
+			padding: 5px 5px 5px 5px;
+			border-bottom: 1px solid green;
 		}
 		.league {
+			border-collapse: collapse;
 			margin-top: 50px;
 			margin-left: 50px;
 		}

@@ -20,10 +20,6 @@
 	<!-- Guice -->
 	<inherits name='com.google.common.collect.Collect'/>
 
-	<!-- Visualization -->
-	<inherits name='com.google.gwt.visualization.Visualization'/>
-	<inherits name="org.danvk.dygraphs"/>
-	
 	<!-- javax.inject -->
 	<inherits name='javax.JSR330' />
 

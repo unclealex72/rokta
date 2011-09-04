@@ -15,26 +15,30 @@ import uk.co.unclealex.rokta.shared.model.InitialPlayers;
 import uk.co.unclealex.rokta.shared.service.AnonymousRoktaServiceAsync;
 import uk.co.unclealex.rokta.shared.service.UserRoktaServiceAsync;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.view.client.MultiSelectionModel;
+import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.gwt.view.client.SelectionModel;
 
 public class NewGamePresenter extends AllUsersAwarePresenter {
 
 	public static interface Display extends IsWidget {
 		HasText getExemptPlayer();
 		ListBox getInstigatorListBox();
-		ListBox getPlayersListBox();
+		CellList<String> getPlayersListBox();
 		Button getStartButton();
 	}
 	
@@ -69,7 +73,7 @@ public class NewGamePresenter extends AllUsersAwarePresenter {
 		container.setWidget(display);
 		String exemptPlayer = initialPlayers.getExemptPlayer();
 		display.getExemptPlayer().setText(exemptPlayer==null?"No one":exemptPlayer);
-		List<String> allUserList = Lists.newArrayList();
+		final List<String> allUserList = Lists.newArrayList();
 		List<String> allBarExemptPlayers = initialPlayers.getAllBarExemptPlayers();
 		allUserList.addAll(allBarExemptPlayers);
 		List<String> nonPlayers = Lists.newArrayList(initialPlayers.getAllUsers());
@@ -79,48 +83,46 @@ public class NewGamePresenter extends AllUsersAwarePresenter {
 		for (String name : usernames) {
 			instigatorListBox.addItem(name);
 		}
-		ListBox playersListBox = display.getPlayersListBox();
+		CellList<String> playersListBox = display.getPlayersListBox();
 		if (exemptPlayer != null) {
 			allUserList.remove(exemptPlayer);
 		}
-		for (String name : allUserList) {
-			playersListBox.addItem(name);
-		}
-		playersListBox.addChangeHandler(new ChangeHandler() {
-			@Override
-			public void onChange(ChangeEvent event) {
-				enableOrDisableStartButton();
-			}
-		});
+    final SelectionModel<String> selectionModel = new MultiSelectionModel<String>();
+    playersListBox.setSelectionModel(selectionModel);
+    selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+      public void onSelectionChange(SelectionChangeEvent event) {
+				enableOrDisableStartButton(allUserList);
+      }
+    });
+		playersListBox.setRowData(allUserList);
 		display.getStartButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				startGame();
+				startGame(allUserList);
 			}
 		});
-		enableOrDisableStartButton();
+		enableOrDisableStartButton(allUserList);
 	}
 
-	protected SortedSet<String> getSelectedPlayerNames() {
-		ListBox playersListBox = getDisplay().getPlayersListBox();
-		int size = playersListBox.getItemCount();
-		SortedSet<String> selectedPlayerNames = Sets.newTreeSet();
-		for (int idx = 0; idx < size; idx++) {
-			if (playersListBox.isItemSelected(idx)) {
-				selectedPlayerNames.add(playersListBox.getValue(idx));
+	protected SortedSet<String> getSelectedPlayerNames(List<String> allUserList) {
+		final SelectionModel<? super String> selectionModel = getDisplay().getPlayersListBox().getSelectionModel();
+		Predicate<String> selectedPredicate = new Predicate<String>() {
+			@Override
+			public boolean apply(String playerName) {
+				return selectionModel.isSelected(playerName);
 			}
-		}
-		return selectedPlayerNames;
+		};
+		return Sets.newTreeSet(Iterables.filter(allUserList, selectedPredicate));
 	}
 	
-	protected void enableOrDisableStartButton() {
-		getDisplay().getStartButton().setEnabled(getSelectedPlayerNames().size() > 1);
+	protected void enableOrDisableStartButton(List<String> allUserList) {
+		getDisplay().getStartButton().setEnabled(getSelectedPlayerNames(allUserList).size() > 1);
 	}
 	
-	protected void startGame() {
+	protected void startGame(List<String> allUserList) {
 		ListBox instigatorListBox = getDisplay().getInstigatorListBox();
 		String instigator = instigatorListBox.getValue(instigatorListBox.getSelectedIndex());
-		SortedSet<String> selectedPlayerNames = getSelectedPlayerNames();
+		SortedSet<String> selectedPlayerNames = getSelectedPlayerNames(allUserList);
 		Game game = new Game(instigator, selectedPlayerNames);
 		getPlaceController().goTo(new GamePlace(game));
 	}

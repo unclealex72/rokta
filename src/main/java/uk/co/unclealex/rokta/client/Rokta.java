@@ -1,7 +1,5 @@
 package uk.co.unclealex.rokta.client;
 
-import org.danvk.Dygraphs;
-
 import uk.co.unclealex.rokta.client.gin.RoktaGinjector;
 import uk.co.unclealex.rokta.client.presenters.MainPresenter;
 import uk.co.unclealex.rokta.client.presenters.MainPresenter.Display;
@@ -16,7 +14,6 @@ public class Rokta implements EntryPoint {
 	@Override
 	public void onModuleLoad() {
 		
-		Dygraphs.install();
 		final RoktaGinjector injector = GWT.create(RoktaGinjector.class);
 
 		MainPresenter mainPresenter = injector.getMainPresenter();

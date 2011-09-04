@@ -2,10 +2,32 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
+	<ui:style src="Game.css" type="uk.co.unclealex.rokta.client.views.NextRound.Style">
+		.player, .counter p {
+			width: 11em;
+			text-align: right;
+			float: left;
+			margin: 3px;
+		}
+		
+		.counter p {
+			font-weight: bold;
+		}
+		.counter {
+			margin-bottom: 1em;
+		}
+	</ui:style>
+
 	<g:HTMLPanel>
-		Counter: <g:ListBox ui:field="counterListBox"/>
-		<g:FlexTable ui:field="playersTable"/>
-		<g:Button ui:field="nextButton">Next</g:Button>
+		<fieldset class="{style.selectBox}">
+			<legend>Let battle commence</legend>
+			<div class="{style.counter}">
+				<p>Counter</p>
+				<g:ListBox ui:field="counterListBox"/>
+			</div>
+			<g:FlowPanel ui:field="playersPanel"/>
+			<g:Button ui:field="nextButton">Next</g:Button>
+		</fieldset>
 	</g:HTMLPanel>
 
 </ui:UiBinder>

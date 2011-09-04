@@ -1,28 +1,30 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:c="urn:import:com.google.gwt.user.cellview.client">
+
+	<ui:style src="Game.css">
+		.players {
+			padding: 2px;
+			border: 1px solid black;
+		}
+
+		.entry, .selectBox select {
+			margin-left: 5em;
+			width: 10em;
+		}
+	</ui:style>
 
 	<g:HTMLPanel>
-		<p><g:Label ui:field="exemptPlayer"/> is exempt.</p>
-		<g:Grid>
-			<g:row>
-				<g:cell>
-					Instigator
-				</g:cell>
-				<g:customCell>
-					<g:ListBox ui:field="instigatorListBox" multiple="false"/>
-				</g:customCell>
-			</g:row>
-			<g:row>
-				<g:cell>
-					Players
-				</g:cell>
-				<g:customCell>
-					<g:ListBox ui:field="playersListBox" multiple="true"/>
-				</g:customCell>
-			</g:row>
-		</g:Grid>
-		<g:Button ui:field="startButton">Start</g:Button>
+		<p><g:InlineLabel ui:field="exemptPlayer"/> is exempt.</p>
+		<fieldset class="{style.selectBox}">
+			<legend>Please choose your players</legend>
+			<h2>Instigator</h2>
+			<g:ListBox ui:field="instigatorListBox" multiple="false"/>
+			<h2>Players</h2>
+			<c:CellList ui:field="playersListBox" addStyleNames="{style.entry} {style.players}"/>
+			<g:Button ui:field="startButton">Start</g:Button>
+		</fieldset>
 	</g:HTMLPanel>
 
 </ui:UiBinder>

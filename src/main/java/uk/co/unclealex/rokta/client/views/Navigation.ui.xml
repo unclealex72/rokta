@@ -3,7 +3,7 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:a="urn:import:uk.co.unclealex.rokta.client.ui">
 
-	<ui:style>
+	<ui:style type="uk.co.unclealex.rokta.client.views.Navigation.Style">
 		.navigation {
 			width: 100%;
 			float: left;
@@ -35,11 +35,11 @@
 			border-bottom: 0;
 			}
 		
-		.navigation li:hover {
+		.navigation li:hover, .selected {
 			background-color: #6699cc;
 		}
 		
-		.navigation li:hover a {
+		.navigation li:hover a, li.selected a {
 			color: white;
 		}
 	</ui:style>

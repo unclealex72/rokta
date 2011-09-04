@@ -5,7 +5,7 @@ import java.util.SortedSet;
 import javax.inject.Inject;
 
 import uk.co.unclealex.rokta.client.model.Table;
-import uk.co.unclealex.rokta.client.visualisation.TableDisplay;
+import uk.co.unclealex.rokta.client.views.TableDisplay;
 import uk.co.unclealex.rokta.shared.model.Streak;
 
 import com.google.gwt.user.client.ui.AcceptsOneWidget;

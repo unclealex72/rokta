@@ -1,9 +1,16 @@
 package uk.co.unclealex.rokta.client.views;
 
+import java.util.Date;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.SortedMap;
+
 import uk.co.unclealex.rokta.client.presenters.GraphPresenter.Display;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -12,9 +19,6 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.visualization.client.DataTable;
-import com.google.gwt.visualization.client.VisualizationUtils;
-import com.google.inject.Provider;
 
 public class Graph extends Composite implements Display {
 
@@ -27,60 +31,99 @@ public class Graph extends Composite implements Display {
 
 	@UiField SimplePanel graph;
 	
-	private Iterable<String> i_colours;
-	
 	public Graph() {
 		initWidget(binder.createAndBindUi(this));
 	}
 
 	@Override
-	public void draw(final Provider<DataTable> dataTableProvider) {
-		final Runnable graphDrawer = new Runnable() {
-			@Override
-			public void run() {
-				DataTable graphDataTable = dataTableProvider.get();
-				Element element = getGraph().getElement();
-				drawDygraph(element, graphDataTable, colours(getColours()));
-			}
-		};
-		VisualizationUtils.loadVisualizationApi(graphDrawer);
+	public void drawGraph(Map<String, String> coloursByName, Map<String, SortedMap<Date, Double>> percentagesByDateByName) {
+		JsArrayMixed seriesArray = createSeries(percentagesByDateByName);
+		JsArrayString coloursArray = createColours(percentagesByDateByName.keySet(), coloursByName);
+		drawGraph(graph.getElement(), coloursArray, seriesArray);		
 	}
-	
-	protected JsArrayString colours(Iterable<String> colours) {
-		JsArrayString array = (JsArrayString) JsArrayString.createArray();
-		int idx = 0;
-		for (String colour : colours) {
-			array.set(idx, colour);
-			idx++;
+
+	protected JsArrayString createColours(Set<String> names, Map<String, String> coloursByName) {
+		JsArrayString coloursArray = JavaScriptObject.createArray().cast();
+		for (String name : names) {
+			coloursArray.push(coloursByName.get(name));
 		}
-		return array;
+		return coloursArray;
+	}
+
+	protected JsArrayMixed createSeries(Map<String, SortedMap<Date, Double>> series) {
+		JsArrayMixed seriesArray = JavaScriptObject.createArray().cast();
+		for (Entry<String, SortedMap<Date, Double>> entry : series.entrySet()) {
+			seriesArray.push(createSeries(entry.getKey(), entry.getValue()));
+		}
+		return seriesArray;
 	}
 	
-	protected void drawDygraph(Element graphElement, DataTable graphDataTable, JsArrayString colours) {
-		drawDygraph(graphElement, graphDataTable, "100%", "100%", colours);
+	protected JavaScriptObject createSeries(String name, SortedMap<Date, Double> data) {
+		JsArrayMixed dataArray = JavaScriptObject.createArray().cast();
+		for (Entry<Date, Double> entry : data.entrySet()) {
+			Date date = entry.getKey();
+			@SuppressWarnings("deprecation")
+			JsArrayMixed point = createPoint(
+					date.getYear() + 1900, date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), entry.getValue());
+			dataArray.push(point);
+		}
+		return createSeries(name, dataArray);
 	}
-
-	protected native JavaScriptObject drawDygraph(
-	    Element graphElement, DataTable dataTable, String width, String height, JsArrayString colours) /*-{
-	  var chart = new $wnd.Dygraph.GVizChart(graphElement);
-	  chart.draw(dataTable,
-	    {
-	      colors: colours,
-	      legend: "always",
-	      width: width,
-	      height: height
-	    });
-	  return chart;
+	
+	protected native JsArrayMixed createPoint(int year, int month, int day, int hours, int minutes, double value) /*-{
+		return [Date.UTC(year, month, day,hours, minutes, 0, 0), value];
 	}-*/;
-
-	public Iterable<String> getColours() {
-		return i_colours;
-	}
-
-	public void setColours(Iterable<String> colours) {
-		i_colours = colours;
-	}
-
+	
+	protected native JavaScriptObject createSeries(String name, JsArrayMixed data) /*-{
+		return {name: name, data: data};
+	}-*/;
+	
+	protected native void drawGraph(Element element, JsArrayString colours, JsArrayMixed series) /*-{
+		var chart = new $wnd.Highcharts.Chart({
+			chart: {
+				renderTo: element,
+        zoomType: 'xy',				
+				type: 'spline'
+			},
+			colors: colours,
+			title: {
+				text: 'Loss percentages by date'
+			},
+			xAxis: {
+				type: 'datetime',
+				dateTimeLabelFormats: { // don't display the dummy year
+					month: '%e. %b',
+					year: '%b'
+				}
+			},
+			yAxis: {
+				title: {
+					text: 'Losses (%)'
+				},
+				min: 0
+			},
+			tooltip: {
+				formatter: function() {
+					return $wnd.Highcharts.dateFormat('%a, %e %B %Y, %H:%M', this.x) + '<br/>' +
+								 '<b>'+ this.series.name +'</b> ' + this.y.toPrecision(4) + '%';
+				}
+			},
+	    plotOptions: {
+        series: {
+          marker: {
+            enabled: false,
+            states: {
+              hover: {
+                enabled: true
+              }
+            }
+          }
+        }
+  		},
+			series: series
+		});
+	}-*/;
+	
 	public SimplePanel getGraph() {
 		return graph;
 	}

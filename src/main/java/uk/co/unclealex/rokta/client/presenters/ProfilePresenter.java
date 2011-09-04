@@ -17,9 +17,7 @@ import com.google.inject.assistedinject.Assisted;
 public class ProfilePresenter extends InformationPresenter<PlayerProfile> {
 
 	public static interface Display extends IsWidget {
-		HasText getHandCountTitle();
 		AcceptsOneWidget getHandCountPanel();
-		HasText getOpeningHandCountTitle();
 		AcceptsOneWidget getOpeningHandCountPanel();
 		HasText getColourTitle();
 		void setColour(String htmlColour);
@@ -44,16 +42,17 @@ public class ProfilePresenter extends InformationPresenter<PlayerProfile> {
 	protected void show(GameFilter gameFilter, AcceptsOneWidget panel, PlayerProfile playerProfile) {
 		Display display = getDisplay();
 		panel.setWidget(display);
-		HandCountPresenter handCountPresenter = 
-				getHandCountPresenterFactory().createHandCountPresenter(playerProfile.getHandCounts());
-		HandCountPresenter openingHandCountPresenter = 
-				getHandCountPresenterFactory().createHandCountPresenter(playerProfile.getOpeningHandCounts());
-		handCountPresenter.show(display.getHandCountPanel());
-		openingHandCountPresenter.show(display.getOpeningHandCountPanel());
 		String username = getUsername();
 		TitleMessages titleMessages = getTitleMessages();
-		display.getHandCountTitle().setText(titleMessages.handCounts(username));
-		display.getOpeningHandCountTitle().setText(titleMessages.openingHandCounts(username));
+		HandCountPresenterFactory handCountPresenterFactory = getHandCountPresenterFactory();
+		HandCountPresenter handCountPresenter = 
+				handCountPresenterFactory.createHandCountPresenter(
+						titleMessages.handCounts(username), playerProfile.getHandCounts());
+		HandCountPresenter openingHandCountPresenter = 
+				handCountPresenterFactory.createHandCountPresenter(
+						titleMessages.openingHandCounts(username), playerProfile.getOpeningHandCounts());
+		handCountPresenter.show(display.getHandCountPanel());
+		openingHandCountPresenter.show(display.getOpeningHandCountPanel());
 		String colourName = playerProfile.getColourName();
 		display.getColourTitle().setText(titleMessages.playerColour(username, colourName));
 		display.setColour(colourName);

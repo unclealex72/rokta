@@ -64,7 +64,6 @@ import uk.co.unclealex.rokta.client.views.Profile;
 import uk.co.unclealex.rokta.client.views.Streaks;
 import uk.co.unclealex.rokta.client.views.StreaksTable;
 import uk.co.unclealex.rokta.client.views.Title;
-import uk.co.unclealex.rokta.client.visualisation.Visualisation;
 
 import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.gwt.inject.client.assistedinject.GinFactoryModuleBuilder;
@@ -171,8 +170,6 @@ public class RoktaClientModule extends AbstractGinModule {
 				AdminPresenter.Display.class, Admin.class, 
 				AdminPresenter.class, AdminPresenterFactory.class);
 
-		bind(Visualisation.class);
-		
 		bind(InformationCache.class).to(InformationCacheImpl.class).in(Singleton.class);
 	}
 

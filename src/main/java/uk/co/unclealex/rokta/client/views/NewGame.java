@@ -4,11 +4,13 @@ import javax.inject.Inject;
 
 import uk.co.unclealex.rokta.client.presenters.NewGamePresenter.Display;
 
+import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
+import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasText;
@@ -26,7 +28,7 @@ public class NewGame extends Composite implements Display {
 
 	@UiField HasText exemptPlayer;
 	@UiField ListBox instigatorListBox;
-	@UiField ListBox playersListBox;
+	@UiField CellList<String> playersListBox;
 	@UiField Button startButton;
 
 	@Inject
@@ -38,6 +40,11 @@ public class NewGame extends Composite implements Display {
 	public ListBox createListBox(boolean multiple) {
 		return new ListBox(multiple);
 	}
+
+	@UiFactory
+	public CellList<String> createCellList() {
+		return new CellList<String>(new TextCell());
+	}
 	
 	public HasText getExemptPlayer() {
 		return exemptPlayer;
@@ -47,12 +54,12 @@ public class NewGame extends Composite implements Display {
 		return instigatorListBox;
 	}
 
-	public ListBox getPlayersListBox() {
-		return playersListBox;
-	}
-
 	public Button getStartButton() {
 		return startButton;
 	}
-	
+
+	@Override
+	public CellList<String> getPlayersListBox() {
+		return playersListBox;
+	}
 }
