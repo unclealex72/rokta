@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import uk.co.unclealex.rokta.client.places.GamePlace;
+import uk.co.unclealex.rokta.client.presenters.NextRoundPresenter.Display;
 import uk.co.unclealex.rokta.client.util.AsyncCallbackExecutor;
 import uk.co.unclealex.rokta.shared.model.Game;
 import uk.co.unclealex.rokta.shared.model.Hand;
@@ -21,7 +22,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.inject.assistedinject.Assisted;
 
-public class NextRoundPresenter extends AllUsersAwarePresenter {
+public class NextRoundPresenter extends AllUsersAwarePresenter<Display> {
 
 	public static interface Display extends IsWidget {
 		ListBox getCounterListBox();

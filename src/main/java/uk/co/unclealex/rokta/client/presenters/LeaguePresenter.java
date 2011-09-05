@@ -3,11 +3,12 @@ package uk.co.unclealex.rokta.client.presenters;
 import java.util.List;
 import java.util.SortedSet;
 
-import uk.co.unclealex.rokta.client.cache.InformationCache;
+import uk.co.unclealex.rokta.client.cache.InformationService;
 import uk.co.unclealex.rokta.client.factories.TitleFactory;
 import uk.co.unclealex.rokta.client.filter.GameFilter;
 import uk.co.unclealex.rokta.client.messages.TitleMessages;
 import uk.co.unclealex.rokta.client.model.Table;
+import uk.co.unclealex.rokta.client.presenters.LeaguePresenter.Display;
 import uk.co.unclealex.rokta.client.views.TableDisplay;
 import uk.co.unclealex.rokta.shared.model.CurrentInformation;
 import uk.co.unclealex.rokta.shared.model.League;
@@ -19,7 +20,7 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
-public class LeaguePresenter extends InformationPresenter<Leagues> {
+public class LeaguePresenter extends InformationActivity<Display, Leagues> {
 
 	public static interface Display extends TableDisplay {
 		String EXEMPT = "exempt";
@@ -35,9 +36,9 @@ public class LeaguePresenter extends InformationPresenter<Leagues> {
 	@Inject
 	public LeaguePresenter(
 			@Assisted GameFilter gameFilter,
-			InformationCache informationCache, Display display,
+			InformationService informationService, Display display,
 			TitleMessages titleMessages) {
-		super(gameFilter, informationCache);
+		super(gameFilter, informationService);
 		i_display = display;
 		i_titleMessages = titleMessages;
 	}

@@ -11,8 +11,9 @@ import uk.co.unclealex.rokta.shared.service.UserRoktaServiceAsync;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.gwt.user.client.ui.IsWidget;
 
-public abstract class AllUsersAwarePresenter implements Presenter {
+public abstract class AllUsersAwarePresenter<D extends IsWidget> implements Presenter<D> {
 
 	private final AsyncCallbackExecutor i_asyncCallbackExecutor;
 	

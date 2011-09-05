@@ -3,22 +3,10 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:a="urn:import:uk.co.unclealex.rokta.client.ui">
 
-  <ui:style type='uk.co.unclealex.rokta.client.views.League.Style'>
-    .header { font-weight: bold; }
+  <ui:style src="League.css" type='uk.co.unclealex.rokta.client.views.League.Style'>
     .notPlaying { color: gray; }
     .exempt { color : blue; }
     .movementImage { vertical-align: middle; }
-    .league td {
-			vertical-align: middle;
-			text-align: right;
-			padding: 5px 5px 5px 5px;
-			border-bottom: 1px solid green;
-		}
-		.league {
-			border-collapse: collapse;
-			margin-top: 50px;
-			margin-left: 50px;
-		}
   </ui:style>
 
 	<g:HTMLPanel>

@@ -24,6 +24,7 @@ public class Rokta implements EntryPoint {
 		injector.getTitlePresenter().show(mainDisplay.getTitlePanel());
 		injector.getAuthenticationPresenter().show(mainDisplay.getAuthenticationPanel());
 		injector.getNavigationPresenter().show(mainDisplay.getNavigationPanel());
+		injector.getNewsPresenter().show(mainDisplay.getNewsPanel());
 		injector.getActivityMapper().setDisplay(mainDisplay.getMainPanel());
 		
 		injector.getPlaceHistoryHandler().handleCurrentHistory();

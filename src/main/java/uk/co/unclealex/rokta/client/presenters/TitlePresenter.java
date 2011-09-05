@@ -37,7 +37,7 @@ import uk.co.unclealex.rokta.client.places.ProfilePlace;
 import uk.co.unclealex.rokta.client.places.RoktaPlace;
 import uk.co.unclealex.rokta.client.places.RoktaPlaceVisitor;
 import uk.co.unclealex.rokta.client.places.WinningStreaksPlace;
-import uk.co.unclealex.rokta.client.util.TitleManager;
+import uk.co.unclealex.rokta.client.presenters.TitlePresenter.Display;
 import uk.co.unclealex.rokta.client.util.WaitingController;
 import uk.co.unclealex.rokta.client.util.WaitingListener;
 import uk.co.unclealex.rokta.shared.model.Game;
@@ -45,6 +45,9 @@ import uk.co.unclealex.rokta.shared.model.Game.Round;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Maps;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Window;
@@ -53,7 +56,7 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 
-public class TitlePresenter implements Presenter, TitleManager, WaitingListener {
+public class TitlePresenter implements Presenter<Display>, WaitingListener, PlaceChangeEvent.Handler {
 
 	public static interface Display extends IsWidget {
 	
@@ -84,7 +87,7 @@ public class TitlePresenter implements Presenter, TitleManager, WaitingListener 
 	
 	@Inject
 	public TitlePresenter(
-			Display display, TitleMessages titleMessages, WaitingController waitingController, WaitingImages waitingImages) {
+			Display display, TitleMessages titleMessages, WaitingController waitingController, WaitingImages waitingImages, EventBus eventBus) {
 		super();
 		i_display = display;
 		i_titleMessages = titleMessages;
@@ -95,6 +98,7 @@ public class TitlePresenter implements Presenter, TitleManager, WaitingListener 
 			waitingImages.bar(),
 			waitingImages.ledBar() };
 		waitingController.addWaitingListener(this);
+		eventBus.addHandler(PlaceChangeEvent.TYPE, this);
 	}
 
 	@Override
@@ -228,12 +232,16 @@ public class TitlePresenter implements Presenter, TitleManager, WaitingListener 
 	}
 	
 	@Override
-	public void updateTitle(RoktaPlace place) {
-		String title = makeTitle(place);
-		getDisplay().getMainTitle().setText(title);
-		Window.setTitle(title);
+	public void onPlaceChange(PlaceChangeEvent event) {
+		Place newPlace = event.getNewPlace();
+		if (newPlace instanceof RoktaPlace) {
+			RoktaPlace place = (RoktaPlace) newPlace;
+			String title = makeTitle(place);
+			getDisplay().getMainTitle().setText(title);
+			Window.setTitle(title);
+		}
 	}
-	
+
 	@Override
 	public void startWaiting(String message, int waitingHandler) {
 		Display display = getDisplay();

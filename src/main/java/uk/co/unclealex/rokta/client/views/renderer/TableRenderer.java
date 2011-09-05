@@ -18,8 +18,8 @@ import com.google.common.collect.Multimaps;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TableRenderer {
@@ -102,20 +102,20 @@ public class TableRenderer {
 				}
 				Widget cellWidget;
 				if (cell == null) {
-					cellWidget = new Label();
+					cellWidget = new HTMLPanel("&nbsp;");
 				}
 				else {
-					cellWidget = (cell instanceof IsWidget)?((IsWidget) cell).asWidget():new Label(cell.toString());
+					cellWidget = (cell instanceof IsWidget)?((IsWidget) cell).asWidget():new HTMLPanel(cell.toString());
 				}
 				Iterable<CellDecorator> cellDecorators = rowDecorators;
 				Collection<CellDecorator> columnDecorators = getColumnDecorators().get(colIdx);
 				if (columnDecorators != null) {
 					cellDecorators = Iterables.concat(cellDecorators, columnDecorators);
 				}
-				for (CellDecorator cellDecorator : cellDecorators) {
-					cellDecorator.decorate(cellWidget, table, typeMarker, rowIdx, colIdx);
-				}
 				grid.setWidget(rowIdx, colIdx, cellWidget);
+				for (CellDecorator cellDecorator : cellDecorators) {
+					cellDecorator.decorate(cellWidget.getElement().getParentElement(), table, typeMarker, rowIdx, colIdx);
+				}
 				if (titleFactory != null) {
 					String title = titleFactory.createTitle(rowIdx, colIdx);
 					if (title != null) {

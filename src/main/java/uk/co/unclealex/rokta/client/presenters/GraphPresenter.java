@@ -4,9 +4,10 @@ import java.util.Date;
 import java.util.Map;
 import java.util.SortedMap;
 
-import uk.co.unclealex.rokta.client.cache.InformationCache;
+import uk.co.unclealex.rokta.client.cache.InformationService;
 import uk.co.unclealex.rokta.client.filter.GameFilter;
 import uk.co.unclealex.rokta.client.messages.TitleMessages;
+import uk.co.unclealex.rokta.client.presenters.GraphPresenter.Display;
 import uk.co.unclealex.rokta.shared.model.CurrentInformation;
 import uk.co.unclealex.rokta.shared.model.League;
 import uk.co.unclealex.rokta.shared.model.LeagueRow;
@@ -18,7 +19,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
-public class GraphPresenter extends InformationPresenter<Leagues> {
+public class GraphPresenter extends InformationActivity<Display, Leagues> {
 
 	public static interface Display extends IsWidget {
 		void drawGraph(Map<String, String> coloursByName, Map<String, SortedMap<Date, Double>> percentagesByDateByName);
@@ -28,9 +29,9 @@ public class GraphPresenter extends InformationPresenter<Leagues> {
 	private final Display i_display;
 
 	@Inject
-	public GraphPresenter(@Assisted GameFilter gameFilter, InformationCache informationCache, TitleMessages titleMessages,
+	public GraphPresenter(@Assisted GameFilter gameFilter, InformationService informationService, TitleMessages titleMessages,
 			Display display) {
-		super(gameFilter, informationCache);
+		super(gameFilter, informationService);
 		i_titleMessages = titleMessages;
 		i_display = display;
 	}

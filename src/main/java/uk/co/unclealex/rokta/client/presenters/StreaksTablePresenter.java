@@ -5,13 +5,14 @@ import java.util.SortedSet;
 import javax.inject.Inject;
 
 import uk.co.unclealex.rokta.client.model.Table;
+import uk.co.unclealex.rokta.client.presenters.StreaksTablePresenter.Display;
 import uk.co.unclealex.rokta.client.views.TableDisplay;
 import uk.co.unclealex.rokta.shared.model.Streak;
 
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.assistedinject.Assisted;
 
-public class StreaksTablePresenter implements Presenter {
+public class StreaksTablePresenter implements Presenter<Display> {
 
 	public static interface Display extends TableDisplay {
 		String HEADER = "header";

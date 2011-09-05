@@ -5,6 +5,10 @@ package uk.co.unclealex.rokta.client.gin;
 
 import javax.inject.Singleton;
 
+import uk.co.unclealex.rokta.client.cache.InformationCache;
+import uk.co.unclealex.rokta.client.cache.InformationCacheImpl;
+import uk.co.unclealex.rokta.client.cache.InformationService;
+import uk.co.unclealex.rokta.client.cache.InformationServiceImpl;
 import uk.co.unclealex.rokta.client.filter.GameFilterFactory;
 import uk.co.unclealex.rokta.client.places.LeaguePlace;
 import uk.co.unclealex.rokta.client.places.RoktaActivityMapper;
@@ -63,6 +67,9 @@ public class RoktaInternalModule extends AbstractGinModule {
 		bind(AsyncCallbackExecutor.class).to(SecureAsyncCallbackExecutor.class).in(Singleton.class);
 		bind(AuthenticationManager.class).to(AuthenticationManagerImpl.class).in(Singleton.class);
 		bind(CanWaitSupport.class).to(CanWaitSupportImpl.class);
+		bind(InformationService.class).to(InformationServiceImpl.class).in(Singleton.class);
+		bind(InformationCache.class).to(InformationCacheImpl.class).in(Singleton.class);
+
 	}
 
 	@Provides

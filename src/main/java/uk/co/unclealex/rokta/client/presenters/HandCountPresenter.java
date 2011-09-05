@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 
 import javax.inject.Inject;
 
+import uk.co.unclealex.rokta.client.presenters.HandCountPresenter.Display;
 import uk.co.unclealex.rokta.shared.model.Hand;
 
 import com.google.common.collect.Maps;
@@ -12,7 +13,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.assistedinject.Assisted;
 
-public class HandCountPresenter implements Presenter {
+public class HandCountPresenter implements Presenter<Display> {
 
 	public static interface Display extends IsWidget {
 

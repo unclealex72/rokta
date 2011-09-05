@@ -3,6 +3,7 @@ package uk.co.unclealex.rokta.client.gin;
 import uk.co.unclealex.rokta.client.presenters.AuthenticationPresenter;
 import uk.co.unclealex.rokta.client.presenters.MainPresenter;
 import uk.co.unclealex.rokta.client.presenters.NavigationPresenter;
+import uk.co.unclealex.rokta.client.presenters.NewsPresenter;
 import uk.co.unclealex.rokta.client.presenters.TitlePresenter;
 
 import com.google.gwt.activity.shared.ActivityManager;
@@ -19,4 +20,5 @@ public interface RoktaGinjector extends Ginjector {
 	ActivityManager getActivityMapper();
 	NavigationPresenter getNavigationPresenter();
 	AuthenticationPresenter getAuthenticationPresenter();
+	NewsPresenter getNewsPresenter();
 }

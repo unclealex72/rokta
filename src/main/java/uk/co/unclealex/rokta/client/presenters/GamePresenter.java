@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import uk.co.unclealex.rokta.client.factories.GameFinishedPresenterFactory;
 import uk.co.unclealex.rokta.client.factories.NextRoundPresenterFactory;
+import uk.co.unclealex.rokta.client.presenters.GamePresenter.Display;
 import uk.co.unclealex.rokta.shared.model.Game;
 
 import com.google.gwt.activity.shared.AbstractActivity;
@@ -14,7 +15,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.Provider;
 import com.google.inject.assistedinject.Assisted;
 
-public class GamePresenter extends AbstractActivity {
+public class GamePresenter extends AbstractActivity implements HasDisplay<Display> {
 
 	public static interface Display extends IsWidget {
 		HasOneWidget getMainPanel();
@@ -40,7 +41,7 @@ public class GamePresenter extends AbstractActivity {
 	@Override
 	public void start(AcceptsOneWidget panel, EventBus eventBus) {
 		Game game = getGame();
-		Presenter subPresenter;
+		Presenter<?> subPresenter;
 		if (!game.isStarted()) {
 			subPresenter = getNewGamePresenterProvider().get();
 		}

@@ -115,16 +115,24 @@ public interface TitleMessages extends Messages {
 	String playerColour(String username, String colourName);
 
 	@DefaultMessage("Top {0} winning streaks")
-	String allWinningStreaks(int size);	
-
-	@DefaultMessage("Current winning streaks")
-	String currentWinningStreaks();	
+	@AlternateMessage({
+		"=1", "The only winning streak",
+		"=0", "The complete lack of winning streaks"
+	})
+	String winningStreaksSubtitle(@PluralCount int size);	
 
 	@DefaultMessage("Top {0} losing streaks")
-	String allLosingStreaks(int size);	
+	@AlternateMessage({
+		"=1", "The only losing streak",
+		"=0", "The complete lack of losing streaks"
+	})
+	String losingStreaksSubtitle(@PluralCount int size);	
 
-	@DefaultMessage("Current losing streaks")
-	String currentLosingStreaks();
+  @DefaultMessage("{0,number} games have been played today.")
+  @AlternateMessage({
+      "=1", "1 game has been played today.",
+      "=0", "No games have been played today."})
+  String gamesPlayedToday(@PluralCount int gameCount);
 
 	@DefaultMessage("{0}: {1}, {2}: {3}")
 	String headToHeadsSummary(String firstPerson, int firstWinCount, String secondPerson, int secondWinCount);
@@ -134,4 +142,36 @@ public interface TitleMessages extends Messages {
 
 	@DefaultMessage("Do you want to remove the last game that was played at {0,date,HH:mm dd/MM/yyyy} and lost by {1}?")
 	String deleteLastGame(Date datePlayed, String loser);
+
+	@DefaultMessage("No-one is currently on a winning streak.")
+	String noWinningStreaks();
+
+	@DefaultMessage("{0} is on a winning streak of {1}.")
+	String currentWinningStreak(String personName, int length);
+
+	@DefaultMessage("No-one is currently on a losing streak.")
+	String noLosingStreaks();
+
+	@DefaultMessage("{0} is on a losing streak of {1}.")
+	String currentLosingStreak(String personName, int length);
+
+	@DefaultMessage("{0}. {1} ({2,number,#.##}%)")
+	String leagueRowSummary(int rank, String personName, double score);
+
+	@DefaultMessage("No games have been played.")
+	String noLeague();
+
+	@DefaultMessage("The last game was played on {0,date,dd MMM yyyy} at {0,date,HH:mm}.")
+	String lastGameDatePlayed(Date datePlayed);
+
+	@DefaultMessage("{0} was daft enough to lose the last game.")
+	String lastGameLoser(String loser);
+
+	@DefaultMessage("No games have been played.")
+	String noGamesPlayed();
+
+  @DefaultMessage("{0} has lost {1} games today.")
+  @AlternateMessage({
+      "=1", "{0} has lost 1 game today." })
+	String lossCount(String loser, @PluralCount int losses);
 }

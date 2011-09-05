@@ -2,6 +2,7 @@ package uk.co.unclealex.rokta.client.presenters;
 
 import javax.inject.Inject;
 
+import uk.co.unclealex.rokta.client.presenters.AuthenticationPresenter.Display;
 import uk.co.unclealex.rokta.client.security.AuthenticationEvent;
 import uk.co.unclealex.rokta.client.security.AuthenticationEventListener;
 import uk.co.unclealex.rokta.client.security.AuthenticationManager;
@@ -19,7 +20,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 
-public class AuthenticationPresenter implements Presenter, AuthenticationEventListener {
+public class AuthenticationPresenter implements Presenter<Display>, AuthenticationEventListener {
 
 	public static interface Display extends IsWidget {
 		Anchor getSignIn();

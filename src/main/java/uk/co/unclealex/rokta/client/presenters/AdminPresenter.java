@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import uk.co.unclealex.rokta.client.filter.GameFilter;
 import uk.co.unclealex.rokta.client.messages.TitleMessages;
+import uk.co.unclealex.rokta.client.presenters.AdminPresenter.Display;
 import uk.co.unclealex.rokta.client.util.AsyncCallbackExecutor;
 import uk.co.unclealex.rokta.client.util.CanWait;
 import uk.co.unclealex.rokta.client.util.ClickHandlerAndFailureAsPopupExecutableAsyncCallback;
@@ -35,7 +36,7 @@ import com.google.gwt.view.client.SelectionModel;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.assistedinject.Assisted;
 
-public class AdminPresenter extends AbstractGameFilterActivity {
+public class AdminPresenter extends AbstractGameFilterActivity<Display> {
 
 	public static interface Display extends IsWidget {
 		void initialiseColours(SelectionModel<ColourView> selectionModel, List<ColourView> colourViews);

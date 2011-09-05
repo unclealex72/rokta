@@ -2,10 +2,11 @@ package uk.co.unclealex.rokta.client.presenters;
 
 import javax.inject.Inject;
 
-import uk.co.unclealex.rokta.client.cache.InformationCache;
+import uk.co.unclealex.rokta.client.cache.InformationService;
 import uk.co.unclealex.rokta.client.factories.HandCountPresenterFactory;
 import uk.co.unclealex.rokta.client.filter.GameFilter;
 import uk.co.unclealex.rokta.client.messages.TitleMessages;
+import uk.co.unclealex.rokta.client.presenters.ProfilePresenter.Display;
 import uk.co.unclealex.rokta.shared.model.CurrentInformation;
 import uk.co.unclealex.rokta.shared.model.PlayerProfile;
 
@@ -14,7 +15,7 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.assistedinject.Assisted;
 
-public class ProfilePresenter extends InformationPresenter<PlayerProfile> {
+public class ProfilePresenter extends InformationActivity<Display, PlayerProfile> {
 
 	public static interface Display extends IsWidget {
 		AcceptsOneWidget getHandCountPanel();
@@ -24,9 +25,9 @@ public class ProfilePresenter extends InformationPresenter<PlayerProfile> {
 	}
 
 	@Inject
-	public ProfilePresenter(@Assisted GameFilter gameFilter, InformationCache informationCache, @Assisted String username, Display display,
+	public ProfilePresenter(@Assisted GameFilter gameFilter, InformationService informationService, @Assisted String username, Display display,
 			HandCountPresenterFactory handCountPresenterFactory, TitleMessages titleMessages) {
-		super(gameFilter, informationCache);
+		super(gameFilter, informationService);
 		i_username = username;
 		i_display = display;
 		i_handCountPresenterFactory = handCountPresenterFactory;

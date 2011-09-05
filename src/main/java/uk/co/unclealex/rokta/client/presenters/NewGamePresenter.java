@@ -7,6 +7,7 @@ import java.util.SortedSet;
 import javax.inject.Inject;
 
 import uk.co.unclealex.rokta.client.places.GamePlace;
+import uk.co.unclealex.rokta.client.presenters.NewGamePresenter.Display;
 import uk.co.unclealex.rokta.client.util.AsyncCallbackExecutor;
 import uk.co.unclealex.rokta.client.util.ExecutableAsyncCallback;
 import uk.co.unclealex.rokta.client.util.FailureAsPopupExecutableAsyncCallback;
@@ -33,7 +34,7 @@ import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionModel;
 
-public class NewGamePresenter extends AllUsersAwarePresenter {
+public class NewGamePresenter extends AllUsersAwarePresenter<Display> {
 
 	public static interface Display extends IsWidget {
 		HasText getExemptPlayer();

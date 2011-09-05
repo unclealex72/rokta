@@ -3,9 +3,8 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:a="urn:import:uk.co.unclealex.rokta.client.ui">
 
-  <ui:style type='uk.co.unclealex.rokta.client.views.StreaksTable.Style'>
-    .header { font-weight: bold; }
+  <ui:style src="League.css" type='uk.co.unclealex.rokta.client.views.StreaksTable.Style'>
   </ui:style>
 
-	<g:Grid ui:field="streaks"/>
+	<g:Grid ui:field="streaks" addStyleNames="{style.league}"/>
 </ui:UiBinder>

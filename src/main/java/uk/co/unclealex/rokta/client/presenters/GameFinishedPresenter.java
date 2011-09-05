@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import uk.co.unclealex.rokta.client.filter.GameFilterFactory;
 import uk.co.unclealex.rokta.client.places.LeaguePlace;
+import uk.co.unclealex.rokta.client.presenters.GameFinishedPresenter.Display;
 import uk.co.unclealex.rokta.client.util.AsyncCallbackExecutor;
 import uk.co.unclealex.rokta.client.util.ExecutableAsyncCallback;
 import uk.co.unclealex.rokta.client.util.FailureAsPopupExecutableAsyncCallback;
@@ -21,7 +22,7 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.assistedinject.Assisted;
 
-public class GameFinishedPresenter implements Presenter {
+public class GameFinishedPresenter implements Presenter<Display> {
 
 	public static interface Display extends IsWidget {
 		HasText getLoser();

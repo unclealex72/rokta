@@ -13,7 +13,7 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class Profile extends Composite implements Display {
+public class Profile extends Composite implements Display, IsWide {
 
   @UiTemplate("Profile.ui.xml")
 	public interface Binder extends UiBinder<Widget, Profile> {

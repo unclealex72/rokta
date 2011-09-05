@@ -13,8 +13,9 @@ import uk.co.unclealex.rokta.client.factories.LeaguePresenterFactory;
 import uk.co.unclealex.rokta.client.factories.LosingStreaksPresenterFactory;
 import uk.co.unclealex.rokta.client.factories.ProfilePresenterFactory;
 import uk.co.unclealex.rokta.client.factories.WinningStreaksPresenterFactory;
+import uk.co.unclealex.rokta.client.presenters.HasDisplay;
 import uk.co.unclealex.rokta.client.presenters.MainPresenter;
-import uk.co.unclealex.rokta.client.util.TitleManager;
+import uk.co.unclealex.rokta.client.views.IsWide;
 
 import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.activity.shared.ActivityMapper;
@@ -57,7 +58,6 @@ public class RoktaActivityMapper implements ActivityMapper {
 	private final Provider<MainPresenter> i_mainPresenterProvider;
 	private final GamePresenterFactory i_gamePresenterFactory;
 	private final ProfilePresenterFactory i_profilePresenterFactory;
-	private final TitleManager i_titleManager;
 	
 	@Inject
 	public RoktaActivityMapper(LeaguePresenterFactory leaguePresenterFactory,
@@ -65,7 +65,7 @@ public class RoktaActivityMapper implements ActivityMapper {
 			LosingStreaksPresenterFactory losingStreaksPresenterFactory,
 			HeadToHeadsPresenterFactory headToHeadsPresenterFactory, AdminPresenterFactory adminPresenterFactory,
 			Provider<MainPresenter> mainPresenterProvider, GamePresenterFactory gamePresenterFactory,
-			ProfilePresenterFactory profilePresenterFactory, TitleManager titleManager) {
+			ProfilePresenterFactory profilePresenterFactory) {
 		super();
 		i_leaguePresenterFactory = leaguePresenterFactory;
 		i_graphPresenterFactory = graphPresenterFactory;
@@ -75,15 +75,11 @@ public class RoktaActivityMapper implements ActivityMapper {
 		i_mainPresenterProvider = mainPresenterProvider;
 		i_gamePresenterFactory = gamePresenterFactory;
 		i_profilePresenterFactory = profilePresenterFactory;
-		i_titleManager = titleManager;
 		i_adminPresenterFactory = adminPresenterFactory;
 	}
 
 	@Override
 	public Activity getActivity(Place place) {
-		if (place instanceof RoktaPlace) {
-			getTitleManager().updateTitle((RoktaPlace) place);
-		}
 		return new ActivityProvider(place).asActivity();
 	}
 	
@@ -129,8 +125,28 @@ public class RoktaActivityMapper implements ActivityMapper {
 		}
 
 		@Override
-		public void start(AcceptsOneWidget panel, EventBus eventBus) {
-			getActivity().start(panel, eventBus);
+		public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
+			final Activity activity = getActivity();
+			if (activity instanceof HasDisplay) {
+				@SuppressWarnings("rawtypes")
+				boolean wide = ((HasDisplay) activity).getDisplay() instanceof IsWide;
+				Runnable action = new Runnable() {
+					@Override
+					public void run() {
+						activity.start(panel, eventBus);
+					}
+				};
+				MainPresenter mainPresenter = getMainPresenterProvider().get();
+				if (wide) {
+					mainPresenter.makeWide(action);
+				}
+				else {
+					mainPresenter.makeNarrow(action);
+				}
+			}
+			else {
+				activity.start(panel, eventBus);
+			}
 		}
 
 		public Activity asDefault() {
@@ -230,12 +246,7 @@ public class RoktaActivityMapper implements ActivityMapper {
 		return i_headToHeadsPresenterFactory;
 	}
 
-	public TitleManager getTitleManager() {
-		return i_titleManager;
-	}
-
 	public AdminPresenterFactory getAdminPresenterFactory() {
 		return i_adminPresenterFactory;
 	}
-
 }

@@ -3,9 +3,12 @@ package uk.co.unclealex.rokta.client.views;
 import javax.inject.Inject;
 
 import uk.co.unclealex.rokta.client.presenters.MainPresenter.Display;
+import uk.co.unclealex.rokta.client.ui.HidingDockLayoutPanel;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Composite;
@@ -21,16 +24,23 @@ public class Main extends Composite implements Display {
 	
 	private static final Binder binder = GWT.create(Binder.class);
 
+	@UiField HidingDockLayoutPanel dock;
 	@UiField HasOneWidget mainPanel;
 	@UiField HasOneWidget titlePanel;
 	@UiField HasOneWidget navigationPanel;
 	@UiField HasOneWidget authenticationPanel;
+	@UiField HasOneWidget newsPanel;
 	
 	@Inject
 	public Main() {
 		initWidget(binder.createAndBindUi(this));
 	}
 
+	@UiFactory
+	public HidingDockLayoutPanel createDockLayoutPanel(int hidingDuration) {
+		return new HidingDockLayoutPanel(Unit.PX, hidingDuration);
+	}
+	
 	@Override
 	public HasOneWidget getMainPanel() {
 		return mainPanel;
@@ -46,8 +56,18 @@ public class Main extends Composite implements Display {
 		return navigationPanel;
 	}
 
+	@Override
 	public HasOneWidget getAuthenticationPanel() {
 		return authenticationPanel;
+	}
+
+	@Override
+	public HasOneWidget getNewsPanel() {
+		return newsPanel;
+	}
+	
+	public HidingDockLayoutPanel getDock() {
+		return dock;
 	}
 
 }

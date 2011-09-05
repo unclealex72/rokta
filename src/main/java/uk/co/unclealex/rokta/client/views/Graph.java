@@ -20,7 +20,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class Graph extends Composite implements Display {
+public class Graph extends Composite implements Display, IsWide {
 
   @UiTemplate("Graph.ui.xml")
 	public interface Binder extends UiBinder<Widget, Graph> {

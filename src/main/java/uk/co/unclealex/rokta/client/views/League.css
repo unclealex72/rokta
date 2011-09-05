@@ -1,0 +1,28 @@
+.header {  }
+		
+table.league {
+	color:#333333;
+	border-width: 1px;
+	border-color: #999999;
+	border-collapse: collapse;
+}
+table.league tbody tr td.header {
+	background: #6699cc;
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #999999;
+	font-weight: bold;
+	color: white;
+	text-align: right;
+}
+
+table.league td {
+	background: #f7f7f7;
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #999999;
+	text-align: right;
+}
+

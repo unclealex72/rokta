@@ -22,6 +22,7 @@ import uk.co.unclealex.rokta.client.places.ProfilePlace;
 import uk.co.unclealex.rokta.client.places.RoktaPlace;
 import uk.co.unclealex.rokta.client.places.RoktaPlaceVisitor;
 import uk.co.unclealex.rokta.client.places.WinningStreaksPlace;
+import uk.co.unclealex.rokta.client.presenters.NavigationPresenter.Display;
 import uk.co.unclealex.rokta.client.security.AuthenticationManager;
 import uk.co.unclealex.rokta.client.util.AsyncCallbackExecutor;
 import uk.co.unclealex.rokta.client.util.ExecutableAsyncCallback;
@@ -67,7 +68,7 @@ import com.google.inject.Provider;
  * @author unclealex72
  *
  */
-public class NavigationPresenter implements Presenter, PlaceChangeEvent.Handler, RoktaPlaceVisitor<HasClickHandlers> {
+public class NavigationPresenter implements Presenter<Display>, PlaceChangeEvent.Handler, RoktaPlaceVisitor<HasClickHandlers> {
 
 	public interface Display extends IsWidget {
 		HasClickHandlers getNewGameLink();

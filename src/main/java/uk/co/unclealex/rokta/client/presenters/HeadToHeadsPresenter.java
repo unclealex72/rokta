@@ -7,12 +7,13 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import uk.co.unclealex.rokta.client.cache.InformationCache;
+import uk.co.unclealex.rokta.client.cache.InformationService;
 import uk.co.unclealex.rokta.client.factories.TitleFactory;
 import uk.co.unclealex.rokta.client.filter.GameFilter;
 import uk.co.unclealex.rokta.client.messages.TitleMessages;
 import uk.co.unclealex.rokta.client.model.Row;
 import uk.co.unclealex.rokta.client.model.Table;
+import uk.co.unclealex.rokta.client.presenters.HeadToHeadsPresenter.Display;
 import uk.co.unclealex.rokta.client.views.TableDisplay;
 import uk.co.unclealex.rokta.shared.model.CurrentInformation;
 import uk.co.unclealex.rokta.shared.model.HeadToHeads;
@@ -25,7 +26,7 @@ import com.google.common.collect.Iterables;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.assistedinject.Assisted;
 
-public class HeadToHeadsPresenter extends InformationPresenter<HeadToHeads> {
+public class HeadToHeadsPresenter extends InformationActivity<Display, HeadToHeads> {
 
 	public static interface Display extends TableDisplay {
 		String HEADER = "header";
@@ -36,8 +37,8 @@ public class HeadToHeadsPresenter extends InformationPresenter<HeadToHeads> {
 	
 	@Inject
 	public HeadToHeadsPresenter(
-			@Assisted GameFilter gameFilter, InformationCache informationCache, Display display, TitleMessages titleMessages) {
-		super(gameFilter, informationCache);
+			@Assisted GameFilter gameFilter, InformationService informationService, Display display, TitleMessages titleMessages) {
+		super(gameFilter, informationService);
 		i_display = display;
 		i_titleMessages = titleMessages;
 	}

@@ -78,12 +78,13 @@ public class League extends Composite implements Display {
 			}
 		};
 		final Images images = getImages();
+		final Style style = getStyle();
 		Function<Integer, Image> movementFunction = new Function<Integer, Image>() {
 			@Override
 			public Image apply(Integer movement) {
 				ImageResource resource = movement < 0?images.down():(movement > 0?images.up():images.same());
 				Image image = new Image(resource);
-				image.addStyleName(getStyle().movementImage());
+				image.addStyleName(style.movementImage());
 				return image;
 			}
 		};
@@ -94,9 +95,9 @@ public class League extends Composite implements Display {
 			.addColumnRenderer(6, twoDecimalPlacesRenderer)
 			.addColumnRenderer(7, new PercentageColumnRenderer(twoDecimalPlacesFormat))
 			.addColumnRenderer(8, infiteIntegerRenderer)
-			.addRowDecorator(HEADER, new StyleDecorator(getStyle().header()))
-			.addRowDecorator(EXEMPT, new StyleDecorator(getStyle().exempt()))
-			.addRowDecorator(NOT_PLAYING, new StyleDecorator(getStyle().notPlaying()))
+			.addRowDecorator(HEADER, new StyleDecorator(style.header()))
+			.addRowDecorator(EXEMPT, new StyleDecorator(style.exempt()))
+			.addRowDecorator(NOT_PLAYING, new StyleDecorator(style.notPlaying()))
 			.draw(getLeague());
 	}
 
