@@ -3,7 +3,35 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:a="urn:import:uk.co.unclealex.rokta.client.ui">
 
-	<g:HTMLPanel>
+	<ui:style>
+		.news {
+		}
+		
+		.news div {
+			width: 80%;
+			padding: 1em;
+			background: LightGoldenrodYellow;
+			margin: 1em;
+			border-radius: 1em;
+			-moz-border-radius: 1em;
+			-webkit-border-radius: 1em;
+			box-shadow: 3px 3px 6px #666;
+			-moz-box-shadow: 3px 3px 6px #666;
+			-webkit-box-shadow: 3px 3px 6px #666;
+		}
+		
+		.news h2 {
+			margin-top: 0px;
+		}
+		
+		.news ul {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+	</ui:style>
+	
+	<g:HTMLPanel addStyleNames="{style.news}">
 		<div>
 			<h2>Today's games</h2>
 			<a:UnorderedListPanel ui:field="todaysGamesPanel"/>

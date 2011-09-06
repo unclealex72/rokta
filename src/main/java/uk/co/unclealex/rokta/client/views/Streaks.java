@@ -1,17 +1,31 @@
 package uk.co.unclealex.rokta.client.views;
 
+import uk.co.unclealex.rokta.client.factories.ClickHandlerFactory;
+import uk.co.unclealex.rokta.client.factories.TitleFactory;
+import uk.co.unclealex.rokta.client.model.Table;
 import uk.co.unclealex.rokta.client.presenters.StreaksPresenter.Display;
+import uk.co.unclealex.rokta.client.views.renderer.CellRenderer;
+import uk.co.unclealex.rokta.client.views.renderer.DateColumnRenderer;
+import uk.co.unclealex.rokta.client.views.renderer.StyleDecorator;
+import uk.co.unclealex.rokta.client.views.renderer.SubstituteRepeatColumnRenderer;
+import uk.co.unclealex.rokta.client.views.renderer.TableRenderer;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasOneWidget;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 
 public class Streaks extends Composite implements Display {
+
+	public interface Style extends CssResource {
+		String header();
+	}
 
   @UiTemplate("Streaks.ui.xml")
 	public interface Binder extends UiBinder<Widget, Streaks> {
@@ -20,30 +34,34 @@ public class Streaks extends Composite implements Display {
 	
 	private static final Binder binder = GWT.create(Binder.class);
 
-	@UiField HasOneWidget allStreaksPanel;
-	@UiField HasOneWidget currentStreaksPanel;
-	@UiField HasText allStreaksTitle;
-	@UiField HasText currentStreaksTitle;
-	
+	@UiField Grid streaks;
+	@UiField HasText streaksTitle;
+	@UiField Style style;
+
 	public Streaks() {
 		initWidget(binder.createAndBindUi(this));
 	}
 
-	public HasOneWidget getAllStreaksPanel() {
-		return allStreaksPanel;
+	@Override
+	public void draw(Table table, TitleFactory titleFactory, ClickHandlerFactory clickHandlerFactory) {
+		CellRenderer dateRenderer = new DateColumnRenderer(DateTimeFormat.getFormat("EEE dd/MM/yyyy HH:mm"));
+		new TableRenderer(table, titleFactory, clickHandlerFactory)
+		.addColumnRenderer(0, new SubstituteRepeatColumnRenderer("="))
+		.addColumnRenderer(3, dateRenderer)
+		.addColumnRenderer(4, dateRenderer)
+		.addRowDecorator(HEADER, new StyleDecorator(getStyle().header()))
+		.draw(getStreaks());
+	}
+	
+	public Grid getStreaks() {
+		return streaks;
 	}
 
-	public HasOneWidget getCurrentStreaksPanel() {
-		return currentStreaksPanel;
+	public Style getStyle() {
+		return style;
 	}
 
-	public HasText getAllStreaksTitle() {
-		return allStreaksTitle;
+	public HasText getStreaksTitle() {
+		return streaksTitle;
 	}
-
-	public HasText getCurrentStreaksTitle() {
-		return currentStreaksTitle;
-	}
-
-
 }

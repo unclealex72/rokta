@@ -36,7 +36,10 @@ public class HandCountPresenter implements Presenter<Display> {
 	public void show(AcceptsOneWidget container) {
 		Display display = getDisplay();
 		container.setWidget(display);
-		Map<String, Long> handCounts = Maps.newTreeMap();
+		Map<String, Long> handCounts = Maps.newLinkedHashMap();
+		for (Hand hand : Hand.values()) {
+			handCounts.put(hand.getDescription(), (long) 0);
+		}
 		for (Entry<Hand, Long> entry : getHandCounts().entrySet()) {
 			handCounts.put(entry.getKey().getDescription(), entry.getValue());
 		}

@@ -2,9 +2,11 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-  <ui:style type='uk.co.unclealex.rokta.client.views.HeadToHeads.Style'>
-    .header { font-weight: bold; }
+  <ui:style src="Narrow.css" type='uk.co.unclealex.rokta.client.views.HeadToHeads.Style'>
   </ui:style>
 
-	<g:Grid ui:field="headToHeads"/>
+	<g:HTMLPanel addStyleNames="{style.narrow}">
+		<h2>Head to Heads</h2>
+		<g:Grid ui:field="headToHeads"/>
+	</g:HTMLPanel>
 </ui:UiBinder>

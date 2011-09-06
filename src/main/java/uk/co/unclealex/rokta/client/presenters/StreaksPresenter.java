@@ -3,33 +3,28 @@ package uk.co.unclealex.rokta.client.presenters;
 import java.util.SortedSet;
 
 import uk.co.unclealex.rokta.client.cache.InformationService;
-import uk.co.unclealex.rokta.client.factories.StreaksTablePresenterFactory;
 import uk.co.unclealex.rokta.client.filter.GameFilter;
 import uk.co.unclealex.rokta.client.messages.TitleMessages;
+import uk.co.unclealex.rokta.client.model.Table;
 import uk.co.unclealex.rokta.client.presenters.StreaksPresenter.Display;
+import uk.co.unclealex.rokta.client.views.TableDisplay;
 import uk.co.unclealex.rokta.shared.model.Streak;
 
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import com.google.gwt.user.client.ui.HasOneWidget;
 import com.google.gwt.user.client.ui.HasText;
-import com.google.gwt.user.client.ui.IsWidget;
 
 public abstract class StreaksPresenter extends InformationActivity<Display, SortedSet<Streak>> {
 
-	public static interface Display extends IsWidget {
-
-		HasText getAllStreaksTitle();
-		HasOneWidget getAllStreaksPanel();
+	public static interface Display extends TableDisplay {
+		HasText getStreaksTitle();
 	}
 	
-	private final StreaksTablePresenterFactory i_streaksTablePresenterFactory;
 	private final Display i_display;
 	private final TitleMessages i_titleMessages;
 	
 	public StreaksPresenter(GameFilter gameFilter, InformationService informationService,
-			StreaksTablePresenterFactory streaksTablePresenterFactory, Display display, TitleMessages titleMessages) {
+			Display display, TitleMessages titleMessages) {
 		super(gameFilter, informationService);
-		i_streaksTablePresenterFactory = streaksTablePresenterFactory;
 		i_display = display;
 		i_titleMessages = titleMessages;
 	}
@@ -38,21 +33,24 @@ public abstract class StreaksPresenter extends InformationActivity<Display, Sort
 	protected void show(GameFilter gameFilter, AcceptsOneWidget panel, SortedSet<Streak> streaks) {
 		Display display = getDisplay();
 		panel.setWidget(display);
-		StreaksTablePresenterFactory streaksTablePresenterFactory = getStreaksTablePresenterFactory();
-		display.getAllStreaksTitle().setText(createStreaksTitle(getTitleMessages(), streaks));
-		StreaksTablePresenter allStreaksTablePresenter = 
-				streaksTablePresenterFactory.createStreaksTablePresenter(streaks);
-		allStreaksTablePresenter.show(display.getAllStreaksPanel());
+		display.getStreaksTitle().setText(createStreaksTitle(getTitleMessages(), streaks));
+		display.draw(createStreaksTable(streaks), null, null);
 	}
 	
+	public Table createStreaksTable(SortedSet<Streak> streaks) {
+		Table streaksTable = new Table();
+		streaksTable.addRow(Display.HEADER, "Rank", "Player", "Games", "From", "To");
+		for (Streak streak : streaks) {
+			streaksTable.addRow(
+					null, streak.getRank(), streak.getPersonName(), streak.getLength(), streak.getStartDate(), streak.getEndDate());
+		}
+		return streaksTable;
+	}
+
 	protected abstract String createStreaksTitle(TitleMessages titleMessages, SortedSet<Streak> allStreaks);
 	
 	public Display getDisplay() {
 		return i_display;
-	}
-
-	public StreaksTablePresenterFactory getStreaksTablePresenterFactory() {
-		return i_streaksTablePresenterFactory;
 	}
 
 	public TitleMessages getTitleMessages() {

@@ -38,7 +38,7 @@ public class Main extends Composite implements Display {
 
 	@UiFactory
 	public HidingDockLayoutPanel createDockLayoutPanel(int hidingDuration) {
-		return new HidingDockLayoutPanel(Unit.PX, hidingDuration);
+		return new HidingDockLayoutPanel(Unit.EM, hidingDuration);
 	}
 	
 	@Override

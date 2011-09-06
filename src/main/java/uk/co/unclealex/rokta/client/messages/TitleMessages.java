@@ -161,10 +161,10 @@ public interface TitleMessages extends Messages {
 	@DefaultMessage("No games have been played.")
 	String noLeague();
 
-	@DefaultMessage("The last game was played on {0,date,dd MMM yyyy} at {0,date,HH:mm}.")
+	@DefaultMessage("''Twas played on {0,date,dd MMM yyyy} at {0,date,HH:mm}.")
 	String lastGameDatePlayed(Date datePlayed);
 
-	@DefaultMessage("{0} was daft enough to lose the last game.")
+	@DefaultMessage("{0} was daft enough to lose it.")
 	String lastGameLoser(String loser);
 
 	@DefaultMessage("No games have been played.")
@@ -174,4 +174,10 @@ public interface TitleMessages extends Messages {
   @AlternateMessage({
       "=1", "{0} has lost 1 game today." })
 	String lossCount(String loser, @PluralCount int losses);
+
+  @DefaultMessage("No-one is exempt.")
+	String nooneExempt();
+
+  @DefaultMessage("{0} is exempt.")
+	String exempt(String exemptPlayer);
 }

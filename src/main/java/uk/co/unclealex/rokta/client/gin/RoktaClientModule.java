@@ -17,7 +17,6 @@ import uk.co.unclealex.rokta.client.factories.LoginPresenterFactoryImpl;
 import uk.co.unclealex.rokta.client.factories.LosingStreaksPresenterFactory;
 import uk.co.unclealex.rokta.client.factories.NextRoundPresenterFactory;
 import uk.co.unclealex.rokta.client.factories.ProfilePresenterFactory;
-import uk.co.unclealex.rokta.client.factories.StreaksTablePresenterFactory;
 import uk.co.unclealex.rokta.client.factories.WinningStreaksPresenterFactory;
 import uk.co.unclealex.rokta.client.presenters.AdminPresenter;
 import uk.co.unclealex.rokta.client.presenters.AuthenticationPresenter;
@@ -38,7 +37,6 @@ import uk.co.unclealex.rokta.client.presenters.NewsPresenter;
 import uk.co.unclealex.rokta.client.presenters.NextRoundPresenter;
 import uk.co.unclealex.rokta.client.presenters.ProfilePresenter;
 import uk.co.unclealex.rokta.client.presenters.StreaksPresenter;
-import uk.co.unclealex.rokta.client.presenters.StreaksTablePresenter;
 import uk.co.unclealex.rokta.client.presenters.TitlePresenter;
 import uk.co.unclealex.rokta.client.presenters.WinningStreaksPresenter;
 import uk.co.unclealex.rokta.client.util.ClickHelper;
@@ -62,7 +60,6 @@ import uk.co.unclealex.rokta.client.views.News;
 import uk.co.unclealex.rokta.client.views.NextRound;
 import uk.co.unclealex.rokta.client.views.Profile;
 import uk.co.unclealex.rokta.client.views.Streaks;
-import uk.co.unclealex.rokta.client.views.StreaksTable;
 import uk.co.unclealex.rokta.client.views.Title;
 
 import com.google.gwt.inject.client.AbstractGinModule;
@@ -129,10 +126,6 @@ public class RoktaClientModule extends AbstractGinModule {
 				GraphPresenter.Display.class, Graph.class, 
 				GraphPresenter.class, GraphPresenterFactory.class);
 		
-		bindPresenterWithDisplay(
-				StreaksTablePresenter.Display.class, StreaksTable.class, 
-				StreaksTablePresenter.class, StreaksTablePresenterFactory.class);
-
 		bindDisplay(StreaksPresenter.Display.class, Streaks.class);
 		
 		bindPresenter(

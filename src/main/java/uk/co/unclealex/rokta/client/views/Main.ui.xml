@@ -8,25 +8,25 @@
 			position: absolute;
 			left: 0px;
 			top: 0px;
-			width: 180px;
-			height: 70px;
+			width: 12em;
+			height: 5em;
 			background: #eeeeee;
 			z-index: -1;
 		}
 	</ui:style>
 	
 	<a:HidingDockLayoutPanel ui:field="dock" hidingDuration="1000">
-		<a:north size="70">
+		<a:north size="5">
 			<g:HTMLPanel>
 				<div class="{style.navExtension}"/>
 				<g:SimplePanel ui:field="authenticationPanel"/>
 				<g:SimplePanel ui:field="titlePanel"/>
 			</g:HTMLPanel>
 		</a:north>
-		<a:west size="180">
+		<a:west size="12">
 		  <g:SimpleLayoutPanel ui:field="navigationPanel"/>		
 		</a:west>
-		<a:east size="300">
+		<a:east size="24">
 			<g:SimpleLayoutPanel ui:field="newsPanel"/>
 		</a:east>
 		<a:center>

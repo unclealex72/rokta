@@ -3,16 +3,14 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:a="urn:import:uk.co.unclealex.rokta.client.ui">
 
-  <ui:style src="League.css" type='uk.co.unclealex.rokta.client.views.League.Style'>
+  <ui:style src="Narrow.css" type='uk.co.unclealex.rokta.client.views.League.Style'>
     .notPlaying { color: gray; }
     .exempt { color : blue; }
     .movementImage { vertical-align: middle; }
   </ui:style>
 
-	<g:HTMLPanel>
-		<g:Label ui:field="exemptPlayer"/>
-		<g:Grid ui:field="league" addStyleNames="{style.league}">
-			
-		</g:Grid>
+	<g:HTMLPanel addStyleNames="{style.narrow}">
+		<h2><g:InlineLabel ui:field="exemptPlayer"/></h2>
+		<g:Grid ui:field="league"/>
 	</g:HTMLPanel>
 </ui:UiBinder>

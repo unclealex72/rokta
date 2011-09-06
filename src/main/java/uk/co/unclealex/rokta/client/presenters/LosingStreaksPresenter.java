@@ -5,7 +5,6 @@ import java.util.SortedSet;
 import javax.inject.Inject;
 
 import uk.co.unclealex.rokta.client.cache.InformationService;
-import uk.co.unclealex.rokta.client.factories.StreaksTablePresenterFactory;
 import uk.co.unclealex.rokta.client.filter.GameFilter;
 import uk.co.unclealex.rokta.client.messages.TitleMessages;
 import uk.co.unclealex.rokta.shared.model.CurrentInformation;
@@ -17,8 +16,8 @@ public class LosingStreaksPresenter extends StreaksPresenter {
 
 	@Inject
 	public LosingStreaksPresenter(@Assisted GameFilter gameFilter, InformationService informationService,
-			StreaksTablePresenterFactory streaksTablePresenterFactory, Display display, TitleMessages titleMessages) {
-		super(gameFilter, informationService, streaksTablePresenterFactory, display, titleMessages);
+			Display display, TitleMessages titleMessages) {
+		super(gameFilter, informationService, display, titleMessages);
 	}
 
 	@Override

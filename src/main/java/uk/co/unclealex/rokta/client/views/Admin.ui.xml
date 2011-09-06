@@ -3,7 +3,7 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:a="urn:import:uk.co.unclealex.rokta.client.ui">
 
-	<ui:style type="uk.co.unclealex.rokta.client.views.Admin.Style">
+	<ui:style src="Narrow.css" type="uk.co.unclealex.rokta.client.views.Admin.Style">
 		.colourCell {
 		}
 		
@@ -16,7 +16,7 @@
 		}
 	</ui:style>
 	
-	<g:HTMLPanel>
+	<g:HTMLPanel addStyleNames="{style.narrow}">
 		<div>
 			<g:ScrollPanel>
 				<g:SimplePanel ui:field="colourListPanel"/>

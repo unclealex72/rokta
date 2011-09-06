@@ -85,6 +85,7 @@
 	<bean id="statisticsService" class="uk.co.unclealex.rokta.server.process.StatisticsServiceImpl"/>
 	<bean id="newGameService" class="uk.co.unclealex.rokta.server.service.NewGameServiceImpl"/>
 	<bean id="informationService" class="uk.co.unclealex.rokta.server.service.InformationServiceImpl"/>
+	
 	<bean id="cacheService" class="uk.co.unclealex.rokta.server.service.CacheServiceImpl"/>
 		
 	<bean id="roktaService" class="uk.co.unclealex.rokta.server.service.RoktaServiceImpl"/>		

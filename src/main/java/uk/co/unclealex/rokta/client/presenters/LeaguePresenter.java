@@ -24,7 +24,6 @@ public class LeaguePresenter extends InformationActivity<Display, Leagues> {
 
 	public static interface Display extends TableDisplay {
 		String EXEMPT = "exempt";
-		String HEADER = "header";
 		String NOT_PLAYING = "notplaying";
 		
 		HasText getExemptPlayer();
@@ -51,7 +50,6 @@ public class LeaguePresenter extends InformationActivity<Display, Leagues> {
 	@Override
 	protected void show(GameFilter gameFilter, AcceptsOneWidget panel, final Leagues leagues) {
 		Display display = getDisplay();
-		panel.setWidget(display);
 		final TitleMessages titleMessages = getTitleMessages();
 		TitleFactory titleFactory = new TitleFactory() {
 			public String createTitle(int row, int column) {
@@ -67,11 +65,17 @@ public class LeaguePresenter extends InformationActivity<Display, Leagues> {
 				}
 			}
 		};
-		display.draw(createLeaguesTable(leagues), titleFactory, null);
+		TableAndExemptPlayer tableAndExemptPlayer = createLeaguesTable(leagues);
+		display.draw(tableAndExemptPlayer.getTable(), titleFactory, null);
+		String exemptPlayer = tableAndExemptPlayer.getExemptPlayer();
+		String exemptMessage =  exemptPlayer==null?titleMessages.nooneExempt():titleMessages.exempt(exemptPlayer);
+		display.getExemptPlayer().setText(exemptMessage);
+		panel.setWidget(display);
 	}
 
-	protected Table createLeaguesTable(Leagues leagues) {
-		Table table = new Table();
+	protected TableAndExemptPlayer createLeaguesTable(Leagues leagues) {
+		String exemptPlayer = null;
+		final Table table = new Table();
 		table.addRow(Display.HEADER, null, "Player", "Games", "Rounds", "Lost", "R/WG", "R/LG", "L/G", "Gap");
 		SortedSet<League> allLeagues = leagues.getLeagues();
 		if (!allLeagues.isEmpty()) {
@@ -79,11 +83,13 @@ public class LeaguePresenter extends InformationActivity<Display, Leagues> {
 			List<LeagueRow> leagueRows = league.getRows();
 			for (LeagueRow leagueRow : leagueRows) {
 				String typeMarker;
+				String personName = leagueRow.getPersonName();
 				if (!league.isCurrent()) {
 					typeMarker = null;
 				}
 				else if (leagueRow.isExempt()) {
 					typeMarker = Display.EXEMPT;
+					exemptPlayer = personName;
 				}
 				else if (!leagueRow.isPlayingToday()) {
 					typeMarker = Display.NOT_PLAYING;
@@ -94,7 +100,7 @@ public class LeaguePresenter extends InformationActivity<Display, Leagues> {
 				table.addRow(
 					typeMarker,
 					leagueRow.getDelta(), 
-					leagueRow.getPersonName(), 
+					personName, 
 					leagueRow.getGamesPlayed(), 
 					leagueRow.getRoundsPlayed(), 
 					leagueRow.getGamesLost(), 
@@ -104,9 +110,18 @@ public class LeaguePresenter extends InformationActivity<Display, Leagues> {
 					leagueRow.getGap());
 			}
 		}
-		return table;
+		final String finalExemptPlayer = exemptPlayer;
+		return new TableAndExemptPlayer() {
+			public Table getTable() { return table; }
+			public String getExemptPlayer() { return finalExemptPlayer; }
+		};
 	}
 
+	protected interface TableAndExemptPlayer {
+		Table getTable();
+		String getExemptPlayer();
+	}
+	
 	public TitleMessages getTitleMessages() {
 		return i_titleMessages;
 	}

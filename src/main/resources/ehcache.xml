@@ -7,13 +7,14 @@
      +-->
     <!-- Location of persistent caches on disk -->
     <diskStore path="java.io.tmpdir/rokta.cache" />
-
+	
     <defaultCache eternal="false" maxElementsInMemory="1000"
         overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0"
         timeToLiveSeconds="600" memoryStoreEvictionPolicy="LRU"/>
 
     <cache name="roktaCache" eternal="true"
         maxElementsInMemory="100" overflowToDisk="true" diskPersistent="true"
-        memoryStoreEvictionPolicy="LRU" />
+        memoryStoreEvictionPolicy="LRU">
+    </cache>
 
 </ehcache>

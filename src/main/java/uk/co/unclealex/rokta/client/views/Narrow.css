@@ -1,12 +1,17 @@
 .header {  }
-		
-table.league {
+
+.narrow {
+	margin-top: 1em;
+	margin-left: 10%;	
+}
+
+.narrow table {
 	color:#333333;
 	border-width: 1px;
 	border-color: #999999;
 	border-collapse: collapse;
 }
-table.league tbody tr td.header {
+.narrow table tbody tr td.header {
 	background: #6699cc;
 	border-width: 1px;
 	padding: 8px;
@@ -17,7 +22,7 @@ table.league tbody tr td.header {
 	text-align: right;
 }
 
-table.league td {
+.narrow table td {
 	background: #f7f7f7;
 	border-width: 1px;
 	padding: 8px;

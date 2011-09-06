@@ -8,6 +8,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 public interface TableDisplay extends IsWidget {
 
+	String HEADER = "header";
+
 	void draw(Table table, TitleFactory titleFactory, ClickHandlerFactory clickHandlerFactory);
 
 }
