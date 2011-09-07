@@ -29,6 +29,11 @@ public class InformationCacheImpl implements InformationCache {
 	}
 
 	@Override
+	public void clearCache() {
+		setCurrentInformation(null);
+	}
+	
+	@Override
 	public void useCurrentInformation(
 			final AsyncCallback<CurrentInformation> callback, final GameFilter gameFilter, final int targetStreaksSize) {
 		if (getCurrentInformation() == null ||

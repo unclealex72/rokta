@@ -27,7 +27,6 @@ import uk.co.unclealex.rokta.client.filter.WeekGameFilter;
 import uk.co.unclealex.rokta.client.filter.YearGameFilter;
 import uk.co.unclealex.rokta.client.messages.TitleMessages;
 import uk.co.unclealex.rokta.client.places.AdminPlace;
-import uk.co.unclealex.rokta.client.places.GameFilterAwarePlace;
 import uk.co.unclealex.rokta.client.places.GamePlace;
 import uk.co.unclealex.rokta.client.places.GraphPlace;
 import uk.co.unclealex.rokta.client.places.HeadToHeadsPlace;
@@ -165,7 +164,7 @@ public class TitlePresenter implements Presenter<Display>, WaitingListener, Plac
 		return titleMessages.title(title);
 	}
 
-	protected String makeGameFilterTitle(String placeTitle, GameFilterAwarePlace place) {
+	protected String makeGameFilterTitle(String placeTitle, RoktaPlace place) {
 		final TitleMessages titleMessages = getTitleMessages();
 		GameFilterVisitor<String> gameFilterVisitor = new GameFilterVisitor<String>() {
 			public String visit(BeforeGameFilter beforeGameFilter) {

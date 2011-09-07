@@ -4,10 +4,8 @@ import java.util.SortedSet;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.co.unclealex.rokta.server.dao.ColourDao;
 import uk.co.unclealex.rokta.server.dao.GameDao;
 import uk.co.unclealex.rokta.server.dao.PersonDao;
-import uk.co.unclealex.rokta.server.model.Colour;
 import uk.co.unclealex.rokta.server.model.Game;
 import uk.co.unclealex.rokta.server.model.Person;
 import uk.co.unclealex.rokta.server.model.Rokta;
@@ -17,19 +15,16 @@ public class ImportExportManagerImpl implements ImportExportManager {
 
 	private PersonDao i_personDao;
 	private GameDao i_gameDao;
-	private ColourDao i_colourDao;
 	
 	public Rokta exportAll() {
 		SortedSet<Person> everybody = getPersonDao().getAll();
 		SortedSet<Game> allGames = getGameDao().getAll();
-		SortedSet<Colour> allColours = getColourDao().getAll();
-		return new Rokta(everybody, allGames, allColours);
+		return new Rokta(everybody, allGames);
 	}
 
 	public void importAll(Rokta rokta) {
 		GameDao gameDao = getGameDao();
 		PersonDao personDao = getPersonDao();
-		ColourDao colourDao = getColourDao();
 		
 		// Remove everything first
 		for (Game game : gameDao.getAll()) {
@@ -38,15 +33,8 @@ public class ImportExportManagerImpl implements ImportExportManager {
 		for (Person person : personDao.getAll()) {
 			personDao.remove(person);
 		}
-		for (Colour colour : colourDao.getAll()) {
-			colourDao.remove(colour);
-		}
-		
 		getGameDao().flush();
 		
-		for (Colour colour : rokta.getColours()) {
-			colourDao.store(colour);
-		}
 		for (Person person : rokta.getPeople()) {
 			personDao.store(person);
 		}
@@ -69,13 +57,5 @@ public class ImportExportManagerImpl implements ImportExportManager {
 
 	public void setPersonDao(PersonDao personDao) {
 		i_personDao = personDao;
-	}
-
-	public ColourDao getColourDao() {
-		return i_colourDao;
-	}
-
-	public void setColourDao(ColourDao colourDao) {
-		i_colourDao = colourDao;
 	}
 }

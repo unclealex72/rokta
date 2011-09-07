@@ -1,10 +1,14 @@
 package uk.co.unclealex.rokta.client.presenters;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.SortedMap;
+import java.util.SortedSet;
 
 import javax.inject.Inject;
 
+import uk.co.unclealex.rokta.client.cache.InformationCache;
 import uk.co.unclealex.rokta.client.filter.GameFilter;
 import uk.co.unclealex.rokta.client.messages.TitleMessages;
 import uk.co.unclealex.rokta.client.presenters.AdminPresenter.Display;
@@ -13,14 +17,21 @@ import uk.co.unclealex.rokta.client.util.CanWait;
 import uk.co.unclealex.rokta.client.util.ClickHandlerAndFailureAsPopupExecutableAsyncCallback;
 import uk.co.unclealex.rokta.client.util.ExecutableAsyncCallback;
 import uk.co.unclealex.rokta.client.util.FailureAsPopupExecutableAsyncCallback;
-import uk.co.unclealex.rokta.shared.model.ColourView;
+import uk.co.unclealex.rokta.shared.model.Colour;
 import uk.co.unclealex.rokta.shared.model.GameSummary;
 import uk.co.unclealex.rokta.shared.model.LoggedInUser;
 import uk.co.unclealex.rokta.shared.service.AnonymousRoktaServiceAsync;
 import uk.co.unclealex.rokta.shared.service.UserRoktaServiceAsync;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
+import com.google.common.base.Joiner;
+import com.google.common.base.Supplier;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.Sets;
+import com.google.common.collect.SortedSetMultimap;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.EventBus;
@@ -30,16 +41,15 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.view.client.SelectionChangeEvent;
-import com.google.gwt.view.client.SelectionChangeEvent.Handler;
-import com.google.gwt.view.client.SelectionModel;
-import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.assistedinject.Assisted;
 
 public class AdminPresenter extends AbstractGameFilterActivity<Display> {
 
 	public static interface Display extends IsWidget {
-		void initialiseColours(SelectionModel<ColourView> selectionModel, List<ColourView> colourViews);
+		void addColourGroup(Colour.Group colourGroup);
+		HasClickHandlers addColour(Colour colour);
+		void deselectColour(HasClickHandlers colourSource);
+		void selectColour(HasClickHandlers colourSource);
 		Button getChangeColourButton();
 		CanWait getChangeColourCanWait();
 
@@ -49,18 +59,25 @@ public class AdminPresenter extends AbstractGameFilterActivity<Display> {
 		
 		CanWait getDeleteLastGameCanWait();
 		HasClickHandlers getDeleteLastGameButton();
-	}
+
+		CanWait getClearCacheCanWait();
+		HasClickHandlers getClearCacheButton();
+}
 
 	private final Display i_display;
 	private final TitleMessages i_titleMessages;
 	private final AsyncCallbackExecutor i_asyncCallbackExecutor;
-
+	private InformationCache i_informationCache;
+	private Colour i_selectedColour;
+	private Map<Colour, HasClickHandlers> i_hasClickHandlersByColour;
+	
 	@Inject
 	public AdminPresenter(@Assisted GameFilter gameFilter, 
-			Display display, AsyncCallbackExecutor asyncCallbackExecutor, TitleMessages titleMessages) {
+			Display display, AsyncCallbackExecutor asyncCallbackExecutor, InformationCache informationCache, TitleMessages titleMessages) {
 		super(gameFilter);
 		i_titleMessages = titleMessages;
 		i_display = display;
+		i_informationCache = informationCache;
 		i_asyncCallbackExecutor = asyncCallbackExecutor;
 	}
 
@@ -71,8 +88,9 @@ public class AdminPresenter extends AbstractGameFilterActivity<Display> {
 			@Override
 			public void onSuccess(LoggedInUser loggedInUser) {
 				initialiseColours(loggedInUser);
+				initialiseColoursButton(loggedInUser);
 				initialisePassword(loggedInUser);
-				initialiseDeleteLastGame();
+				initialiseGameAdminButtons();
 				panel.setWidget(getDisplay());
 			}
 			@Override
@@ -85,9 +103,10 @@ public class AdminPresenter extends AbstractGameFilterActivity<Display> {
 	}
 
 
-	protected void initialiseDeleteLastGame() {
+	protected void initialiseGameAdminButtons() {
 		Display display = getDisplay();
-		ClickHandler clickHandler = new ClickHandlerAndFailureAsPopupExecutableAsyncCallback<GameSummary>(
+		ClickHandler deleteLastGameClickHandler = 
+				new ClickHandlerAndFailureAsPopupExecutableAsyncCallback<GameSummary>(
 			getAsyncCallbackExecutor(), "Getting details for the last game played", display.getDeleteLastGameCanWait()) {
 			@Override
 			public void execute(AnonymousRoktaServiceAsync anonymousRoktaService, UserRoktaServiceAsync userRoktaService,
@@ -101,7 +120,21 @@ public class AdminPresenter extends AbstractGameFilterActivity<Display> {
 				}
 			}
 		};
-		display.getDeleteLastGameButton().addClickHandler(clickHandler);
+		display.getDeleteLastGameButton().addClickHandler(deleteLastGameClickHandler);
+		ClickHandler clearCacheClickHandler = 
+				new ClickHandlerAndFailureAsPopupExecutableAsyncCallback<Void>(
+				getAsyncCallbackExecutor(), "Clearing the cache", display.getClearCacheCanWait()) {
+				@Override
+				public void onSuccess(Void result) {
+					getInformationCache().clearCache();
+				}
+				@Override
+				public void execute(AnonymousRoktaServiceAsync anonymousRoktaService, UserRoktaServiceAsync userRoktaService,
+						AsyncCallback<Void> callback) {
+					userRoktaService.clearCache(callback);
+				}
+			};
+			display.getClearCacheButton().addClickHandler(clearCacheClickHandler);
 	}
 
 
@@ -121,63 +154,65 @@ public class AdminPresenter extends AbstractGameFilterActivity<Display> {
 
 
 	protected void initialiseColours(final LoggedInUser loggedInUser) {
-		ExecutableAsyncCallback<ColourView[]> callback = new FailureAsPopupExecutableAsyncCallback<ColourView[]>() {
+		SortedMap<Colour.Group, Collection<Colour>> map = Maps.newTreeMap();
+		Supplier<SortedSet<Colour>> factory = new Supplier<SortedSet<Colour>>() {
 			@Override
-			public void onSuccess(ColourView[] result) {
-		    Display display = getDisplay();
-				List<ColourView> colourViews = Arrays.asList(result);
-		    SelectionModel<ColourView> selectionModel = new SingleSelectionModel<ColourView>();
-				display.initialiseColours(selectionModel, colourViews);
-				initialiseColoursButton(selectionModel, colourViews, loggedInUser);
-				selectionModel.setSelected(loggedInUser.getColourView(), true);
-			}
-			@Override
-			public void execute(AnonymousRoktaServiceAsync anonymousRoktaService, UserRoktaServiceAsync userRoktaService,
-					AsyncCallback<ColourView[]> callback) {
-				anonymousRoktaService.getAllColourViews(callback);
+			public SortedSet<Colour> get() {
+				return Sets.newTreeSet();
 			}
 		};
-		getAsyncCallbackExecutor().executeAndWait(callback, "Finding all available colours");
+		SortedSetMultimap<Colour.Group, Colour> coloursByGroup = Multimaps.newSortedSetMultimap(map, factory);
+		for (Colour colour : Colour.values()) {
+			coloursByGroup.put(colour.getGroup(), colour);
+		}
+		final Display display = getDisplay();
+		final BiMap<HasClickHandlers, Colour> coloursByHasClickHandler = HashBiMap.create();
+		ClickHandler handler = new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				HasClickHandlers hasClickHandlers = (HasClickHandlers) event.getSource();
+				onColourSelected(coloursByHasClickHandler.get(hasClickHandlers));
+			}
+		};
+		for (Entry<Colour.Group, Collection<Colour>> entry : map.entrySet()) {
+			display.addColourGroup(entry.getKey());
+			for (Colour colour : entry.getValue()) {
+				HasClickHandlers hasClickHandlers = display.addColour(colour);
+				hasClickHandlers.addClickHandler(handler);
+				coloursByHasClickHandler.put(hasClickHandlers, colour);
+			}
+		}
+		setHasClickHandlersByColour(coloursByHasClickHandler.inverse());
+		onColourSelected(loggedInUser.getColour());
 	}
 
-	protected void initialiseColoursButton(
-			final SelectionModel<ColourView> selectionModel, final List<ColourView> colourViews, final LoggedInUser loggedInUser) {
+	void onColourSelected(Colour colour) {
+		Colour currentlySelectedColour = getSelectedColour();
+		Display display = getDisplay();
+		if (currentlySelectedColour != null) {
+			display.deselectColour(getHasClickHandlersByColour().get(currentlySelectedColour));
+		}
+		display.selectColour(getHasClickHandlersByColour().get(colour));
+		setSelectedColour(colour);
+	}
+	
+	protected void initialiseColoursButton(final LoggedInUser loggedInUser) {
 		final Display display = getDisplay();
-		final ColourView colourView = getSelectedColourView(selectionModel, colourViews);
 		final String username = loggedInUser.getUsername();
 		ClickHandler clickHandler = new ClickHandlerAndFailureAsPopupExecutableAsyncCallback<Void>(
 				getAsyncCallbackExecutor(),
-				"Updating " + username + "'s colour to " + colourView.getName(), 
+				"Updating " + username + "'s colour to " + Joiner.on(' ').join(getSelectedColour().getDescriptiveWords()), 
 				display.getChangeColourCanWait()) {
 			@Override
 			public void execute(AnonymousRoktaServiceAsync anonymousRoktaService, UserRoktaServiceAsync userRoktaService,
 					AsyncCallback<Void> callback) {
-				userRoktaService.updateColour(username, colourView, callback);
+				userRoktaService.updateColour(username, getSelectedColour(), callback);
 			}
 		};
 		final Button changeColourButton = display.getChangeColourButton();
 		changeColourButton.addClickHandler(clickHandler);
-		Handler selectionHandler = new Handler() {
-			@Override
-			public void onSelectionChange(SelectionChangeEvent event) {
-				changeColourButton.setText("Change colour to " + getSelectedColourView(selectionModel, colourViews).getName());
-			}
-			
-		};
-		selectionModel.addSelectionChangeHandler(selectionHandler );
 	}
 
-	protected ColourView getSelectedColourView(
-			final SelectionModel<ColourView> selectionModel, final List<ColourView> colourViews) {
-		Predicate<ColourView> predicate = new Predicate<ColourView>() {
-			@Override
-			public boolean apply(ColourView colourView) {
-				return selectionModel.isSelected(colourView);
-			}
-		};
-		return Iterables.find(colourViews, predicate);
-	}
-	
 	protected void initialisePassword(final LoggedInUser loggedInUser) {
 		final Display display = getDisplay();
 		final String username = loggedInUser.getUsername();
@@ -205,5 +240,35 @@ public class AdminPresenter extends AbstractGameFilterActivity<Display> {
 
 	public TitleMessages getTitleMessages() {
 		return i_titleMessages;
+	}
+
+
+	public Colour getSelectedColour() {
+		return i_selectedColour;
+	}
+
+
+	public void setSelectedColour(Colour selectedColour) {
+		i_selectedColour = selectedColour;
+	}
+
+
+	public Map<Colour, HasClickHandlers> getHasClickHandlersByColour() {
+		return i_hasClickHandlersByColour;
+	}
+
+
+	public void setHasClickHandlersByColour(Map<Colour, HasClickHandlers> hasClickHandlersByColour) {
+		i_hasClickHandlersByColour = hasClickHandlersByColour;
+	}
+
+
+	public InformationCache getInformationCache() {
+		return i_informationCache;
+	}
+
+
+	public void setInformationCache(InformationCache informationCache) {
+		i_informationCache = informationCache;
 	}
 }

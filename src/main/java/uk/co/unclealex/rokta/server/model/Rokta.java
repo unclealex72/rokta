@@ -10,21 +10,19 @@ import javax.xml.bind.annotation.XmlType;
 
 
 @XmlRootElement
-@XmlType(propOrder={"people", "games", "colours"})
+@XmlType(propOrder={"people", "games"})
 public class Rokta implements Serializable {
 
 	private SortedSet<Person> i_people;
 	private SortedSet<Game> i_games;
-	private SortedSet<Colour> i_colours;
 	
 	public Rokta() {
 	}
 	
-	public Rokta(SortedSet<Person> people, SortedSet<Game> games, SortedSet<Colour> colours) {
+	public Rokta(SortedSet<Person> people, SortedSet<Game> games) {
 		super();
 		i_people = people;
 		i_games = games;
-		i_colours = colours;
 	}
 
 	@XmlElementWrapper(name="games")
@@ -46,16 +44,4 @@ public class Rokta implements Serializable {
 	public void setPeople(SortedSet<Person> people) {
 		i_people = people;
 	}
-
-	@XmlElementWrapper(name="colours")
-	@XmlElement(name="colour")
-	public SortedSet<Colour> getColours() {
-		return i_colours;
-	}
-
-	public void setColours(SortedSet<Colour> colours) {
-		i_colours = colours;
-	}
-	
-	
 }

@@ -3,7 +3,6 @@ package uk.co.unclealex.rokta.shared.service;
 import java.util.Date;
 
 import uk.co.unclealex.rokta.client.filter.GameFilter;
-import uk.co.unclealex.rokta.shared.model.ColourView;
 import uk.co.unclealex.rokta.shared.model.CurrentInformation;
 import uk.co.unclealex.rokta.shared.model.GameSummary;
 
@@ -21,7 +20,6 @@ public interface AnonymousRoktaService extends RemoteService {
 	
 	public String[] getAllUsersNames();
 	public String[] getAllPlayerNames();
-	public ColourView[] getAllColourViews();
 	
 	public String getUserPrincipal();
 	

@@ -34,6 +34,7 @@ public class InformationServiceImpl implements InformationService {
 		getInformationCache().useCurrentInformation(callback, gameFilter, 10);
 
 	}
+	
 	public InformationCache getInformationCache() {
 		return i_informationCache;
 	}

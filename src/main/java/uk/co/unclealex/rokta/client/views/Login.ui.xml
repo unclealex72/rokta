@@ -5,6 +5,14 @@
 
   <ui:style>
     .failed { color: red; text-align: center; }
+
+		.buttonBar button {
+			float:right;
+			margin-left: 0.75em;
+		}
+		.buttonBar {
+			margin: 4px;
+		}
   </ui:style>
   
 	<g:DialogBox ui:field="popupPanel" modal="true" autoHideEnabled="false" glassEnabled="true" animationEnabled="true">
@@ -21,7 +29,7 @@
 					<g:customCell><g:PasswordTextBox ui:field="password"/></g:customCell>
 				</g:row>
 			</g:Grid>
-			<div class="buttonbar">
+			<div class="{style.buttonBar}">
         <g:Button ui:field="login">Login</g:Button>
         <g:Button ui:field="cancel">Cancel</g:Button>
 			</div>

@@ -5,23 +5,23 @@ import java.io.Serializable;
 public class LoggedInUser implements Serializable {
 
 	private String i_username;
-	private ColourView i_colourView;
+	private Colour i_colour;
 	
 	protected LoggedInUser() {
 		// Constructor for serialisation.
 	}
 	
-	public LoggedInUser(String username, ColourView colourView) {
+	public LoggedInUser(String username, Colour colour) {
 		super();
 		i_username = username;
-		i_colourView = colourView;
+		i_colour = colour;
 	}
 
 	public String getUsername() {
 		return i_username;
 	}
 
-	public ColourView getColourView() {
-		return i_colourView;
+	public Colour getColour() {
+		return i_colour;
 	}
 }

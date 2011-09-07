@@ -31,7 +31,7 @@ import uk.co.unclealex.rokta.client.filter.NoOpModifier;
 import uk.co.unclealex.rokta.client.filter.SinceGameFilter;
 import uk.co.unclealex.rokta.client.filter.WeekGameFilter;
 import uk.co.unclealex.rokta.client.filter.YearGameFilter;
-import uk.co.unclealex.rokta.client.places.GameFilterAwarePlace;
+import uk.co.unclealex.rokta.client.places.RoktaPlace;
 import uk.co.unclealex.rokta.client.places.LeaguePlace;
 import uk.co.unclealex.rokta.client.presenters.FiltersPresenter.Display;
 import uk.co.unclealex.rokta.client.security.AuthenticationManager;
@@ -238,8 +238,8 @@ public class FiltersPresenter extends AbstractPopupPresenter<DialogBox, Display>
 	protected void updateValues() {
 		Place roktaPlace = getPlaceController().getWhere();
 		GameFilter gameFilter;
-		if (roktaPlace instanceof GameFilterAwarePlace) {
-			gameFilter = ((GameFilterAwarePlace) roktaPlace).getGameFilter();
+		if (roktaPlace instanceof RoktaPlace) {
+			gameFilter = ((RoktaPlace) roktaPlace).getGameFilter();
 		}
 		else {
 			gameFilter = GameFilterFactory.createDefaultGameFilter();
@@ -344,8 +344,8 @@ public class FiltersPresenter extends AbstractPopupPresenter<DialogBox, Display>
 				GameFilter gameFilter = getValue(gameFilterFactories).createGameFilter(modifier);
 				Place where = getPlaceController().getWhere();
 				Place newPlace;
-				if (where instanceof GameFilterAwarePlace) {
-					newPlace = ((GameFilterAwarePlace) where).withGameFilter(gameFilter);
+				if (where instanceof RoktaPlace) {
+					newPlace = ((RoktaPlace) where).withGameFilter(gameFilter);
 				}
 				else {
 					newPlace = new LeaguePlace(gameFilter);

@@ -51,7 +51,9 @@ public class GamePresenter extends AbstractActivity implements HasDisplay<Displa
 		else {
 			subPresenter = getNewRoundPresenterFactory().createNextRoundPresenter(game);
 		}
-		subPresenter.show(panel);
+		Display display = getDisplay();
+		panel.setWidget(display);
+		subPresenter.show(display.getMainPanel());
 	}
 
 	public Display getDisplay() {

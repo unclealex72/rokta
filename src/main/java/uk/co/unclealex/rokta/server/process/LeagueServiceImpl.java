@@ -70,7 +70,7 @@ public class LeagueServiceImpl implements LeagueService {
 			int participantCount = participants.size();
 			totalPlayers += participantCount;
 			for (Person participant : participants) {
-				coloursByUsername.put(participant.getName(), participant.getColour().getHtmlName());
+				coloursByUsername.put(participant.getName(), participant.getGraphingColour().getHtmlName());
 				if (!rowMap.containsKey(participant)) {
 					LeagueRow newLeagueRow = new LeagueRow();
 					newLeagueRow.setPersonName(participant.getName());

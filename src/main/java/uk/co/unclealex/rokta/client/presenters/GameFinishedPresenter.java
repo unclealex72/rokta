@@ -16,6 +16,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.HasText;
@@ -27,6 +28,7 @@ public class GameFinishedPresenter implements Presenter<Display> {
 	public static interface Display extends IsWidget {
 		HasText getLoser();
 		HasClickHandlers getSubmitButton();
+		public abstract HasClickHandlers getBackButton();
 	}
 	
 	private final AsyncCallbackExecutor i_asyncCallbackExecutor;
@@ -53,6 +55,12 @@ public class GameFinishedPresenter implements Presenter<Display> {
 			@Override
 			public void onClick(ClickEvent event) {
 				submitGame();
+			}
+		});
+		display.getBackButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				History.back();
 			}
 		});
 	}

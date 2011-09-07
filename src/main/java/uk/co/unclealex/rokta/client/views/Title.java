@@ -17,7 +17,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class Title extends Composite implements Display {
 
 	public interface Style extends CssResource {
-		String hidingStyle();
+		String hiding();
 	}
 	
   @UiTemplate("Title.ui.xml")
@@ -38,12 +38,12 @@ public class Title extends Composite implements Display {
 
 	@Override
 	public void hideWaitingImage() {
-		getWaitingImage().addStyleName(getStyle().hidingStyle());
+		//getWaitingImage().addStyleName(getStyle().hidingStyle());
 	}
 	
 	@Override
 	public void showWaitingImage() {
-		getWaitingImage().removeStyleName(getStyle().hidingStyle());
+		getWaitingImage().removeStyleName(getStyle().hiding());
 	}
 	public HasText getMainTitle() {
 		return mainTitle;

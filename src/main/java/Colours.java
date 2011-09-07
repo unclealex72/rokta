@@ -1,42 +1,17 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import com.google.common.base.Supplier;
-import com.google.common.collect.Iterables;
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 
 
 public class Colours {
 
-	/**
-  <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-  	<property name="driverClassName" value="org.postgresql.Driver"/>
-  	<property name="username" value="rokta"/>
-  	<property name="password" value="r0kt@"/>
-  	<property name="url" value="jdbc:postgresql://hurst:5432/rokta"/>
-  </bean>  
-	 */
 	public static void main(String[] args) throws Exception {
-		Map<String, Collection<String>> coloursByGroup = Maps.newLinkedHashMap();
-		Multimap<String, String> coloursByGroupMultimap = Multimaps.newListMultimap(
-			coloursByGroup, 
-			new Supplier<List<String>>() { public List<String> get() { return Lists.newArrayList(); }});
-		Pattern colourPattern = Pattern.compile("([a-zA-Z]+)(?:\\s+[0-9A-F][0-9A-F]){3}(?:\\s+[0-9]+){3}");
+		Pattern colourPattern = Pattern.compile("([a-zA-Z]+)(?:\\s+[0-9A-F][0-9A-F]){3}(?:\\s+([0-9]+))(?:\\s+([0-9]+))(?:\\s+([0-9]+))");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(Colours.class.getResourceAsStream("colours.txt")));
 		String line;
 		String colourGroup = null;
@@ -45,37 +20,43 @@ public class Colours {
 			if (!line.isEmpty()) {
 				Matcher matcher = colourPattern.matcher(line);
 				if (matcher.matches()) {
-					coloursByGroupMultimap.put(colourGroup, matcher.group(1).toLowerCase());
+					String htmlName = matcher.group(1);
+					int red = Integer.parseInt(matcher.group(2));
+					int green = Integer.parseInt(matcher.group(3));
+					int blue = Integer.parseInt(matcher.group(4));
+					List<String> htmlNameParts = splitByCapital(htmlName);
+					String enumName = Joiner.on('_').join(htmlNameParts).toUpperCase();
+			    int brightness =
+			    		(int) Math.sqrt(.241 * (double) red * (double) red + .691 * (double) green * (double) green + .068 * (double) blue * (double) blue);
+			    boolean dark = brightness < 130;
+			    System.out.format(
+			    		"%s(Group.%s, \"%s\", %d, %d, %d, %b, \"%s\"),%n", 
+			    		enumName, colourGroup, htmlName, red, green, blue, dark, Joiner.on("\", \"").join(htmlNameParts).toLowerCase());
 				}
 				else {
-					colourGroup = line;
+					colourGroup = line.toUpperCase().replaceAll("[^A-Z]", "");
 				}
 			}
 		}
-		Class.forName("org.postgresql.Driver");
-		Connection connection = DriverManager.getConnection("jdbc:postgresql://hurst:5432/rokta", "rokta", "r0kt@");
-		Statement stmt = connection.createStatement();
-		ResultSet rs = stmt.executeQuery("select * from colour");
-		while (rs.next()) {
-			final String htmlName = rs.getString("htmlname").toLowerCase();
-			Predicate<Entry<String, Collection<String>>> predicate = new Predicate<Entry<String, Collection<String>>>() {
-				@Override
-				public boolean apply(Entry<String, Collection<String>> entry) {
-					return entry.getValue().contains(htmlName);
+	}
+
+	public static List<String> splitByCapital(String htmlName) {
+		List<String> words = Lists.newArrayList();
+		StringBuilder builder = null;
+		for (char c : htmlName.toCharArray()) {
+			if (Character.isUpperCase(c)) {
+				if (builder != null) {
+					words.add(builder.toString());
 				}
-			};
-			Entry<String, Collection<String>> foundColourGroup = Iterables.find(coloursByGroup.entrySet(), predicate, null);
-			if (foundColourGroup == null) {
-				System.out.println(htmlName + " not found!");
+				builder = new StringBuilder();
 			}
-			else {
-				int idx = Iterables.indexOf(foundColourGroup.getValue(), Predicates.equalTo(htmlName));
-				System.out.println(htmlName + ": " + foundColourGroup.getKey() + " " + idx);
-			}
+			builder.append(c);
 		}
-		rs.close();
-		stmt.close();
-		connection.close();
+		String lastWord = builder.toString();
+		if (!lastWord.isEmpty()) {
+			words.add(lastWord);
+		}
+		return words;
 	}
 
 }

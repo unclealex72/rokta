@@ -60,7 +60,6 @@
 				<value>uk.co.unclealex.rokta.server.model.Play</value>
 				<value>uk.co.unclealex.rokta.server.model.Round</value>
 				<value>uk.co.unclealex.rokta.server.model.Game</value>
-        <value>uk.co.unclealex.rokta.server.model.Colour</value>
 			</list>
 		</property>
 	</bean>
@@ -68,7 +67,6 @@
 	<!-- DAOs -->
 	
 	<bean id="gameDao" class="uk.co.unclealex.rokta.server.dao.HibernateGameDao"/>
-	<bean id="colourDao" class="uk.co.unclealex.rokta.server.dao.HibernateColourDao"/>
 	<bean id="personDao" class="uk.co.unclealex.rokta.server.dao.HibernatePersonDao"/>
 	<bean id="playDao" class="uk.co.unclealex.rokta.server.dao.HibernatePlayDao"/>
 	<bean id="roundDao" class="uk.co.unclealex.rokta.server.dao.HibernateRoundDao"/>

@@ -36,10 +36,18 @@ public class Graph extends Composite implements Display, IsWide {
 	}
 
 	@Override
-	public void drawGraph(Map<String, String> coloursByName, Map<String, SortedMap<Date, Double>> percentagesByDateByName) {
+	public void drawGraph(
+		Map<String, String> coloursByName,
+		Map<String, SortedMap<Date, Double>> percentagesByDateByName,
+		Integer yAxisMinLimit,
+		Integer yAxisMaxLimit) {
 		JsArrayMixed seriesArray = createSeries(percentagesByDateByName);
 		JsArrayString coloursArray = createColours(percentagesByDateByName.keySet(), coloursByName);
-		drawGraph(graph.getElement(), coloursArray, seriesArray);		
+		drawGraph(graph.getElement(), coloursArray, seriesArray, nullToNegative(yAxisMinLimit), nullToNegative(yAxisMaxLimit));		
+	}
+
+	protected int nullToNegative(Integer yAxisMinLimit) {
+		return yAxisMinLimit==null?-1:yAxisMinLimit.intValue();
 	}
 
 	protected JsArrayString createColours(Set<String> names, Map<String, String> coloursByName) {
@@ -78,7 +86,7 @@ public class Graph extends Composite implements Display, IsWide {
 		return {name: name, data: data};
 	}-*/;
 	
-	protected native void drawGraph(Element element, JsArrayString colours, JsArrayMixed series) /*-{
+	protected native void drawGraph(Element element, JsArrayString colours, JsArrayMixed series, int yAxisMinLimit, int yAxisMaxLimit) /*-{
 		var chart = new $wnd.Highcharts.Chart({
 			chart: {
 				renderTo: element,
@@ -100,7 +108,8 @@ public class Graph extends Composite implements Display, IsWide {
 				title: {
 					text: 'Losses (%)'
 				},
-				min: 0
+				min: (yAxisMinLimit >= 0 ? yAxisMinLimit : null),
+				max: (yAxisMaxLimit >=0 ? yAxisMaxLimit : null)
 			},
 			tooltip: {
 				formatter: function() {

@@ -6,6 +6,7 @@ import java.util.SortedSet;
 
 import javax.inject.Inject;
 
+import uk.co.unclealex.rokta.client.messages.TitleMessages;
 import uk.co.unclealex.rokta.client.places.GamePlace;
 import uk.co.unclealex.rokta.client.presenters.NewGamePresenter.Display;
 import uk.co.unclealex.rokta.client.util.AsyncCallbackExecutor;
@@ -45,11 +46,14 @@ public class NewGamePresenter extends AllUsersAwarePresenter<Display> {
 	
 	private final Display i_display;
 	private final PlaceController i_placeController;
+	private final TitleMessages i_titleMessages;
 	
 	@Inject
-	public NewGamePresenter(Display display, AsyncCallbackExecutor asyncCallbackExecutor, PlaceController placeController) {
+	public NewGamePresenter(Display display, TitleMessages titleMessages,
+			AsyncCallbackExecutor asyncCallbackExecutor, PlaceController placeController) {
 		super(asyncCallbackExecutor);
 		i_display = display;
+		i_titleMessages = titleMessages;
 		i_placeController = placeController;
 	}
 
@@ -73,7 +77,8 @@ public class NewGamePresenter extends AllUsersAwarePresenter<Display> {
 		final Display display = getDisplay();
 		container.setWidget(display);
 		String exemptPlayer = initialPlayers.getExemptPlayer();
-		display.getExemptPlayer().setText(exemptPlayer==null?"No one":exemptPlayer);
+		TitleMessages titleMessages = getTitleMessages();
+		display.getExemptPlayer().setText(exemptPlayer==null?titleMessages.nooneExempt():titleMessages.exempt(exemptPlayer));
 		final List<String> allUserList = Lists.newArrayList();
 		List<String> allBarExemptPlayers = initialPlayers.getAllBarExemptPlayers();
 		allUserList.addAll(allBarExemptPlayers);
@@ -134,6 +139,10 @@ public class NewGamePresenter extends AllUsersAwarePresenter<Display> {
 
 	public PlaceController getPlaceController() {
 		return i_placeController;
+	}
+
+	public TitleMessages getTitleMessages() {
+		return i_titleMessages;
 	}
 
 }

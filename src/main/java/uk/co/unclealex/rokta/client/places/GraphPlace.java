@@ -6,7 +6,7 @@ import uk.co.unclealex.rokta.client.filter.GameFilter;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
 
-public class GraphPlace extends GameFilterAwarePlace {
+public class GraphPlace extends RoktaPlace {
 
 	public GraphPlace(GameFilter gameFilter) {
 		super(gameFilter);
@@ -14,11 +14,11 @@ public class GraphPlace extends GameFilterAwarePlace {
 
 	@Override
 	public boolean equals(Object other) {
-		return (other instanceof GraphPlace) && isEqual((GameFilterAwarePlace) other);
+		return (other instanceof GraphPlace) && isEqual((RoktaPlace) other);
 	}
 	
 	@Override
-	public GameFilterAwarePlace withGameFilter(GameFilter gameFilter) {
+	public RoktaPlace withGameFilter(GameFilter gameFilter) {
 		return new GraphPlace(gameFilter);
 	}
 	
@@ -27,7 +27,7 @@ public class GraphPlace extends GameFilterAwarePlace {
 		return visitor.visit(this);
 	}
 	
-	public static class Tokenizer extends GameFilterAwarePlace.Tokenizer<GraphPlace> implements PlaceTokenizer<GraphPlace> {
+	public static class Tokenizer extends RoktaPlace.Tokenizer<GraphPlace> implements PlaceTokenizer<GraphPlace> {
 
 		@Override
 		protected GraphPlace getPlace(List<String> tokens, GameFilter gameFilter) {

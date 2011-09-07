@@ -5,7 +5,7 @@ import java.util.Date;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-import uk.co.unclealex.rokta.shared.model.ColourView;
+import uk.co.unclealex.rokta.shared.model.Colour;
 import uk.co.unclealex.rokta.shared.model.Game;
 import uk.co.unclealex.rokta.shared.model.InitialPlayers;
 import uk.co.unclealex.rokta.shared.model.LoggedInUser;
@@ -20,13 +20,13 @@ public interface UserRoktaService extends RemoteService {
 	
 	public void removeLastGame();
 	
-	public void updateColour(String username, ColourView colourView);
+	public void updateColour(String username, Colour colourView);
 	
 	public void updatePassword(String username, String newPassword);
 	
 	public LoggedInUser getCurrentlyLoggedInUser();
 	
-	public ColourView getColourViewForUser(String username);
+	public Colour getColourForUser(String username);
 
 	public void forceSignIn();
 }

@@ -1,38 +1,36 @@
 package uk.co.unclealex.rokta.client.views;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import uk.co.unclealex.rokta.client.presenters.AdminPresenter.Display;
 import uk.co.unclealex.rokta.client.util.CanWait;
 import uk.co.unclealex.rokta.client.util.CanWaitSupport;
-import uk.co.unclealex.rokta.shared.model.ColourView;
+import uk.co.unclealex.rokta.shared.model.Colour;
+import uk.co.unclealex.rokta.shared.model.Colour.Group;
 
-import com.google.gwt.cell.client.AbstractCell;
-import com.google.gwt.cell.client.Cell;
+import com.google.common.base.Joiner;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
-import com.google.gwt.user.cellview.client.CellList;
-import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.SelectionModel;
 import com.google.inject.Provider;
 
 public class Admin extends Composite implements Display {
 
 	public interface Style extends CssResource {
+		public String selected();
+		public String colour();
 		public String dark();
 		public String light();
-		public String colourCell();
 	}
 	
 	private final Provider<CanWaitSupport> i_canWaitSupportProvider;
@@ -40,8 +38,9 @@ public class Admin extends Composite implements Display {
 	@UiField Button changeColourButton;
 	@UiField Button changePasswordButton;
 	@UiField HasText password;
-	@UiField AcceptsOneWidget colourListPanel;
+	@UiField HasWidgets colourListPanel;
 	@UiField Button deleteLastGameButton;
+	@UiField Button clearCacheButton;
 	@UiField Style style;
 	
   @UiTemplate("Admin.ui.xml")
@@ -59,26 +58,32 @@ public class Admin extends Composite implements Display {
 	}
 
 	@Override
-	public void initialiseColours(SelectionModel<ColourView> selectionModel, List<ColourView> colourViews) {
-		Cell<ColourView> colourViewCell = new AbstractCell<ColourView>() {
-			@Override
-			public void render(Context context, ColourView value, SafeHtmlBuilder sb) {
-				String backgroundColour = value.getHtmlName();
-				Style style = getStyle();
-				String foregroundClass = value.isDark()?style.dark():style.light();
-				sb.appendHtmlConstant(
-					"<div class='" + style.colourCell() + " " + foregroundClass + "' style='background-color: " + backgroundColour + ";'>" + 
-					value.getName() + "</div>");
-			}
-		};
-		CellList<ColourView> cellList = new CellList<ColourView>(colourViewCell);
-		cellList.setSelectionModel(selectionModel);
-		cellList.setRowCount(colourViews.size());
-		cellList.setRowData(0, colourViews);
-		getColourListPanel().setWidget(cellList);
-		cellList.redraw();
+	public void addColourGroup(Group colourGroup) {
+		// Groups are not shown.
 	}
-
+	
+	@Override
+	public HasClickHandlers addColour(Colour colour) {
+		Anchor anchor = new Anchor(true);
+		Style style = getStyle();
+		anchor.addStyleName(style.colour());
+		anchor.addStyleName(colour.isDark()?style.dark():style.light());
+		anchor.setTitle(Joiner.on(' ').join(colour.getDescriptiveWords()));
+		getColourListPanel().add(anchor);
+		anchor.getElement().getStyle().setBackgroundColor(colour.getHtmlName());
+		return anchor;
+	}
+	
+	@Override
+	public void selectColour(HasClickHandlers colourSource) {
+		((Widget) colourSource).addStyleName(getStyle().selected());
+	}
+	
+	@Override
+	public void deselectColour(HasClickHandlers colourSource) {
+		((Widget) colourSource).removeStyleName(getStyle().selected());
+	}
+	
 	@Override
 	public CanWait getChangeColourCanWait() {
 		return getCanWait(getChangeColourButton());
@@ -92,6 +97,11 @@ public class Admin extends Composite implements Display {
 	@Override
 	public CanWait getDeleteLastGameCanWait() {
 		return getCanWait(getDeleteLastGameButton());
+	}
+	
+	@Override
+	public CanWait getClearCacheCanWait() {
+		return getCanWait(getClearCacheButton());
 	}
 	
 	protected CanWait getCanWait(HasEnabled... enableds) {
@@ -114,7 +124,7 @@ public class Admin extends Composite implements Display {
 		return password;
 	}
 
-	public AcceptsOneWidget getColourListPanel() {
+	public HasWidgets getColourListPanel() {
 		return colourListPanel;
 	}
 
@@ -124,6 +134,10 @@ public class Admin extends Composite implements Display {
 
 	public Button getDeleteLastGameButton() {
 		return deleteLastGameButton;
+	}
+
+	public Button getClearCacheButton() {
+		return clearCacheButton;
 	}
 
 }

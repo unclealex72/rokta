@@ -24,6 +24,7 @@ public class GameFinished extends Composite implements Display {
 
 	@UiField HasText loser;
 	@UiField HasClickHandlers submitButton;
+	@UiField HasClickHandlers backButton;
 	
 	@Inject
 	public GameFinished() {
@@ -38,4 +39,8 @@ public class GameFinished extends Composite implements Display {
 		return submitButton;
 	}
 
+	@Override
+	public HasClickHandlers getBackButton() {
+		return backButton;
+	}
 }

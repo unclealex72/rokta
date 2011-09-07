@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import uk.co.unclealex.rokta.client.filter.GameFilter;
 import uk.co.unclealex.rokta.client.filter.GameFilterFactory;
 import uk.co.unclealex.rokta.client.places.AdminPlace;
-import uk.co.unclealex.rokta.client.places.GameFilterAwarePlace;
 import uk.co.unclealex.rokta.client.places.GamePlace;
 import uk.co.unclealex.rokta.client.places.GraphPlace;
 import uk.co.unclealex.rokta.client.places.HeadToHeadsPlace;
@@ -186,8 +185,8 @@ public class NavigationPresenter implements Presenter<Display>, PlaceChangeEvent
 			public void onClick(ClickEvent event) {
 				Place where = getPlaceController().getWhere();
 				GameFilter gameFilter;
-				if (where instanceof GameFilterAwarePlace) {
-					gameFilter = ((GameFilterAwarePlace) where).getGameFilter();
+				if (where instanceof RoktaPlace) {
+					gameFilter = ((RoktaPlace) where).getGameFilter();
 				}
 				else {
 					gameFilter = GameFilterFactory.createDefaultGameFilter();

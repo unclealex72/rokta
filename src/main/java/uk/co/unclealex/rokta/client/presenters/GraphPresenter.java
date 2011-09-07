@@ -22,7 +22,11 @@ import com.google.inject.assistedinject.Assisted;
 public class GraphPresenter extends InformationActivity<Display, Leagues> {
 
 	public static interface Display extends IsWidget {
-		void drawGraph(Map<String, String> coloursByName, Map<String, SortedMap<Date, Double>> percentagesByDateByName);
+		void drawGraph(
+			Map<String, String> coloursByName,
+			Map<String, SortedMap<Date, Double>> percentagesByDateByName, 
+			Integer yAxisMinLimit,
+			Integer yAxisMaxLimit);
 	}
 
 	private final TitleMessages i_titleMessages;
@@ -45,6 +49,8 @@ public class GraphPresenter extends InformationActivity<Display, Leagues> {
 	protected void show(GameFilter gameFilter, AcceptsOneWidget panel, final Leagues leagues) {
 		Display display = getDisplay();
 		panel.setWidget(display);
+		Integer yAxisMaxLimit = null;
+		Integer yAxisMinLimit = null;
 		Map<String, SortedMap<Date, Double>> percentagesByDateByName = Maps.newHashMap();
 		for (League league : leagues.getLeagues()) {
 			Date leagueDate = league.getLastGameDate();
@@ -56,10 +62,17 @@ public class GraphPresenter extends InformationActivity<Display, Leagues> {
 					percentagesByDate = Maps.newTreeMap();
 					percentagesByDateByName.put(name, percentagesByDate);
 				}
-				percentagesByDate.put(leagueDate, lossesPerGame * 100.0);
+				double lossPercentage = lossesPerGame * 100.0;
+				if (lossPercentage >= 95) {
+					yAxisMaxLimit = 100;
+				}
+				else if (lossPercentage <= 5) {
+					yAxisMinLimit = 0;
+				}
+				percentagesByDate.put(leagueDate, lossPercentage);
 			}
 		}
-		display.drawGraph(leagues.getHtmlColoursByName(), percentagesByDateByName);
+		display.drawGraph(leagues.getHtmlColoursByName(), percentagesByDateByName, yAxisMinLimit, yAxisMaxLimit);
 	}
 		
 	public TitleMessages getTitleMessages() {

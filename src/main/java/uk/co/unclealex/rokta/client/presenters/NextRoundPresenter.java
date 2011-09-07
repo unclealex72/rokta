@@ -15,9 +15,10 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.inject.assistedinject.Assisted;
@@ -25,9 +26,10 @@ import com.google.inject.assistedinject.Assisted;
 public class NextRoundPresenter extends AllUsersAwarePresenter<Display> {
 
 	public static interface Display extends IsWidget {
-		ListBox getCounterListBox();
 		void addPlayer(String playerName, ListBox handListBox);
-		Button getNextButton();
+		ListBox getCounterListBox();
+		HasClickHandlers getNextButton();
+		HasClickHandlers getBackButton();
 	}
 	
 	private final Display i_display;
@@ -64,6 +66,12 @@ public class NextRoundPresenter extends AllUsersAwarePresenter<Display> {
 			@Override
 			public void onClick(ClickEvent event) {
 				next();
+			}
+		});
+		display.getBackButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				History.back();
 			}
 		});
 	}

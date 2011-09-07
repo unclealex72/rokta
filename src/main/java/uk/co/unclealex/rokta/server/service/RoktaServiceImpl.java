@@ -2,7 +2,6 @@ package uk.co.unclealex.rokta.server.service;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.SortedSet;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,11 +12,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import uk.co.unclealex.rokta.client.filter.GameFilter;
-import uk.co.unclealex.rokta.server.dao.ColourDao;
-import uk.co.unclealex.rokta.server.model.Colour;
+import uk.co.unclealex.rokta.server.dao.PersonDao;
 import uk.co.unclealex.rokta.server.model.Day;
 import uk.co.unclealex.rokta.server.process.PersonService;
-import uk.co.unclealex.rokta.shared.model.ColourView;
+import uk.co.unclealex.rokta.shared.model.Colour;
 import uk.co.unclealex.rokta.shared.model.CurrentInformation;
 import uk.co.unclealex.rokta.shared.model.Game;
 import uk.co.unclealex.rokta.shared.model.GameSummary;
@@ -25,7 +23,6 @@ import uk.co.unclealex.rokta.shared.model.InitialPlayers;
 import uk.co.unclealex.rokta.shared.model.LoggedInUser;
 import uk.co.unclealex.rokta.shared.service.SecurityInvalidator;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 
 public class RoktaServiceImpl implements RoktaService {
@@ -36,7 +33,7 @@ public class RoktaServiceImpl implements RoktaService {
 	private PersonService i_personService;
 	private SecurityInvalidator i_securityInvalidator;
 	private AuthenticationManager i_authenticationManager;
-	private ColourDao i_colourDao;
+	private PersonDao i_personDao;
 	
 	@Override
 	public InitialPlayers getInitialPlayers(Date date) {
@@ -128,18 +125,17 @@ public class RoktaServiceImpl implements RoktaService {
 	@Override
 	public LoggedInUser getCurrentlyLoggedInUser() {
 		String username = getUserPrincipal();
-		return new LoggedInUser(username, getColourViewForUser(username));
+		return new LoggedInUser(username, getColourForUser(username));
 	}
 	
 	@Override
-	public ColourView getColourViewForUser(String username) {
-		Colour colour = getColourDao().getColourForUser(username);
-		return colourToColourView(colour);
+	public Colour getColourForUser(String username) {
+		return getPersonDao().getPersonByName(username).getGraphingColour();
 	}
 	
 	@Override
-	public void updateColour(String username, ColourView colourView) {
-		getPersonService().changeGraphingColour(username, colourView.getName());
+	public void updateColour(String username, Colour colour) {
+		getPersonService().changeGraphingColour(username, colour);
 	}
 	
 	@Override
@@ -147,26 +143,6 @@ public class RoktaServiceImpl implements RoktaService {
 		getPersonService().changePassword(username, newPassword);
 	}
 	
-	@Override
-	public ColourView[] getAllColourViews() {
-		Function<Colour, ColourView> function = new Function<Colour, ColourView>() {
-			public ColourView apply(Colour colour) {
-				return colourToColourView(colour);
-			}
-		};
-		SortedSet<Colour> allColours = getColourDao().getAll();
-		return Iterables.toArray(Iterables.transform(allColours, function), ColourView.class);
-	}
-	
-	protected ColourView colourToColourView(Colour colour) {
-		short red = colour.getRed();
-		short green = colour.getGreen();
-		short blue = colour.getBlue();
-    int brightness =
-    		(int) Math.sqrt(.241 * (double) red * (double) red + .691 * (double) green * (double) green + .068 * (double) blue * (double) blue);
-		return new ColourView(colour.getName(), colour.getHtmlName(), red, green, blue, brightness < 130);
-	}
-
 	public CacheService getCacheService() {
 		return i_cacheService;
 	}
@@ -215,12 +191,12 @@ public class RoktaServiceImpl implements RoktaService {
 		i_authenticationManager = authenticationManager;
 	}
 
-	public ColourDao getColourDao() {
-		return i_colourDao;
+	public PersonDao getPersonDao() {
+		return i_personDao;
 	}
 
-	public void setColourDao(ColourDao colourDao) {
-		i_colourDao = colourDao;
+	public void setPersonDao(PersonDao personDao) {
+		i_personDao = personDao;
 	};
 
 }

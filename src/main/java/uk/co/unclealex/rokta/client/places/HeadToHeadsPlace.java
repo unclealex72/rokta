@@ -6,7 +6,7 @@ import uk.co.unclealex.rokta.client.filter.GameFilter;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
 
-public class HeadToHeadsPlace extends GameFilterAwarePlace {
+public class HeadToHeadsPlace extends RoktaPlace {
 
 	public HeadToHeadsPlace(GameFilter gameFilter) {
 		super(gameFilter);
@@ -14,11 +14,11 @@ public class HeadToHeadsPlace extends GameFilterAwarePlace {
 
 	@Override
 	public boolean equals(Object other) {
-		return (other instanceof HeadToHeadsPlace) && isEqual((GameFilterAwarePlace) other);
+		return (other instanceof HeadToHeadsPlace) && isEqual((RoktaPlace) other);
 	}
 	
 	@Override
-	public GameFilterAwarePlace withGameFilter(GameFilter gameFilter) {
+	public RoktaPlace withGameFilter(GameFilter gameFilter) {
 		return new HeadToHeadsPlace(gameFilter);
 	}
 	
@@ -27,7 +27,7 @@ public class HeadToHeadsPlace extends GameFilterAwarePlace {
 		return visitor.visit(this);
 	}
 	
-	public static class Tokenizer extends GameFilterAwarePlace.Tokenizer<HeadToHeadsPlace> implements PlaceTokenizer<HeadToHeadsPlace> {
+	public static class Tokenizer extends RoktaPlace.Tokenizer<HeadToHeadsPlace> implements PlaceTokenizer<HeadToHeadsPlace> {
 
 		@Override
 		protected HeadToHeadsPlace getPlace(List<String> tokens, GameFilter gameFilter) {

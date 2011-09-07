@@ -1,5 +1,7 @@
 package uk.co.unclealex.rokta.client.places;
 
+import uk.co.unclealex.rokta.client.filter.GameFilter;
+import uk.co.unclealex.rokta.client.filter.GameFilterFactory;
 import uk.co.unclealex.rokta.shared.model.Game;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
@@ -13,7 +15,7 @@ public class GamePlace extends RoktaPlace {
 	}
 	
 	public GamePlace(Game game) {
-		super();
+		super(GameFilterFactory.createDefaultGameFilter());
 		i_game = game;
 	}
 
@@ -21,6 +23,11 @@ public class GamePlace extends RoktaPlace {
 	public boolean equals(Object other) {
 		return 
 				(other instanceof GamePlace) && getGame().equals(((GamePlace) other).getGame());
+	}
+	
+	@Override
+	public RoktaPlace withGameFilter(GameFilter gameFilter) {
+		return this;
 	}
 	
 	@Override

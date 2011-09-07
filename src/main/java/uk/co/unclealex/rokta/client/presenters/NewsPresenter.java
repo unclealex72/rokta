@@ -14,7 +14,7 @@ import javax.inject.Provider;
 import uk.co.unclealex.rokta.client.cache.InformationCallback;
 import uk.co.unclealex.rokta.client.cache.InformationService;
 import uk.co.unclealex.rokta.client.messages.TitleMessages;
-import uk.co.unclealex.rokta.client.places.GameFilterAwarePlace;
+import uk.co.unclealex.rokta.client.places.RoktaPlace;
 import uk.co.unclealex.rokta.client.presenters.NewsPresenter.Display;
 import uk.co.unclealex.rokta.shared.model.CurrentInformation;
 import uk.co.unclealex.rokta.shared.model.DatedGame;
@@ -279,8 +279,8 @@ public class NewsPresenter implements
 	@Override
 	public void onPlaceChange(PlaceChangeEvent event) {
 		Place newPlace = event.getNewPlace();
-		if (newPlace instanceof GameFilterAwarePlace) {
-			GameFilterAwarePlace place = (GameFilterAwarePlace) newPlace;
+		if (newPlace instanceof RoktaPlace) {
+			RoktaPlace place = (RoktaPlace) newPlace;
 			getInformationService().execute(place.getGameFilter(), this, this);
 		}
 	}

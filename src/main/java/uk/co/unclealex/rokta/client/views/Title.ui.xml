@@ -12,25 +12,25 @@
 			font-size: x-large;
 			font-weight: bold;
 			vertical-align: middle;
+			position: relative;
 		}
 		
-		.titleBanner div {
-			vertical-align: middle;
-			display: inline;
-		}
-		
-		.titleBanner img {
-			vertical-align: middle;
-			float: right;
-		}		
-		
-		.hidingStyle {
+		.hiding {
 			visibility: hidden;
+		}
+		
+		.waitingImage {
+			float: right;
+			display: inline;
+			/* position: absolute;
+			right: 50px */;
 		}
 	</ui:style>
 
 	<g:HTMLPanel addStyleNames="{style.titleBanner}">
-		<g:Label ui:field="mainTitle"/>
-		<g:Image ui:field="waitingImage" addStyleNames="{style.hidingStyle}"/>
+		<g:InlineLabel ui:field="mainTitle"/>
+		<div class="{style.waitingImage}">
+			<g:Image ui:field="waitingImage" addStyleNames="{style.hiding}"/>
+		</div>
 	</g:HTMLPanel>
 </ui:UiBinder>

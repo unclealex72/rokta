@@ -3,7 +3,6 @@ package uk.co.unclealex.rokta.server.servlet;
 import java.util.Date;
 
 import uk.co.unclealex.rokta.client.filter.GameFilter;
-import uk.co.unclealex.rokta.shared.model.ColourView;
 import uk.co.unclealex.rokta.shared.model.CurrentInformation;
 import uk.co.unclealex.rokta.shared.model.GameSummary;
 import uk.co.unclealex.rokta.shared.service.AnonymousRoktaService;
@@ -53,10 +52,5 @@ public class AnonymousRoktaServlet extends AbstractRoktaServlet implements Anony
 	@Override
 	public boolean authenticate(String username, String password) {
 		return createRoktaService().authenticate(username, password);
-	}
-
-	@Override
-	public ColourView[] getAllColourViews() {
-		return createRoktaService().getAllColourViews();
 	}
 }

@@ -2,17 +2,18 @@ package uk.co.unclealex.rokta.server.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import uk.co.unclealex.hibernate.model.KeyedBean;
+import uk.co.unclealex.rokta.shared.model.Colour;
 
 @Entity
 @NamedQueries(value={
@@ -21,12 +22,12 @@ import uk.co.unclealex.hibernate.model.KeyedBean;
 		@NamedQuery(name="person.findByName", query="select p from Person p where p.name=:name")
 		})
 @XmlRootElement(name="colour")
-@XmlType(propOrder={"name", "password", "colour"})
+@XmlType(propOrder={"name", "password", "graphingColour"})
 public class Person extends KeyedBean<Person> {
 
 	private String i_name;
 	private String i_password;
-	private Colour i_colour;
+	private Colour i_graphingColour;
 	
 	@Override
 	public int compareTo(Person o) {
@@ -57,13 +58,14 @@ public class Person extends KeyedBean<Person> {
 		i_password = password;
 	}
 
-	@ManyToOne
-	@XmlIDREF
-	public Colour getColour() {
-		return i_colour;
+	@Enumerated(EnumType.STRING)
+	@Column(nullable=false)
+	public Colour getGraphingColour() {
+		return i_graphingColour;
 	}
-	public void setColour(Colour colour) {
-		i_colour = colour;
+	
+	public void setGraphingColour(Colour graphingColour) {
+		i_graphingColour = graphingColour;
 	}
 
 	@Override

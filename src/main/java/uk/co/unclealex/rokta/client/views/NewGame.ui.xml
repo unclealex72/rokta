@@ -16,12 +16,12 @@
 	</ui:style>
 
 	<g:HTMLPanel>
-		<p><g:InlineLabel ui:field="exemptPlayer"/> is exempt.</p>
+		<h2>Please choose your players</h2>
+		<p><g:InlineLabel ui:field="exemptPlayer"/></p>
 		<fieldset class="{style.selectBox}">
-			<legend>Please choose your players</legend>
-			<h2>Instigator</h2>
+			<h3>Instigator</h3>
 			<g:ListBox ui:field="instigatorListBox" multiple="false"/>
-			<h2>Players</h2>
+			<h3>Players</h3>
 			<c:CellList ui:field="playersListBox" addStyleNames="{style.entry} {style.players}"/>
 			<g:Button ui:field="startButton">Start</g:Button>
 		</fieldset>

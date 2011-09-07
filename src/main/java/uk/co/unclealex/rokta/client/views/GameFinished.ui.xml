@@ -3,16 +3,15 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
 	<ui:style src="Game.css">
-		.loser {
-			font-size: larger;
-			font-weight: bold;
-		}
 	</ui:style>
 
 	<g:HTMLPanel>
+		<h2><g:InlineLabel ui:field="loser"/> has lost.</h2>
 		<fieldset class="{style.selectBox}">
-			<p class="{style.loser}"><g:InlineLabel ui:field="loser"/> has lost.</p>
-			<g:Button ui:field="submitButton">Submit</g:Button>
+			<div>
+				<g:Button ui:field="submitButton">Submit</g:Button>
+				<g:Button ui:field="backButton">Back</g:Button>
+			</div>
 		</fieldset>
 	</g:HTMLPanel>
 

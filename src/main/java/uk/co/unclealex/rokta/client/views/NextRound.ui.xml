@@ -19,14 +19,15 @@
 	</ui:style>
 
 	<g:HTMLPanel>
+		<h2>Play play play!</h2>
 		<fieldset class="{style.selectBox}">
-			<legend>Let battle commence</legend>
 			<div class="{style.counter}">
 				<p>Counter</p>
 				<g:ListBox ui:field="counterListBox"/>
 			</div>
 			<g:FlowPanel ui:field="playersPanel"/>
 			<g:Button ui:field="nextButton">Next</g:Button>
+			<g:Button ui:field="backButton">Back</g:Button>
 		</fieldset>
 	</g:HTMLPanel>
 

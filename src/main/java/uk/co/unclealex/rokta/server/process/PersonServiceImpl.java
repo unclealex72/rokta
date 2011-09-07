@@ -14,13 +14,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.co.unclealex.rokta.server.dao.ColourDao;
 import uk.co.unclealex.rokta.server.dao.GameDao;
 import uk.co.unclealex.rokta.server.dao.PersonDao;
-import uk.co.unclealex.rokta.server.model.Colour;
 import uk.co.unclealex.rokta.server.model.Game;
 import uk.co.unclealex.rokta.server.model.Person;
 import uk.co.unclealex.rokta.server.util.DateUtil;
+import uk.co.unclealex.rokta.shared.model.Colour;
 
 /**
  * @author alex
@@ -33,7 +32,6 @@ public class PersonServiceImpl implements PersonService {
 	private GameDao i_gameDao;
 	private PasswordEncoder i_passwordEncoder;
 	private SaltSource i_saltSource;
-	private ColourDao i_colourDao;
 	
 	private DateUtil i_dateUtil;
 	
@@ -77,11 +75,10 @@ public class PersonServiceImpl implements PersonService {
 	}
 	
 	@Override
-	public void changeGraphingColour(String name, String colourName) {
+	public void changeGraphingColour(String name, Colour colour) {
 		PersonDao personDao = getPersonDao();
 		Person person = personDao.getPersonByName(name);
-		Colour colour = getColourDao().getColourByName(colourName);
-		person.setColour(colour);
+		person.setGraphingColour(colour);
 		personDao.store(person);
 	}
 	
@@ -148,13 +145,4 @@ public class PersonServiceImpl implements PersonService {
 	public void setSaltSource(SaltSource saltSource) {
 		i_saltSource = saltSource;
 	}
-
-	public ColourDao getColourDao() {
-		return i_colourDao;
-	}
-
-	public void setColourDao(ColourDao colourDao) {
-		i_colourDao = colourDao;
-	}
-
 }

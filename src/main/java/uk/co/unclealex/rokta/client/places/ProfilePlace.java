@@ -7,7 +7,7 @@ import uk.co.unclealex.rokta.client.filter.GameFilter;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
 
-public class ProfilePlace extends GameFilterAwarePlace {
+public class ProfilePlace extends RoktaPlace {
 
 	private String i_username;
 	
@@ -20,12 +20,12 @@ public class ProfilePlace extends GameFilterAwarePlace {
 	public boolean equals(Object other) {
 		return 
 				(other instanceof ProfilePlace) && 
-				isEqual((GameFilterAwarePlace) other) && 
+				isEqual((RoktaPlace) other) && 
 				getUsername().equals(((ProfilePlace) other).getUsername());
 	}
 	
 	@Override
-	public GameFilterAwarePlace withGameFilter(GameFilter gameFilter) {
+	public RoktaPlace withGameFilter(GameFilter gameFilter) {
 		return new ProfilePlace(gameFilter, getUsername());
 	}
 	
@@ -34,7 +34,7 @@ public class ProfilePlace extends GameFilterAwarePlace {
 		return visitor.visit(this);
 	}
 	
-	public static class Tokenizer extends GameFilterAwarePlace.Tokenizer<ProfilePlace> implements PlaceTokenizer<ProfilePlace> {
+	public static class Tokenizer extends RoktaPlace.Tokenizer<ProfilePlace> implements PlaceTokenizer<ProfilePlace> {
 
 		@Override
 		protected ProfilePlace getPlace(List<String> tokens, GameFilter gameFilter) {

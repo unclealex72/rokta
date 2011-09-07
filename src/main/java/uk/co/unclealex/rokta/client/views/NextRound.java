@@ -32,6 +32,7 @@ public class NextRound extends Composite implements Display {
 	@UiField Style style;
 	@UiField ListBox counterListBox;
 	@UiField Button nextButton;
+	@UiField Button backButton;
 	@UiField HasWidgets playersPanel;
 	
 	@Inject
@@ -65,6 +66,10 @@ public class NextRound extends Composite implements Display {
 
 	public Style getStyle() {
 		return style;
+	}
+
+	public Button getBackButton() {
+		return backButton;
 	}
 
 }

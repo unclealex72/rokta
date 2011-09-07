@@ -6,7 +6,7 @@ import uk.co.unclealex.rokta.client.filter.GameFilter;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
 
-public class LosingStreaksPlace extends GameFilterAwarePlace {
+public class LosingStreaksPlace extends RoktaPlace {
 
 	public LosingStreaksPlace(GameFilter gameFilter) {
 		super(gameFilter);
@@ -14,11 +14,11 @@ public class LosingStreaksPlace extends GameFilterAwarePlace {
 
 	@Override
 	public boolean equals(Object other) {
-		return (other instanceof LosingStreaksPlace) && isEqual((GameFilterAwarePlace) other);
+		return (other instanceof LosingStreaksPlace) && isEqual((RoktaPlace) other);
 	}
 	
 	@Override
-	public GameFilterAwarePlace withGameFilter(GameFilter gameFilter) {
+	public RoktaPlace withGameFilter(GameFilter gameFilter) {
 		return new LosingStreaksPlace(gameFilter);
 	}
 	
@@ -27,7 +27,7 @@ public class LosingStreaksPlace extends GameFilterAwarePlace {
 		return visitor.visit(this);
 	}
 	
-	public static class Tokenizer extends GameFilterAwarePlace.Tokenizer<LosingStreaksPlace> implements PlaceTokenizer<LosingStreaksPlace> {
+	public static class Tokenizer extends RoktaPlace.Tokenizer<LosingStreaksPlace> implements PlaceTokenizer<LosingStreaksPlace> {
 
 		@Override
 		protected LosingStreaksPlace getPlace(List<String> tokens, GameFilter gameFilter) {

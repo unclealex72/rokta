@@ -5,6 +5,17 @@
 	margin-left: 10%;	
 }
 
+.narrow .buttons {
+	clear: both;
+}
+
+.narrow .buttons button {
+	float: right;
+	margin-top: 1em;
+	margin-bottom: 4px;
+	margin-left: 0.5em;
+}
+
 .narrow table {
 	color:#333333;
 	border-width: 1px;
