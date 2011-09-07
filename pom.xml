@@ -8,7 +8,7 @@
   <artifactId>rokta</artifactId>
   <packaging>war</packaging>
   <name>rokta</name>
-  <version>3.0.5</version>
+  <version>3.0.6-SNAPSHOT</version>
   <description>Rokta</description>
   <licenses>
     <license>
@@ -406,8 +406,8 @@
     </developer>
   </developers>
   <scm>
-    <connection>scm:svn:http://hurst/svn/tags/personal/rokta/3.0.5</connection>
-    <developerConnection>scm:svn:http://hurst/svn/tags/personal/rokta/3.0.5</developerConnection>
-    <url>http://hurst/svn/tags/personal/rokta/3.0.5</url>
+    <connection>scm:svn:http://hurst/svn/trunk/personal/rokta</connection>
+    <developerConnection>scm:svn:http://hurst/svn/trunk/personal/rokta</developerConnection>
+    <url>http://hurst/svn/trunk/personal/rokta</url>
   </scm>
 </project>
