@@ -38,7 +38,7 @@ public class Title extends Composite implements Display {
 
 	@Override
 	public void hideWaitingImage() {
-		//getWaitingImage().addStyleName(getStyle().hidingStyle());
+		getWaitingImage().addStyleName(getStyle().hiding());
 	}
 	
 	@Override

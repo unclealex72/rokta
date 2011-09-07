@@ -8,7 +8,7 @@
   <artifactId>rokta</artifactId>
   <packaging>war</packaging>
   <name>rokta</name>
-  <version>3.0.6-SNAPSHOT</version>
+  <version>3.0.5-SNAPSHOT</version>
   <description>Rokta</description>
   <licenses>
     <license>
