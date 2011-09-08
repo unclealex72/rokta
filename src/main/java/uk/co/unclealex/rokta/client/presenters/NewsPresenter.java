@@ -11,12 +11,10 @@ import java.util.SortedSet;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import uk.co.unclealex.rokta.client.cache.InformationCallback;
+import uk.co.unclealex.rokta.client.cache.CurrentInformationChangeEvent;
 import uk.co.unclealex.rokta.client.cache.InformationService;
 import uk.co.unclealex.rokta.client.messages.TitleMessages;
-import uk.co.unclealex.rokta.client.places.RoktaPlace;
 import uk.co.unclealex.rokta.client.presenters.NewsPresenter.Display;
-import uk.co.unclealex.rokta.shared.model.CurrentInformation;
 import uk.co.unclealex.rokta.shared.model.DatedGame;
 import uk.co.unclealex.rokta.shared.model.League;
 import uk.co.unclealex.rokta.shared.model.LeagueRow;
@@ -28,14 +26,11 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.place.shared.Place;
-import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
 
-public class NewsPresenter implements 
-	Presenter<Display>, InformationCallback<News>, Function<CurrentInformation, News>, PlaceChangeEvent.Handler {
+public class NewsPresenter implements Presenter<Display>, CurrentInformationChangeEvent.Handler {
 
 	public static interface Display extends IsWidget {
 		IsWidget createLabel(String text);
@@ -54,15 +49,9 @@ public class NewsPresenter implements
 		i_display = display;
 		i_informationService = informationService;
 		i_titleMessages = titleMessages;
-		eventBus.addHandler(PlaceChangeEvent.TYPE, this);
+		eventBus.addHandler(CurrentInformationChangeEvent.TYPE, this);
 	}
 
-	@Override
-	public News apply(CurrentInformation currentInformation) {
-		return currentInformation.getNews();
-	}
-	
-	@Override
 	public void execute(News news) {
 		Display display = getDisplay();
 		TitleMessages titleMessages = getTitleMessages();
@@ -275,14 +264,10 @@ public class NewsPresenter implements
 	public InformationProcessor processInformation() {
 		return new InformationProcessor();
 	}
-		
+	
 	@Override
-	public void onPlaceChange(PlaceChangeEvent event) {
-		Place newPlace = event.getNewPlace();
-		if (newPlace instanceof RoktaPlace) {
-			RoktaPlace place = (RoktaPlace) newPlace;
-			getInformationService().execute(place.getGameFilter(), this, this);
-		}
+	public void onCurrentInformationChange(CurrentInformationChangeEvent event) {
+		execute(event.getNewCurrentInformation().getNews());
 	}
 	
 	@Override

@@ -13,6 +13,8 @@
 			font-weight: bold;
 			vertical-align: middle;
 			position: relative;
+			padding-top: 3px;
+			padding-bottom: 3px;
 		}
 		
 		.hiding {
@@ -21,10 +23,9 @@
 		
 		.waitingImage {
 			float: right;
-			display: inline;
-			/* position: absolute;
-			right: 50px */;
+			margin-right: 10px;
 		}
+		
 	</ui:style>
 
 	<g:HTMLPanel addStyleNames="{style.titleBanner}">

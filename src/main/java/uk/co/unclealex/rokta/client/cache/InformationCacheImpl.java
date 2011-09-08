@@ -12,20 +12,24 @@ import uk.co.unclealex.rokta.shared.model.CurrentInformation;
 import uk.co.unclealex.rokta.shared.service.AnonymousRoktaServiceAsync;
 import uk.co.unclealex.rokta.shared.service.UserRoktaServiceAsync;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class InformationCacheImpl implements InformationCache {
 
 	private final AsyncCallbackExecutor i_asyncCallbackExecutor;
+	private final EventBus i_eventBus;
+
 	private CurrentInformation i_currentInformation;
 	private Date i_lastRequestTime;
 	private GameFilter i_lastGameFilter;
 	private Integer i_lastTargetStreaksSize;
 	
 	@Inject
-	public InformationCacheImpl(AsyncCallbackExecutor asyncCallbackExecutor) {
+	public InformationCacheImpl(AsyncCallbackExecutor asyncCallbackExecutor, EventBus eventBus) {
 		super();
 		i_asyncCallbackExecutor = asyncCallbackExecutor;
+		i_eventBus = eventBus;
 	}
 
 	@Override
@@ -71,6 +75,7 @@ public class InformationCacheImpl implements InformationCache {
 			@Override
 			public void onSuccess(CurrentInformation currentInformation) {
 				setCurrentInformation(currentInformation);
+				getEventBus().fireEvent(new CurrentInformationChangeEvent(currentInformation));
 				callback.onSuccess(currentInformation);
 			}
 			@Override
@@ -120,6 +125,10 @@ public class InformationCacheImpl implements InformationCache {
 
 	public void setLastTargetStreaksSize(Integer lastTargetStreaksSize) {
 		i_lastTargetStreaksSize = lastTargetStreaksSize;
+	}
+
+	public EventBus getEventBus() {
+		return i_eventBus;
 	}
 
 }
