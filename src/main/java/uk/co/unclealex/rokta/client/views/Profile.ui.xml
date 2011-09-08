@@ -2,7 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-	<ui:style>
+	<ui:style type="uk.co.unclealex.rokta.client.views.Profile.Style">
 		.handCountContainer {
 			width: 50%;
 			height: 100%;
@@ -20,11 +20,27 @@
 		.right {
 			float: left;
 		}
+		
+		.dark {
+			color: white;
+		}
+		
+		.light {
+			color: black;
+		}
+		
+		.colour {
+			padding-left: 0.5em;
+			padding-right: 0.5em;
+		}
 	</ui:style>
 	
 	<g:HTMLPanel addStyleNames="{style.full}">
 		<div>
-			<g:Label ui:field="colourTitle"/>
+			<h2>
+				<g:InlineLabel ui:field="colourTitle"/>
+				<g:InlineLabel ui:field="colour" addStyleNames="{style.colour}"/>
+			</h2>
 		</div>
 		<div class="{style.full}">
 			<div class="{style.handCountContainer} {style.left}">

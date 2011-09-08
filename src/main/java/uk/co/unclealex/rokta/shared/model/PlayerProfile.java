@@ -7,17 +7,17 @@ public class PlayerProfile implements Serializable {
 
 	private Map<Hand, Long> i_handCounts;
 	private Map<Hand, Long> i_openingHandCounts;
-	private String i_colourName;
+	private Colour i_colour;
 	
 	protected PlayerProfile() {
 		// Default constructor for serialisation.
 	}
 	
-	public PlayerProfile(Map<Hand, Long> handCounts, Map<Hand, Long> openingHandCounts, String colourName) {
+	public PlayerProfile(Map<Hand, Long> handCounts, Map<Hand, Long> openingHandCounts, Colour colour) {
 		super();
 		i_handCounts = handCounts;
 		i_openingHandCounts = openingHandCounts;
-		i_colourName = colourName;
+		i_colour = colour;
 	}
 
 	public Map<Hand, Long> getHandCounts() {
@@ -28,8 +28,8 @@ public class PlayerProfile implements Serializable {
 		return i_openingHandCounts;
 	}
 
-	public String getColourName() {
-		return i_colourName;
+	public Colour getColour() {
+		return i_colour;
 	}
 	
 	

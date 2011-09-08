@@ -111,8 +111,8 @@ public interface TitleMessages extends Messages {
 	@DefaultMessage("{0}''s hands distribution")
 	String handCounts(String username);
 
-	@DefaultMessage("{0}''s graph colour is {1}")
-	String playerColour(String username, String colourName);
+	@DefaultMessage("{0}''s graphing colour is")
+	String playerColour(String username);
 
 	@DefaultMessage("Top {0} winning streaks")
 	@AlternateMessage({

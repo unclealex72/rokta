@@ -100,7 +100,7 @@ public class InformationServiceImpl implements InformationService {
 			SortedMap<Hand, Long> openingPlaysByHand = openingPlaysByPersonAndHand.get(name);
 			SortedMap<Hand, Long> playsByHand = playsByPersonAndHand.get(name);
 			PlayerProfile playerProfile = 
-					new PlayerProfile(playsByHand, openingPlaysByHand, person.getGraphingColour().getHtmlName());
+					new PlayerProfile(playsByHand, openingPlaysByHand, person.getGraphingColour());
 			playerProfiles.put(name, playerProfile);
 		}
 		return playerProfiles;

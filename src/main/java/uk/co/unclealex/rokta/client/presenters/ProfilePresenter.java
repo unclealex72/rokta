@@ -7,6 +7,7 @@ import uk.co.unclealex.rokta.client.factories.HandCountPresenterFactory;
 import uk.co.unclealex.rokta.client.filter.GameFilter;
 import uk.co.unclealex.rokta.client.messages.TitleMessages;
 import uk.co.unclealex.rokta.client.presenters.ProfilePresenter.Display;
+import uk.co.unclealex.rokta.shared.model.Colour;
 import uk.co.unclealex.rokta.shared.model.CurrentInformation;
 import uk.co.unclealex.rokta.shared.model.PlayerProfile;
 
@@ -21,7 +22,7 @@ public class ProfilePresenter extends InformationActivity<Display, PlayerProfile
 		AcceptsOneWidget getHandCountPanel();
 		AcceptsOneWidget getOpeningHandCountPanel();
 		HasText getColourTitle();
-		void setColour(String htmlColour);
+		void setColour(Colour colour);
 	}
 
 	@Inject
@@ -54,9 +55,8 @@ public class ProfilePresenter extends InformationActivity<Display, PlayerProfile
 						titleMessages.openingHandCounts(username), playerProfile.getOpeningHandCounts());
 		handCountPresenter.show(display.getHandCountPanel());
 		openingHandCountPresenter.show(display.getOpeningHandCountPanel());
-		String colourName = playerProfile.getColourName();
-		display.getColourTitle().setText(titleMessages.playerColour(username, colourName));
-		display.setColour(colourName);
+		display.getColourTitle().setText(titleMessages.playerColour(username));
+		display.setColour(playerProfile.getColour());
 	}
 	
 	@Override
