@@ -8,7 +8,7 @@
 		}
 		
 		.news div {
-			width: 80%;
+			width: 19.2em;
 			padding: 1em;
 			background: LightGoldenrodYellow;
 			margin: 1em;

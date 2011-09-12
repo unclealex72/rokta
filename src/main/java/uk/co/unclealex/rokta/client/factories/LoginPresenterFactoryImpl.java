@@ -60,14 +60,14 @@ public class LoginPresenterFactoryImpl implements LoginPresenterFactory {
 
 
 	@Override
-	public LoginPresenter createLoginPresenter(Runnable originalAction) {
+	public LoginPresenter createLoginPresenter(Runnable originalAction, Runnable cancelAction) {
 		return new LoginPresenter(
 				getDisplayProvider().get(), 
 				getAnonymousRoktaServiceProvider().get(), 
 				getAsyncCallbackExecutorProvider().get(), 
 				getAuthenticationManagerProvider().get(), 
 				getClickHelperProvider().get(),
-				originalAction);
+				originalAction, cancelAction);
 	}
 
 

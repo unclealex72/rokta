@@ -30,5 +30,5 @@ import uk.co.unclealex.rokta.client.presenters.LoginPresenter;
  */
 public interface LoginPresenterFactory {
 
-	public LoginPresenter createLoginPresenter(Runnable originalAction);
+	public LoginPresenter createLoginPresenter(Runnable originalAction, Runnable cancelAction);
 }

@@ -60,11 +60,12 @@ public class LoginPresenter extends AbstractPopupPresenter<PopupPanel, Display> 
 	private final AuthenticationManager i_authenticationManager;
 	private final AsyncCallbackExecutor i_asyncCallbackExecutor;
 	private final Runnable i_originalAction;
+	private final Runnable i_cancelAction;
 	private final ClickHelper i_clickHelper;
 	
 	public LoginPresenter(
 			Display display, AnonymousRoktaServiceAsync anonymousRoktaService, AsyncCallbackExecutor asyncCallbackExecutor,
-			AuthenticationManager authenticationManager, ClickHelper clickHelper, Runnable originalAction) {
+			AuthenticationManager authenticationManager, ClickHelper clickHelper, Runnable originalAction, Runnable cancelAction) {
 		super();
 		i_display = display;
 		i_anonymousRoktaService = anonymousRoktaService;
@@ -72,6 +73,7 @@ public class LoginPresenter extends AbstractPopupPresenter<PopupPanel, Display> 
 		i_originalAction = originalAction;
 		i_clickHelper = clickHelper;
 		i_asyncCallbackExecutor = asyncCallbackExecutor;
+		i_cancelAction = cancelAction;
 	}
 
 	@Override
@@ -107,6 +109,10 @@ public class LoginPresenter extends AbstractPopupPresenter<PopupPanel, Display> 
 			@Override
 			public void onClick(ClickEvent event) {
 				hide();
+				Runnable cancelAction = getCancelAction();
+				if (cancelAction != null) {
+					cancelAction.run();
+				}
 			}
 		};
 		display.getCancel().addClickHandler(cancelHandler);
@@ -168,5 +174,9 @@ public class LoginPresenter extends AbstractPopupPresenter<PopupPanel, Display> 
 
 	public AsyncCallbackExecutor getAsyncCallbackExecutor() {
 		return i_asyncCallbackExecutor;
+	}
+
+	public Runnable getCancelAction() {
+		return i_cancelAction;
 	}
 }

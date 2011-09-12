@@ -63,12 +63,16 @@ public class SecureAsyncCallbackExecutor implements AsyncCallbackExecutor {
 
 	@Override
 	public <T> void execute(final ExecutableAsyncCallback<T> callback) {
+		execute(callback, null);
+	}
+	
+	protected <T> void execute(final ExecutableAsyncCallback<T> callback, final Runnable cancelAction) {
 		class RunnableAsyncCallback implements AsyncCallback<T>, Runnable {
 			public void onSuccess(T result) {
 				callback.onSuccess(result);
 			}			
 			public void onFailure(Throwable caught) {
-				SecureAsyncCallbackExecutor.this.onFailure(caught, this, callback);
+				SecureAsyncCallbackExecutor.this.onFailure(caught, this, cancelAction, callback);
 			}
 			public void run() {
 				callback.execute(getAnonymousRoktaService(), getUserRoktaService(), this);
@@ -77,12 +81,12 @@ public class SecureAsyncCallbackExecutor implements AsyncCallbackExecutor {
 		new RunnableAsyncCallback().run();
 	}
 
-	public <T> void onFailure(Throwable caught, Runnable originalAction, final ExecutableAsyncCallback<T> callback) {
+	public <T> void onFailure(Throwable caught, Runnable originalAction, Runnable cancelAction, final ExecutableAsyncCallback<T> callback) {
 		if (isRefused(caught)) {
 			onRefused();
 		}
 		else if (isLoginRequired(caught)) {
-			onLoginRequired(originalAction);
+			onLoginRequired(originalAction, cancelAction);
 		}
 		else {
 			callback.onFailure(caught);
@@ -97,8 +101,8 @@ public class SecureAsyncCallbackExecutor implements AsyncCallbackExecutor {
 		Window.alert("You were refused access to this resource.");
 	}
 	
-	protected void onLoginRequired(Runnable originalAction) {
-		getLoginPresenterFactory().createLoginPresenter(originalAction).center();
+	protected void onLoginRequired(Runnable originalAction, Runnable cancelAction) {
+		getLoginPresenterFactory().createLoginPresenter(originalAction, cancelAction).center();
 	}
 
 	/**
@@ -118,22 +122,29 @@ public class SecureAsyncCallbackExecutor implements AsyncCallbackExecutor {
 			final ExecutableAsyncCallback<T> executableAsyncCallback, final String message, final CanWait... canWaits) {
     final WaitingController waitingController = getWaitingController();
 		final List<CanWait> canWaitList = Arrays.asList(canWaits);
-	  ExecutableAsyncCallback<T> waitCallback = new ExecutableAsyncCallback<T>() {
+		class WaitCallback implements ExecutableAsyncCallback<T>, Runnable {
 	  	Integer waitingHandler;
 	    @Override
 	    public void onSuccess(T result) {
-	    	if (waitingHandler != null) {
-	    		waitingController.stopWaiting(waitingHandler, canWaitList);
-	    	}
+	    	stopWaiting();
 	      executableAsyncCallback.onSuccess(result);
 	    }
 
-	    @Override
-	    public void onFailure(Throwable cause) {
-	    	if (waitingHandler != null) {
+			protected void stopWaiting() {
+				if (waitingHandler != null) {
 	    		waitingController.stopWaiting(waitingHandler, canWaitList);
 	    	}
+			}
+
+	    @Override
+	    public void onFailure(Throwable cause) {
+	    	stopWaiting();
 	      executableAsyncCallback.onFailure(cause);
+	    }
+	    
+	    @Override
+	    public void run() {
+	    	stopWaiting();
 	    }
 	    
 	    @Override
@@ -147,7 +158,8 @@ public class SecureAsyncCallbackExecutor implements AsyncCallbackExecutor {
 
 	    }
     };
-    execute(waitCallback);
+    WaitCallback waitCallback = new WaitCallback();
+    execute(waitCallback, waitCallback);
 	}
 	
 	public LoginPresenterFactory getLoginPresenterFactory() {
