@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.SortedMap;
 
 import uk.co.unclealex.rokta.client.presenters.GraphPresenter.Display;
+import uk.co.unclealex.rokta.shared.model.Colour;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -37,7 +38,7 @@ public class Graph extends Composite implements Display, IsWide {
 
 	@Override
 	public void drawGraph(
-		Map<String, String> coloursByName,
+		Map<String, Colour> coloursByName,
 		Map<String, SortedMap<Date, Double>> percentagesByDateByName,
 		Integer yAxisMinLimit,
 		Integer yAxisMaxLimit) {
@@ -50,10 +51,11 @@ public class Graph extends Composite implements Display, IsWide {
 		return yAxisMinLimit==null?-1:yAxisMinLimit.intValue();
 	}
 
-	protected JsArrayString createColours(Set<String> names, Map<String, String> coloursByName) {
+	protected JsArrayString createColours(Set<String> names, Map<String, Colour> coloursByName) {
 		JsArrayString coloursArray = JavaScriptObject.createArray().cast();
 		for (String name : names) {
-			coloursArray.push(coloursByName.get(name));
+			Colour colour = coloursByName.get(name);
+			coloursArray.push(colour.getRgb());
 		}
 		return coloursArray;
 	}

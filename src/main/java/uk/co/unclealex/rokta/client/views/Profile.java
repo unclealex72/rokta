@@ -48,7 +48,7 @@ public class Profile extends Composite implements Display, IsWide {
 		colourWidget.setText(Joiner.on(' ').join(colour.getDescriptiveWords()));
 		Style style = getStyle();
 		colourWidget.addStyleName(colour.isDark()?style.dark():style.light());
-		colourWidget.getElement().getStyle().setBackgroundColor(colour.getHtmlName());
+		colourWidget.getElement().getStyle().setBackgroundColor(colour.getRgb());
 	}
 
 	public SimpleLayoutPanel getHandCountPanel() {

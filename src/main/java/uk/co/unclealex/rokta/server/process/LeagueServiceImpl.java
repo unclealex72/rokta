@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.annotation.PostConstruct;
@@ -25,6 +24,7 @@ import uk.co.unclealex.rokta.server.model.Person;
 import uk.co.unclealex.rokta.server.model.Play;
 import uk.co.unclealex.rokta.server.model.Round;
 import uk.co.unclealex.rokta.server.util.DateUtil;
+import uk.co.unclealex.rokta.shared.model.Colour;
 import uk.co.unclealex.rokta.shared.model.InfiniteInteger;
 import uk.co.unclealex.rokta.shared.model.League;
 import uk.co.unclealex.rokta.shared.model.LeagueRow;
@@ -32,6 +32,7 @@ import uk.co.unclealex.rokta.shared.model.Leagues;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 @Transactional
@@ -50,8 +51,8 @@ public class LeagueServiceImpl implements LeagueService {
 	
 	@Override
 	public Leagues generateLeagues(SortedSet<Game> games, Date now) {
-		SortedMap<Game, League> leaguesForAllGames = new TreeMap<Game, League>();
-		SortedMap<String, String> coloursByUsername = new TreeMap<String, String>();
+		SortedMap<Game, League> leaguesForAllGames = Maps.newTreeMap();
+		SortedMap<String, Colour> coloursByUsername = Maps.newTreeMap();
 		generateLeagues(games, leaguesForAllGames, coloursByUsername);
 		decorateWithDeltas(leaguesForAllGames);
 		decorateWithExemptionAndAbsence(leaguesForAllGames, now);
@@ -59,7 +60,7 @@ public class LeagueServiceImpl implements LeagueService {
 	}
 	
 	protected SortedMap<Game, League> generateLeagues(
-			SortedSet<Game> games, SortedMap<Game, League> leaguesByGame, SortedMap<String, String> coloursByUsername) {
+			SortedSet<Game> games, SortedMap<Game, League> leaguesByGame, SortedMap<String, Colour> coloursByUsername) {
 		int totalGames = 0;
 		int totalPlayers = 0;
 		Map<Person, LeagueRow> rowMap = new HashMap<Person, LeagueRow>();
@@ -70,7 +71,7 @@ public class LeagueServiceImpl implements LeagueService {
 			int participantCount = participants.size();
 			totalPlayers += participantCount;
 			for (Person participant : participants) {
-				coloursByUsername.put(participant.getName(), participant.getGraphingColour().getHtmlName());
+				coloursByUsername.put(participant.getName(), participant.getGraphingColour());
 				if (!rowMap.containsKey(participant)) {
 					LeagueRow newLeagueRow = new LeagueRow();
 					newLeagueRow.setPersonName(participant.getName());

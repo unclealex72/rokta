@@ -70,7 +70,7 @@ public class Admin extends Composite implements Display {
 		anchor.addStyleName(colour.isDark()?style.dark():style.light());
 		anchor.setTitle(Joiner.on(' ').join(colour.getDescriptiveWords()));
 		getColourListPanel().add(anchor);
-		anchor.getElement().getStyle().setBackgroundColor(colour.getHtmlName());
+		anchor.getElement().getStyle().setBackgroundColor(colour.getRgb());
 		return anchor;
 	}
 	

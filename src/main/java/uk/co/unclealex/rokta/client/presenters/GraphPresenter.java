@@ -8,6 +8,7 @@ import uk.co.unclealex.rokta.client.cache.InformationService;
 import uk.co.unclealex.rokta.client.filter.GameFilter;
 import uk.co.unclealex.rokta.client.messages.TitleMessages;
 import uk.co.unclealex.rokta.client.presenters.GraphPresenter.Display;
+import uk.co.unclealex.rokta.shared.model.Colour;
 import uk.co.unclealex.rokta.shared.model.CurrentInformation;
 import uk.co.unclealex.rokta.shared.model.League;
 import uk.co.unclealex.rokta.shared.model.LeagueRow;
@@ -23,7 +24,7 @@ public class GraphPresenter extends InformationActivity<Display, Leagues> {
 
 	public static interface Display extends IsWidget {
 		void drawGraph(
-			Map<String, String> coloursByName,
+			Map<String, Colour> coloursByName,
 			Map<String, SortedMap<Date, Double>> percentagesByDateByName, 
 			Integer yAxisMinLimit,
 			Integer yAxisMaxLimit);
@@ -51,7 +52,7 @@ public class GraphPresenter extends InformationActivity<Display, Leagues> {
 		panel.setWidget(display);
 		Integer yAxisMaxLimit = null;
 		Integer yAxisMinLimit = null;
-		Map<String, SortedMap<Date, Double>> percentagesByDateByName = Maps.newHashMap();
+		Map<String, SortedMap<Date, Double>> percentagesByDateByName = Maps.newTreeMap();
 		for (League league : leagues.getLeagues()) {
 			Date leagueDate = league.getLastGameDate();
 			for (LeagueRow leagueRow : league.getRows()) {
