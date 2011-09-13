@@ -1,12 +1,16 @@
 package uk.co.unclealex.rokta.client.presenters;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.SortedMap;
 import java.util.SortedSet;
+import java.util.TreeMap;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -22,9 +26,14 @@ import uk.co.unclealex.rokta.shared.model.News;
 import uk.co.unclealex.rokta.shared.model.Streak;
 
 import com.google.common.base.Function;
+import com.google.common.base.Supplier;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.SetMultimap;
+import com.google.common.collect.Sets;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -82,19 +91,10 @@ public class NewsPresenter implements Presenter<Display>, CurrentInformationChan
 			}
 			lossesByName.put(loser, losses + 1);
 		}
-		Comparator<Entry<String, Integer>> comparator = new Comparator<Entry<String,Integer>>() {
+		PersonCountDisplayer lossCountDisplayer = new PersonCountDisplayer() {
 			@Override
-			public int compare(Entry<String, Integer> e1, Entry<String, Integer> e2) {
-				int cmp = e2.getValue() - e1.getValue();
-				return cmp == 0?e1.getKey().compareTo(e2.getKey()):cmp;
-			}
-		};
-		List<Entry<String, Integer>> lossCounts = Lists.newArrayList(lossesByName.entrySet());
-		Collections.sort(lossCounts, comparator);
-		InformationDisplayer<Entry<String, Integer>> lossCountDisplayer = new InformationDisplayer<Map.Entry<String,Integer>>() {
-			@Override
-			public String asText(TitleMessages titleMessages, Entry<String, Integer> losses) {
-				return titleMessages.lossCount(losses.getKey(), losses.getValue());
+			protected String asText(TitleMessages titleMessages, List<String> personNames, String personName, int length) {
+				return titleMessages.lossCount(personNames, personName, titleMessages.gameCount(length));
 			}
 			@Override
 			public String onEmpty(TitleMessages titleMessages) {
@@ -103,7 +103,7 @@ public class NewsPresenter implements Presenter<Display>, CurrentInformationChan
 		};
 		processInformation().on(getDisplay().getTodaysGamesPanel()).
 			with(Collections.singleton(todaysGames.size()), gameCountDisplayer).
-			with(lossCounts, lossCountDisplayer);
+			with(switchPersonCount(lossesByName), lossCountDisplayer);
 	}
 
 	protected void processLastGame(News news, Display display, final TitleMessages titleMessages) {
@@ -147,45 +147,76 @@ public class NewsPresenter implements Presenter<Display>, CurrentInformationChan
 	}
 
 	protected void processStreaks(News news, Display display) {
-		StreaksDisplayer winningStreaksDisplayer = new StreaksDisplayer() {
+		PersonCountDisplayer winningStreaksDisplayer = new PersonCountDisplayer() {
 			@Override
 			public String onEmpty(TitleMessages titleMessages) {
 				return titleMessages.noWinningStreaks();
 			}
 			@Override
-			protected String asText(TitleMessages titleMessages, String personName, int length) {
-				return titleMessages.currentWinningStreak(personName, length);
+			protected String asText(TitleMessages titleMessages, List<String> personNames, String personName, int length) {
+				return titleMessages.currentWinningStreak(personNames, personName, length);
 			}
 		};
-		StreaksDisplayer losingStreaksDisplayer = new StreaksDisplayer() {
+		PersonCountDisplayer losingStreaksDisplayer = new PersonCountDisplayer() {
 			@Override
 			public String onEmpty(TitleMessages titleMessages) {
 				return titleMessages.noLosingStreaks();
 			}
 			@Override
-			protected String asText(TitleMessages titleMessages, String personName, int length) {
-				return titleMessages.currentLosingStreak(personName, length);
+			protected String asText(TitleMessages titleMessages, List<String> personNames, String personName, int length) {
+				return titleMessages.currentLosingStreak(personNames, personName, length);
 			}
 		};
 		processInformation().on(display.getCurrentStreaksPanel()).
-			with(news.getCurrentWinningStreaks(), winningStreaksDisplayer).
-			with(news.getCurrentLosingStreaks(), losingStreaksDisplayer);
+			with(switchPersonCount(news.getCurrentWinningStreaks()), winningStreaksDisplayer).
+			with(switchPersonCount(news.getCurrentLosingStreaks()), losingStreaksDisplayer);
 	}
 
-	abstract class StreaksDisplayer implements InformationDisplayer<Streak> {
-		@Override
-		public String asText(TitleMessages titleMessages, Streak streak) {
-			return asText(titleMessages, streak.getPersonName(), streak.getLength());
+	protected Set<Entry<Integer, Collection<String>>> switchPersonCount(SortedSet<Streak> streaks) {
+		Map<String, Integer> streakLengthsByPersonName = Maps.newHashMap();
+		for (Streak streak : streaks) {
+			streakLengthsByPersonName.put(streak.getPersonName(), streak.getLength());
 		}
-
-		protected abstract String asText(TitleMessages titleMessages, String personName, int length);
-		
+		return switchPersonCount(streakLengthsByPersonName);
 	}
+	
+	protected Set<Entry<Integer, Collection<String>>> switchPersonCount(Map<String, Integer> countsByPerson) {
+		SetMultimap<String, Integer> countsByPersonMultimap = Multimaps.forMap(countsByPerson);
+		Supplier<? extends Collection<String>> factory = new Supplier<Collection<String>>() {
+			@Override
+			public Collection<String> get() {
+				return Lists.newArrayList();
+			}
+		};
+		Comparator<Integer> comparator = new Comparator<Integer>() {
+			@Override
+			public int compare(Integer o1, Integer o2) {
+				return o2 - o1;
+			}
+		};
+		SortedMap<Integer, Collection<String>> map = new TreeMap<Integer, Collection<String>>(comparator);
+		Multimap<Integer, String> dest = Multimaps.newMultimap(map, factory);
+		Multimaps.invertFrom(countsByPersonMultimap, dest);
+		return map.entrySet();
+	}
+	
 	public interface InformationDisplayer<I> {
 		public String asText(TitleMessages titleMessages, I information);
 		public String onEmpty(TitleMessages titleMessages);
 	}
 
+	abstract class PersonCountDisplayer implements InformationDisplayer<Entry<Integer, Collection<String>>> {
+		@Override
+		public String asText(TitleMessages titleMessages, Entry<Integer, Collection<String>> information) {
+			SortedSet<String> names = Sets.newTreeSet(information.getValue());
+			String lastName = names.last();
+			List<String> allBarLast = Lists.newArrayList(names.headSet(lastName));
+			return asText(getTitleMessages(), allBarLast, lastName, information.getKey());
+		}
+
+		protected abstract String asText(TitleMessages titleMessages, List<String> personNames, String personName, int length);
+	}
+	
 	abstract class SimpleInformationDisplayer implements InformationDisplayer<String> {
 		@Override
 		public String asText(TitleMessages titleMessages, String information) {

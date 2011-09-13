@@ -1,6 +1,7 @@
 package uk.co.unclealex.rokta.client.messages;
 
 import java.util.Date;
+import java.util.List;
 
 import com.google.gwt.i18n.client.Messages;
 
@@ -146,14 +147,20 @@ public interface TitleMessages extends Messages {
 	@DefaultMessage("No-one is currently on a winning streak.")
 	String noWinningStreaks();
 
-	@DefaultMessage("{0} is on a winning streak of {1}.")
-	String currentWinningStreak(String personName, int length);
+	@DefaultMessage("{0,list,string} and {1} are all on a winning streak of {2}.")
+  @AlternateMessage(
+  	{"=0", "{1} is on a winning streak of {2}.",
+  	 "=1", "{0,list,string} and {1} are both on a winning streak of {2}." })
+	String currentWinningStreak(@PluralCount List<String> losers, String loser, int length);
 
 	@DefaultMessage("No-one is currently on a losing streak.")
 	String noLosingStreaks();
 
-	@DefaultMessage("{0} is on a losing streak of {1}.")
-	String currentLosingStreak(String personName, int length);
+	@DefaultMessage("{0,list,string} and {1} are all on a losing streak of {2}.")
+  @AlternateMessage(
+  	{"=0", "{1} is on a losing streak of {2}.",
+  	 "=1", "{0,list,string} and {1} are both on a losing streak of {2}." })
+	String currentLosingStreak(@PluralCount List<String> losers, String loser, int length);
 
 	@DefaultMessage("{0}. {1} ({2,number,#.##}%)")
 	String leagueRowSummary(int rank, String personName, double score);
@@ -170,10 +177,15 @@ public interface TitleMessages extends Messages {
 	@DefaultMessage("No games have been played.")
 	String noGamesPlayed();
 
-  @DefaultMessage("{0} has lost {1} games today.")
-  @AlternateMessage({
-      "=1", "{0} has lost 1 game today." })
-	String lossCount(String loser, @PluralCount int losses);
+  @DefaultMessage("{0,list,string} and {1} have all lost {2} today.")
+  @AlternateMessage(
+  	{"=0", "{1} has lost {2} today.",
+  	 "=1", "{0,list,string} and {1} have both lost {2} today."})
+	String lossCount(@PluralCount List<String> losers, String loser, String games);
+
+  @DefaultMessage("{0} games")
+  @AlternateMessage({"=1", "{0} game" })
+  String gameCount(@PluralCount int games);
 
   @DefaultMessage("No-one is exempt.")
 	String nooneExempt();
