@@ -17,7 +17,6 @@ import org.apache.commons.collections15.comparators.ComparatorChain;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.co.unclealex.rokta.server.dao.GameDao;
-import uk.co.unclealex.rokta.server.dao.PersonDao;
 import uk.co.unclealex.rokta.server.model.Day;
 import uk.co.unclealex.rokta.server.model.Game;
 import uk.co.unclealex.rokta.server.model.Person;
@@ -42,7 +41,6 @@ public class LeagueServiceImpl implements LeagueService {
 	private DateUtil i_dateUtil;
 	private PersonService i_personService;
 	private Comparator<LeagueRow> i_leagueRowComparator;
-	private PersonDao i_personDao;
 	
 	@PostConstruct
 	public void initialise() {
@@ -313,44 +311,26 @@ public class LeagueServiceImpl implements LeagueService {
 		return chain;
 	}
 
-	/**
-	 * @return the dateUtil
-	 */
 	public DateUtil getDateUtil() {
 		return i_dateUtil;
 	}
 
-	/**
-	 * @param dateUtil the dateUtil to set
-	 */
 	public void setDateUtil(DateUtil dateUtil) {
 		i_dateUtil = dateUtil;
 	}
 
-	/**
-	 * @return the personManager
-	 */
 	public PersonService getPersonService() {
 		return i_personService;
 	}
 
-	/**
-	 * @param personManager the personManager to set
-	 */
 	public void setPersonService(PersonService personManager) {
 		i_personService = personManager;
 	}
 
-	/**
-	 * @return the gameDao
-	 */
 	public GameDao getGameDao() {
 		return i_gameDao;
 	}
 
-	/**
-	 * @param gameDao the gameDao to set
-	 */
 	public void setGameDao(GameDao gameDao) {
 		i_gameDao = gameDao;
 	}
@@ -361,13 +341,5 @@ public class LeagueServiceImpl implements LeagueService {
 
 	public void setLeagueRowComparator(Comparator<LeagueRow> leagueRowComparator) {
 		i_leagueRowComparator = leagueRowComparator;
-	}
-
-	public PersonDao getPersonDao() {
-		return i_personDao;
-	}
-
-	public void setPersonDao(PersonDao personDao) {
-		i_personDao = personDao;
 	}
 }
