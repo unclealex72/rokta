@@ -65,6 +65,16 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
     <url-pattern>/rokta/anonymous</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>ioServlet</servlet-name>
+    <servlet-class>uk.co.unclealex.rokta.servlet.ImportExportServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>ioServlet</servlet-name>
+    <url-pattern>/io</url-pattern>
+  </servlet-mapping>
+  
   <!-- Default page to serve -->
   <welcome-file-list>
     <welcome-file>rokta.html</welcome-file>
