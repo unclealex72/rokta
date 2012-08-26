@@ -400,9 +400,10 @@
 			<email>alex.jones@unclealex.co.uk</email>
 		</developer>
 	</developers>
-	<scm>
-		<connection>scm:svn:http://hurst/svn/trunk/personal/rokta</connection>
-		<developerConnection>scm:svn:http://hurst/svn/trunk/personal/rokta</developerConnection>
-		<url>http://hurst/svn/trunk/personal/rokta</url>
-	</scm>
+  
+  <scm>
+    <connection>scm:git:git@github.com:dcs3apj/rokta.git</connection>
+    <url>https://github.com/dcs3apj/rokta</url>
+    <developerConnection>scm:git:git@github.com:dcs3apj/rokta.git</developerConnection>
+  </scm>
 </project>
