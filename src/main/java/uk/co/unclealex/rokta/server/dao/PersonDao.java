@@ -11,9 +11,11 @@ public interface PersonDao extends KeyedDao<Person>{
 
 	public SortedSet<Person> getPlayers();
 
-	public Person findPersonByNameAndPassword(String username, String encodedPassword);
-
 	public SortedSet<String> getAllPlayerNames();
 
-	public SortedSet<String> getAllUsernames();
+  public SortedSet<String> getAllEmailAddresses();
+
+  public Person getPersonByEmailAddress(String email);
+
+  public SortedSet<String> getAllUsernames();
 }

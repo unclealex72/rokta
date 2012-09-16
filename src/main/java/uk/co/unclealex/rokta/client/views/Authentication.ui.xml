@@ -20,7 +20,6 @@
 		<div class="{style.authentication}">
 			<g:Anchor ui:field="signIn">Sign in</g:Anchor>
 			<g:Label ui:field="currentUser"/>
-			<g:Anchor ui:field="signOut">Sign out</g:Anchor>
 		</div>
 		<div class="{style.styling}"/>
 	</g:HTMLPanel>

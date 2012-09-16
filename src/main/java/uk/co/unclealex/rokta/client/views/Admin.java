@@ -19,7 +19,6 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasEnabled;
-import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Provider;
@@ -36,8 +35,6 @@ public class Admin extends Composite implements Display {
 	private final Provider<CanWaitSupport> i_canWaitSupportProvider;
 	
 	@UiField Button changeColourButton;
-	@UiField Button changePasswordButton;
-	@UiField HasText password;
 	@UiField HasWidgets colourListPanel;
 	@UiField Button deleteLastGameButton;
 	@UiField Button clearCacheButton;
@@ -90,11 +87,6 @@ public class Admin extends Composite implements Display {
 	}
 	
 	@Override
-	public CanWait getChangePasswordCanWait() {
-		return getCanWait(getChangePasswordButton());
-	}
-	
-	@Override
 	public CanWait getDeleteLastGameCanWait() {
 		return getCanWait(getDeleteLastGameButton());
 	}
@@ -114,14 +106,6 @@ public class Admin extends Composite implements Display {
 
 	public Button getChangeColourButton() {
 		return changeColourButton;
-	}
-
-	public Button getChangePasswordButton() {
-		return changePasswordButton;
-	}
-
-	public HasText getPassword() {
-		return password;
 	}
 
 	public HasWidgets getColourListPanel() {

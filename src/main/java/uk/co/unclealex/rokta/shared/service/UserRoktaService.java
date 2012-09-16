@@ -22,8 +22,6 @@ public interface UserRoktaService extends RemoteService {
 	
 	public void updateColour(String username, Colour colourView);
 	
-	public void updatePassword(String username, String newPassword);
-	
 	public LoggedInUser getCurrentlyLoggedInUser();
 	
 	public Colour getColourForUser(String username);

@@ -39,7 +39,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.assistedinject.Assisted;
 
@@ -53,10 +52,6 @@ public class AdminPresenter extends AbstractGameFilterActivity<Display> {
 		Button getChangeColourButton();
 		CanWait getChangeColourCanWait();
 
-		HasText getPassword();
-		HasClickHandlers getChangePasswordButton();
-		CanWait getChangePasswordCanWait();
-		
 		CanWait getDeleteLastGameCanWait();
 		HasClickHandlers getDeleteLastGameButton();
 
@@ -89,7 +84,6 @@ public class AdminPresenter extends AbstractGameFilterActivity<Display> {
 			public void onSuccess(LoggedInUser loggedInUser) {
 				initialiseColours(loggedInUser);
 				initialiseColoursButton(loggedInUser);
-				initialisePassword(loggedInUser);
 				initialiseGameAdminButtons();
 				panel.setWidget(getDisplay());
 			}
@@ -212,22 +206,6 @@ public class AdminPresenter extends AbstractGameFilterActivity<Display> {
 		final Button changeColourButton = display.getChangeColourButton();
 		changeColourButton.addClickHandler(clickHandler);
 	}
-
-	protected void initialisePassword(final LoggedInUser loggedInUser) {
-		final Display display = getDisplay();
-		final String username = loggedInUser.getUsername();
-		ClickHandlerAndFailureAsPopupExecutableAsyncCallback<Void> callback = 
-			new ClickHandlerAndFailureAsPopupExecutableAsyncCallback<Void>(
-				getAsyncCallbackExecutor(), "Updating " + username + "'s password", display.getChangePasswordCanWait()) {
-			@Override
-			public void execute(AnonymousRoktaServiceAsync anonymousRoktaService, UserRoktaServiceAsync userRoktaService,
-					AsyncCallback<Void> callback) {
-				userRoktaService.updatePassword(username, display.getPassword().getText(), callback);
-			}
-		};
-		display.getChangePasswordButton().addClickHandler(callback);
-	}
-
 
 	public Display getDisplay() {
 		return i_display;

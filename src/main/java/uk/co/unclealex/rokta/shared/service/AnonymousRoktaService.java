@@ -18,11 +18,9 @@ public interface AnonymousRoktaService extends RemoteService {
 	public CurrentInformation getCurrentInformation(GameFilter gameFilter, Date currentDate, int targetStreaksSize);
 	public GameSummary getLastGameSummary();
 	
-	public String[] getAllUsersNames();
 	public String[] getAllPlayerNames();
+  public String[] getAllUsersNames();
 	
 	public String getUserPrincipal();
-	
-	public boolean authenticate(String username, String password);
 	void logout();
 }

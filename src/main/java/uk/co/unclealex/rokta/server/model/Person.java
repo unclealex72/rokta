@@ -19,14 +19,15 @@ import uk.co.unclealex.rokta.shared.model.Colour;
 @NamedQueries(value={
 		@NamedQuery(name="person.getAll", query="select p from Person p"),
 		@NamedQuery(name="person.getPlayers", query="select distinct p.person from Play p"),
-		@NamedQuery(name="person.findByName", query="select p from Person p where p.name=:name")
+		@NamedQuery(name="person.findByName", query="select p from Person p where p.name=:name"),
+    @NamedQuery(name="person.findByEmail", query="select p from Person p where p.email=:email")
 		})
 @XmlRootElement(name="colour")
-@XmlType(propOrder={"name", "password", "graphingColour"})
+@XmlType(propOrder={"name", "email", "graphingColour"})
 public class Person extends KeyedBean<Person> {
 
 	private String i_name;
-	private String i_password;
+  private String i_email;
 	private Colour i_graphingColour;
 	
 	@Override
@@ -50,12 +51,12 @@ public class Person extends KeyedBean<Person> {
 	}
 	
 	@Column
-	public String getPassword() {
-		return i_password;
+	public String getEmail() {
+		return i_email;
 	}
 
-	public void setPassword(String password) {
-		i_password = password;
+	public void setEmail(String email) {
+		i_email = email;
 	}
 
 	@Enumerated(EnumType.STRING)

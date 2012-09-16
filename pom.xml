@@ -17,9 +17,8 @@
 		</license>
 	</licenses>
 	<properties>
-		<gwtVersion>2.3.0</gwtVersion>
-		<gwtPluginVersion>2.3.0-1</gwtPluginVersion>
-		<spring.version>3.0.5.RELEASE</spring.version>
+		<gwtVersion>2.4.0</gwtVersion>
+		<spring.version>3.1.2.RELEASE</spring.version>
 		<slf4j.version>1.6.1</slf4j.version>
 		<guice.version>3.0</guice.version>
 		<maven.compiler.source>1.6</maven.compiler.source>
@@ -28,6 +27,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>
+      <dependency>
+        <groupId>uk.co.unclealex</groupId>
+        <artifactId>google-auth</artifactId>
+        <version>1.0.0</version>
+      </dependency>
       <dependency>
         <groupId>javassist</groupId>
         <artifactId>javassist</artifactId>
@@ -162,30 +166,10 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-core</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<version>${spring.version}</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-web</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-config</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-taglibs</artifactId>
-			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.annotation</groupId>
@@ -271,7 +255,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
-				<version>${gwtPluginVersion}</version>
+				<version>${gwtVersion}</version>
 				<executions>
 					<execution>
 						<goals>
@@ -392,6 +376,35 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<pluginManagement>
+		  <plugins>
+		    <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+		    <plugin>
+		      <groupId>org.eclipse.m2e</groupId>
+		      <artifactId>lifecycle-mapping</artifactId>
+		      <version>1.0.0</version>
+		      <configuration>
+		        <lifecycleMappingMetadata>
+		          <pluginExecutions>
+		            <pluginExecution>
+		              <pluginExecutionFilter>
+		                <groupId>org.codehaus.mojo</groupId>
+		                <artifactId>gwt-maven-plugin</artifactId>
+		                <versionRange>[2.4.0,)</versionRange>
+		                <goals>
+		                  <goal>generateAsync</goal>
+		                </goals>
+		              </pluginExecutionFilter>
+		              <action>
+		                <ignore></ignore>
+		              </action>
+		            </pluginExecution>
+		          </pluginExecutions>
+		        </lifecycleMappingMetadata>
+		      </configuration>
+		    </plugin>
+		  </plugins>
+		</pluginManagement>
 	</build>
 	<developers>
 		<developer>

@@ -12,8 +12,6 @@ import uk.co.unclealex.rokta.client.factories.GraphPresenterFactory;
 import uk.co.unclealex.rokta.client.factories.HandCountPresenterFactory;
 import uk.co.unclealex.rokta.client.factories.HeadToHeadsPresenterFactory;
 import uk.co.unclealex.rokta.client.factories.LeaguePresenterFactory;
-import uk.co.unclealex.rokta.client.factories.LoginPresenterFactory;
-import uk.co.unclealex.rokta.client.factories.LoginPresenterFactoryImpl;
 import uk.co.unclealex.rokta.client.factories.LosingStreaksPresenterFactory;
 import uk.co.unclealex.rokta.client.factories.NextRoundPresenterFactory;
 import uk.co.unclealex.rokta.client.factories.ProfilePresenterFactory;
@@ -28,7 +26,6 @@ import uk.co.unclealex.rokta.client.presenters.HandCountPresenter;
 import uk.co.unclealex.rokta.client.presenters.HasDisplay;
 import uk.co.unclealex.rokta.client.presenters.HeadToHeadsPresenter;
 import uk.co.unclealex.rokta.client.presenters.LeaguePresenter;
-import uk.co.unclealex.rokta.client.presenters.LoginPresenter;
 import uk.co.unclealex.rokta.client.presenters.LosingStreaksPresenter;
 import uk.co.unclealex.rokta.client.presenters.MainPresenter;
 import uk.co.unclealex.rokta.client.presenters.NavigationPresenter;
@@ -52,7 +49,6 @@ import uk.co.unclealex.rokta.client.views.Graph;
 import uk.co.unclealex.rokta.client.views.HandCount;
 import uk.co.unclealex.rokta.client.views.HeadToHeads;
 import uk.co.unclealex.rokta.client.views.League;
-import uk.co.unclealex.rokta.client.views.Login;
 import uk.co.unclealex.rokta.client.views.Main;
 import uk.co.unclealex.rokta.client.views.Navigation;
 import uk.co.unclealex.rokta.client.views.NewGame;
@@ -102,9 +98,6 @@ public class RoktaClientModule extends AbstractGinModule {
 		bindSingletonPresenter(NavigationPresenter.class, NavigationPresenter.Display.class, Navigation.class);
 		bindSingletonPresenter(NewsPresenter.class, NewsPresenter.Display.class, News.class);
 		
-		bind(LoginPresenter.Display.class).to(Login.class);
-		bind(LoginPresenterFactory.class).to(LoginPresenterFactoryImpl.class);
-
 		bind(ClickHelper.class).to(ClickHelperImpl.class);
 
 		bind(FiltersPresenter.Display.class).to(Filters.class);

@@ -41,16 +41,12 @@ public class AnonymousRoktaServlet extends AbstractRoktaServlet implements Anony
 	
 	@Override
 	public String[] getAllUsersNames() {
-		return createRoktaService().getAllUsersNames();
+    return createRoktaService().getAllUsersNames();
 	}
-
+	
 	@Override
 	public String[] getAllPlayerNames() {
 		return createRoktaService().getAllPlayerNames();
 	}
 
-	@Override
-	public boolean authenticate(String username, String password) {
-		return createRoktaService().authenticate(username, password);
-	}
 }

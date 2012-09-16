@@ -24,7 +24,6 @@ public class AuthenticationPresenter implements Presenter<Display>, Authenticati
 
 	public static interface Display extends IsWidget {
 		Anchor getSignIn();
-		Anchor getSignOut();
 		Label getCurrentUser();
 	}
 	
@@ -56,16 +55,6 @@ public class AuthenticationPresenter implements Presenter<Display>, Authenticati
 			}
 		};
 		display.getSignIn().addClickHandler(signInClickHandler);
-		ClickHandler signOutClickHandler =
-			new ClickHandlerAndFailureAsPopupExecutableAsyncCallback<Void>(asyncCallbackExecutor, "Signing out") {
-			@Override
-			public void execute(AnonymousRoktaServiceAsync anonymousRoktaService, UserRoktaServiceAsync userRoktaService,
-					AsyncCallback<Void> callback) {
-				anonymousRoktaService.logout(callback);
-				getAuthenticationManager().unauthenticated();
-			}
-		};
-		display.getSignOut().addClickHandler(signOutClickHandler);
 		container.setWidget(display);
 	}
 
@@ -94,17 +83,14 @@ public class AuthenticationPresenter implements Presenter<Display>, Authenticati
 		Display display = getDisplay();
 		Label currentUser = display.getCurrentUser();
 		Anchor signIn = display.getSignIn();
-		Anchor signOut = display.getSignOut();
 		if (username == null) {
 			currentUser.setVisible(false);
 			signIn.setVisible(true);
-			signOut.setVisible(false);
 		}
 		else {
 			currentUser.setVisible(true);
 			currentUser.setText(username);
 			signIn.setVisible(false);
-			signOut.setVisible(true);			
 		}
 	}
 

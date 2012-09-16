@@ -15,7 +15,6 @@ import com.google.gwt.user.client.ui.Widget;
 public class Authentication extends Composite implements Display {
 
 	@UiField Anchor signIn;
-	@UiField Anchor signOut;
 	@UiField Label currentUser;
 	
   @UiTemplate("Authentication.ui.xml")
@@ -37,10 +36,6 @@ public class Authentication extends Composite implements Display {
 	
 	public Anchor getSignIn() {
 		return signIn;
-	}
-
-	public Anchor getSignOut() {
-		return signOut;
 	}
 
 	public Label getCurrentUser() {

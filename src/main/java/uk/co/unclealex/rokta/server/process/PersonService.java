@@ -17,9 +17,7 @@ import uk.co.unclealex.rokta.shared.model.Colour;
 public interface PersonService {
 
 	public Person getExemptPlayer(Date date);	
-	public void changePassword(String name, String newPassword);
-	public SortedSet<String> getAllUsernames();
 	public SortedSet<String> getAllPlayerNames();
-	void changeGraphingColour(String name, Colour colour);
-	public void resetAllPasswords();
+	public void changeGraphingColour(String name, Colour colour);
+  public SortedSet<String> getAllUsernames();
 }

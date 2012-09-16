@@ -20,8 +20,8 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import uk.co.unclealex.rokta.server.service.RoktaService;
-import uk.co.unclealex.rokta.shared.service.SecurityInvalidator;
 
+import com.google.common.base.Supplier;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
@@ -66,13 +66,13 @@ public abstract class AbstractRoktaServlet extends RemoteServiceServlet {
 
 	protected RoktaService createRoktaService() {
 		final RoktaService roktaService = getBeanFactory().getBean("roktaService", RoktaService.class);
-		SecurityInvalidator securityInvalidator = new SecurityInvalidator() {
-			@Override
-			public void invalidate() {
-				getThreadLocalRequest().getSession().invalidate();
-			}
+		Supplier<HttpServletRequest> requestSupplier = new Supplier<HttpServletRequest>() {
+		  @Override
+		  public HttpServletRequest get() {
+		    return getThreadLocalRequest();
+		  }
 		};
-		roktaService.setSecurityInvalidator(securityInvalidator);
+		roktaService.setHttpServletRequestSupplier(requestSupplier);
 		final Logger log = LoggerFactory.getLogger(getClass());
 		InvocationHandler handler = new InvocationHandler() {
 			@Override

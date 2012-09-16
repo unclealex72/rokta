@@ -48,10 +48,5 @@ public class UserRoktaServlet extends AbstractRoktaServlet implements UserRoktaS
 	@Override
 	public void updateColour(String username, Colour colour) {
 		createRoktaService().updateColour(username, colour);
-	}
-	
-	@Override
-	public void updatePassword(String username, String newPassword) {
-		createRoktaService().updatePassword(username, newPassword);
-	}
+	}	
 }

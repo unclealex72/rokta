@@ -8,7 +8,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import uk.co.unclealex.rokta.client.factories.LoginPresenterFactory;
 import uk.co.unclealex.rokta.client.util.AsyncCallbackExecutor;
 import uk.co.unclealex.rokta.client.util.CanWait;
 import uk.co.unclealex.rokta.client.util.ExecutableAsyncCallback;
@@ -47,16 +46,14 @@ import com.google.gwt.user.client.rpc.StatusCodeException;
 public class SecureAsyncCallbackExecutor implements AsyncCallbackExecutor {
 
   private final WaitingController i_waitingController;
-	private final LoginPresenterFactory i_loginPresenterFactory;
 	private final AnonymousRoktaServiceAsync i_anonymousRoktaService;
 	private final UserRoktaServiceAsync i_userRoktaService;
 
 	@Inject
-	public SecureAsyncCallbackExecutor(WaitingController waitingController, LoginPresenterFactory loginPresenterFactory,
+	public SecureAsyncCallbackExecutor(WaitingController waitingController,
 			AnonymousRoktaServiceAsync anonymousRoktaService, UserRoktaServiceAsync userRoktaService) {
 		super();
 		i_waitingController = waitingController;
-		i_loginPresenterFactory = loginPresenterFactory;
 		i_anonymousRoktaService = anonymousRoktaService;
 		i_userRoktaService = userRoktaService;
 	}
@@ -102,7 +99,7 @@ public class SecureAsyncCallbackExecutor implements AsyncCallbackExecutor {
 	}
 	
 	protected void onLoginRequired(Runnable originalAction, Runnable cancelAction) {
-		getLoginPresenterFactory().createLoginPresenter(originalAction, cancelAction).center();
+	  onRefused();
 	}
 
 	/**
@@ -162,10 +159,6 @@ public class SecureAsyncCallbackExecutor implements AsyncCallbackExecutor {
     execute(waitCallback, waitCallback);
 	}
 	
-	public LoginPresenterFactory getLoginPresenterFactory() {
-		return i_loginPresenterFactory;
-	}
-
   public WaitingController getWaitingController() {
     return i_waitingController;
   }

@@ -2,9 +2,7 @@ package uk.co.unclealex.rokta.server.dao;
 
 import java.util.SortedSet;
 
-import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.co.unclealex.hibernate.dao.HibernateKeyedDao;
@@ -17,23 +15,26 @@ public class HibernatePersonDao extends HibernateKeyedDao<Person> implements Per
 		return uniqueResult(getSession().getNamedQuery("person.findByName").setString("name", name));
 	}
 	
-	public SortedSet<Person> getPlayers() {
+  public Person getPersonByEmailAddress(final String email) {
+    return uniqueResult(getSession().getNamedQuery("person.findByEmail").setString("email", email));
+  }
+
+  public SortedSet<Person> getPlayers() {
 		return asSortedSet(getSession().getNamedQuery("person.getPlayers"));
 	}
 
-	public Person findPersonByNameAndPassword(String name, String encodedPassword) {
-		Criteria criteria = getSession().createCriteria(Person.class);
-		criteria.add(Restrictions.eq("name", name));
-		criteria.add(Restrictions.eq("password", encodedPassword));
-		return uniqueResult(criteria);
-	}
-	
-	@Override
-	public SortedSet<String> getAllUsernames() {
-		Query q = getSession().createQuery("select name from Person");
-		return asSortedSet(q, String.class);
-	}
-	
+  @Override
+  public SortedSet<String> getAllEmailAddresses() {
+    Query q = getSession().createQuery("select email from Person where email is not null");
+    return asSortedSet(q, String.class);
+  }
+
+  @Override
+  public SortedSet<String> getAllUsernames() {
+    Query q = getSession().createQuery("select name from Person");
+    return asSortedSet(q, String.class);
+  }
+
 	@Override
 	public SortedSet<String> getAllPlayerNames() {
 		Query query = getSession().createQuery("select person.name from Play");

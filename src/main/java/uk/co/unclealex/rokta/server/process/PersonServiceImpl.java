@@ -3,15 +3,9 @@
  */
 package uk.co.unclealex.rokta.server.process;
 
-import java.util.Collections;
 import java.util.Date;
-import java.util.Set;
 import java.util.SortedSet;
 
-import org.springframework.security.authentication.dao.SaltSource;
-import org.springframework.security.authentication.encoding.PasswordEncoder;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.co.unclealex.rokta.server.dao.GameDao;
@@ -30,8 +24,6 @@ public class PersonServiceImpl implements PersonService {
 
 	private PersonDao i_personDao;
 	private GameDao i_gameDao;
-	private PasswordEncoder i_passwordEncoder;
-	private SaltSource i_saltSource;
 	
 	private DateUtil i_dateUtil;
 	
@@ -58,23 +50,6 @@ public class PersonServiceImpl implements PersonService {
 	}
 	
 	@Override
-	public void changePassword(String name, String newPassword) {
-		PersonDao personDao = getPersonDao();
-		Person person = personDao.getPersonByName(name);
-		if (person != null) {
-			person.setPassword(encryptPassword(name, newPassword));
-			personDao.store(person);
-		}
-	}
-
-	@Override
-	public void resetAllPasswords() {
-		for (String username : getAllUsernames()) {
-			changePassword(username, username);
-		}
-	}
-	
-	@Override
 	public void changeGraphingColour(String name, Colour colour) {
 		PersonDao personDao = getPersonDao();
 		Person person = personDao.getPersonByName(name);
@@ -82,12 +57,6 @@ public class PersonServiceImpl implements PersonService {
 		personDao.store(person);
 	}
 	
-  protected String encryptPassword(String username, String password) {
-		Set<GrantedAuthority> emptySet = Collections.emptySet();
-		User user = new User(username, password, true, true, true, true, emptySet);
-		return getPasswordEncoder().encodePassword(password, getSaltSource().getSalt(user));
-	}
-
 	/**
 	 * @return the gameDao
 	 */
@@ -128,21 +97,5 @@ public class PersonServiceImpl implements PersonService {
 	 */
 	public void setDateUtil(DateUtil dateUtil) {
 		i_dateUtil = dateUtil;
-	}
-
-	public PasswordEncoder getPasswordEncoder() {
-		return i_passwordEncoder;
-	}
-
-	public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
-		i_passwordEncoder = passwordEncoder;
-	}
-
-	public SaltSource getSaltSource() {
-		return i_saltSource;
-	}
-
-	public void setSaltSource(SaltSource saltSource) {
-		i_saltSource = saltSource;
 	}
 }

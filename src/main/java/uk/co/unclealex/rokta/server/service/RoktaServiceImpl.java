@@ -1,16 +1,10 @@
 package uk.co.unclealex.rokta.server.service;
 
-import java.util.Collection;
 import java.util.Date;
 
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import javax.servlet.http.HttpServletRequest;
 
+import uk.co.unclealex.googleauth.OauthPrincipal;
 import uk.co.unclealex.rokta.client.filter.GameFilter;
 import uk.co.unclealex.rokta.server.dao.PersonDao;
 import uk.co.unclealex.rokta.server.model.Day;
@@ -21,8 +15,8 @@ import uk.co.unclealex.rokta.shared.model.Game;
 import uk.co.unclealex.rokta.shared.model.GameSummary;
 import uk.co.unclealex.rokta.shared.model.InitialPlayers;
 import uk.co.unclealex.rokta.shared.model.LoggedInUser;
-import uk.co.unclealex.rokta.shared.service.SecurityInvalidator;
 
+import com.google.common.base.Supplier;
 import com.google.common.collect.Iterables;
 
 public class RoktaServiceImpl implements RoktaService {
@@ -31,8 +25,7 @@ public class RoktaServiceImpl implements RoktaService {
 	private InformationService i_informationService;
 	private NewGameService i_newGameService;
 	private PersonService i_personService;
-	private SecurityInvalidator i_securityInvalidator;
-	private AuthenticationManager i_authenticationManager;
+	private Supplier<HttpServletRequest> httpServletRequestSupplier;
 	private PersonDao i_personDao;
 	
 	@Override
@@ -70,10 +63,10 @@ public class RoktaServiceImpl implements RoktaService {
 		return getInformationService().getCurrentInformation(gameFilter, new Day(currentDate), targetStreaksSize);
 	}
 
-	@Override
-	public String[] getAllUsersNames() {
-		return Iterables.toArray(getPersonService().getAllUsernames(), String.class);
-	}
+  @Override
+  public String[] getAllUsersNames() {
+    return Iterables.toArray(getPersonService().getAllUsernames(), String.class);
+  }
 
 	@Override
 	public String[] getAllPlayerNames() {
@@ -91,35 +84,14 @@ public class RoktaServiceImpl implements RoktaService {
 	}
 	
 	@Override
-	public boolean authenticate(String username, String password) {
-		try {
-			UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, password);
-			getAuthenticationManager().authenticate(authentication);
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-			return true;
-		}
-		catch (AuthenticationException e) {
-			logout();
-			return false;
-		}
-	}
-
-	protected boolean isAuthenticatedAnonymously(Authentication authentication) {
-		Collection<GrantedAuthority> authorities = authentication.getAuthorities();
-		return authorities.size() == 1 && "ROLE_ANONYMOUS".equals(authorities.iterator().next().getAuthority());
-	}
-
-	@Override
 	public String getUserPrincipal() {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		return authentication==null || isAuthenticatedAnonymously(authentication)?
-				null:((UserDetails) authentication.getPrincipal()).getUsername();
+	  OauthPrincipal principal = (OauthPrincipal) getHttpServletRequestSupplier().get().getUserPrincipal();
+	  return getPersonDao().getPersonByEmailAddress(principal.getUserinfo().getEmail()).getName();
 	}
 
 	@Override
 	public void logout() {
-		getSecurityInvalidator().invalidate();
-		SecurityContextHolder.clearContext();
+		getHttpServletRequestSupplier().get().getSession(true).invalidate();
 	}
 
 	@Override
@@ -136,11 +108,6 @@ public class RoktaServiceImpl implements RoktaService {
 	@Override
 	public void updateColour(String username, Colour colour) {
 		getPersonService().changeGraphingColour(username, colour);
-	}
-	
-	@Override
-	public void updatePassword(String username, String newPassword) {
-		getPersonService().changePassword(username, newPassword);
 	}
 	
 	public CacheService getCacheService() {
@@ -175,28 +142,20 @@ public class RoktaServiceImpl implements RoktaService {
 		i_personService = personService;
 	}
 
-	public SecurityInvalidator getSecurityInvalidator() {
-		return i_securityInvalidator;
-	}
-
-	public void setSecurityInvalidator(SecurityInvalidator securityInvalidator) {
-		i_securityInvalidator = securityInvalidator;
-	}
-
-	public AuthenticationManager getAuthenticationManager() {
-		return i_authenticationManager;
-	}
-
-	public void setAuthenticationManager(AuthenticationManager authenticationManager) {
-		i_authenticationManager = authenticationManager;
-	}
-
 	public PersonDao getPersonDao() {
 		return i_personDao;
 	}
 
 	public void setPersonDao(PersonDao personDao) {
 		i_personDao = personDao;
-	};
+	}
+
+  public Supplier<HttpServletRequest> getHttpServletRequestSupplier() {
+    return httpServletRequestSupplier;
+  }
+
+  public void setHttpServletRequestSupplier(Supplier<HttpServletRequest> httpServletRequestSupplier) {
+    this.httpServletRequestSupplier = httpServletRequestSupplier;
+  };
 
 }
