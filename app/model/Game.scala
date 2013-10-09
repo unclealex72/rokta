@@ -103,6 +103,7 @@ case class Game (
     def lastRound = rounds.last()
     lastRound.losers.iterator.next
   }
+  
 }
 
 object Game {
