@@ -22,95 +22,95 @@
  */
 package model
 
-import java.util.{SortedSet => JSortedSet}
-import java.util.{TreeSet => JTreeSet}
-import javax.persistence.Entity
-import java.util.Date
-import scala.beans.BeanProperty
-import javax.persistence.JoinColumn
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.Column
-import javax.persistence.ManyToOne
-import javax.persistence.OneToMany
-import org.hibernate.annotations.Sort
-import javax.persistence.CascadeType
-import org.hibernate.annotations.Fetch
-import org.hibernate.annotations.FetchMode
-import org.hibernate.annotations.SortType
-import org.hibernate.annotations.Fetch
 import java.util.Calendar
+import java.util.Date
 import java.util.GregorianCalendar
+import org.squeryl.KeyedEntity
+import org.squeryl.dsl.ManyToOne
+import org.squeryl.dsl.OneToMany
+import scala.collection.immutable.SortedSet
 
 /**
  * A game is a single game of Rokta.
  */
-@Entity(name="Game")
-case class Game (
+case class Game(
   /**
    * The synthetic ID of this game.
    */
-  @BeanProperty  @Id @GeneratedValue
-  var id: Integer,
+  val id: Long,
   /**
-   * The person who instigated this game.
+   * The ID of the person who instigated this game.
    */
-  @BeanProperty @ManyToOne @Column(name="instigator")
-  var instigator : Person,
-  /**
-   * The rounds played in this game.
-   */
-  @BeanProperty
-  @OneToMany(cascade=Array(CascadeType.ALL))
-  @JoinColumn(name="game_id")
-  @Sort(`type` = SortType.COMPARATOR, comparator = classOf[RoundComparator])
-  @Fetch(FetchMode.JOIN)
-  var rounds: JSortedSet[Round],
+  val instigatorId : Long,
   /**
    * The date and time that this game was played.
    */
-  @BeanProperty @Column(name="datePlayed")
-  /**
-   * The date and time at which this game was played.
-   */
-  var datePlayed: Date,
+  val datePlayed: Date,
   /**
    * The year that this game was played.
    */
-  @BeanProperty @Column(name="yearPlayed")
-  var yearPlayed: Integer,
+  val yearPlayed: Integer,
   /**
    * The 0-based month that this game was played.
    */
-  @BeanProperty @Column(name="monthPlayed")
-  var monthPlayed: Integer,
+  val monthPlayed: Integer,
   /**
    * The 1-based week of the year that this game was played.
    */
-  @BeanProperty @Column(name="weekPlayed")
-  var weekPlayed: Integer,
+  val weekPlayed: Integer,
   /**
    * The 1-based day of the month that this game was played.
    */
-  @BeanProperty @Column(name="dayPlayed")
-  var dayPlayed: Integer) {
+  val dayPlayed: Integer) extends KeyedEntity[Long] {
 
+  /**
+   * The persisted [[Round]] for this game.
+   */
+  lazy val _rounds: OneToMany[Round] = RoktaSchema.gameToRounds.left(this)
+
+  /**
+   * The sorted [[Round]]s for this game.
+   */
+  lazy val rounds = _rounds.foldLeft(SortedSet.empty[Round]) { case (rs, r) => rs + r }
+
+  /**
+   * The persisted instigator for this game.
+   */
+  lazy val _instigator: ManyToOne[Person] = RoktaSchema.instigatorToGames.right(this)
+  
+  /**
+   * The instigator for this game.
+   */
+  lazy val instigator: Person = _instigator.single
+  
   /**
    * Get the person who lost this game.
    * @return The person who lost this game.
    */
-  def loser: Person = {
-    def lastRound = rounds.last()
-    lastRound.losers.iterator.next
+  def loser: Option[Person] = rounds.lastOption flatMap { round =>
+    round.losers.size match {
+      case 1 => Some(round.losers.iterator.next)
+      case _ => None
+    }
   }
-  
+
+  /**
+   * Add a new round to this game.
+   * @param counter The [[Person]] who counted in the round.
+   * @param plays The [[Hand]]s played by each [[Person]].
+   * @return this.
+   */
+  def addRound(counter: Person, plays: Map[Person, Hand]): Game = {
+    val index = _rounds.size
+    _rounds.assign(Round(counter, this, index).addPlays(plays))
+    this
+  }
 }
 
 object Game {
   
   import java.util.Calendar._
-  import scala.collection.JavaConversions._
-  
+  import model.RoktaSchema._
   /**
    * Create a new game.
    * @param instigator The [[Person]] who instigated the game.
@@ -118,15 +118,15 @@ object Game {
    * @param rounds The [[Round]]s of the game.
    * @return A new unpersisted [[Game]].
    */
-  def apply(instigator: Person, datePlayed: Date, rounds: Round*) : Game = {
+  def apply(instigator: Person, datePlayed: Date) : Game = {
     val calendar = new GregorianCalendar
     calendar.setTime(datePlayed)
     val year = calendar get YEAR
     val month = calendar get MONTH
     val day = calendar get DAY_OF_MONTH
     val week = calendar get WEEK_OF_YEAR
-    val sortedRounds = new JTreeSet(new RoundComparator)
-    sortedRounds addAll rounds
-    Game(null, instigator, sortedRounds, datePlayed, year, month, week, day)
+    val game = Game(0, instigator.id, datePlayed, year, month, week, day)
+    game.save
+    game
   }
 }

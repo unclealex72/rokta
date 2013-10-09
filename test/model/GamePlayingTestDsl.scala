@@ -25,6 +25,8 @@ package model
 import java.util.Date
 import java.text.SimpleDateFormat
 
+import model.RoktaSchema._
+
 /**
  * An object containing a DSL for creating test games. For convenience, it is assumed that one person counts
  * all the rounds.
@@ -36,42 +38,24 @@ object GamePlayingTestDsl {
   val DATE_FORMATTER = new SimpleDateFormat("dd/MM/yyyy hh:mm")
 
   // Players
-  object Freddie extends Person(null, "Freddie", "freddie@queen.com", "BLACK")
-  object Brian extends Person(null, "Brian", "brian@queen.com", "BLUE")
-  object Roger extends Person(null, "Roger", "roger@queen.com", "RED")
-  object John extends Person(null, "John", "john@queen.com", "WHITE")
   
   implicit class Player(val person: Person) {
     
-    def instigatesAt(when: String) = GameBuilder(person, when)
+    def instigatesAt(when: String) = GameBuilder(person, DATE_FORMATTER parse when, Seq.empty)
     
-    def plays(hand: Hand) = Play(person, hand)
+    def plays(hand: Hand): Pair[Person, Hand] = person -> hand
     
   }
   
-  case class GameBuilder(val instigator: Person, val when: Date, val allPlays: Seq[Seq[Play]]) {
+  case class GameBuilder(val instigator: Person, val when: Date, val allPlays: Seq[Map[Person, Hand]]) {
     
-    def and(plays : Play*): GameBuilder = GameBuilder(instigator, when, allPlays :+ plays)
-    def countedBy(counter: Person): Game = {
-      val rounds : Seq[Round] = allPlays.zipWithIndex.map({ case (plays: Seq[Play], round: Int) => 
-        Round(round, counter, plays :_*)
-      })
-      Game(instigator, when, rounds :_*)
+    def and(plays : Pair[Person, Hand]*): GameBuilder = {
+      val playMap = plays.foldLeft(Map.empty[Person, Hand]){ case (plays, play) => plays + play }
+      GameBuilder(instigator, when, allPlays :+ playMap)
     }
-  }
-  
-  object GameBuilder {
-    def apply(instigator: Person, when: String): GameBuilder = 
-      GameBuilder(instigator, DATE_FORMATTER.parse(when), List.empty[Seq[Play]])
-  }
-}
-
-object Example {
-  
-  import model.GamePlayingTestDsl._
-  import model.Hand._
-  
-  val game: Game = Freddie instigatesAt("05/09/1972 09:12") and 
-    (Freddie plays ROCK, Roger plays ROCK, Brian plays PAPER) and
-    (Freddie plays ROCK, Roger plays SCISSORS) countedBy (Brian)
+    def countedBy(counter: Person): Game = {
+      val game = Game(instigator, when)
+      allPlays.foldLeft(game) { case (game, plays) => game.addRound(counter, plays)}
+    }
+  }  
 }

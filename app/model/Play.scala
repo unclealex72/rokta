@@ -23,47 +23,46 @@
  */
 package model;
 
-import scala.beans.BeanProperty
-
-import org.hibernate.annotations.Fetch
-import org.hibernate.annotations.FetchMode._
-
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.ManyToOne
+import org.squeryl.KeyedEntity
+import org.squeryl.dsl.ManyToOne
 
 /**
  * A [[Hand]] played by a [[Person]] during a [[Round]] of a [[Game]].
  */
-@Entity(name="Play")
 case class Play (
   /**
    * The synthetic ID for this play.
    */
-  @BeanProperty @Id @GeneratedValue  
-  var id: Integer, 
+  val id: Long, 
+  /**
+   * The ID of the [[Round]] to which this [[Play]] belongs
+   */
+  val roundId: Long,
   /**
    * The person who played this hand.
    */
-  @BeanProperty
-  @ManyToOne
-  @Fetch(JOIN)
-  var person: Person, 
+  val playerId: Long, 
   /**
    * The hand the person played.
    */
-  @BeanProperty
-  @Column(name="hand")
-  var handPersisted: String) {
+  val _hand: String) extends KeyedEntity[Long] {
 
   /**
    * Get the hand played in this play.
    */
-  def hand = Hand(handPersisted).getOrElse({
-    throw new IllegalStateException(s"$handPersisted is not a valid hand.")})
+  lazy val hand: Hand = Hand(_hand).getOrElse({
+    throw new IllegalStateException(s"${_hand} is not a valid hand.")})
   
+  /**
+   * The persisted player of this hand. 
+   */
+  lazy val _player: ManyToOne[Person] = RoktaSchema.playerToPlays.right(this)
+
+  /**
+   * The player who played this hand.
+   */
+  lazy val player: Person = _player.single
+
   /**
    * Indicate whether this hand beats another.
    * @param play The other play to check against.
@@ -74,11 +73,11 @@ case class Play (
 
 object Play {
   
-  /**
-   * Create a new [[Play]].
-   * @param person The [[Person]] who played the hand.
-   * @param hand The [[Hand]] played by the person.
-   * @return A new unpersisted Play.
-   */
-  def apply(person: Person, hand: Hand): Play = Play(null, person, hand.persistableToken)
+  import model.RoktaSchema._
+  
+  def apply(round: Round, player: Person, hand: Hand): Play = { 
+    val play = Play(0, round.id, player.id, hand.persistableToken)
+    play.save
+    play
+  }
 }

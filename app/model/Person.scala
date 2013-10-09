@@ -23,40 +23,29 @@
  */
 package model
 
-import scala.beans.BeanProperty
-
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
+import org.squeryl.KeyedEntity
 
 /**
  * The representation of a Rokta player.
  */
-@Entity(name="Person")
 case class Person(
-  
   /**
    * The synthetic ID of this element.
    */
-  @BeanProperty @Id @GeneratedValue @BeanProperty
-  var id: Integer,
+  val id: Long,
   /**
    * The player's name.
    */
-  @BeanProperty @Column(unique=true, nullable=false)
-	var name: String,
+	val name: String,
 	/**
 	 * The Google email the player uses to log in.
 	 */
-  @BeanProperty @Column(unique=true, nullable=false)
-  var email: String,
+  val email: String,
   /**
    * The name of the colour used to represent the player's results in any graphs.
    */
-  @BeanProperty @Column(name="colour", nullable=true)
-	var colourPersisted:  String) {
+	val _colour:  String) extends KeyedEntity[Long] {
   
-  def color: Colour = Colour(colourPersisted).getOrElse({ 
-    throw new IllegalStateException(s"$colourPersisted is not a valid colour.") })
+  def color: Colour = Colour(_colour).getOrElse({ 
+    throw new IllegalStateException(s"${_colour} is not a valid colour.") })
 }
