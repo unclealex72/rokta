@@ -29,6 +29,8 @@ import org.squeryl.KeyedEntity
 import org.squeryl.dsl.ManyToOne
 import org.squeryl.dsl.OneToMany
 import scala.collection.immutable.SortedSet
+import org.squeryl.dsl.StatefulOneToMany
+import org.squeryl.dsl.StatefulManyToOne
 
 /**
  * A game is a single game of Rokta.
@@ -66,7 +68,7 @@ case class Game(
   /**
    * The persisted [[Round]] for this game.
    */
-  lazy val _rounds: OneToMany[Round] = RoktaSchema.gameToRounds.left(this)
+  lazy val _rounds: StatefulOneToMany[Round] = RoktaSchema.gameToRounds.leftStateful(this)
 
   /**
    * The sorted [[Round]]s for this game.
@@ -76,12 +78,12 @@ case class Game(
   /**
    * The persisted instigator for this game.
    */
-  lazy val _instigator: ManyToOne[Person] = RoktaSchema.instigatorToGames.right(this)
+  lazy val _instigator: StatefulManyToOne[Person] = RoktaSchema.instigatorToGames.rightStateful(this)
   
   /**
    * The instigator for this game.
    */
-  lazy val instigator: Person = _instigator.single
+  lazy val instigator: Person = _instigator.one.get
   
   /**
    * Get the person who lost this game.
@@ -102,7 +104,7 @@ case class Game(
    */
   def addRound(counter: Person, plays: Map[Person, Hand]): Game = {
     val index = _rounds.size
-    _rounds.assign(Round(counter, this, index).addPlays(plays))
+    _rounds.associate(Round(counter, this, index).addPlays(plays))
     this
   }
 }

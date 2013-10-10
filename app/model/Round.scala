@@ -25,6 +25,8 @@ package model
 import org.squeryl.dsl.OneToMany
 import org.squeryl.dsl.ManyToOne
 import org.squeryl.KeyedEntity
+import org.squeryl.dsl.StatefulManyToOne
+import org.squeryl.dsl.StatefulOneToMany
 
 /**
  * A round of [[Play]]s in a [[Game]].
@@ -52,17 +54,17 @@ case class Round(
   /**
    * The persisted [[Person]] who is counting for this round.
    */
-  lazy val _counter: ManyToOne[Person] = RoktaSchema.counterToRounds.right(this)
+  lazy val _counter: StatefulManyToOne[Person] = RoktaSchema.counterToRounds.rightStateful(this)
 
   /**
    * The [[Person]] who counted this round.
    */
-  lazy val counter: Person = _counter.single
+  lazy val counter: Person = _counter.one.get
   
   /**
    * The [[Play]]s contained in this round
    */
-  lazy val plays: OneToMany[Play] = RoktaSchema.roundToPlays.left(this)
+  lazy val plays: StatefulOneToMany[Play] = RoktaSchema.roundToPlays.leftStateful(this)
 
   /**
    * The participants of this game.

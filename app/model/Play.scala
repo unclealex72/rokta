@@ -25,6 +25,7 @@ package model;
 
 import org.squeryl.KeyedEntity
 import org.squeryl.dsl.ManyToOne
+import org.squeryl.dsl.StatefulManyToOne
 
 /**
  * A [[Hand]] played by a [[Person]] during a [[Round]] of a [[Game]].
@@ -56,12 +57,12 @@ case class Play (
   /**
    * The persisted player of this hand. 
    */
-  lazy val _player: ManyToOne[Person] = RoktaSchema.playerToPlays.right(this)
+  lazy val _player: StatefulManyToOne[Person] = RoktaSchema.playerToPlays.rightStateful(this)
 
   /**
    * The player who played this hand.
    */
-  lazy val player: Person = _player.single
+  lazy val player: Person = _player.one.get
 
   /**
    * Indicate whether this hand beats another.
