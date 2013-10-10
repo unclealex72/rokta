@@ -22,21 +22,24 @@
 
 package model
 
-import model.GamePlayingTestDsl._
-import model.Hand._
 import org.specs2.mutable.Specification
-import scala.collection.JavaConversions._
-import org.squeryl.SessionFactory
 import org.squeryl.Session
+import org.squeryl.SessionFactory
 import org.squeryl.adapters.H2Adapter
-import com.typesafe.scalalogging.slf4j.Logging
+
+import model.GamePlayingTestDsl.Player
+import model.Hand.PAPER
+import model.Hand.ROCK
+import model.Hand.SCISSORS
+import model.RoktaSchema.__thisDsl
+import model.RoktaSchema.anyRef2ActiveTransaction
 
 /**
  * Tests for game playing mechanics.
  * @author alex
  *
  */
-class GameSpec extends Specification with Logging {
+class GameSpec extends Specification {
 
   /**
    * Wrap tests with database creation and transactions
@@ -51,7 +54,6 @@ class GameSpec extends Specification with Logging {
         java.sql.DriverManager.getConnection("jdbc:h2:mem:", "", ""),
         new H2Adapter))
     RoktaSchema.inTransaction {
-      Session.currentSession.setLogger { str => println(str) }
       RoktaSchema.create
       val freddie  = Person(0, "Freddie", "freddie@queen.com", "BLACK")
       val brian = Person(0, "Brian", "brian@queen.com", "BLUE")
