@@ -44,7 +44,7 @@ object RoktaSchema extends Schema with PrimitiveTypeMode {
   on(plays)(p => declare(
     p.id is (autoIncremented)))
 
-  val players = table[Person]
+  val players = table[Player]
   on(players)(p => declare(
     p.id is (autoIncremented)))
 

@@ -54,12 +54,12 @@ case class Round(
   /**
    * The persisted [[Person]] who is counting for this round.
    */
-  lazy val _counter: StatefulManyToOne[Person] = RoktaSchema.counterToRounds.rightStateful(this)
+  lazy val _counter: StatefulManyToOne[Player] = RoktaSchema.counterToRounds.rightStateful(this)
 
   /**
    * The [[Person]] who counted this round.
    */
-  lazy val counter: Person = _counter.one.get
+  lazy val counter: Player = _counter.one.get
   
   /**
    * The [[Play]]s contained in this round
@@ -69,12 +69,12 @@ case class Round(
   /**
    * The participants of this game.
    */
-  lazy val participants: Set[Person] = playersOf(plays)
+  lazy val participants: Set[Player] = playersOf(plays)
 
   /**
    * Add plays to this round
    */
-  def addPlays(plays: Map[Person, Hand]): Round = {
+  def addPlays(plays: Map[Player, Hand]): Round = {
     plays.foreach { case (person, hand) => this.plays.associate(Play(this, person, hand)) }
     this
   }
@@ -83,7 +83,7 @@ case class Round(
 	 * the players who played the losing hand are returned, otherwise, all the participants are.
 	 * @return The people who lost this round.
 	 */
-	lazy val losers: Set[Person] = {
+	lazy val losers: Set[Player] = {
 	  val playedHands = plays.foldLeft(Set.empty[Hand]) { case (hands, play) => hands + play.hand }
 	  playedHands.size match {
 	    case 2 => {
@@ -104,7 +104,7 @@ object Round {
   
   implicit def ordering: Ordering[Round] = Ordering.fromLessThan(_.round < _.round)
 
-  def apply(counter: Person, game: Game, round: Integer): Round = {
+  def apply(counter: Player, game: Game, round: Integer): Round = {
     val rnd = Round(0, counter.id, game.id, round)
     rnd.save
     rnd
@@ -112,8 +112,8 @@ object Round {
   /**
    * A convenience function to map [[Play]]s to their players.
    */
-  def playersOf: Iterable[Play] => Set[Person] = plays =>
-    plays.foldLeft(Set.empty[Person]) { (ps: Set[Person], p: Play) => ps + p.player }
+  def playersOf: Iterable[Play] => Set[Player] = plays =>
+    plays.foldLeft(Set.empty[Player]) { (ps: Set[Player], p: Play) => ps + p.player }
 
 
 }

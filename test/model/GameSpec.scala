@@ -26,13 +26,10 @@ import org.specs2.mutable.Specification
 import org.squeryl.Session
 import org.squeryl.SessionFactory
 import org.squeryl.adapters.H2Adapter
-
-import model.GamePlayingTestDsl.Player
-import model.Hand.PAPER
-import model.Hand.ROCK
-import model.Hand.SCISSORS
-import model.RoktaSchema.__thisDsl
-import model.RoktaSchema.anyRef2ActiveTransaction
+import model.GamePlayingTestDsl._
+import model.Hand._
+import java.text.SimpleDateFormat
+import java.util.Date
 
 /**
  * Tests for game playing mechanics.
@@ -44,7 +41,7 @@ class GameSpec extends Specification {
   /**
    * Wrap tests with database creation and transactions
    */
-  def txn[B](block: Game => IndexedSeq[Round] => Person => Person => Person => Person => B) = {
+  def txn[B](block: Game => IndexedSeq[Round] => Player => Player => Player => Player => B) = {
 
     import model.RoktaSchema._
 
@@ -55,10 +52,10 @@ class GameSpec extends Specification {
         new H2Adapter))
     RoktaSchema.inTransaction {
       RoktaSchema.create
-      val freddie  = Person(0, "Freddie", "freddie@queen.com", "BLACK")
-      val brian = Person(0, "Brian", "brian@queen.com", "BLUE")
-      val roger = Person(0, "Roger", "roger@queen.com", "RED")
-      val john = Person(0, "John", "john@queen.com", "WHITE")
+      val freddie  = Player(0, "Freddie", "freddie@queen.com", "BLACK")
+      val brian = Player(0, "Brian", "brian@queen.com", "BLUE")
+      val roger = Player(0, "Roger", "roger@queen.com", "RED")
+      val john = Player(0, "John", "john@queen.com", "WHITE")
 
       Seq(freddie, roger, brian, john).foreach { person =>
         person.save
@@ -121,4 +118,37 @@ class GameSpec extends Specification {
       game.loser must be equalTo (Some(roger))
     }
   }
+}
+
+/**
+ * An object containing a DSL for creating test games. For convenience, it is assumed that one person counts
+ * all the rounds.
+ * @author alex
+ *
+ */
+object GamePlayingTestDsl {
+
+  val DATE_FORMATTER = new SimpleDateFormat("dd/MM/yyyy hh:mm")
+
+  // Players
+  
+  implicit class PlayerImplicits(val person: Player) {
+    
+    def instigatesAt(when: String) = GameBuilder(person, DATE_FORMATTER parse when, Seq.empty)
+    
+    def plays(hand: Hand): Pair[Player, Hand] = person -> hand
+    
+  }
+  
+  case class GameBuilder(val instigator: Player, val when: Date, val allPlays: Seq[Map[Player, Hand]]) {
+    
+    def and(plays : Pair[Player, Hand]*): GameBuilder = {
+      val playMap = plays.foldLeft(Map.empty[Player, Hand]){ case (plays, play) => plays + play }
+      GameBuilder(instigator, when, allPlays :+ playMap)
+    }
+    def countedBy(counter: Player): Game = {
+      val game = Game(instigator, when)
+      allPlays.foldLeft(game) { case (game, plays) => game.addRound(counter, plays)}
+    }
+  }  
 }

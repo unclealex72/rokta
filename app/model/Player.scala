@@ -28,7 +28,7 @@ import org.squeryl.KeyedEntity
 /**
  * The representation of a Rokta player.
  */
-case class Person(
+case class Player(
   /**
    * The synthetic ID of this element.
    */

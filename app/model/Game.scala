@@ -51,19 +51,19 @@ case class Game(
   /**
    * The year that this game was played.
    */
-  val yearPlayed: Integer,
+  val yearPlayed: Long,
   /**
    * The 0-based month that this game was played.
    */
-  val monthPlayed: Integer,
+  val monthPlayed: Long,
   /**
    * The 1-based week of the year that this game was played.
    */
-  val weekPlayed: Integer,
+  val weekPlayed: Long,
   /**
    * The 1-based day of the month that this game was played.
    */
-  val dayPlayed: Integer) extends KeyedEntity[Long] {
+  val dayPlayed: Long) extends KeyedEntity[Long] {
 
   /**
    * The persisted [[Round]] for this game.
@@ -78,18 +78,18 @@ case class Game(
   /**
    * The persisted instigator for this game.
    */
-  lazy val _instigator: StatefulManyToOne[Person] = RoktaSchema.instigatorToGames.rightStateful(this)
+  lazy val _instigator: StatefulManyToOne[Player] = RoktaSchema.instigatorToGames.rightStateful(this)
   
   /**
    * The instigator for this game.
    */
-  lazy val instigator: Person = _instigator.one.get
+  lazy val instigator: Player = _instigator.one.get
   
   /**
    * Get the person who lost this game.
    * @return The person who lost this game.
    */
-  def loser: Option[Person] = rounds.lastOption flatMap { round =>
+  def loser: Option[Player] = rounds.lastOption flatMap { round =>
     round.losers.size match {
       case 1 => Some(round.losers.iterator.next)
       case _ => None
@@ -102,7 +102,7 @@ case class Game(
    * @param plays The [[Hand]]s played by each [[Person]].
    * @return this.
    */
-  def addRound(counter: Person, plays: Map[Person, Hand]): Game = {
+  def addRound(counter: Player, plays: Map[Player, Hand]): Game = {
     val index = _rounds.size
     _rounds.associate(Round(counter, this, index).addPlays(plays))
     this
@@ -120,7 +120,7 @@ object Game {
    * @param rounds The [[Round]]s of the game.
    * @return A new unpersisted [[Game]].
    */
-  def apply(instigator: Person, datePlayed: Date) : Game = {
+  def apply(instigator: Player, datePlayed: Date) : Game = {
     val calendar = new GregorianCalendar
     calendar.setTime(datePlayed)
     val year = calendar get YEAR
