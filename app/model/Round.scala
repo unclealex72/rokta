@@ -27,6 +27,7 @@ import org.squeryl.dsl.ManyToOne
 import org.squeryl.KeyedEntity
 import org.squeryl.dsl.StatefulManyToOne
 import org.squeryl.dsl.StatefulOneToMany
+import dao.RoktaSchema
 
 /**
  * A round of [[Play]]s in a [[Game]].
@@ -100,7 +101,8 @@ case class Round(
 
 object Round {
   
-  import model.RoktaSchema._
+  import dao.RoktaSchema._
+  import dao.EntryPoint._
   
   implicit def ordering: Ordering[Round] = Ordering.fromLessThan(_.round < _.round)
 

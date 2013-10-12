@@ -26,6 +26,7 @@ package model;
 import org.squeryl.KeyedEntity
 import org.squeryl.dsl.ManyToOne
 import org.squeryl.dsl.StatefulManyToOne
+import dao.RoktaSchema
 
 /**
  * A [[Hand]] played by a [[Person]] during a [[Round]] of a [[Game]].
@@ -74,7 +75,8 @@ case class Play (
 
 object Play {
   
-  import model.RoktaSchema._
+  import dao.RoktaSchema._
+  import dao.EntryPoint._
   
   def apply(round: Round, player: Player, hand: Hand): Play = { 
     val play = Play(0, round.id, player.id, hand.persistableToken)

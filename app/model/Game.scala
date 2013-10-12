@@ -31,6 +31,8 @@ import org.squeryl.dsl.OneToMany
 import scala.collection.immutable.SortedSet
 import org.squeryl.dsl.StatefulOneToMany
 import org.squeryl.dsl.StatefulManyToOne
+import dao.RoktaSchema
+import org.joda.time.DateTime
 
 /**
  * A game is a single game of Rokta.
@@ -43,11 +45,11 @@ case class Game(
   /**
    * The ID of the person who instigated this game.
    */
-  val instigatorId : Long,
+  val instigatorId: Long,
   /**
    * The date and time that this game was played.
    */
-  val datePlayed: Date,
+  val datePlayed: DateTime,
   /**
    * The year that this game was played.
    */
@@ -79,12 +81,12 @@ case class Game(
    * The persisted instigator for this game.
    */
   lazy val _instigator: StatefulManyToOne[Player] = RoktaSchema.instigatorToGames.rightStateful(this)
-  
+
   /**
    * The instigator for this game.
    */
   lazy val instigator: Player = _instigator.one.get
-  
+
   /**
    * Get the person who lost this game.
    * @return The person who lost this game.
@@ -110,9 +112,10 @@ case class Game(
 }
 
 object Game {
+
+  import dao.RoktaSchema._
+  import dao.EntryPoint._
   
-  import java.util.Calendar._
-  import model.RoktaSchema._
   /**
    * Create a new game.
    * @param instigator The [[Person]] who instigated the game.
@@ -120,14 +123,9 @@ object Game {
    * @param rounds The [[Round]]s of the game.
    * @return A new unpersisted [[Game]].
    */
-  def apply(instigator: Player, datePlayed: Date) : Game = {
-    val calendar = new GregorianCalendar
-    calendar.setTime(datePlayed)
-    val year = calendar get YEAR
-    val month = calendar get MONTH
-    val day = calendar get DAY_OF_MONTH
-    val week = calendar get WEEK_OF_YEAR
-    val game = Game(0, instigator.id, datePlayed, year, month, week, day)
+  def apply(instigator: Player, datePlayed: DateTime): Game = {
+    val game = Game(0, instigator.id, datePlayed, 
+        datePlayed.getYear(), datePlayed.getMonthOfYear(), datePlayed.getWeekOfWeekyear(), datePlayed.getDayOfMonth())
     game.save
     game
   }

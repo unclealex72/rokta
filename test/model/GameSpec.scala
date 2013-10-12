@@ -22,14 +22,16 @@
 
 package model
 
+import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
 import org.specs2.mutable.Specification
 import org.squeryl.Session
 import org.squeryl.SessionFactory
 import org.squeryl.adapters.H2Adapter
+import dao.EntryPoint._
 import model.GamePlayingTestDsl._
 import model.Hand._
-import java.text.SimpleDateFormat
-import java.util.Date
+import dao.RoktaSchema
 
 /**
  * Tests for game playing mechanics.
@@ -43,14 +45,14 @@ class GameSpec extends Specification {
    */
   def txn[B](block: Game => IndexedSeq[Round] => Player => Player => Player => Player => B) = {
 
-    import model.RoktaSchema._
+    import dao.RoktaSchema._
 
     Class forName "org.h2.Driver"
     SessionFactory.concreteFactory = Some(() =>
       Session.create(
         java.sql.DriverManager.getConnection("jdbc:h2:mem:", "", ""),
         new H2Adapter))
-    RoktaSchema.inTransaction {
+    inTransaction {
       RoktaSchema.create
       val freddie  = Player(0, "Freddie", "freddie@queen.com", "BLACK")
       val brian = Player(0, "Brian", "brian@queen.com", "BLUE")
@@ -75,7 +77,7 @@ class GameSpec extends Specification {
         game.yearPlayed must be equalTo (1972)
     }
     "set the correct month played" in txn { game => rounds => freddie => roger => brian => john =>
-      game.monthPlayed must be equalTo (8)
+      game.monthPlayed must be equalTo (9)
     }
     "set the correct week played" in txn { game => rounds => freddie => roger => brian => john =>
       game.weekPlayed must be equalTo (36)
@@ -128,19 +130,19 @@ class GameSpec extends Specification {
  */
 object GamePlayingTestDsl {
 
-  val DATE_FORMATTER = new SimpleDateFormat("dd/MM/yyyy hh:mm")
+  val DATE_FORMATTER = DateTimeFormat.forPattern("dd/MM/yyyy hh:mm")
 
   // Players
   
   implicit class PlayerImplicits(val person: Player) {
     
-    def instigatesAt(when: String) = GameBuilder(person, DATE_FORMATTER parse when, Seq.empty)
+    def instigatesAt(when: String) = GameBuilder(person, DATE_FORMATTER parseDateTime when, Seq.empty)
     
     def plays(hand: Hand): Pair[Player, Hand] = person -> hand
     
   }
   
-  case class GameBuilder(val instigator: Player, val when: Date, val allPlays: Seq[Map[Player, Hand]]) {
+  case class GameBuilder(val instigator: Player, val when: DateTime, val allPlays: Seq[Map[Player, Hand]]) {
     
     def and(plays : Pair[Player, Hand]*): GameBuilder = {
       val playMap = plays.foldLeft(Map.empty[Player, Hand]){ case (plays, play) => plays + play }
