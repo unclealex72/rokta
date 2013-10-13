@@ -37,9 +37,9 @@ import scala.collection.SortedSet
  * @author alex
  *
  */
-class StatisticsServiceImplSpec extends Specification {
+class SnapshotsFactoryImplSpec extends Specification {
 
-  val statisticsService = new StatisticsServiceImpl
+  val statisticsService = new SnapshotsFactoryImpl
 
   "Adding a new player to a snapshot" should {
     val game: Game = freddie losesAt (September(12, 2013) at (11 oclock)) whilst (brian plays (3)) and (roger plays (2))

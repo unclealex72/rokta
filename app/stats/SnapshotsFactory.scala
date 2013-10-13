@@ -29,10 +29,12 @@ import org.joda.time.DateTime
 import model.Player
 
 /**
+ * A trait to generate [[Snapshot]]s from [[Game]]s. [[Snapshot]]s are used to both plot player graphs and
+ * to generate [[League]]s.
  * @author alex
  *
  */
-trait StatisticsService {
+trait SnapshotsFactory {
 
   /**
    * Calculate all the snapshots for each player.
