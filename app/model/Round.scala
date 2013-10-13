@@ -55,12 +55,12 @@ case class Round(
   /**
    * The persisted [[Person]] who is counting for this round.
    */
-  lazy val _counter: StatefulManyToOne[Player] = RoktaSchema.counterToRounds.rightStateful(this)
+  lazy val _counter: StatefulManyToOne[PersistedPlayer] = RoktaSchema.counterToRounds.rightStateful(this)
 
   /**
    * The [[Person]] who counted this round.
    */
-  lazy val counter: Player = _counter.one.get
+  lazy val counter: PersistedPlayer = _counter.one.get
   
   /**
    * The [[Play]]s contained in this round
@@ -75,7 +75,7 @@ case class Round(
   /**
    * Add plays to this round
    */
-  def addPlays(plays: Map[Player, Hand]): Round = {
+  def addPlays(plays: Map[PersistedPlayer, Hand]): Round = {
     plays.foreach { case (person, hand) => this.plays.associate(Play(this, person, hand)) }
     this
   }
@@ -106,7 +106,7 @@ object Round {
   
   implicit def ordering: Ordering[Round] = Ordering.fromLessThan(_.round < _.round)
 
-  def apply(counter: Player, game: PersistedGame, round: Int): Round = {
+  def apply(counter: PersistedPlayer, game: PersistedGame, round: Int): Round = {
     val rnd = Round(0, counter.id, game.id, round)
     rnd.save
     rnd
@@ -115,7 +115,7 @@ object Round {
    * A convenience function to map [[Play]]s to their players.
    */
   def playersOf: Iterable[Play] => Set[Player] = plays =>
-    plays.foldLeft(Set.empty[Player]) { (ps: Set[Player], p: Play) => ps + p.player }
+    plays.foldLeft(Set.empty[Player]) { (ps, p) => ps + p.player }
 
 
 }

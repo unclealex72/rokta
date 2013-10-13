@@ -3,10 +3,10 @@
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
- * distributed with work for additional information
- * regarding copyright ownership.  The ASF licenses file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
  * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use file except in compliance
+ * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
@@ -18,27 +18,34 @@
  * specific language governing permissions and limitations
  * under the License.
  *
- */
-
-package model
-
-/**
- * A database independent trait for Rokta players.
- * @author alex
+ * @author unclealex72
  *
  */
-trait Player {
+package model
 
+import org.squeryl.KeyedEntity
+
+/**
+ * The representation of a Rokta player.
+ */
+case class PersistedPlayer(
+  /**
+   * The synthetic ID of this element.
+   */
+  val id: Long,
   /**
    * The player's name.
    */
-  def name: String
-  /**
-   * The Google email the player uses to log in.
-   */
-  def email: String
+	val name: String,
+	/**
+	 * The Google email the player uses to log in.
+	 */
+  val email: String,
   /**
    * The name of the colour used to represent the player's results in any graphs.
    */
-  def colour:  Colour
+	val _colour:  String) extends KeyedEntity[Long] with Player {
+  
+  def colour: Colour = Colour(_colour).getOrElse({ 
+    throw new IllegalStateException(s"${_colour} is not a valid colour.") })
 }

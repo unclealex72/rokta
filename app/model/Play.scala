@@ -58,12 +58,12 @@ case class Play (
   /**
    * The persisted player of this hand. 
    */
-  lazy val _player: StatefulManyToOne[Player] = RoktaSchema.playerToPlays.rightStateful(this)
+  lazy val _player: StatefulManyToOne[PersistedPlayer] = RoktaSchema.playerToPlays.rightStateful(this)
 
   /**
    * The player who played this hand.
    */
-  lazy val player: Player = _player.one.get
+  lazy val player: PersistedPlayer = _player.one.get
 
   /**
    * Indicate whether this hand beats another.
@@ -78,7 +78,7 @@ object Play {
   import dao.RoktaSchema._
   import dao.EntryPoint._
   
-  def apply(round: Round, player: Player, hand: Hand): Play = { 
+  def apply(round: Round, player: PersistedPlayer, hand: Hand): Play = { 
     val play = Play(0, round.id, player.id, hand.persistableToken)
     play.save
     play

@@ -28,8 +28,7 @@ import org.specs2.mutable.Specification
 import org.squeryl.Session
 import org.squeryl.SessionFactory
 import org.squeryl.adapters.H2Adapter
-import dao.EntryPoint._
-import model.GamePlayingTestDsl._
+import model.PersistedGameDsl._
 import model.Hand._
 import dao.RoktaSchema
 import dates.DaysAndTimes._
@@ -44,9 +43,10 @@ class PersistedGameSpec extends Specification {
   /**
    * Wrap tests with database creation and transactions
    */
-  def txn[B](block: PersistedGame => IndexedSeq[Round] => Player => Player => Player => Player => B) = {
+  def txn[B](block: PersistedGame => IndexedSeq[Round] => PersistedPlayer => PersistedPlayer => PersistedPlayer => PersistedPlayer => B) = {
 
     import dao.RoktaSchema._
+    import dao.EntryPoint._
 
     Class forName "org.h2.Driver"
     SessionFactory.concreteFactory = Some(() =>
@@ -55,10 +55,10 @@ class PersistedGameSpec extends Specification {
         new H2Adapter))
     inTransaction {
       RoktaSchema.create
-      val freddie  = Player(0, "Freddie", "freddie@queen.com", "BLACK")
-      val brian = Player(0, "Brian", "brian@queen.com", "BLUE")
-      val roger = Player(0, "Roger", "roger@queen.com", "RED")
-      val john = Player(0, "John", "john@queen.com", "WHITE")
+      val freddie  = PersistedPlayer(0, "Freddie", "freddie@queen.com", "BLACK")
+      val brian = PersistedPlayer(0, "Brian", "brian@queen.com", "BLUE")
+      val roger = PersistedPlayer(0, "Roger", "roger@queen.com", "RED")
+      val john = PersistedPlayer(0, "John", "john@queen.com", "WHITE")
 
       Seq(freddie, roger, brian, john).foreach { person =>
         person.save
@@ -75,34 +75,42 @@ class PersistedGameSpec extends Specification {
 
   "A newly created game" should {
     "have Roger, Brian and Freddie as participants" in txn { game => rounds => freddie => roger => brian => john => 
-      game.participants must contain(exactly(roger, brian, freddie))
+      game.participants must contain(exactly(roger.asInstanceOf[Player], brian, freddie))
+    }
+    "record that Brian played 3 rounds whilst both Freddie and Roger played 4" in txn { 
+      game => rounds => freddie => roger => brian => john => 
+        game.roundsPlayed(brian) must be equalTo(3)
+        game.roundsPlayed(freddie) must be equalTo(4)
+        game.roundsPlayed(roger) must be equalTo(4)
+        game.roundsPlayed(john) must be equalTo(0)
     }
   }
+  
   "The first round" should {
     "be drawn" in txn { game => rounds => freddie => roger => brian => john => 
       val roundOne = rounds(0)
-      roundOne.losers must contain(exactly(roger, brian, freddie))
+      roundOne.losers must contain(exactly(roger.asInstanceOf[Player], brian, freddie))
     }
   }
 
   "The second round" should {
     "also be drawn" in txn { game => rounds => freddie => roger => brian => john =>
       val roundTwo = rounds(1)
-      roundTwo.losers must contain(exactly(roger, brian, freddie))
+      roundTwo.losers must contain(exactly(roger.asInstanceOf[Player], brian, freddie))
     }
   }
 
   "The third round" should {
     "be won by Brian" in txn { game => rounds => freddie => roger => brian => john =>
       val roundThree = rounds(2)
-      roundThree.losers must contain(exactly(roger, freddie))
+      roundThree.losers must contain(exactly(roger.asInstanceOf[Player], freddie))
     }
   }
 
   "The fourth round" should {
     "be won by Freddie" in txn { game => rounds => freddie => roger => brian => john =>
       val roundFour = rounds(3)
-      roundFour.losers must contain(exactly(roger))
+      roundFour.losers must contain(exactly(roger.asInstanceOf[Player]))
     }
   }
 
@@ -111,34 +119,4 @@ class PersistedGameSpec extends Specification {
       game.loser must be equalTo (Some(roger))
     }
   }
-}
-/**
- * An object containing a DSL for creating test games. For convenience, it is assumed that one person counts
- * all the rounds.
- * @author alex
- *
- */
-object GamePlayingTestDsl {
-
-  // Players
-  
-  implicit class PlayerImplicits(val person: Player) {
-    
-    def instigatesAt(when: DateTime) = GameBuilder(person, when, Seq.empty)
-    
-    def plays(hand: Hand): Pair[Player, Hand] = person -> hand
-    
-  }
-  
-  case class GameBuilder(val instigator: Player, val when: DateTime, val allPlays: Seq[Map[Player, Hand]]) {
-    
-    def and(plays : Pair[Player, Hand]*): GameBuilder = {
-      val playMap = plays.foldLeft(Map.empty[Player, Hand]){ case (plays, play) => plays + play }
-      GameBuilder(instigator, when, allPlays :+ playMap)
-    }
-    def countedBy(counter: Player): PersistedGame = {
-      val game = PersistedGame(instigator, when)
-      allPlays.foldLeft(game) { case (game, plays) => game.addRound(counter, plays)}
-    }
-  }  
 }

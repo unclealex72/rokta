@@ -69,14 +69,14 @@ case class PersistedGame(
   /**
    * The persisted instigator for this game.
    */
-  lazy val _instigator: StatefulManyToOne[Player] = instigatorToGames.rightStateful(PersistedGame.this)
+  lazy val _instigator: StatefulManyToOne[PersistedPlayer] = instigatorToGames.rightStateful(PersistedGame.this)
 
   /**
    * The instigator for this game.
    */
-  lazy val instigator: Player = _instigator.one.get
+  lazy val instigator: PersistedPlayer = _instigator.one.get
 
-  def participants: Set[Player] = rounds.headOption.map(_.participants).getOrElse(Set.empty[Player])
+  lazy val participants: Set[Player] = rounds.headOption.map(_.participants).getOrElse(Set.empty[Player])
   
   /**
    * Get the person who lost this game.
@@ -95,12 +95,18 @@ case class PersistedGame(
    * @param plays The [[Hand]]s played by each [[Person]].
    * @return this.
    */
-  def addRound(counter: Player, plays: Map[Player, Hand]): PersistedGame = {
+  def addRound(counter: PersistedPlayer, plays: Map[PersistedPlayer, Hand]): PersistedGame = {
     _rounds.associate((Round(counter, PersistedGame.this, numberOfRounds)).addPlays(plays))
     PersistedGame.this
   }
   
   def numberOfRounds: Int = _rounds.size
+  
+  lazy val roundsPlayed: Map[Player, Int] = 
+    participants.foldLeft(Map.empty[Player, Int]){ (map, player) => 
+      val roundsPlayed = _rounds.filter(_.participants.contains(player)).size
+      map + (player -> roundsPlayed)
+    }.withDefaultValue(0)
 }
 
 object PersistedGame {
@@ -121,7 +127,7 @@ object PersistedGame {
    * @param rounds The [[Round]]s of the game.
    * @return A new unpersisted [[Game]].
    */
-  def apply(instigator: Player, datePlayed: DateTime): PersistedGame = {
+  def apply(instigator: PersistedPlayer, datePlayed: DateTime): PersistedGame = {
     val game = PersistedGame(0, instigator.id, new Timestamp(datePlayed.toDate().getTime()))
     game.save
     game

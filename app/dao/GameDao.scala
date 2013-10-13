@@ -25,7 +25,7 @@ package dao
 import filter.ContiguousGameFilter
 import scala.collection.immutable.SortedSet
 import model.PersistedGame
-import model.Player
+import model.PersistedPlayer
 import java.util.Date
 import org.joda.time.DateTime
 
@@ -50,5 +50,5 @@ trait GameDao {
    * @param datePlayed The date and time the game was played.
    * @return A new game.
    */
-  def newGame(instigator: Player, datePlayed: DateTime): PersistedGame
+  def newGame(instigator: PersistedPlayer, datePlayed: DateTime): PersistedGame
 }

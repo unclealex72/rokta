@@ -27,7 +27,7 @@ import org.squeryl.Schema
 import dao.EntryPoint._
 import model.PersistedGame
 import model.Play
-import model.Player
+import model.PersistedPlayer
 import model.Round
 
 object RoktaSchema extends Schema {
@@ -44,7 +44,7 @@ object RoktaSchema extends Schema {
   on(plays)(p => declare(
     p.id is (autoIncremented)))
 
-  val players = table[Player]
+  val players = table[PersistedPlayer]
   on(players)(p => declare(
     p.id is (autoIncremented)))
 

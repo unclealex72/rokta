@@ -28,7 +28,7 @@ import org.squeryl.Session
 import org.squeryl.SessionFactory
 import org.squeryl.adapters.H2Adapter
 import model.PersistedGame
-import model.Player
+import model.PersistedPlayer
 import scala.collection.immutable.SortedSet
 import filter.BetweenGameFilter
 import filter.SinceGameFilter
@@ -62,7 +62,7 @@ class SquerylDaoSpec extends Specification {
         new H2Adapter))
     inTransaction {
       RoktaSchema.create
-      val freddie  = Player(0, "Freddie", "freddie@queen.com", "BLACK")
+      val freddie  = PersistedPlayer(0, "Freddie", "freddie@queen.com", "BLACK")
       freddie.save
       
       val squerylDao = new SquerylDao

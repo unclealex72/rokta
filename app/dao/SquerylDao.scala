@@ -43,7 +43,7 @@ import filter.SinceGameFilter
 import filter.UntilGameFilter
 import filter.YearGameFilter
 import model.PersistedGame
-import model.Player
+import model.PersistedPlayer
 
 /**
  * The Squeryl implementation of [[GameDao]], [[PersonDao]] and [[Transactional]].
@@ -77,6 +77,6 @@ class SquerylDao extends GameDao with PlayerDao with Transactional {
     }
   }
 
-  def newGame(instigator: Player, datePlayed: DateTime): PersistedGame = PersistedGame(instigator, datePlayed)
+  def newGame(instigator: PersistedPlayer, datePlayed: DateTime): PersistedGame = PersistedGame(instigator, datePlayed)
 
 }
