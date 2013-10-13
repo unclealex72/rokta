@@ -28,6 +28,7 @@ import model.PersistedGame
 import model.PersistedPlayer
 import java.util.Date
 import org.joda.time.DateTime
+import model.Game
 
 /**
  * A Data access object used to persist and retrieve [[Game]]s.
@@ -44,6 +45,18 @@ trait GameDao {
   def games(
     contiguousGameFilter: Option[ContiguousGameFilter]): SortedSet[PersistedGame]
   
+  /**
+   * Get the last game played.
+   * @return the last game played or none if no games have been played.
+   */
+  def lastGamePlayed: Option[Game]
+  
+  /**
+   * Get the first game played.
+   * @return the first game played or none if no games have been played.
+   */
+  def firstGamePlayed: Option[Game]
+
   /**
    * Create a new game to which rounds can be added.
    * @param instigator The instigator

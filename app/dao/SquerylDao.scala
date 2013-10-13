@@ -28,13 +28,22 @@ import scala.collection.immutable.SortedSet
 import scala.math.Ordering
 
 import org.joda.time.DateTime
-import org.squeryl.Table
 import org.squeryl.dsl.NonNumericalExpression
 import org.squeryl.dsl.ast.LogicalBoolean
-import org.squeryl.dsl.fsm.Conditioned
-import org.squeryl.dsl.fsm.WhereState
 
-import dao.EntryPoint._
+import dao.EntryPoint.createOutMapperIntType
+import dao.EntryPoint.dayOfMonth
+import dao.EntryPoint.from
+import dao.EntryPoint.inTransaction
+import dao.EntryPoint.int2ScalarInt
+import dao.EntryPoint.month
+import dao.EntryPoint.orderByArg2OrderByExpression
+import dao.EntryPoint.select
+import dao.EntryPoint.timestamp2ScalarTimestamp
+import dao.EntryPoint.typedExpression2OrderByArg
+import dao.EntryPoint.where
+import dao.EntryPoint.year
+import dao.RoktaSchema.{games => tgames}
 import filter.BetweenGameFilter
 import filter.ContiguousGameFilter
 import filter.DayGameFilter
@@ -56,7 +65,7 @@ class SquerylDao extends GameDao with PlayerDao with Transactional {
 
   def games(contiguousGameFilter: Option[ContiguousGameFilter]): SortedSet[PersistedGame] = {
     implicit val ordering: Ordering[PersistedGame] = Ordering.by(_.datePlayed.getMillis())
-    from(RoktaSchema.games)(g => contiguousGameFilter match {
+    from(tgames)(g => contiguousGameFilter match {
       case None => select(g)
       case Some(cgf) => where(contiguous(cgf)(g)) select (g)
     }).foldLeft(SortedSet.empty[PersistedGame]) { case (gs, g) => gs + g }
@@ -76,6 +85,12 @@ class SquerylDao extends GameDao with PlayerDao with Transactional {
       case BetweenGameFilter(from, to) => g.datePlayed between (from, to)
     }
   }
+
+  def lastGamePlayed: Option[PersistedGame] = 
+    from(tgames)(g => select(g) orderBy(g._datePlayed).desc).page(0, 1).headOption
+    
+  def firstGamePlayed: Option[PersistedGame] = 
+    from(tgames)(g => select(g) orderBy(g._datePlayed).asc).page(0, 1).headOption
 
   def newGame(instigator: PersistedPlayer, datePlayed: DateTime): PersistedGame = PersistedGame(instigator, datePlayed)
 

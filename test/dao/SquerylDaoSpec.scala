@@ -141,4 +141,20 @@ class SquerylDaoSpec extends Specification {
             g => g.datePlayed.getYear() == 2013 && g.datePlayed.getMonthOfYear() == 7 && g.datePlayed.getDayOfMonth() == 6)
     }
   }
+  
+  "Getting the first game" should {
+    "return the first game" in txn { squerylDao => implicit games =>
+      squerylDao.firstGamePlayed.toSeq must matchFilter(
+            g => g.datePlayed.getYear() == 2013 && g.datePlayed.getMonthOfYear() == 1 && g.datePlayed.getDayOfMonth() == 1
+            && g.datePlayed.getHourOfDay() == 10)
+    }
+  }
+
+  "Getting the last game" should {
+    "return the last game" in txn { squerylDao => implicit games =>
+      squerylDao.lastGamePlayed.toSeq must matchFilter(
+            g => g.datePlayed.getYear() == 2014 && g.datePlayed.getMonthOfYear() == 12 && g.datePlayed.getDayOfMonth() == 31
+            && g.datePlayed.getHourOfDay() == 11)
+    }
+  }
 }
