@@ -3,7 +3,7 @@ name := "rokta"
 version := "1.0-SNAPSHOT"
 
 libraryDependencies ++= Seq(
-  "org.squeryl" %% "squeryl" % "0.9.6-RC1",
+  "org.squeryl" %% "squeryl" % "0.9.5-6",
   "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
   "com.typesafe" %% "scalalogging-slf4j" % "1.0.1",
   "ch.qos.logback" % "logback-classic" % "1.0.13",

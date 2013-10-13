@@ -32,18 +32,19 @@ import dao.EntryPoint._
 import model.GamePlayingTestDsl._
 import model.Hand._
 import dao.RoktaSchema
+import dates.DaysAndTimes._
 
 /**
  * Tests for game playing mechanics.
  * @author alex
  *
  */
-class GameSpec extends Specification {
+class PersistedGameSpec extends Specification {
 
   /**
    * Wrap tests with database creation and transactions
    */
-  def txn[B](block: Game => IndexedSeq[Round] => Player => Player => Player => Player => B) = {
+  def txn[B](block: PersistedGame => IndexedSeq[Round] => Player => Player => Player => Player => B) = {
 
     import dao.RoktaSchema._
 
@@ -62,7 +63,7 @@ class GameSpec extends Specification {
       Seq(freddie, roger, brian, john).foreach { person =>
         person.save
       }
-      val game: Game = freddie instigatesAt ("05/09/1972 09:12") and
+      val game: PersistedGame = freddie instigatesAt (September(5, 1972).at(9, 12)) and
         (freddie plays SCISSORS, roger plays SCISSORS, brian plays SCISSORS) and
         (freddie plays ROCK, roger plays SCISSORS, brian plays PAPER) and
         (freddie plays ROCK, roger plays ROCK, brian plays PAPER) and
@@ -72,46 +73,36 @@ class GameSpec extends Specification {
     }
   }
 
-  "Creating a new game at a given date and time" should {
-    "set the correct year played" in txn { game => rounds => freddie => roger => brian => john =>
-        game.yearPlayed must be equalTo (1972)
-    }
-    "set the correct month played" in txn { game => rounds => freddie => roger => brian => john =>
-      game.monthPlayed must be equalTo (9)
-    }
-    "set the correct week played" in txn { game => rounds => freddie => roger => brian => john =>
-      game.weekPlayed must be equalTo (36)
-    }
-    "set the correct day played" in txn { game => rounds => freddie => roger => brian => john =>
-      game.dayPlayed must be equalTo (5)
+  "A newly created game" should {
+    "have Roger, Brian and Freddie as participants" in txn { game => rounds => freddie => roger => brian => john => 
+      game.participants must contain(exactly(roger, brian, freddie))
     }
   }
-
   "The first round" should {
     "be drawn" in txn { game => rounds => freddie => roger => brian => john => 
       val roundOne = rounds(0)
-      roundOne.losers must containTheSameElementsAs(Seq(roger, brian, freddie))
+      roundOne.losers must contain(exactly(roger, brian, freddie))
     }
   }
 
   "The second round" should {
     "also be drawn" in txn { game => rounds => freddie => roger => brian => john =>
       val roundTwo = rounds(1)
-      roundTwo.losers must containTheSameElementsAs(Seq(roger, brian, freddie))
+      roundTwo.losers must contain(exactly(roger, brian, freddie))
     }
   }
 
   "The third round" should {
     "be won by Brian" in txn { game => rounds => freddie => roger => brian => john =>
       val roundThree = rounds(2)
-      roundThree.losers must containTheSameElementsAs(Seq(roger, freddie))
+      roundThree.losers must contain(exactly(roger, freddie))
     }
   }
 
   "The fourth round" should {
     "be won by Freddie" in txn { game => rounds => freddie => roger => brian => john =>
       val roundFour = rounds(3)
-      roundFour.losers must containTheSameElementsAs(Seq(roger))
+      roundFour.losers must contain(exactly(roger))
     }
   }
 
@@ -121,7 +112,6 @@ class GameSpec extends Specification {
     }
   }
 }
-
 /**
  * An object containing a DSL for creating test games. For convenience, it is assumed that one person counts
  * all the rounds.
@@ -130,13 +120,11 @@ class GameSpec extends Specification {
  */
 object GamePlayingTestDsl {
 
-  val DATE_FORMATTER = DateTimeFormat.forPattern("dd/MM/yyyy hh:mm")
-
   // Players
   
   implicit class PlayerImplicits(val person: Player) {
     
-    def instigatesAt(when: String) = GameBuilder(person, DATE_FORMATTER parseDateTime when, Seq.empty)
+    def instigatesAt(when: DateTime) = GameBuilder(person, when, Seq.empty)
     
     def plays(hand: Hand): Pair[Player, Hand] = person -> hand
     
@@ -148,8 +136,8 @@ object GamePlayingTestDsl {
       val playMap = plays.foldLeft(Map.empty[Player, Hand]){ case (plays, play) => plays + play }
       GameBuilder(instigator, when, allPlays :+ playMap)
     }
-    def countedBy(counter: Player): Game = {
-      val game = Game(instigator, when)
+    def countedBy(counter: Player): PersistedGame = {
+      val game = PersistedGame(instigator, when)
       allPlays.foldLeft(game) { case (game, plays) => game.addRound(counter, plays)}
     }
   }  

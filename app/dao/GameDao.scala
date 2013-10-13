@@ -20,27 +20,35 @@
  *
  */
 
-package model
+package dao
 
+import filter.ContiguousGameFilter
+import scala.collection.immutable.SortedSet
+import model.PersistedGame
+import model.Player
+import java.util.Date
 import org.joda.time.DateTime
-import model.JodaDateTime._
 
 /**
- * A trait for [[PersistedGame]] that allows other components to be tested without having to set up a database.
+ * A Data access object used to persist and retrieve [[Game]]s.
  * @author alex
  *
  */
-trait Game {
+trait GameDao {
 
-  def datePlayed: DateTime
+  /**
+   * Get all games matching an optional [[ContiguousGameFilter]] in date played order.
+   * @param contiguousGameFilter A [[ContiguousGameFilter]] used to optionally filter games.
+   * @return All played games matching the supplied filters in date played order.
+   */
+  def games(
+    contiguousGameFilter: Option[ContiguousGameFilter]): SortedSet[PersistedGame]
   
-  def loser: Option[Player]
-  
-  def numberOfRounds: Int
-  
-  def participants: Set[Player]  
-}
-
-object Game {
-  implicit def gameOrdering: Ordering[Game] = Ordering.by(_.datePlayed)
+  /**
+   * Create a new game to which rounds can be added.
+   * @param instigator The instigator
+   * @param datePlayed The date and time the game was played.
+   * @return A new game.
+   */
+  def newGame(instigator: Player, datePlayed: DateTime): PersistedGame
 }

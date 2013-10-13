@@ -20,27 +20,13 @@
  *
  */
 
-package model
-
-import org.joda.time.DateTime
-import model.JodaDateTime._
+package dao
 
 /**
- * A trait for [[PersistedGame]] that allows other components to be tested without having to set up a database.
+ * A Data access object for players.
  * @author alex
  *
  */
-trait Game {
+trait PlayerDao {
 
-  def datePlayed: DateTime
-  
-  def loser: Option[Player]
-  
-  def numberOfRounds: Int
-  
-  def participants: Set[Player]  
-}
-
-object Game {
-  implicit def gameOrdering: Ordering[Game] = Ordering.by(_.datePlayed)
 }

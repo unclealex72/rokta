@@ -19,28 +19,35 @@
  * under the License.
  *
  */
-
-package model
-
-import org.joda.time.DateTime
-import model.JodaDateTime._
+package dao
 
 /**
- * A trait for [[PersistedGame]] that allows other components to be tested without having to set up a database.
+ * A trait used to wrap calls to [[GameDao]] and [[PersonDao]] within transactions.
  * @author alex
  *
  */
-trait Game {
+trait Transactional {
 
-  def datePlayed: DateTime
-  
-  def loser: Option[Player]
-  
-  def numberOfRounds: Int
-  
-  def participants: Set[Player]  
+  /**
+   * Run code within a transaction.
+   * @param block The code to run with a DAO injected.
+   */
+  def apply[T](block: PlayerDao => GameDao => T): T = tx(block)
+
+  /**
+   * Run code within a transaction.
+   * @param block The code to run with a DAO injected.
+   */
+  def tx[T](block: PlayerDao => GameDao => T): T
+
 }
 
-object Game {
-  implicit def gameOrdering: Ordering[Game] = Ordering.by(_.datePlayed)
+/**
+ * A helper object for quickly injecting static game DAOs.
+ */
+object Transactional {
+
+  def apply(personDao: PlayerDao, gameDao: GameDao) = new Transactional() {
+    def tx[T](block: PlayerDao => GameDao => T): T = block(personDao)(gameDao)
+  }
 }

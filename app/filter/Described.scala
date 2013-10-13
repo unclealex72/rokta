@@ -20,27 +20,10 @@
  *
  */
 
-package model
-
-import org.joda.time.DateTime
-import model.JodaDateTime._
+package filter
 
 /**
- * A trait for [[PersistedGame]] that allows other components to be tested without having to set up a database.
+ * A class used to hold a game filter's or modifier's key.
  * @author alex
- *
  */
-trait Game {
-
-  def datePlayed: DateTime
-  
-  def loser: Option[Player]
-  
-  def numberOfRounds: Int
-  
-  def participants: Set[Player]  
-}
-
-object Game {
-  implicit def gameOrdering: Ordering[Game] = Ordering.by(_.datePlayed)
-}
+class Described(val key: String)

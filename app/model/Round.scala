@@ -48,7 +48,7 @@ case class Round(
 	/**
 	 * The number of this round within a [[Game]]
 	 */
-	val round: Integer) extends KeyedEntity[Long] {
+	val round: Int) extends KeyedEntity[Long] {
 
   import Round._
   
@@ -106,7 +106,7 @@ object Round {
   
   implicit def ordering: Ordering[Round] = Ordering.fromLessThan(_.round < _.round)
 
-  def apply(counter: Player, game: Game, round: Integer): Round = {
+  def apply(counter: Player, game: PersistedGame, round: Int): Round = {
     val rnd = Round(0, counter.id, game.id, round)
     rnd.save
     rnd

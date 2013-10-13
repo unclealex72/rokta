@@ -52,4 +52,6 @@ object JodaDateTime {
    * Create a new date time with the correct chronology.
    */
   def apply(d: Date) = new JDateTime(d).withChronology(DEFAULT_CHRONOLOGY)
+  
+  implicit val dateTimeOrdering: Ordering[JDateTime] = Ordering.by(_.getMillis)
 }
