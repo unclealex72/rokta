@@ -32,13 +32,30 @@ import model.JodaDateTime._
  */
 trait Game {
 
+  /**
+   * The date and time this game was played.
+   */
   def datePlayed: DateTime
   
+  /**
+   * The person who lost the game if it is finished or None otherwise.
+   */
   def loser: Option[Player]
   
+  /**
+   * The total number of rounds played.
+   */
   def numberOfRounds: Int
   
-  def participants: Set[Player]  
+  /**
+   * The original participants.
+   */
+  def participants: Set[Player]
+  
+  /**
+   * The number of rounds each player played.
+   */
+  def roundsPlayed: Map[Player, Int]
 }
 
 object Game {

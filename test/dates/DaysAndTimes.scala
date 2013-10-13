@@ -31,6 +31,15 @@ import org.joda.time.DateTime
  */
 object DaysAndTimes {
 
+  case class Time(val hour: Int, val minute: Int)
+  val midnight = Time(0, 0)
+  val midday = Time(12, 0)
+  
+  implicit class TimeImplicits(hour: Int) {
+    def oclock = :>(0)
+    def :>(minutes: Int) = Time(hour, minutes)
+  }
+  
   case class Year(val year: Int) {
     
     def isLeapYear: Boolean = year % 400 == 0 || (year % 4 == 0 && year % 100 != 0)
@@ -43,7 +52,7 @@ object DaysAndTimes {
   }
 
   case class Day(val month: Month, val day: Int) {
-    def at(hour: Int, minute: Int): DateTime = new DateTime(month.year.year, month.month, day, hour, minute)
+    def at(time: Time): DateTime = new DateTime(month.year.year, month.month, day, time.hour, time.minute)
   }
 
   sealed class Month(val year: Year, val month: Int, val daysInMonth: Int, val extraDayDuringLeapYear: Boolean) {

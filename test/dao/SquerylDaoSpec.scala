@@ -99,7 +99,7 @@ class SquerylDaoSpec extends Specification {
   "Getting games between two dates" should {
     "return all games between those two dates" in txn { squerylDao => implicit games =>
       squerylDao.games(
-        Some(BetweenGameFilter(January(31, 2013).at(0, 0), February(2, 2013).at(23, 59)))) must matchFilter(
+        Some(BetweenGameFilter(January(31, 2013) at midnight, February(2, 2013) at(23 :> 59)))) must matchFilter(
           playedOn(January(31, 2013), February(1, 2013), February(2, 2013)))
     }
   } 
@@ -107,7 +107,7 @@ class SquerylDaoSpec extends Specification {
   "Getting games since a date" should {
     "return all games between since that date" in txn { squerylDao => implicit games =>
       squerylDao.games(
-        Some(SinceGameFilter(December(29, 2014).at(0, 0)))) must matchFilter(
+        Some(SinceGameFilter(December(29, 2014) at midnight))) must matchFilter(
           playedOn(December(29, 2014), December(30, 2014), December(31, 2014)))
     }
   }
@@ -115,7 +115,7 @@ class SquerylDaoSpec extends Specification {
   "Getting games until a date" should {
     "return all games between since that date" in txn { squerylDao => implicit games =>
       squerylDao.games(
-        Some(UntilGameFilter(January(3, 2013).at(23, 59)))) must matchFilter(
+        Some(UntilGameFilter(January(3, 2013).at(23 :> 59)))) must matchFilter(
           playedOn(January(1, 2013), January(2, 2013), January(3, 2013)))
     }
   }

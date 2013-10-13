@@ -63,7 +63,7 @@ class PersistedGameSpec extends Specification {
       Seq(freddie, roger, brian, john).foreach { person =>
         person.save
       }
-      val game: PersistedGame = freddie instigatesAt (September(5, 1972).at(9, 12)) and
+      val game: PersistedGame = freddie instigatesAt (September(5, 1972) at (9:> 12)) and
         (freddie plays SCISSORS, roger plays SCISSORS, brian plays SCISSORS) and
         (freddie plays ROCK, roger plays SCISSORS, brian plays PAPER) and
         (freddie plays ROCK, roger plays ROCK, brian plays PAPER) and
