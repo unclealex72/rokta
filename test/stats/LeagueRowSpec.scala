@@ -24,6 +24,7 @@ package stats
 
 import org.specs2.mutable.Specification
 import stats.LeagueRow._
+
 /**
  * @author alex
  *
@@ -32,37 +33,37 @@ class LeagueRowSpec extends Specification {
 
   "League rows with lower loss rates" should {
     "beat those with higher loss rates" in {
-      LeagueRow("Freddie", true, 3, 1, 1, 1) must be lessThan(LeagueRow("Freddie", true, 1, 3, 1, 1))
+      LeagueRow("Freddie", 3, 1, 1, 1) must be lessThan(LeagueRow("Freddie", 1, 3, 1, 1))
     }
   }
   
   "League rows with equal loss rates but with lower rounds per won game rates" should {
     "beat those with equal loss rates but with higher rounds per won game rates" in {
-      LeagueRow("Freddie", true, 1, 1, 1, 1) must be lessThan(LeagueRow("Freddie", true, 1, 1, 2, 1))
+      LeagueRow("Freddie", 1, 1, 1, 1) must be lessThan(LeagueRow("Freddie", 1, 1, 2, 1))
     }
   }
 
   "League rows with equal loss rates and rounds per won game rates but with higher rounds per lost game rates" should {
     "beat those with equal loss rates and rounds per won game rates but with lower rounds per won game rates" in {
-      LeagueRow("Freddie", true, 1, 1, 1, 2) must be lessThan(LeagueRow("Freddie", true, 1, 1, 1, 1))
+      LeagueRow("Freddie", 1, 1, 1, 2) must be lessThan(LeagueRow("Freddie", 1, 1, 1, 1))
     }
   }
 
   "League rows with equal loss rates and rounds per won game rates but with higher rounds per lost game rates" should {
     "beat those with equal loss rates and rounds per won game rates but with lower rounds per won game rates" in {
-      LeagueRow("Freddie", true, 1, 1, 1, 2) must be lessThan(LeagueRow("Freddie", true, 1, 1, 1, 1))
+      LeagueRow("Freddie", 1, 1, 1, 2) must be lessThan(LeagueRow("Freddie", 1, 1, 1, 1))
     }
   }
   
   "League rows with equal loss rates and round ratios but with more games played" should {
     "beat those with equal loss rates and round ratios but with less games played" in {
-      LeagueRow("Freddie", true, 2, 2, 2, 2) must be lessThan(LeagueRow("Freddie", true, 1, 1, 1, 1))
+      LeagueRow("Freddie", 2, 2, 2, 2) must be lessThan(LeagueRow("Freddie", 1, 1, 1, 1))
     }
   }
   
   "League rows that are equal except for player name" should {
     "be ordered by the name of the player" in {
-      LeagueRow("Freddie", true, 2, 2, 2, 2) must be lessThan(LeagueRow("Roger", true, 2, 2, 2, 2))
+      LeagueRow("Freddie", 2, 2, 2, 2) must be lessThan(LeagueRow("Roger", 2, 2, 2, 2))
       
     }
   }

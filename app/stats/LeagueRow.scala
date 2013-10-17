@@ -31,10 +31,6 @@ case class LeagueRow(
    */
   playerName: String,
   /**
-   * True if the player is currently playing today, false otherwise.
-   */
-  currentlyPlaying: Boolean,
-  /**
    * The number of games the player has won.
    */
   gamesWon: Int,
@@ -45,21 +41,62 @@ case class LeagueRow(
   /**
    * The number of rounds the player has played in games they've won.
    */
-  roundsWon: Int,
+  roundsDuringWinningGames: Int,
   /**
    * The number of rounds the player has played in games they've won.
    */
-  roundsLost: Int,
+  roundsDuringLosingGames: Int,
   /**
    * The number of places the player has dropped since the last league 
-   * (e.g. 2 means the player has dropped from 1st to 3rd).
+   * (e.g. 2 means the player has dropped from 1st to 3rd). This will be <code>None</code> if the player did not
+   * partake in the previous league.
    */
-  movement: Int, 
+  movement: Option[Int], 
+  /**
+   * True if the player is currently playing today, false otherwise.
+   */
+  currentlyPlaying: Boolean,
+  /**
+   * True if the player is currently exempt, false otherwise.
+   */
+  exempt: Boolean,
   /**
    * The number of games needed to catch up with the player above.
    */
   gap: Option[Int]) {
-  
+
+  /**
+   * Create a new league row based on this one but with a new [[#movement]] property
+   */
+  def withMovement(newMovement: Int) = 
+    LeagueRow(
+      playerName, gamesWon, gamesLost, roundsDuringWinningGames, 
+      roundsDuringLosingGames, Some(newMovement), currentlyPlaying, exempt, gap)
+
+  /**
+   * Create a new league row based on this one but with a new [[#currentlyPlaying]] property
+   */
+  def withCurrentlyPlaying(newCurrentlyPlaying: Boolean) = 
+    LeagueRow(
+      playerName, gamesWon, gamesLost, roundsDuringWinningGames, 
+      roundsDuringLosingGames, movement, newCurrentlyPlaying, exempt, gap)
+
+  /**
+   * Create a new league row based on this one but with a new [[#exempt]] property
+   */
+  def withExempt(newExempt: Boolean) = 
+    LeagueRow(
+      playerName, gamesWon, gamesLost, roundsDuringWinningGames, 
+      roundsDuringLosingGames, movement, currentlyPlaying, newExempt, gap)
+
+      /**
+   * Create a new league row based on this one but with a new [[#gap]] property
+   */
+  def withGap(newGap: Int) = 
+    LeagueRow(
+      playerName, gamesWon, gamesLost, roundsDuringWinningGames, 
+      roundsDuringLosingGames, movement, currentlyPlaying, exempt, Some(newGap))
+      
   /**
    * The total number of games played.
    */
@@ -73,11 +110,11 @@ object LeagueRow {
    */
   def apply(
   playerName: String,
-  currentlyPlaying: Boolean,
   gamesWon: Int,
   gamesLost: Int,
-  roundsWon: Int,
-  roundsLost: Int): LeagueRow = LeagueRow(playerName, currentlyPlaying, gamesWon, gamesLost, roundsWon, roundsLost, 0, None)
+  roundsDuringWinningGames: Int,
+  roundsDuringLosingGames: Int): LeagueRow = LeagueRow(
+      playerName, gamesWon, gamesLost, roundsDuringWinningGames, roundsDuringLosingGames, None, false, false, None)
 
   /**
    * A class that represents fractions.
@@ -111,8 +148,8 @@ object LeagueRow {
    */
   implicit val leagueRowOrdering = {
     val lossOrdering = (lr: LeagueRow) => lr.gamesLost over lr.gamesPlayed
-    val winningRoundOrdering = (lr: LeagueRow) => lr.roundsWon over lr.gamesWon
-    val losingRoundOrdering = (lr: LeagueRow) => -lr.roundsLost over lr.gamesLost
+    val winningRoundOrdering = (lr: LeagueRow) => lr.roundsDuringWinningGames over lr.gamesWon
+    val losingRoundOrdering = (lr: LeagueRow) => -lr.roundsDuringLosingGames over lr.gamesLost
     val gamesPlayedOrdering = (lr: LeagueRow) => -lr.gamesPlayed
     val playerNameOrdering = (lr: LeagueRow) => lr.playerName
     Ordering.by{ (lr: LeagueRow) => 

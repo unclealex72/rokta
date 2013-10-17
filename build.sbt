@@ -9,6 +9,7 @@ libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "1.0.13",
   "joda-time" % "joda-time" % "2.2",
   "org.joda" % "joda-convert" % "1.3.1",
+  "com.escalatesoft.subcut" %% "subcut" % "2.0",
   // JSON
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.2.2",
   "com.fasterxml.jackson.core" % "jackson-annotations" % "2.2.2",
@@ -16,8 +17,11 @@ libraryDependencies ++= Seq(
   "com.fasterxml.jackson.datatype" % "jackson-datatype-joda" % "2.2.2",
   jdbc,
   cache,
+  "org.mockito" % "mockito-core" % "1.9.5" % "test",
   "org.specs2" %% "specs2" % "2.2.3" % "test"
 )     
+
+addCompilerPlugin("com.escalatesoft.subcut" %% "subcut" % "2.0")
 
 resolvers ++= Seq("releases"  at "http://oss.sonatype.org/content/repositories/releases")
 
