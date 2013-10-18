@@ -166,6 +166,12 @@ class LeagueFactoryImplSpec extends Specification with Mockito {
         (gapCalculator: GapCalculator) =>
           def snapshots =
             on(
+              October(15, 2013) at (9 oclock),
+              "Brian".wins(5).playingRounds(12).loses(1).playingRounds(12),
+              "Roger".wins(4).playingRounds(12).loses(2).playingRounds(12),
+              "Freddie".wins(3).playingRounds(12).loses(3).playingRounds(12),
+              "John".wins(1).playingRounds(12).loses(2).playingRounds(12)) ++
+            on(
               October(15, 2013) at (11 oclock),
               "Brian".wins(5).playingRounds(12).loses(1).playingRounds(12),
               "Roger".wins(4).playingRounds(12).loses(2).playingRounds(12),
