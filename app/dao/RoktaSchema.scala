@@ -32,21 +32,28 @@ import model.Round
 
 object RoktaSchema extends Schema {
 
-  val games = table[PersistedGame]
+  val games = table[PersistedGame]("game")
   on(games)(g => declare(
-    g.id is (autoIncremented)))
+    g.id is (autoIncremented("game_id_seq")),
+    g._datePlayed is (unique, indexed),
+    g.instigatorId is (indexed)))
 
-  val rounds = table[Round]
+  val rounds = table[Round]("round")
   on(rounds)(r => declare(
-    r.id is (autoIncremented)))
+    r.id is (autoIncremented("round_id_seq")),
+    r.gameId is (indexed)))
 
-  val plays = table[Play]
+  val plays = table[Play]("play")
   on(plays)(p => declare(
-    p.id is (autoIncremented)))
+    p.id is (autoIncremented("play_id_seq")),
+    p.roundId is (indexed),
+    p._hand is (indexed)))
 
-  val players = table[PersistedPlayer]
+  val players = table[PersistedPlayer]("player")
   on(players)(p => declare(
-    p.id is (autoIncremented)))
+    p.id is (autoIncremented("player_id_seq")),
+    p.name is (unique, indexed),
+    p.email is (unique, indexed)))
 
   val instigatorToGames = oneToManyRelation(players, games).via((p, g) => p.id === g.instigatorId)
   val gameToRounds = oneToManyRelation(games, rounds).via((g, r) => g.id === r.gameId)

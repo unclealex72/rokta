@@ -27,6 +27,7 @@ import org.squeryl.KeyedEntity
 import org.squeryl.dsl.ManyToOne
 import org.squeryl.dsl.StatefulManyToOne
 import dao.RoktaSchema
+import org.squeryl.annotations.Column
 
 /**
  * A [[Hand]] played by a [[Person]] during a [[Round]] of a [[Game]].
@@ -35,18 +36,22 @@ case class Play (
   /**
    * The synthetic ID for this play.
    */
+  @Column("id")
   val id: Long, 
   /**
    * The ID of the [[Round]] to which this [[Play]] belongs
    */
+  @Column("round_id")
   val roundId: Long,
   /**
    * The person who played this hand.
    */
+  @Column("player_id")
   val playerId: Long, 
   /**
    * The hand the person played.
    */
+  @Column("hand")
   val _hand: String) extends KeyedEntity[Long] {
 
   /**

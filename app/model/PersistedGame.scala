@@ -25,6 +25,7 @@ package model
 import java.sql.Timestamp
 
 import scala.collection.immutable.SortedSet
+import org.squeryl.annotations.Column
 
 import org.joda.time.DateTime
 import org.squeryl.KeyedEntity
@@ -41,14 +42,17 @@ case class PersistedGame(
   /**
    * The synthetic ID of this game.
    */
+  @Column("id")
   val id: Long, 
   /**
    * The ID of the person who instigated this game.
    */
+  @Column("instigator_id")
   val instigatorId: Long, 
   /**
    * The date and time that this game was played.
    */
+  @Column("dateplayed")
   val _datePlayed: Timestamp) extends KeyedEntity[Long] with Game {
 
   /**

@@ -24,6 +24,7 @@
 package model
 
 import org.squeryl.KeyedEntity
+import org.squeryl.annotations.Column
 
 /**
  * The representation of a Rokta player.
@@ -32,18 +33,22 @@ case class PersistedPlayer(
   /**
    * The synthetic ID of this element.
    */
+  @Column("id")
   val id: Long,
   /**
    * The player's name.
    */
+  @Column("name")
 	val name: String,
 	/**
 	 * The Google email the player uses to log in.
 	 */
+	@Column("email")
   val email: String,
   /**
    * The name of the colour used to represent the player's results in any graphs.
    */
+  @Column("graphingcolour")
 	val _colour:  String) extends KeyedEntity[Long] with Player {
   
   def colour: Colour = Colour(_colour).getOrElse({ 

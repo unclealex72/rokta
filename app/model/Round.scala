@@ -28,6 +28,7 @@ import org.squeryl.KeyedEntity
 import org.squeryl.dsl.StatefulManyToOne
 import org.squeryl.dsl.StatefulOneToMany
 import dao.RoktaSchema
+import org.squeryl.annotations.Column
 
 /**
  * A round of [[Play]]s in a [[Game]].
@@ -36,14 +37,17 @@ case class Round(
   /**
    * The synthetic ID for this round.
    */
+  @Column("id")
   val id: Long,
 	/**
 	 * The [[Person]] who counted in this round.
 	 */
+  @Column("counter_id")
 	val counterId: Long,
 	/**
 	 * The ID of the [[Game]] to which this [[Round]] belongs
 	 */
+	@Column("game_id")
 	val gameId: Long,
 	/**
 	 * The number of this round within a [[Game]]
