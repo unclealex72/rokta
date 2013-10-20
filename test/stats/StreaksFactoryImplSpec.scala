@@ -1,0 +1,144 @@
+/**
+ * Copyright 2013 Alex Jones
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with work for additional information
+ * regarding copyright ownership.  The ASF licenses file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
+
+package stats
+
+import org.specs2.mutable.Specification
+import dates.DaysAndTimes._
+import org.joda.time.DateTime
+import model.Player
+import model.Game
+import model.Colour
+import stats.StreaksFactoryImplSpec._
+/**
+ * @author alex
+ *
+ */
+class StreaksFactoryImplSpec extends Specification {
+
+  val streaksFactory: StreaksFactoryImpl = new StreaksFactoryImpl
+  val freddie: Player = "Freddie"
+  val roger: Player = "Roger"
+  val brian: Player = "Brian"
+  val john: Player = "John"
+    
+  "A losing player" should {
+    "end their winning streak" in {
+      val game = September(5, 2013) at (11 oclock) lostBy(freddie) wonBy(john, roger, brian)
+      val winningStreak = 
+        Streak(freddie, September(5, 2013) at (9 oclock)) extendTo(September(5, 2013) at (10 oclock))
+      val winningStreaks: Map[Player, Streak] = Map(freddie -> winningStreak)
+      val streaksStatus = StreaksStatus(winningStreaks, Map.empty, Streaks())
+      val newStreaksStatus = streaksFactory.updateStreaksStatusPerParticipant(game)(streaksStatus, freddie)
+      newStreaksStatus.winningStreaks must beEmpty
+      newStreaksStatus.losingStreaks must contain(
+          exactly(freddie -> Streak(freddie, September(5, 2013) at (11 oclock))))
+      newStreaksStatus.streaks.winningStreaks must contain(exactly(winningStreak))
+    }
+    "extend their losing streak" in {
+      val game = September(5, 2013) at (11 oclock) lostBy(freddie) wonBy(john, roger, brian)
+      val losingStreak = 
+        Streak(freddie, September(5, 2013) at (9 oclock)) extendTo(September(5, 2013) at (10 oclock))
+      val losingStreaks: Map[Player, Streak] = Map(freddie -> losingStreak)
+      val streaksStatus = StreaksStatus(Map.empty, losingStreaks, Streaks())
+      val newStreaksStatus = streaksFactory.updateStreaksStatusPerParticipant(game)(streaksStatus, freddie)
+      newStreaksStatus.losingStreaks must contain(
+          exactly(freddie -> losingStreak.extendTo(September(5, 2013) at (11 oclock))))
+      newStreaksStatus.streaks.winningStreaks must beEmpty
+    }
+    "nullify a single won game" in {
+      val game = September(5, 2013) at (11 oclock) lostBy(freddie) wonBy(john, roger, brian)
+      val winningStreak = 
+        Streak(freddie, September(5, 2013) at (9 oclock))
+      val winningStreaks: Map[Player, Streak] = Map(freddie -> winningStreak)
+      val streaksStatus = StreaksStatus(winningStreaks, Map.empty, Streaks())
+      val newStreaksStatus = streaksFactory.updateStreaksStatusPerParticipant(game)(streaksStatus, freddie)
+      newStreaksStatus.winningStreaks must beEmpty
+      newStreaksStatus.losingStreaks must contain(
+          exactly(freddie -> Streak(freddie, September(5, 2013) at (11 oclock))))
+      newStreaksStatus.streaks.winningStreaks must beEmpty
+    }
+  }
+    
+  "A winning player" should {
+    "end their losing streak" in {
+      val game = September(5, 2013) at (11 oclock) lostBy(freddie) wonBy(john, roger, brian)
+      val losingStreak = 
+        Streak(roger, September(5, 2013) at (9 oclock)) extendTo(September(5, 2013) at (10 oclock))
+      val losingStreaks: Map[Player, Streak] = Map(roger -> losingStreak)
+      val streaksStatus = StreaksStatus(Map.empty, losingStreaks, Streaks())
+      val newStreaksStatus = streaksFactory.updateStreaksStatusPerParticipant(game)(streaksStatus, roger)
+      newStreaksStatus.losingStreaks must beEmpty
+      newStreaksStatus.winningStreaks must contain(
+          exactly(roger -> Streak(roger, September(5, 2013) at (11 oclock))))
+      newStreaksStatus.streaks.losingStreaks must contain(exactly(losingStreak))
+    }
+    "extend their winning streak" in {
+      val game = September(5, 2013) at (11 oclock) lostBy(freddie) wonBy(john, roger, brian)
+      val winningStreak = 
+        Streak(roger, September(5, 2013) at (9 oclock)) extendTo(September(5, 2013) at (10 oclock))
+      val winningStreaks: Map[Player, Streak] = Map(roger -> winningStreak)
+      val streaksStatus = StreaksStatus(winningStreaks, Map.empty, Streaks())
+      val newStreaksStatus = streaksFactory.updateStreaksStatusPerParticipant(game)(streaksStatus, roger)
+      newStreaksStatus.winningStreaks must contain(
+          exactly(roger -> winningStreak.extendTo(September(5, 2013) at (11 oclock))))
+      newStreaksStatus.streaks.winningStreaks must beEmpty
+    }
+    "nullify a single lost game" in {
+      val game = September(5, 2013) at (11 oclock) lostBy(freddie) wonBy(john, roger, brian)
+      val losingStreak = 
+        Streak(roger, September(5, 2013) at (9 oclock))
+      val losingStreaks: Map[Player, Streak] = Map(roger -> losingStreak)
+      val streaksStatus = StreaksStatus(Map.empty, losingStreaks, Streaks())
+      val newStreaksStatus = streaksFactory.updateStreaksStatusPerParticipant(game)(streaksStatus, roger)
+      newStreaksStatus.losingStreaks must beEmpty
+      newStreaksStatus.winningStreaks must contain(
+          exactly(roger -> Streak(roger, September(5, 2013) at (11 oclock))))
+      newStreaksStatus.streaks.losingStreaks must beEmpty
+    }
+  }
+}
+
+object StreaksFactoryImplSpec {
+  
+  /**
+   * A DSL to create games that are lost by a player.
+   */
+  implicit class DateTimeImplicits(datePlayed: DateTime) {
+    def lostBy(loser: Player) = GameBuilder(datePlayed, loser)
+  }
+
+  case class TestPlayer(name: String, email: String, colour: Colour) extends Player
+
+  implicit def player(playerName: String): Player = TestPlayer(playerName, "me@here", Colour.AQUA)
+  implicit def playerName(player: Player): String = player.name
+  
+  case class GameBuilder(dateGamePlayed: DateTime, _loser: Player) {
+    def wonBy(winners: Player*): Game = new Game() {
+      val datePlayed = dateGamePlayed
+      val loser: Option[Player] = Some(_loser)
+      val participants = winners.toSet
+      val numberOfRounds = 0
+      val roundsPlayed = Map.empty[Player, Int]
+    }
+  }
+}
