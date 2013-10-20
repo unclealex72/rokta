@@ -26,3 +26,5 @@ addCompilerPlugin("com.escalatesoft.subcut" %% "subcut" % "2.0")
 resolvers ++= Seq("releases"  at "http://oss.sonatype.org/content/repositories/releases")
 
 play.Project.playScalaSettings
+
+Keys.fork in Test := false
