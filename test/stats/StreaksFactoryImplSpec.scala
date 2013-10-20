@@ -29,6 +29,7 @@ import model.Player
 import model.Game
 import model.Colour
 import stats.StreaksFactoryImplSpec._
+import scala.collection.SortedSet
 /**
  * @author alex
  *
@@ -116,6 +117,73 @@ class StreaksFactoryImplSpec extends Specification {
       newStreaksStatus.streaks.losingStreaks must beEmpty
     }
   }
+  
+  "Adding the streaks that have yet to be terminated by the final game" should {
+    val incompleteWinningStreaks = 
+      (freddie streak(September(5, 2013) at (10 oclock), September(5, 2013) at (11 oclock))) ++
+      (roger streak(September(5, 2013) at (11 oclock)))
+    val incompleteLosingStreaks =
+      (brian streak(September(5, 2013) at (9 oclock), September(5, 2013) at (10 oclock))) ++
+      (john streak(September(5, 2013) at (10 oclock)))
+    val completedWinningStreaks = SortedSet(
+      Streak(freddie, September(4, 2013) at (10 oclock)).extendTo(September(4, 2013) at (11 oclock)))
+    val completedLosingStreaks = SortedSet(
+      Streak(brian, September(4, 2013) at (11 oclock)).extendTo(September(4, 2013) at (12 oclock)))
+    val streaksStatus = StreaksStatus(
+        incompleteWinningStreaks, incompleteLosingStreaks, Streaks(completedWinningStreaks, completedLosingStreaks))
+    "return all streaks making the incomplete streaks current if requested" in {
+      val streaks = streaksFactory.addRemainingStreaks(true, streaksStatus)
+      streaks.winningStreaks must contain(exactly(
+        Streak(freddie, September(5, 2013) at (10 oclock)).extendTo(September(5, 2013) at (11 oclock)).makeCurrent,
+        Streak(freddie, September(4, 2013) at (10 oclock)).extendTo(September(4, 2013) at (11 oclock))
+      )).inOrder
+      streaks.losingStreaks must contain(exactly(
+        Streak(brian, September(5, 2013) at (9 oclock)).extendTo(September(5, 2013) at (10 oclock)).makeCurrent,
+        Streak(brian, September(4, 2013) at (11 oclock)).extendTo(September(4, 2013) at (12 oclock))
+      )).inOrder
+    }
+    "return all streaks making the incomplete streaks non-current if requested" in {
+      val streaks = streaksFactory.addRemainingStreaks(false, streaksStatus)
+      streaks.winningStreaks must contain(exactly(
+        Streak(freddie, September(5, 2013) at (10 oclock)).extendTo(September(5, 2013) at (11 oclock)),
+        Streak(freddie, September(4, 2013) at (10 oclock)).extendTo(September(4, 2013) at (11 oclock))
+      )).inOrder
+      streaks.losingStreaks must contain(exactly(
+        Streak(brian, September(5, 2013) at (9 oclock)).extendTo(September(5, 2013) at (10 oclock)),
+        Streak(brian, September(4, 2013) at (11 oclock)).extendTo(September(4, 2013) at (12 oclock))
+      )).inOrder
+    }
+  }
+  
+  "Calculating streaks for a set of games" should {
+    val tenoclock = September(5, 2013) at (10 oclock)
+    val elevenoclock = September(5, 2013) at (11 oclock)
+    val twelveoclock = September(5, 2013) at midday
+    val oneoclock = September(5, 2013) at (1 oclock).pm
+    val twooclock = September(5, 2013) at (2 oclock).pm
+    val threeoclock = September(5, 2013) at (3 oclock).pm
+    val games: SortedSet[Game] = 
+      (tenoclock lostBy(freddie) wonBy(john, roger, brian)) +
+      (elevenoclock lostBy(roger) wonBy(john)) +
+      (twelveoclock lostBy(freddie) wonBy(john, brian)) +
+      (oneoclock lostBy(brian) wonBy(john, roger)) +
+      (twooclock lostBy(roger) wonBy(john, freddie)) +
+      (threeoclock lostBy(brian) wonBy(john, freddie, roger))
+      val expectedWinningStreaks: SortedSet[Streak] = 
+        Streak(john, tenoclock, elevenoclock, twelveoclock, oneoclock, twooclock, threeoclock) +
+        Streak(freddie, twooclock, threeoclock).makeCurrent +
+        Streak(brian, tenoclock, twelveoclock)
+      val expectedLosingStreaks: SortedSet[Streak] =
+        Streak(brian, oneoclock, threeoclock).makeCurrent +
+        Streak(freddie, tenoclock, twelveoclock)
+      val streaks = streaksFactory.generateStreaks(games, true) 
+    "amalgamate all the winning streak information into one object" in {
+      streaks.winningStreaks must be equalTo(expectedWinningStreaks)
+    }
+    "amalgamate all the losing streak information into one object" in {
+      streaks.losingStreaks must be equalTo(expectedLosingStreaks)
+    }
+  }
 }
 
 object StreaksFactoryImplSpec {
@@ -127,6 +195,16 @@ object StreaksFactoryImplSpec {
     def lostBy(loser: Player) = GameBuilder(datePlayed, loser)
   }
 
+  implicit class PlayerImplicits(player: Player) {
+    def streak(dateTime: DateTime, dateTimes: DateTime*): Map[Player, Streak] = {
+      Map(player -> Streak(player.name, dateTime, dateTimes: _*))
+    }
+  }
+
+  implicit class AnyImplicits[A](a: A) {
+    def +(next: A)(implicit ord: Ordering[A]) = SortedSet(a, next)
+  }
+  
   case class TestPlayer(name: String, email: String, colour: Colour) extends Player
 
   implicit def player(playerName: String): Player = TestPlayer(playerName, "me@here", Colour.AQUA)
@@ -136,7 +214,7 @@ object StreaksFactoryImplSpec {
     def wonBy(winners: Player*): Game = new Game() {
       val datePlayed = dateGamePlayed
       val loser: Option[Player] = Some(_loser)
-      val participants = winners.toSet
+      val participants = winners.toSet + _loser
       val numberOfRounds = 0
       val roundsPlayed = Map.empty[Player, Int]
     }

@@ -55,9 +55,9 @@ class StreaksFactoryImpl extends StreaksFactory {
     
     currentStreakBuilders.foldLeft(historicalStreaks){ (streaks, currentStreakBuilder) => 
       currentStreakBuilder match {
-        case(currentStreaks, streakAdder) =>
+        case(currentStreaks, addStreak) =>
           currentStreaks.values.foldLeft(streaks) { (streaks, streak) =>
-            if (streak.candidate) addWinningStreak(streaks)(makeCurrent(streak)) else streaks
+            if (streak.candidate) addStreak(streaks)(makeCurrent(streak)) else streaks
           }
       }
     }

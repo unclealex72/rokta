@@ -45,6 +45,8 @@ case class Streak(
 
 object Streak {
   def apply(playerName: String, dateTime: DateTime): Streak = Streak(playerName, SortedSet(dateTime), false)
+  def apply(playerName: String, dateTime: DateTime, dateTimes:DateTime*): Streak = 
+    dateTimes.foldLeft(Streak(playerName, dateTime))((streak, dateTime) => streak.extendTo(dateTime))
   
   implicit def streakOrdering: Ordering[Streak] = 
     Ordering.by((s: Streak) => (s.dateTimes.size, s.dateTimes.head, s.playerName)).reverse

@@ -31,7 +31,11 @@ import org.joda.time.DateTime
  */
 object DaysAndTimes {
 
-  case class Time(val hour: Int, val minute: Int)
+  case class Time(val hour: Int, val minute: Int) {
+    def pm = Time(if (hour < 12) hour + 12 else hour, minute)
+    def am = Time(if (hour >= 12) hour - 12 else hour, minute)
+  }
+  
   val midnight = Time(0, 0)
   val midday = Time(12, 0)
   
