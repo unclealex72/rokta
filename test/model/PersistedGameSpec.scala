@@ -31,14 +31,15 @@ import org.squeryl.adapters.H2Adapter
 import model.PersistedGameDsl._
 import model.Hand._
 import dao.RoktaSchema
-import dates.DaysAndTimes._
+import dates.DaysAndTimes
+import dates.IsoChronology
 
 /**
  * Tests for game playing mechanics.
  * @author alex
  *
  */
-class PersistedGameSpec extends Specification {
+class PersistedGameSpec extends Specification with DaysAndTimes with IsoChronology {
 
   /**
    * Wrap tests with database creation and transactions

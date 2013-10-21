@@ -33,15 +33,16 @@ import stats.LeagueFactoryImplSpec._
 import org.joda.time.DateTime
 import scala.collection.SortedMap
 import model.JodaDateTime._
-import dates.DaysAndTimes._
 import org.specs2.mock._
 import model.NonPersistedPlayer
+import dates.IsoChronology
+import dates.DaysAndTimes
 
 /**
  * @author alex
  *
  */
-class LeagueFactoryImplSpec extends Specification with Mockito {
+class LeagueFactoryImplSpec extends Specification with Mockito with DaysAndTimes with IsoChronology {
 
   /**
    * Give tests access to the concrete [[LeagueFactoryImpl]] and mocked [[GapCalculator]]

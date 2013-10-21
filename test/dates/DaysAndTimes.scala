@@ -23,13 +23,15 @@
 package dates
 
 import org.joda.time.DateTime
+import org.joda.time.Chronology
+import org.joda.time.chrono.ISOChronology
 
 /**
  * A small DSL for creating easily readable dates and times.
  * @author alex
  *
  */
-object DaysAndTimes {
+trait DaysAndTimes { self: DefaultChronology =>
 
   case class Time(val hour: Int, val minute: Int) {
     def pm = Time(if (hour < 12) hour + 12 else hour, minute)
@@ -56,7 +58,8 @@ object DaysAndTimes {
   }
 
   case class Day(val month: Month, val day: Int) {
-    def at(time: Time): DateTime = new DateTime(month.year.year, month.month, day, time.hour, time.minute)
+    def at(time: Time): DateTime = 
+      new DateTime(month.year.year, month.month, day, time.hour, time.minute, defaultChronology)
   }
 
   sealed class Month(val year: Year, val month: Int, val daysInMonth: Int, val extraDayDuringLeapYear: Boolean) {
@@ -104,4 +107,19 @@ object DaysAndTimes {
   case class December(val _year: Year) extends Month(_year, 12, 31, false)
   object December extends DayBuilder {def month = year => December(year)}
 
+}
+
+sealed trait DefaultChronology {
+  
+  val defaultChronology: Chronology
+}
+
+trait IsoChronology extends DefaultChronology {
+  
+  val defaultChronology = ISOChronology.getInstance
+}
+
+trait UtcChronology extends DefaultChronology {
+  
+  val defaultChronology = ISOChronology.getInstance.withUTC
 }

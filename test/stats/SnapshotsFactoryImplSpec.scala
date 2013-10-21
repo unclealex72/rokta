@@ -24,7 +24,7 @@ package stats
 
 import org.specs2.mutable.Specification
 import model.NonPersistedGameDsl._
-import dates.DaysAndTimes._
+import dates.DaysAndTimes
 import model.Game
 import model.Player
 import scala.collection.SortedMap
@@ -32,12 +32,13 @@ import org.joda.time.DateTime
 import model.JodaDateTime._
 import stats.Snapshot._
 import scala.collection.SortedSet
+import dates.IsoChronology
 
 /**
  * @author alex
  *
  */
-class SnapshotsFactoryImplSpec extends Specification {
+class SnapshotsFactoryImplSpec extends Specification with DaysAndTimes with IsoChronology {
 
   val statisticsService = new SnapshotsFactoryImpl
 

@@ -26,17 +26,18 @@ import org.specs2.mutable.Specification
 import json.JsonSpec
 import json.Json._
 import com.fasterxml.jackson.databind.ObjectMapper
-import dates.DaysAndTimes._
+import dates.DaysAndTimes
 import org.joda.time.DateTime
 import org.joda.time.Chronology
 import org.joda.time.chrono.ISOChronology
+import dates.UtcChronology
 
 /**
  * Test JSON serialisation of [[ContiguousGameFilter]]s.
  * @author alex
  *
  */
-class ContiguousGameFilterSpec extends Specification with JsonSpec {
+class ContiguousGameFilterSpec extends Specification with JsonSpec with DaysAndTimes {
 
   "Deserialising a contiguous game filter" should {
     "correctly deserialise a year filter" in {
@@ -56,24 +57,19 @@ class ContiguousGameFilterSpec extends Specification with JsonSpec {
       "type":"between",
       "from":"2013-02-05T15:00:00.000Z",
       "to":"2013-02-09T12:00:00.000Z"}""" must deserialiseTo(
-        BetweenGameFilter(utc(February(5, 2013) at (3 oclock).pm), utc(February(9, 2013) at midday)))
+        BetweenGameFilter(February(5, 2013) at (3 oclock).pm, February(9, 2013) at midday))
     }
     "correctly deserialise a since filter" in {
       """{
       "type":"since",
       "since":"2013-02-09T12:00:00.000Z"}""" must deserialiseTo(
-        SinceGameFilter(utc(February(9, 2013) at midday)))
+        SinceGameFilter(February(9, 2013) at midday))
     }
     "correctly deserialise an until filter" in {
       """{
       "type":"until",
       "until":"2013-02-09T12:00:00.000Z"}""" must deserialiseTo(
-        UntilGameFilter(utc(February(9, 2013) at midday)))
+        UntilGameFilter(February(9, 2013) at midday))
     }
-  }
-  
-  /**
-   * Convert [[DateTime]] objects to UTC.
-   */
-  def utc(dateTime: DateTime) = dateTime.withChronology(ISOChronology.getInstance().withUTC())
+  }  
 }

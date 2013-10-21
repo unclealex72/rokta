@@ -25,12 +25,13 @@ package json
 import org.specs2.mutable.Specification
 import json.Json._
 import org.specs2.matcher.Matcher
+import dates.UtcChronology
 /**
  * A trait that includes a `serialisesTo` matcher to allow serialisation testing.
  * @author alex
  *
  */
-trait JsonSpec { self: Specification =>
+trait JsonSpec extends UtcChronology { self: Specification =>
   
   /**
    * Allow a JSON object within a string be matched against a serialised object.

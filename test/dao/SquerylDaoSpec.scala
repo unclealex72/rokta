@@ -22,29 +22,31 @@
 
 package dao
 
+import scala.collection.immutable.SortedSet
+
 import org.joda.time.DateTime
 import org.specs2.mutable.Specification
 import org.squeryl.Session
 import org.squeryl.SessionFactory
 import org.squeryl.adapters.H2Adapter
-import model.PersistedGame
-import model.PersistedPlayer
-import scala.collection.immutable.SortedSet
+
+import dates.DaysAndTimes
+import dates.IsoChronology
 import filter.BetweenGameFilter
-import filter.SinceGameFilter
-import dates.DaysAndTimes._
-import filter.UntilGameFilter
-import filter.YearGameFilter
-import filter.MonthGameFilter
 import filter.DayGameFilter
-import model.Game
-import model.PersistedGame._
+import filter.MonthGameFilter
+import filter.SinceGameFilter
+import filter.UntilGameFilter
 import filter.WeekGameFilter
+import filter.YearGameFilter
+import model.PersistedGame
+import model.PersistedGame._
+import model.PersistedPlayer
 /**
  * @author alex
  *
  */
-class SquerylDaoSpec extends Specification {
+class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology {
 
   val DAYS_IN_YEAR : Int = 365
   

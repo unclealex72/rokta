@@ -23,7 +23,6 @@
 package stats
 
 import org.specs2.mutable.Specification
-import dates.DaysAndTimes._
 import org.joda.time.DateTime
 import model.Player
 import model.Game
@@ -31,11 +30,13 @@ import model.Colour
 import stats.StreaksFactoryImplSpec._
 import scala.collection.SortedSet
 import model.NonPersistedPlayer
+import dates.IsoChronology
+import dates.DaysAndTimes
 /**
  * @author alex
  *
  */
-class StreaksFactoryImplSpec extends Specification {
+class StreaksFactoryImplSpec extends Specification with DaysAndTimes with IsoChronology {
 
   val streaksFactory: StreaksFactoryImpl = new StreaksFactoryImpl
   val freddie: Player = "Freddie"
