@@ -23,6 +23,9 @@
 package filter
 
 import org.joda.time.DateTime
+import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 
 /**
  * A [[ContiguousGameFilter]] is used to filter games based, normally, on dates. Filtered games will always be contiguous.
@@ -32,13 +35,17 @@ import org.joda.time.DateTime
  * @author alex
  *
  */
-sealed trait ContiguousGameFilter {
-  
-  /**
-   * The format key used to describe this filter.
-   */
-  val key: String
-}
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
+@JsonSubTypes(Array(
+    new Type(value = classOf[BetweenGameFilter], name = "between"),
+    new Type(value = classOf[SinceGameFilter], name = "since"),
+    new Type(value = classOf[UntilGameFilter], name = "until"),
+    new Type(value = classOf[YearGameFilter], name = "year"),
+    new Type(value = classOf[MonthGameFilter], name = "month"),
+    new Type(value = classOf[WeekGameFilter], name = "week"),
+    new Type(value = classOf[DayGameFilter], name = "day")
+))
+sealed trait ContiguousGameFilter
 
 /**
  * A game filter that matches any game between two days inclusive.
@@ -51,7 +58,7 @@ case class BetweenGameFilter(
   /**
    * The last day to include.
    */
-  to: DateTime) extends Described("filter.between") with ContiguousGameFilter
+  to: DateTime) extends ContiguousGameFilter
 
 /**
  * A game filter that matches any game played since a given day.
@@ -60,7 +67,7 @@ case class SinceGameFilter(
   /**
    * The earliest time a matched game can be played.
    */
-  since: DateTime) extends Described("filter.since") with ContiguousGameFilter
+  since: DateTime) extends ContiguousGameFilter
 
 /**
  * A game filter that matches any game played until a given day.
@@ -69,7 +76,7 @@ case class UntilGameFilter(
   /**
    * The earliest day a matched game can be played.
    */
-  until: DateTime) extends Described("filter.until") with ContiguousGameFilter
+  until: DateTime) extends ContiguousGameFilter
 
 /**
  * A game filter that matches games played during a given year.
@@ -78,7 +85,7 @@ case class YearGameFilter(
   /**
    * The year when matched games were played.
    */  
-  val year: Int) extends Described("filter.year") with ContiguousGameFilter
+  val year: Int) extends ContiguousGameFilter
 
 /**
  * A game filter that matches games played during a given month.
@@ -91,9 +98,22 @@ case class MonthGameFilter(
   /**
    * The month when matched games were played.
    */  
-  val month: Int) extends Described("filter.month") with ContiguousGameFilter
+  val month: Int) extends ContiguousGameFilter
 
 /**
+ * A game filter that matches games played during a given week of the year.
+ */
+case class WeekGameFilter(
+  /**
+   * The year when matched games were played.
+   */  
+  val year: Int,
+  /**
+   * The week when matched games were played.
+   */  
+  val week: Int) extends ContiguousGameFilter
+
+  /**
  * A game filter that matches games played during a given day.
  */
 case class DayGameFilter(
@@ -108,4 +128,4 @@ case class DayGameFilter(
   /**
    * The day when matched games were played.
    */  
-  val day: Int) extends Described("filter.day") with ContiguousGameFilter
+  val day: Int) extends ContiguousGameFilter

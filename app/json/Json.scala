@@ -20,10 +20,24 @@
  *
  */
 
-package filter
+package json
+
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import com.fasterxml.jackson.datatype.joda.JodaModule
+import com.fasterxml.jackson.databind.SerializationFeature
 
 /**
- * A class used to hold a game filter's or modifier's key.
+ * A global object used to configure Jackson JSON support.
  * @author alex
+ *
  */
-class Described(val key: String)
+object Json {
+
+  /**
+   * The scala aware object mapper to use.
+   */
+  val objectMapper: ObjectMapper =
+    new ObjectMapper().registerModules(DefaultScalaModule, new JodaModule).
+    disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+}

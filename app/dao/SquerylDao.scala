@@ -23,14 +23,11 @@
 package dao
 
 import java.sql.Timestamp
-
 import scala.collection.immutable.SortedSet
 import scala.math.Ordering
-
 import org.joda.time.DateTime
 import org.squeryl.dsl.NonNumericalExpression
 import org.squeryl.dsl.ast.LogicalBoolean
-
 import dao.EntryPoint.createOutMapperIntType
 import dao.EntryPoint.dayOfMonth
 import dao.EntryPoint.from
@@ -43,6 +40,7 @@ import dao.EntryPoint.timestamp2ScalarTimestamp
 import dao.EntryPoint.typedExpression2OrderByArg
 import dao.EntryPoint.where
 import dao.EntryPoint.year
+import dao.EntryPoint.weekOfYear
 import dao.RoktaSchema.{games => tgames}
 import filter.BetweenGameFilter
 import filter.ContiguousGameFilter
@@ -53,6 +51,7 @@ import filter.UntilGameFilter
 import filter.YearGameFilter
 import model.PersistedGame
 import model.PersistedPlayer
+import filter.WeekGameFilter
 
 /**
  * The Squeryl implementation of [[GameDao]], [[PersonDao]] and [[Transactional]].
@@ -78,6 +77,8 @@ class SquerylDao extends GameDao with PlayerDao with Transactional {
       case YearGameFilter(yearPlayed) => year(g._datePlayed) === yearPlayed
       case MonthGameFilter(yearPlayed, monthPlayed) => 
         year(g._datePlayed) === yearPlayed and month(g._datePlayed) === monthPlayed
+      case WeekGameFilter(yearPlayed, weekPlayed) => 
+        year(g._datePlayed) === yearPlayed and weekOfYear(g._datePlayed) === weekPlayed
       case DayGameFilter(yearPlayed, monthPlayed, dayPlayed) => 
         year(g._datePlayed) === yearPlayed and month(g._datePlayed) === monthPlayed and dayOfMonth(g._datePlayed) === dayPlayed
       case SinceGameFilter(from) => g.datePlayed >= from

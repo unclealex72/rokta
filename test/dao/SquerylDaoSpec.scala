@@ -39,6 +39,7 @@ import filter.MonthGameFilter
 import filter.DayGameFilter
 import model.Game
 import model.PersistedGame._
+import filter.WeekGameFilter
 /**
  * @author alex
  *
@@ -131,6 +132,14 @@ class SquerylDaoSpec extends Specification {
     "return all games in that month" in txn { squerylDao => implicit games =>
       squerylDao.games(
         Some(MonthGameFilter(2013, 2))) must matchFilter(g => g.datePlayed.getYear() == 2013 && g.datePlayed.getMonthOfYear() == 2)
+    }
+  }
+
+  "Getting games for a week" should {
+    "return all games in that week" in txn { squerylDao => implicit games =>
+      squerylDao.games(
+        Some(WeekGameFilter(2013, 13))) must matchFilter(
+            g => g.datePlayed.getYear() == 2013 && g.datePlayed.getWeekOfWeekyear() == 13)
     }
   }
 

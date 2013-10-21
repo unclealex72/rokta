@@ -65,7 +65,7 @@ object EntryPoint extends PrimitiveTypeMode {
   def dayOfMonth(e: DateExpression[Timestamp])(implicit m:OutMapper[Int]) = new DAY_OF_MONTH(e,m)
 
   class WEEK_OF_YEAR(e: DateExpression[Timestamp], m:OutMapper[Int]) 
-    extends FunctionNode[Int]("week_of_year", Some(m), Seq(e)) with NumericalExpression[Int]
+    extends FunctionNode[Int]("week", Some(m), Seq(e)) with NumericalExpression[Int]
 
   def weekOfYear(e: DateExpression[Timestamp])(implicit m:OutMapper[Int]) = new WEEK_OF_YEAR(e,m)
 }
