@@ -55,10 +55,10 @@ class PersistedGameSpec extends Specification {
         new H2Adapter))
     inTransaction {
       RoktaSchema.create
-      val freddie  = PersistedPlayer(0, "Freddie", "freddie@queen.com", "BLACK")
-      val brian = PersistedPlayer(0, "Brian", "brian@queen.com", "BLUE")
-      val roger = PersistedPlayer(0, "Roger", "roger@queen.com", "RED")
-      val john = PersistedPlayer(0, "John", "john@queen.com", "WHITE")
+      val freddie  = PersistedPlayer(0, "Freddie", Some("freddie@queen.com"), "BLACK")
+      val brian = PersistedPlayer(0, "Brian", Some("brian@queen.com"), "BLUE")
+      val roger = PersistedPlayer(0, "Roger", Some("roger@queen.com"), "RED")
+      val john = PersistedPlayer(0, "John", Some("john@queen.com"), "WHITE")
 
       Seq(freddie, roger, brian, john).foreach { person =>
         person.save

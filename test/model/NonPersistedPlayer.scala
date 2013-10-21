@@ -23,22 +23,10 @@
 package model
 
 /**
- * A database independent trait for Rokta players.
+ * A player who is not persisted in the database.
  * @author alex
- *
  */
-trait Player {
-
-  /**
-   * The player's name.
-   */
-  def name: String
-  /**
-   * The Google email the player uses to log in.
-   */
-  def email: Option[String]
-  /**
-   * The name of the colour used to represent the player's results in any graphs.
-   */
-  def colour:  Colour
+case class NonPersistedPlayer(val name: String, val _email: String, val colour: Colour) extends Player {
+  override def toString = name
+  override def email = Some(_email)
 }

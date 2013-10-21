@@ -44,7 +44,7 @@ case class PersistedPlayer(
 	 * The Google email the player uses to log in.
 	 */
 	@Column("email")
-  val email: String,
+  val email: Option[String],
   /**
    * The name of the colour used to represent the player's results in any graphs.
    */

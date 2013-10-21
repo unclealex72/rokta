@@ -35,6 +35,7 @@ import scala.collection.SortedMap
 import model.JodaDateTime._
 import dates.DaysAndTimes._
 import org.specs2.mock._
+import model.NonPersistedPlayer
 
 /**
  * @author alex
@@ -220,16 +221,11 @@ object LeagueFactoryImplSpec {
 
     def asLeagueRow = LeagueRow(playerName, gamesWon, gamesLost, roundsPlayedInWinningGames, roundsPlayedInLosingGames)
     def asSnapshot =
-      TestPlayer(playerName).asInstanceOf[Player] ->
+      player(playerName) ->
         Snapshot(gamesWon, gamesLost, roundsPlayedInWinningGames, roundsPlayedInLosingGames)
   }
 
-  case class TestPlayer(name: String, email: String, colour: Colour) extends Player
-  object TestPlayer {
-    def apply(name: String): TestPlayer = TestPlayer(name, name, Colour.BLACK)
-  }
-
-  def player(name: String): Player = TestPlayer(name)
+  def player(name: String): Player = NonPersistedPlayer(name, name, Colour.BLACK)
   def players(names: String*): Set[Player] = names.toSet.map(player _)
 
   implicit def LeagueRowOrSnapshotToLeagueRow(leagueRowOrSnapshot: LeagueRowOrSnapshot): LeagueRow =

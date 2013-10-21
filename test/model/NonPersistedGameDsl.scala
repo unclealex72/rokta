@@ -60,10 +60,3 @@ case class GameBuilder(val _loser: Player, val datePlayed: DateTime, otherRounds
   
   def roundsPlayed: Map[Player, Int] = otherRoundsPlayed + (_loser -> numberOfRounds)
 }
-
-/**
- * A player who is not persisted in the database.
- */
-case class NonPersistedPlayer(val name: String, val email:String, val colour: Colour) extends Player {
-  override def toString = name
-}

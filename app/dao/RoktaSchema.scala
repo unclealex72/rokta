@@ -35,7 +35,7 @@ object RoktaSchema extends Schema {
   val games = table[PersistedGame]("game")
   on(games)(g => declare(
     g.id is (autoIncremented("game_id_seq")),
-    g._datePlayed is (unique, indexed),
+    g._datePlayed is (indexed),
     g.instigatorId is (indexed)))
 
   val rounds = table[Round]("round")

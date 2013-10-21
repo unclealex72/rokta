@@ -62,7 +62,7 @@ class SquerylDaoSpec extends Specification {
         new H2Adapter))
     inTransaction {
       RoktaSchema.create
-      val freddie  = PersistedPlayer(0, "Freddie", "freddie@queen.com", "BLACK")
+      val freddie  = PersistedPlayer(0, "Freddie", Some("freddie@queen.com"), "BLACK")
       freddie.save
       
       val squerylDao = new SquerylDao

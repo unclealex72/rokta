@@ -30,6 +30,7 @@ import model.Game
 import model.Colour
 import stats.StreaksFactoryImplSpec._
 import scala.collection.SortedSet
+import model.NonPersistedPlayer
 /**
  * @author alex
  *
@@ -205,9 +206,7 @@ object StreaksFactoryImplSpec {
     def +(next: A)(implicit ord: Ordering[A]) = SortedSet(a, next)
   }
   
-  case class TestPlayer(name: String, email: String, colour: Colour) extends Player
-
-  implicit def player(playerName: String): Player = TestPlayer(playerName, "me@here", Colour.AQUA)
+  implicit def player(playerName: String): Player = NonPersistedPlayer(playerName, "me@here", Colour.AQUA)
   implicit def playerName(player: Player): String = player.name
   
   case class GameBuilder(dateGamePlayed: DateTime, _loser: Player) {
