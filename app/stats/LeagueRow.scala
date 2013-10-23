@@ -22,6 +22,8 @@
 
 package stats
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+
 /**
  * A row in a Rokta league.
  */
@@ -100,6 +102,7 @@ case class LeagueRow(
   /**
    * The total number of games played.
    */
+  @JsonIgnore
   lazy val gamesPlayed: Int = gamesWon + gamesLost
 }
   

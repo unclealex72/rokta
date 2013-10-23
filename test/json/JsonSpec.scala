@@ -22,10 +22,14 @@
 
 package json
 
-import org.specs2.mutable.Specification
-import json.Json._
 import org.specs2.matcher.Matcher
+import org.specs2.mutable.Specification
+
 import dates.UtcChronology
+import json.Json.objectMapper
+import play.api.libs.json.JsValue
+import play.api.libs.json.{Json => PJson}
+
 /**
  * A trait that includes a `serialisesTo` matcher to allow serialisation testing.
  * @author alex
@@ -33,6 +37,12 @@ import dates.UtcChronology
  */
 trait JsonSpec extends UtcChronology { self: Specification =>
   
+  /**
+   * Match a JSON object to how it is serialised.
+   */
+  def serialiseTo[A](serialised: => JsValue): Matcher[A] =
+    ((a: A) => PJson.parse(objectMapper.writeValueAsString(a))) ^^ beEqualTo(serialised)
+    
   /**
    * Allow a JSON object within a string be matched against a serialised object.
    */

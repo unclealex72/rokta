@@ -39,7 +39,7 @@ trait LeagueFactory {
    * @param snapshots The [[Snapshot]]s used to generate the league.
    * @param todaysPlayers A set of the players who played today or None if this league is not current.
    * @param exemptPlayer The player who is currently exempt or None if no-one is exempt.
-   * @return The set of [[LeagueRow]]s from top to bottom.
+   * @return A league containing the set of [[LeagueRow]]s from top to bottom.
    */
   def generateLeague(
     snapshots: SortedMap[DateTime, Map[Player, Snapshot]], 

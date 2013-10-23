@@ -24,12 +24,17 @@ package stats
 
 import org.specs2.mutable.Specification
 import stats.LeagueRow._
+import scala.collection.SortedSet
+import json.JsonSpec
+import play.api.libs.json.Json._
+import play.api.libs.json.JsNull
+
 
 /**
  * @author alex
  *
  */
-class LeagueRowSpec extends Specification {
+class LeagueRowSpec extends Specification with JsonSpec {
 
   "League rows with lower loss rates" should {
     "beat those with higher loss rates" in {
@@ -65,6 +70,58 @@ class LeagueRowSpec extends Specification {
     "be ordered by the name of the player" in {
       LeagueRow("Freddie", 2, 2, 2, 2) must be lessThan(LeagueRow("Roger", 2, 2, 2, 2))
       
+    }
+  }
+  
+    "A league" should {
+    "correctly serialise" in {
+      val leagueRows = SortedSet(
+        LeagueRow("freddie", 5, 1, 10, 20).withCurrentlyPlaying(true).withGap(2).withExempt(true),
+        LeagueRow("brian", 4, 2, 11, 21).withCurrentlyPlaying(true).withGap(1).withMovement(1),
+        LeagueRow("john", 3, 3, 12, 22).withMovement(-1),
+        LeagueRow("roger", 2, 4, 13, 23).withMovement(-1))
+      leagueRows must serialiseTo(
+        arr(
+          obj(
+            "playerName" -> "freddie",
+            "gamesWon" -> 5,
+            "gamesLost" -> 1,
+            "roundsDuringWinningGames" -> 10,
+            "roundsDuringLosingGames" -> 20,
+            "currentlyPlaying" -> true,
+            "gap" -> 2,
+            "movement" -> JsNull,
+            "exempt" -> true),  
+          obj(
+            "playerName" -> "brian",
+            "gamesWon" -> 4,
+            "gamesLost" -> 2,
+            "roundsDuringWinningGames" -> 11,
+            "roundsDuringLosingGames" -> 21,
+            "currentlyPlaying" -> true,
+            "gap" -> 1,
+            "movement" -> 1,
+            "exempt" -> false),  
+          obj(
+            "playerName" -> "john",
+            "gamesWon" -> 3,
+            "gamesLost" -> 3,
+            "roundsDuringWinningGames" -> 12,
+            "roundsDuringLosingGames" -> 22,
+            "currentlyPlaying" -> false,
+            "gap" -> JsNull,
+            "movement" -> -1,
+            "exempt" -> false),  
+          obj(
+            "playerName" -> "roger",
+            "gamesWon" -> 2,
+            "gamesLost" -> 4,
+            "roundsDuringWinningGames" -> 13,
+            "roundsDuringLosingGames" -> 23,
+            "currentlyPlaying" -> false,
+            "gap" -> JsNull,
+            "movement" -> -1,
+            "exempt" -> false)))
     }
   }
 }

@@ -23,8 +23,10 @@
 package stats
 
 import scala.collection.SortedSet
+
 import org.joda.time.DateTime
-import model.JodaDateTime._
+
+import model.JodaDateTime.dateTimeOrdering
 
 /**
  * A streak is a contiguous set of games that a player has either won or lost.
