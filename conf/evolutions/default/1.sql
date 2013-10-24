@@ -55,5 +55,5 @@ drop sequence round_id_seq;
 
 drop table play;
 drop table round;
-drop table player;
 drop table game;
+drop table player;
