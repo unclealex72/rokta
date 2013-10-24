@@ -33,12 +33,12 @@ object NonPersistedGameDsl {
   /**
    * Some players
    */
-  val freddie = NonPersistedPlayer("Freddie", "freddie@queen.com", BLACK)
-  val brian = NonPersistedPlayer("Brian", "brian@queen.com", BLUE)
-  val roger = NonPersistedPlayer("Roger", "roger@queen.com", RED)
-  val john = NonPersistedPlayer("John", "john@queen.com", WHITE)
+  val freddie: Player = NonPersistedPlayer("Freddie", "freddie@queen.com", BLACK)
+  val brian: Player = NonPersistedPlayer("Brian", "brian@queen.com", BLUE)
+  val roger: Player = NonPersistedPlayer("Roger", "roger@queen.com", RED)
+  val john: Player = NonPersistedPlayer("John", "john@queen.com", WHITE)
 
-  implicit class PlayerImplicits(player: NonPersistedPlayer) {
+  implicit class PlayerImplicits(player: Player) {
     
     def losesAt(dateTime: DateTime): GameBuilder = GameBuilder(player, dateTime, Map.empty[Player, Int])
     

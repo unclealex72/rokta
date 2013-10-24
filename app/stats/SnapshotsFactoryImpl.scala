@@ -25,7 +25,6 @@ package stats
 import scala.collection.Iterable
 import model.Game
 import scala.collection.SortedMap
-import model.Player
 import org.joda.time.DateTime
 import model.JodaDateTime._
 
@@ -37,7 +36,7 @@ import model.JodaDateTime._
  */
 class SnapshotsFactoryImpl extends SnapshotsFactory {
 
-  def snapshots(games: Iterable[Game]): SortedMap[DateTime, Map[Player, Snapshot]] = {
+  def snapshots(games: Iterable[Game]): SortedMap[DateTime, Map[String, Snapshot]] = {
     games.foldLeft(SnapshotCumulation())(accumulateSnapshots).historicalSnapshots
   }
 
@@ -46,27 +45,27 @@ class SnapshotsFactoryImpl extends SnapshotsFactory {
    */
   def accumulateSnapshots: (SnapshotCumulation, Game) => SnapshotCumulation = { (previousSnapshotCumulation, game) =>
     val cumulativeSnapshot =
-      game.participants.foldLeft(previousSnapshotCumulation)(addToSnapshot(game)).cumulativeSnapshot
-    val historicalSnapshots: SortedMap[DateTime, Map[Player, Snapshot]] =
+      game.participants.map(_.name).foldLeft(previousSnapshotCumulation)(addToSnapshot(game)).cumulativeSnapshot
+    val historicalSnapshots: SortedMap[DateTime, Map[String, Snapshot]] =
       previousSnapshotCumulation.historicalSnapshots + (game.datePlayed -> cumulativeSnapshot)
     SnapshotCumulation(cumulativeSnapshot, historicalSnapshots)
   }
 
   /**
-   * Add the result for one [[Player]] in one [[Game]] to a [[SnapshotCumulation]]
+   * Add the result for one [[String]] in one [[Game]] to a [[SnapshotCumulation]]
    */
-  def addToSnapshot(game: Game): (SnapshotCumulation, Player) => SnapshotCumulation = { (snapshotCumulation, player) =>
-    val previousSnapshotEntry = snapshotCumulation.cumulativeSnapshot.get(player).getOrElse(Snapshot(0, 0, 0, 0))
+  def addToSnapshot(game: Game): (SnapshotCumulation, String) => SnapshotCumulation = { (snapshotCumulation, playerName) =>
+    val previousSnapshotEntry = snapshotCumulation.cumulativeSnapshot.get(playerName).getOrElse(Snapshot(0, 0, 0, 0))
     game.loser match {
       case Some(loser) => {
-        val rounds = game.roundsPlayed.get(player).getOrElse(0)
-        val newSnapshotEntry = if (player == loser) {
+        val rounds = game.roundsPlayed.find(_._1.name == playerName).map(_._2).getOrElse(0)
+        val newSnapshotEntry = if (playerName == loser.name) {
           previousSnapshotEntry.lose(rounds)
         } else {
           previousSnapshotEntry.win(rounds)
         }
         SnapshotCumulation(
-          snapshotCumulation.cumulativeSnapshot + (player -> newSnapshotEntry),
+          snapshotCumulation.cumulativeSnapshot + (playerName -> newSnapshotEntry),
           snapshotCumulation.historicalSnapshots)
       }
       case None => snapshotCumulation
@@ -82,13 +81,13 @@ case class SnapshotCumulation(
   /**
    * The current snapshot information for each player.
    */
-  val cumulativeSnapshot: Map[Player, Snapshot],
+  val cumulativeSnapshot: Map[String, Snapshot],
   /**
    * The historical information of previous snapshots.
    */
-  val historicalSnapshots: SortedMap[DateTime, Map[Player, Snapshot]])
+  val historicalSnapshots: SortedMap[DateTime, Map[String, Snapshot]])
 
 object SnapshotCumulation {
   def apply(): SnapshotCumulation =
-    SnapshotCumulation(Map.empty[Player, Snapshot], SortedMap.empty[DateTime, Map[Player, Snapshot]])
+    SnapshotCumulation(Map.empty[String, Snapshot], SortedMap.empty[DateTime, Map[String, Snapshot]])
 }
