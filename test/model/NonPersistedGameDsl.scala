@@ -28,7 +28,7 @@ import org.joda.time.DateTime
  * @author alex
  *
  */
-object NonPersistedGameDsl {
+trait NonPersistedGameDsl {
 
   /**
    * Some players

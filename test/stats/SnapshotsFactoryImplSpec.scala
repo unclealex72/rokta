@@ -23,7 +23,6 @@
 package stats
 
 import org.specs2.mutable.Specification
-import model.NonPersistedGameDsl._
 import dates.DaysAndTimes
 import model.Game
 import model.Player
@@ -33,12 +32,13 @@ import model.JodaDateTime._
 import stats.Snapshot._
 import scala.collection.SortedSet
 import dates.IsoChronology
+import model.NonPersistedGameDsl
 
 /**
  * @author alex
  *
  */
-class SnapshotsFactoryImplSpec extends Specification with DaysAndTimes with IsoChronology {
+class SnapshotsFactoryImplSpec extends Specification with DaysAndTimes with IsoChronology with NonPersistedGameDsl {
 
   val statisticsService = new SnapshotsFactoryImpl
 
