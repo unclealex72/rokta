@@ -20,19 +20,16 @@
  *
  */
 
-package dao
+package dates
 
-import model.Player
+import org.joda.time.DateTime
 
 /**
- * A Data access object for players.
+ * The default implementation of [[Now]] that really does return the current date and time.
  * @author alex
  *
  */
-trait PlayerDao {
+class SystemNow extends Now {
 
-  /**
-   * Get all players.
-   */
-  def allPlayers: Set[Player]
+  def apply(): DateTime = new DateTime
 }

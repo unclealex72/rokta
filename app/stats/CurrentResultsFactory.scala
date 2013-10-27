@@ -20,19 +20,16 @@
  *
  */
 
-package dao
+package stats
 
-import model.Player
+import model.Game
 
 /**
- * A Data access object for players.
+ * A trait to return the current results for the day.
  * @author alex
  *
  */
-trait PlayerDao {
+trait CurrentResultsFactory {
 
-  /**
-   * Get all players.
-   */
-  def allPlayers: Set[Player]
+  def apply(games: Iterable[Game]): Map[String, CurrentResults]
 }

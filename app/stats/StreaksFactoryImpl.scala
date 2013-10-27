@@ -34,7 +34,7 @@ import model.Game
  */
 class StreaksFactoryImpl extends StreaksFactory {
 
-  def generateStreaks(games: SortedSet[Game], current: Boolean): Streaks = {
+  def apply(games: SortedSet[Game], current: Boolean): Streaks = {
     val streaksStatus = games.filter(_.loser.isDefined).foldLeft(StreaksStatus())(updateStreaksStatusPerGame)
     addRemainingStreaks(current, streaksStatus)
   }

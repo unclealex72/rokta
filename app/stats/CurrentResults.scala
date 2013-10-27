@@ -20,19 +20,31 @@
  *
  */
 
-package dao
-
-import model.Player
+package stats
 
 /**
- * A Data access object for players.
+ * An object used to keep track of the number of games a player has won and lost (and thus played) during one day.
  * @author alex
  *
  */
-trait PlayerDao {
+case class CurrentResults(
+  /**
+   * The number of games the player has won.
+   */  
+  val gamesWon: Int = 0, 
+  /**
+   * The number of games the player has lost.
+   */
+  val gamesLost: Int = 0) {
+  
+  /**
+   * Create a new [[CurrentResults]] with an extra win.
+   */
+  def withWin: CurrentResults = CurrentResults(gamesWon + 1, gamesLost)
 
   /**
-   * Get all players.
+   * Create a new [[CurrentResults]] with an extra loss.
    */
-  def allPlayers: Set[Player]
+  def withLoss: CurrentResults = CurrentResults(gamesWon, gamesLost + 1)
+
 }

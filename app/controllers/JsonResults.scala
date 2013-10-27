@@ -20,19 +20,19 @@
  *
  */
 
-package dao
+package controllers
 
-import model.Player
+import play.api.mvc._
+import json.Json
+import play.api.http.HeaderNames.CONTENT_TYPE
 
 /**
- * A Data access object for players.
  * @author alex
  *
  */
-trait PlayerDao {
+trait JsonResults extends Results {
 
-  /**
-   * Get all players.
-   */
-  def allPlayers: Set[Player]
+  def json(a: Any) = 
+  Ok(Json(a)).withHeaders(CONTENT_TYPE -> "application/json")
+
 }

@@ -20,19 +20,16 @@
  *
  */
 
-package dao
+package dates
 
-import model.Player
+import org.joda.time.DateTime
 
 /**
- * A Data access object for players.
+ * A [[Now]] class that always returns a supplied static date and time.
  * @author alex
  *
  */
-trait PlayerDao {
+case class StaticNow(val fixedTime: DateTime) extends Now {
 
-  /**
-   * Get all players.
-   */
-  def allPlayers: Set[Player]
+  def apply() = fixedTime
 }

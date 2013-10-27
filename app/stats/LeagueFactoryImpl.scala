@@ -40,8 +40,8 @@ class LeagueFactoryImpl(_gapCalculator: Option[GapCalculator] = injected) extend
 
   val gapCalculator: GapCalculator = injectIfMissing[GapCalculator](_gapCalculator)
 
-  def generateLeague(
-    snapshots: SortedMap[DateTime, Map[Player, Snapshot]],
+  def apply(
+    snapshots: SortedMap[DateTime, Map[Player, Snapshot]], 
     todaysPlayers: Option[Set[Player]], exemptPlayer: Option[Player]): SortedSet[LeagueRow] = {
     val leagues = snapshots.takeRight(2).toIndexedSeq.map(_._2).map(generateLeague)
     if (leagues.isEmpty) {

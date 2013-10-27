@@ -41,12 +41,12 @@ trait JsonSpec extends UtcChronology { self: Specification =>
    * Match a JSON object to how it is serialised.
    */
   def serialiseTo[A](serialised: => JsValue): Matcher[A] =
-    ((a: A) => PJson.parse(objectMapper.writeValueAsString(a))) ^^ beEqualTo(serialised)
+    ((a: A) => PJson.parse(Json(a))) ^^ beEqualTo(serialised)
     
   /**
    * Allow a JSON object within a string be matched against a serialised object.
    */
   def deserialiseTo[A: Manifest](deserialised: => A): Matcher[String] = 
-    ((s: String) => objectMapper.readValue(s, manifest[A].runtimeClass)) ^^ beEqualTo(deserialised)
+    ((s: String) => Json.read[A](s)) ^^ beEqualTo(deserialised)
   
 }

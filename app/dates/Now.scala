@@ -20,19 +20,47 @@
  *
  */
 
-package dao
+package dates
 
-import model.Player
+import org.joda.time.DateTime
 
 /**
- * A Data access object for players.
+ * A trait that can be used to return the current date and time or, in the case of testing, any
+ * required date and time.
  * @author alex
  *
  */
-trait PlayerDao {
+trait Now {
 
   /**
-   * Get all players.
+   * Return the current date and time.
    */
-  def allPlayers: Set[Player]
+  def apply(): DateTime
+
+}
+
+/**
+ * Implicits for [[DateTime]]s that allow them to be checked against today.
+ */
+trait WhenImplicits {
+
+  self: {
+
+    val now: Now
+  } =>
+
+  implicit class DateTimeImplicits(when: DateTime) {
+
+    def isThisYear: Boolean = when.year == now().year
+
+    def isThisMonth: Boolean = {
+      val today = now()
+      when.year == today.year && when.monthOfYear == today.monthOfYear
+    }
+
+    def isToday: Boolean = {
+      val today = now()
+      when.year == today.year && when.dayOfYear == today.dayOfYear
+    }
+  }
 }

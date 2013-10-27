@@ -25,6 +25,7 @@ package model
 
 import org.squeryl.KeyedEntity
 import org.squeryl.annotations.Column
+import com.fasterxml.jackson.annotation.JsonIgnore
 
 /**
  * The representation of a Rokta player.
@@ -49,8 +50,9 @@ case class PersistedPlayer(
    * The name of the colour used to represent the player's results in any graphs.
    */
   @Column("graphingcolour")
+  @JsonIgnore
 	val _colour:  String) extends KeyedEntity[Long] with Player {
   
-  def colour: Colour = Colour(_colour).getOrElse({ 
+  lazy val colour: Colour = Colour(_colour).getOrElse({ 
     throw new IllegalStateException(s"${_colour} is not a valid colour.") })
 }

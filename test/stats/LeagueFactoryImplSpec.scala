@@ -74,7 +74,7 @@ class LeagueFactoryImplSpec extends Specification with Mockito with DaysAndTimes
               "Roger".wins(3).playingRounds(12).loses(3).playingRounds(12),
               "Brian".wins(2).playingRounds(12).loses(2).playingRounds(12))
 
-        val league = leagueFactory.generateLeague(snapshots, None, None)
+        val league = leagueFactory.apply(snapshots, None, None)
         league must contain { (leagueRow: LeagueRow) =>
           (leagueRow.currentlyPlaying must beFalse) and
             (leagueRow.movement must beNone) and
@@ -95,7 +95,7 @@ class LeagueFactoryImplSpec extends Specification with Mockito with DaysAndTimes
             "Freddie".wins(3).playingRounds(12).loses(3).playingRounds(12),
             "John".wins(2).playingRounds(12).loses(2).playingRounds(12))
 
-        val league = leagueFactory.generateLeague(snapshots, None, None)
+        val league = leagueFactory.apply(snapshots, None, None)
         league must contain { (leagueRow: LeagueRow) =>
           (leagueRow.currentlyPlaying must beFalse) and
             (leagueRow.movement must beNone) and
@@ -186,7 +186,7 @@ class LeagueFactoryImplSpec extends Specification with Mockito with DaysAndTimes
                 "Roger".wins(3).playingRounds(12).loses(3).playingRounds(12),
                 "Brian".wins(2).playingRounds(12).loses(2).playingRounds(12))
           gapCalculator.calculateGap(any[LeagueRow], any[LeagueRow]) returns Some(2)
-          def league = leagueFactory.generateLeague(snapshots, Some(players("Brian", "Roger")), Some(player("Freddie")))
+          def league = leagueFactory.apply(snapshots, Some(players("Brian", "Roger")), Some(player("Freddie")))
           league must contain(
             "John".wins(5).playingRounds(12).loses(1).playingRounds(12).withMovement(-3),
             "Freddie".wins(4).playingRounds(12).loses(2).playingRounds(12).withMovement(-1).withExempt(true).withGap(2),

@@ -42,6 +42,7 @@ import dao.EntryPoint.where
 import dao.EntryPoint.year
 import dao.EntryPoint.weekOfYear
 import dao.RoktaSchema.{games => tgames}
+import dao.RoktaSchema.{players => tplayers}
 import filter.BetweenGameFilter
 import filter.ContiguousGameFilter
 import filter.DayGameFilter
@@ -52,6 +53,7 @@ import filter.YearGameFilter
 import model.PersistedGame
 import model.PersistedPlayer
 import filter.WeekGameFilter
+import model.Player
 
 /**
  * The Squeryl implementation of [[GameDao]], [[PersonDao]] and [[Transactional]].
@@ -87,6 +89,8 @@ class SquerylDao extends GameDao with PlayerDao with Transactional {
     }
   }
 
+  def allPlayers: Set[Player] = from(tplayers)(p => select(p)).toSet
+  
   def lastGamePlayed: Option[PersistedGame] = 
     from(tgames)(g => select(g) orderBy(g._datePlayed).desc).page(0, 1).headOption
     

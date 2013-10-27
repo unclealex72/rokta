@@ -20,19 +20,26 @@
  *
  */
 
-package dao
+package stats
 
+import scala.collection.SortedSet
+import scala.collection.SortedMap
+import org.joda.time.DateTime
 import model.Player
 
 /**
- * A Data access object for players.
+ * An immutable collection of all current stats.
  * @author alex
  *
  */
-trait PlayerDao {
+case class Stats(
+  players: Set[Player],
+  league: SortedSet[LeagueRow],
+  snapshots: SortedMap[DateTime, Map[String, Snapshot]],
+  streaks: Streaks,
+  exemptPlayer: Option[Player],
+  numberOfGamesToday: Option[Int],
+  currentResults: Map[String, CurrentResults]
+) {
 
-  /**
-   * Get all players.
-   */
-  def allPlayers: Set[Player]
 }

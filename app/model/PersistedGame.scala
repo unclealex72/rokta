@@ -25,15 +25,18 @@ package model
 import java.sql.Timestamp
 
 import scala.collection.immutable.SortedSet
-import org.squeryl.annotations.Column
 
 import org.joda.time.DateTime
 import org.squeryl.KeyedEntity
-import org.squeryl.dsl.ManyToOne
-import org.squeryl.dsl.OneToMany
+import org.squeryl.annotations.Column
 import org.squeryl.dsl.StatefulManyToOne
 import org.squeryl.dsl.StatefulOneToMany
-import dao.RoktaSchema._
+
+import dao.EntryPoint.__thisDsl
+import dao.RoktaSchema.anyRef2ActiveTransaction
+import dao.RoktaSchema.gameToRounds
+import dao.RoktaSchema.instigatorToGames
+import model.JodaDateTime.dateTimeOrdering
 
 /**
  * A game is a single game of Rokta.

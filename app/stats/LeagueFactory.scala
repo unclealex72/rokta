@@ -41,7 +41,7 @@ trait LeagueFactory {
    * @param exemptPlayer The player who is currently exempt or None if no-one is exempt.
    * @return A league containing the set of [[LeagueRow]]s from top to bottom.
    */
-  def generateLeague(
+  def apply(
     snapshots: SortedMap[DateTime, Map[Player, Snapshot]], 
     todaysPlayers: Option[Set[Player]], exemptPlayer: Option[Player]): SortedSet[LeagueRow]
 }

@@ -36,7 +36,7 @@ import model.JodaDateTime._
  */
 class SnapshotsFactoryImpl extends SnapshotsFactory {
 
-  def snapshots(games: Iterable[Game]): SortedMap[DateTime, Map[String, Snapshot]] = {
+  def apply(games: Iterable[Game]): SortedMap[DateTime, Map[String, Snapshot]] = {
     games.foldLeft(SnapshotCumulation())(accumulateSnapshots).historicalSnapshots
   }
 

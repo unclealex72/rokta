@@ -37,7 +37,12 @@ object Json {
   /**
    * The scala aware object mapper to use.
    */
-  val objectMapper: ObjectMapper =
+  private val objectMapper: ObjectMapper =
     new ObjectMapper().registerModules(DefaultScalaModule, new JodaModule).
-    disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+      disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+  
+  def read[T](json: String)(implicit m: Manifest[T]): T = 
+    objectMapper.readValue(json, m.runtimeClass).asInstanceOf[T]
+    
+  def apply(a: Any): String = objectMapper.writeValueAsString(a)
 }

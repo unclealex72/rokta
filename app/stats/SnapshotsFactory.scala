@@ -42,5 +42,5 @@ trait SnapshotsFactory {
    * @return A map of snapshots for each player by the date and time of the game played
    * that brought the snapshot into existence.
    */
-  def snapshots(games: Iterable[Game]): SortedMap[DateTime, Map[String, Snapshot]]
+  def apply(games: Iterable[Game]): SortedMap[DateTime, Map[String, Snapshot]]
 }

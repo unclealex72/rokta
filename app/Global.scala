@@ -36,6 +36,7 @@ import scala.reflect.ManifestFactory
 import com.escalatesoft.subcut.inject.BindingModule
 import controllers.StatsController
 import controllers.StatsController
+import play.api.mvc.Controller
 
 /**
  * The [[GlobalSettings]] used to set up Squeryl and Subcut
@@ -47,9 +48,12 @@ object Global extends GlobalSettings with Logging {
  object Context extends Injectable {
     implicit val bindingModule = RoktaBindingModule  // use the standard config by default
 
-    val controllers: Map[Class[_], _] = Map(
-      classOf[StatsController] -> inject[StatsController]
-    )
+    var controllers = Map.empty[Class[_], Any]
+    def register[T <: Controller](implicit m: scala.reflect.Manifest[T]): Unit = {
+      controllers += m.runtimeClass -> inject(m)
+    }
+    
+    register[StatsController]
   }
 
   /**

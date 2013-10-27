@@ -20,19 +20,17 @@
  *
  */
 
-package dao
+package module
 
-import model.Player
+import com.escalatesoft.subcut.inject.NewBindingModule
 
 /**
- * A Data access object for players.
+ * A trait with an empty Subcut [[BindingModule]].
  * @author alex
  *
  */
-trait PlayerDao {
+trait EmptyBindingModule {
 
-  /**
-   * Get all players.
-   */
-  def allPlayers: Set[Player]
+  implicit object DummyBindingModule extends NewBindingModule(module => {})
+  
 }

@@ -34,5 +34,5 @@ import model.Game
  */
 trait StreaksFactory {
 
-  def generateStreaks(games: SortedSet[Game], current: Boolean): Streaks
+  def apply(games: SortedSet[Game], current: Boolean): Streaks
 }

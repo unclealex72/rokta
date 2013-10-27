@@ -178,7 +178,7 @@ class StreaksFactoryImplSpec extends Specification with DaysAndTimes with IsoChr
       val expectedLosingStreaks: SortedSet[Streak] =
         Streak(brian, oneoclock, threeoclock).makeCurrent +
         Streak(freddie, tenoclock, twelveoclock)
-      val streaks = streaksFactory.generateStreaks(games, true) 
+      val streaks = streaksFactory.apply(games, true) 
     "amalgamate all the winning streak information into one object" in {
       streaks.winningStreaks must be equalTo(expectedWinningStreaks)
     }
