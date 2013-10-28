@@ -83,10 +83,12 @@ class SquerylDao extends GameDao with PlayerDao with Transactional {
       case WeekGameFilter(yearPlayed, weekPlayed) => 
         year(g._datePlayed) === yearPlayed and weekOfYear(g._datePlayed) === weekPlayed
       case DayGameFilter(yearPlayed, monthPlayed, dayPlayed) => 
-        year(g._datePlayed) === yearPlayed and month(g._datePlayed) === monthPlayed and dayOfMonth(g._datePlayed) === dayPlayed
-      case SinceGameFilter(from) => g.datePlayed >= from
-      case UntilGameFilter(to) => g.datePlayed <= to
-      case BetweenGameFilter(from, to) => g.datePlayed between (from, to)
+        year(g._datePlayed) === yearPlayed and 
+        month(g._datePlayed) === monthPlayed and dayOfMonth(g._datePlayed) === dayPlayed
+      case SinceGameFilter(from) => g.datePlayed >= from.withTimeAtStartOfDay
+      case UntilGameFilter(to) => g.datePlayed < to.withTimeAtStartOfDay.plusDays(1)
+      case BetweenGameFilter(from, to) => 
+        g.datePlayed between (from.withTimeAtStartOfDay, to.withTimeAtStartOfDay.plusDays(1).minusMillis(1))
     }
   }
 
