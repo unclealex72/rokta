@@ -159,12 +159,4 @@ class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology 
             && g.datePlayed.getHourOfDay() == 10)
     }
   }
-
-  "Getting the last game" should {
-    "return the last game" in txn { squerylDao => implicit games =>
-      squerylDao.lastGamePlayed.toSeq must matchFilter(
-            g => g.datePlayed.getYear() == 2014 && g.datePlayed.getMonthOfYear() == 12 && g.datePlayed.getDayOfMonth() == 31
-            && g.datePlayed.getHourOfDay() == 11)
-    }
-  }
 }

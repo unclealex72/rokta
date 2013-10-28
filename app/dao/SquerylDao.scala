@@ -92,9 +92,6 @@ class SquerylDao extends GameDao with PlayerDao with Transactional {
 
   def allPlayers: Set[Player] = from(tplayers)(p => select(p)).toSet
   
-  def lastGamePlayed: Option[PersistedGame] = 
-    from(tgames)(g => select(g) orderBy(g._datePlayed).desc).page(0, 1).headOption
-    
   def firstGamePlayed: Option[PersistedGame] = 
     from(tgames)(g => select(g) orderBy(g._datePlayed).asc).page(0, 1).headOption
 

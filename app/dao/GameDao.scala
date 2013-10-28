@@ -57,12 +57,6 @@ trait GameDao {
     contiguousGameFilter: Option[ContiguousGameFilter]): SortedSet[Game]
   
   /**
-   * Get the last game played.
-   * @return the last game played or none if no games have been played.
-   */
-  def lastGamePlayed: Option[Game]
-  
-  /**
    * Get the first game played.
    * @return the first game played or none if no games have been played.
    */
