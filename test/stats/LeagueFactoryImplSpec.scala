@@ -27,14 +27,12 @@ import org.specs2.mock.Mockito
 import com.escalatesoft.subcut.inject.BindingModule
 import com.escalatesoft.subcut.inject.NewBindingModule
 import model.Colour
-import model.Player
 import scala.collection.SortedSet
 import stats.LeagueFactoryImplSpec._
 import org.joda.time.DateTime
 import scala.collection.SortedMap
 import model.JodaDateTime._
 import org.specs2.mock._
-import model.NonPersistedPlayer
 import dates.IsoChronology
 import dates.DaysAndTimes
 
@@ -121,7 +119,7 @@ class LeagueFactoryImplSpec extends Specification with Mockito with DaysAndTimes
             "Freddie".wins(3).playingRounds(12).loses(3).playingRounds(12).withCurrentlyPlaying(true),
             "John".wins(2).playingRounds(12).loses(2).playingRounds(12))
 
-          leagueFactory.decorateWithCurrent(players("Brian", "Freddie"))(nonDecoratedLeague) must be equalTo (decoratedLeague)
+          leagueFactory.decorateWithCurrent(Set("Brian", "Freddie"))(nonDecoratedLeague) must be equalTo (decoratedLeague)
     }
   }
 
@@ -141,12 +139,12 @@ class LeagueFactoryImplSpec extends Specification with Mockito with DaysAndTimes
             "Freddie".wins(3).playingRounds(12).loses(3).playingRounds(12).withCurrentlyPlaying(true),
             "John".wins(2).playingRounds(12).loses(2).playingRounds(12))
 
-          leagueFactory.decorateWithExemption(Some(player("Brian")))(nonDecoratedLeague) must be equalTo (decoratedLeague)
+          leagueFactory.decorateWithExemption(Some("Brian"))(nonDecoratedLeague) must be equalTo (decoratedLeague)
     }
   }
 
-  "Decorating a league with the gaps between players" should {
-    "compare the bottom three players to the players above them" in mocked {
+  "Decorating a league with the gaps between Set" should {
+    "compare the bottom three Set to the Set above them" in mocked {
       (leagueFactory: LeagueFactoryImpl) =>
         (gapCalculator: GapCalculator) =>
           val brian: LeagueRow = "Brian".wins(5).playingRounds(12).loses(1).playingRounds(12).withCurrentlyPlaying(true)
@@ -157,7 +155,7 @@ class LeagueFactoryImplSpec extends Specification with Mockito with DaysAndTimes
           gapCalculator.calculateGap(roger, freddie) returns (Some(2))
           gapCalculator.calculateGap(freddie, john) returns (Some(3))
           val decoratedLeague =
-            leagueFactory.decorateWithGap(players("Brian", "Roger", "Freddie", "John"))(SortedSet(brian, roger, freddie, john))
+            leagueFactory.decorateWithGap(Set("Brian", "Roger", "Freddie", "John"))(SortedSet(brian, roger, freddie, john))
           decoratedLeague must contain(brian, roger.withGap(1), freddie.withGap(2), john.withGap(3)).inOrder
     }
   }
@@ -186,7 +184,7 @@ class LeagueFactoryImplSpec extends Specification with Mockito with DaysAndTimes
                 "Roger".wins(3).playingRounds(12).loses(3).playingRounds(12),
                 "Brian".wins(2).playingRounds(12).loses(2).playingRounds(12))
           gapCalculator.calculateGap(any[LeagueRow], any[LeagueRow]) returns Some(2)
-          def league = leagueFactory.apply(snapshots, Some(players("Brian", "Roger")), Some(player("Freddie")))
+          def league = leagueFactory.apply(snapshots, Some(Set("Brian", "Roger")), Some("Freddie"))
           league must contain(
             "John".wins(5).playingRounds(12).loses(1).playingRounds(12).withMovement(-3),
             "Freddie".wins(4).playingRounds(12).loses(2).playingRounds(12).withMovement(-1).withExempt(true).withGap(2),
@@ -199,7 +197,7 @@ class LeagueFactoryImplSpec extends Specification with Mockito with DaysAndTimes
 object LeagueFactoryImplSpec {
   // DSL for snapshot and league row creation
 
-  implicit class PlayerNameImplicits(playerName: String) {
+  implicit class StringNameImplicits(playerName: String) {
     def wins(gamesWon: Int) = Wins(playerName, gamesWon)
   }
 
@@ -222,19 +220,16 @@ object LeagueFactoryImplSpec {
 
     def asLeagueRow = LeagueRow(playerName, gamesWon, gamesLost, roundsPlayedInWinningGames, roundsPlayedInLosingGames)
     def asSnapshot =
-      player(playerName) ->
+      playerName ->
         Snapshot(gamesWon, gamesLost, roundsPlayedInWinningGames, roundsPlayedInLosingGames)
   }
-
-  def player(name: String): Player = NonPersistedPlayer(name, name, Colour.BLACK)
-  def players(names: String*): Set[Player] = names.toSet.map(player _)
 
   implicit def LeagueRowOrSnapshotToLeagueRow(leagueRowOrSnapshot: LeagueRowOrSnapshot): LeagueRow =
     leagueRowOrSnapshot.asLeagueRow
 
-  implicit def LeagueRowOrSnapshotToSnapshot(leagueRowOrSnapshot: LeagueRowOrSnapshot): Pair[Player, Snapshot] =
+  implicit def LeagueRowOrSnapshotToSnapshot(leagueRowOrSnapshot: LeagueRowOrSnapshot): Pair[String, Snapshot] =
     leagueRowOrSnapshot.asSnapshot
 
-  def on(dateTime: DateTime, snapshots: Pair[Player, Snapshot]*): SortedMap[DateTime, Map[Player, Snapshot]] =
-    SortedMap(dateTime -> snapshots.foldLeft(Map.empty[Player, Snapshot])(_ + _))
+  def on(dateTime: DateTime, snapshots: Pair[String, Snapshot]*): SortedMap[DateTime, Map[String, Snapshot]] =
+    SortedMap(dateTime -> snapshots.foldLeft(Map.empty[String, Snapshot])(_ + _))
 }

@@ -22,13 +22,24 @@
 
 package dao
 
+import scala.collection.SortedSet
+
+import org.joda.time.DateTime
+
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
+
+import filter.BetweenGameFilter
 import filter.ContiguousGameFilter
-import scala.collection.immutable.SortedSet
+import filter.DayGameFilter
+import filter.MonthGameFilter
+import filter.SinceGameFilter
+import filter.UntilGameFilter
+import filter.WeekGameFilter
+import filter.YearGameFilter
+import model.Game
 import model.PersistedGame
 import model.PersistedPlayer
-import java.util.Date
-import org.joda.time.DateTime
-import model.Game
 
 /**
  * A Data access object used to persist and retrieve [[Game]]s.
@@ -43,7 +54,7 @@ trait GameDao {
    * @return All played games matching the supplied filters in date played order.
    */
   def games(
-    contiguousGameFilter: Option[ContiguousGameFilter]): SortedSet[PersistedGame]
+    contiguousGameFilter: Option[ContiguousGameFilter]): SortedSet[Game]
   
   /**
    * Get the last game played.

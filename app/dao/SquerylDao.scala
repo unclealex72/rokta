@@ -23,7 +23,7 @@
 package dao
 
 import java.sql.Timestamp
-import scala.collection.immutable.SortedSet
+import scala.collection.SortedSet
 import scala.math.Ordering
 import org.joda.time.DateTime
 import org.squeryl.dsl.NonNumericalExpression
@@ -54,6 +54,7 @@ import model.PersistedGame
 import model.PersistedPlayer
 import filter.WeekGameFilter
 import model.Player
+import model.Game
 
 /**
  * The Squeryl implementation of [[GameDao]], [[PersonDao]] and [[Transactional]].
@@ -64,12 +65,12 @@ class SquerylDao extends GameDao with PlayerDao with Transactional {
 
   def tx[B](block: PlayerDao => GameDao => B) = inTransaction(block(this)(this))
 
-  def games(contiguousGameFilter: Option[ContiguousGameFilter]): SortedSet[PersistedGame] = {
+  def games(contiguousGameFilter: Option[ContiguousGameFilter]): SortedSet[Game] = {
     implicit val ordering: Ordering[PersistedGame] = Ordering.by(_.datePlayed.getMillis())
     from(tgames)(g => contiguousGameFilter match {
       case None => select(g)
       case Some(cgf) => where(contiguous(cgf)(g)) select (g)
-    }).foldLeft(SortedSet.empty[PersistedGame]) { case (gs, g) => gs + g }
+    }).foldLeft(SortedSet.empty[Game]) { case (gs, g) => gs + g }
   }
 
   implicit def toTimestamp(dt: DateTime): NonNumericalExpression[Timestamp] = new Timestamp(dt.getMillis())

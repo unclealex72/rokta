@@ -64,3 +64,8 @@ trait WhenImplicits {
     }
   }
 }
+
+/**
+ * A simple implementation of [[WhenImplicits]] that takes the required [[Now]] as a constructor argument.
+ */
+case class BasicWhenImplicits(val now: Now) extends WhenImplicits

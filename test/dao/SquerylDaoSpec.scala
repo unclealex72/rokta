@@ -22,14 +22,12 @@
 
 package dao
 
-import scala.collection.immutable.SortedSet
-
+import scala.collection.SortedSet
 import org.joda.time.DateTime
 import org.specs2.mutable.Specification
 import org.squeryl.Session
 import org.squeryl.SessionFactory
 import org.squeryl.adapters.H2Adapter
-
 import dates.DaysAndTimes
 import dates.IsoChronology
 import filter.BetweenGameFilter
@@ -42,6 +40,7 @@ import filter.YearGameFilter
 import model.PersistedGame
 import model.PersistedGame._
 import model.PersistedPlayer
+import model.Game
 /**
  * @author alex
  *
@@ -80,9 +79,9 @@ class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology 
     }
   }
 
-  def matchFilter(filter: PersistedGame => Boolean)(implicit games: Seq[PersistedGame]) = contain(exactly(games.filter(filter): _*)).inOrder
+  def matchFilter(filter: Game => Boolean)(implicit games: Seq[Game]) = contain(exactly(games.filter(filter): _*)).inOrder
   
-  def playedOn(days: Day*): PersistedGame => Boolean = { game => days.foldLeft(false){(pred, day) =>
+  def playedOn(days: Day*): Game => Boolean = { game => days.foldLeft(false){(pred, day) =>
     pred || {
         val month = day.month
         val year = month.year

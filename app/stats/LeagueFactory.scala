@@ -42,6 +42,6 @@ trait LeagueFactory {
    * @return A league containing the set of [[LeagueRow]]s from top to bottom.
    */
   def apply(
-    snapshots: SortedMap[DateTime, Map[Player, Snapshot]], 
-    todaysPlayers: Option[Set[Player]], exemptPlayer: Option[Player]): SortedSet[LeagueRow]
+    snapshots: SortedMap[DateTime, Map[String, Snapshot]], 
+    todaysPlayers: Option[Set[String]], exemptPlayer: Option[String]): SortedSet[LeagueRow]
 }
