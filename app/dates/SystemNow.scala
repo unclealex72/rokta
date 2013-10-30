@@ -33,3 +33,7 @@ class SystemNow extends Now {
 
   def apply(): DateTime = new DateTime
 }
+
+object SystemNow {
+  def apply() = new SystemNow
+}

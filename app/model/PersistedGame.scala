@@ -123,11 +123,6 @@ object PersistedGame {
   import model.JodaDateTime._
   
   /**
-   * Ordering
-   */
-  implicit val gameOrdering: Ordering[PersistedGame] = Ordering.by(_.datePlayed)
-
-  /**
    * Create a new game.
    * @param instigator The [[Person]] who instigated the game.
    * @param datePlayed The date and time the game was played.

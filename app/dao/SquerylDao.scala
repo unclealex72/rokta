@@ -64,12 +64,10 @@ class SquerylDao extends GameDao with PlayerDao with Transactional {
 
   def tx[B](block: PlayerDao => GameDao => B) = inTransaction(block(this)(this))
 
-  def games(contiguousGameFilter: Option[ContiguousGameFilter]): SortedSet[Game] = {
+  def games(contiguousGameFilter: ContiguousGameFilter): SortedSet[Game] = {
     implicit val ordering: Ordering[PersistedGame] = Ordering.by(_.datePlayed.getMillis())
-    from(tgames)(g => contiguousGameFilter match {
-      case None => select(g)
-      case Some(cgf) => where(contiguous(cgf)(g)) select (g)
-    }).foldLeft(SortedSet.empty[Game]) { case (gs, g) => gs + g }
+    from(tgames)(g => where(contiguous(contiguousGameFilter)(g)) select (g)).
+      foldLeft(SortedSet.empty[Game]) { case (gs, g) => gs + g }
   }
 
   implicit def toTimestamp(dt: DateTime): NonNumericalExpression[Timestamp] = new Timestamp(dt.getMillis())

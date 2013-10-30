@@ -49,11 +49,11 @@ trait GameDao {
 
   /**
    * Get all games matching an optional [[ContiguousGameFilter]] in date played order.
-   * @param contiguousGameFilter A [[ContiguousGameFilter]] used to optionally filter games.
+   * @param contiguousGameFilter A [[ContiguousGameFilter]] used to filter games.
    * @return All played games matching the supplied filters in date played order.
    */
   def games(
-    contiguousGameFilter: Option[ContiguousGameFilter]): SortedSet[Game]
+    contiguousGameFilter: ContiguousGameFilter): SortedSet[Game]
   
   /**
    * Get the first game played.

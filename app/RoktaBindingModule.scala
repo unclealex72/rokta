@@ -42,6 +42,12 @@ import stats.RaceGapCalculator
 import stats.GapCalculator
 import controllers.StatsController
 import controllers.StatsController
+import dates.Now
+import dates.SystemNow
+import stats.StatsFactory
+import stats.StatsFactoryImpl
+import stats.CurrentResultsFactory
+import stats.CurrentResultsFactoryImpl
 
 object RoktaBindingModule extends NewBindingModule(module => {
   import module._   // can now use bind directly
@@ -57,6 +63,9 @@ object RoktaBindingModule extends NewBindingModule(module => {
   bind[LeagueFactory] toModuleSingle { implicit module => new LeagueFactoryImpl }
   bind[StreaksFactory] toModuleSingle { implicit module => new StreaksFactoryImpl }
   bind[GapCalculator] toModuleSingle { implicit module => new RaceGapCalculator }
+  bind[CurrentResultsFactory] toModuleSingle { implicit module => new CurrentResultsFactoryImpl }
+  bind[Now] toSingle(SystemNow())
+  bind[StatsFactory] toModuleSingle { implicit module => new StatsFactoryImpl}
   
   // Controllers
   bind[StatsController] toModuleSingle { implicit module => new StatsController }

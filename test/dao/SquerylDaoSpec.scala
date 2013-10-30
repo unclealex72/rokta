@@ -51,7 +51,7 @@ class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology 
   /**
    * Wrap tests with database creation and transactions
    */
-  def txn[B](block: SquerylDao => Seq[PersistedGame] => B) = {
+  def txn[B](block: SquerylDao => Seq[Game] => B) = {
 
     import dao.RoktaSchema._
     import dao.EntryPoint._
@@ -67,8 +67,8 @@ class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology 
       freddie.save
       
       val squerylDao = new SquerylDao
-      val gameFactory: DateTime => PersistedGame = dt => PersistedGame(freddie, dt)
-      val games: SortedSet[PersistedGame] = (0 until DAYS_IN_YEAR * 2).foldLeft(SortedSet.empty[PersistedGame]){ (games, days) =>
+      val gameFactory: DateTime => Game = dt => PersistedGame(freddie, dt)
+      val games: SortedSet[Game] = (0 until DAYS_IN_YEAR * 2).foldLeft(SortedSet.empty[Game]){ (games, days) =>
         val dt = new DateTime(2013, 1, 1, 10, 0, 0).plusDays(days)
         val early = gameFactory(dt)
         val late = gameFactory(dt.plusHours(1))
@@ -91,16 +91,10 @@ class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology 
     }
   }
   
-  "Getting games with no filters at all" should {
-    "return all games" in txn { squerylDao => implicit games =>
-      squerylDao.games(None) must matchFilter(g => true)
-    }
-  } 
-
   "Getting games between two dates" should {
     "return all games between those two dates" in txn { squerylDao => implicit games =>
       squerylDao.games(
-        Some(BetweenGameFilter(January(31, 2013) at (3 oclock).pm, February(2, 2013) at(1 oclock)))) must matchFilter(
+        BetweenGameFilter(January(31, 2013) at (3 oclock).pm, February(2, 2013) at(1 oclock))) must matchFilter(
           playedOn(January(31, 2013), February(1, 2013), February(2, 2013)))
     }
   } 
@@ -108,7 +102,7 @@ class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology 
   "Getting games since a date" should {
     "return all games between since that date" in txn { squerylDao => implicit games =>
       squerylDao.games(
-        Some(SinceGameFilter(December(29, 2014) at (5 oclock).pm))) must matchFilter(
+        SinceGameFilter(December(29, 2014) at (5 oclock).pm)) must matchFilter(
           playedOn(December(29, 2014), December(30, 2014), December(31, 2014)))
     }
   }
@@ -116,7 +110,7 @@ class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology 
   "Getting games until a date" should {
     "return all games between since that date" in txn { squerylDao => implicit games =>
       squerylDao.games(
-        Some(UntilGameFilter(January(3, 2013).at(midnight)))) must matchFilter(
+        UntilGameFilter(January(3, 2013).at(midnight))) must matchFilter(
           playedOn(January(1, 2013), January(2, 2013), January(3, 2013)))
     }
   }
@@ -124,21 +118,21 @@ class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology 
   "Getting games for a year" should {
     "return all games in that year" in txn { squerylDao => implicit games =>
       squerylDao.games(
-        Some(YearGameFilter(2013))) must matchFilter(g => g.datePlayed.getYear() == 2013)
+        YearGameFilter(2013)) must matchFilter(g => g.datePlayed.getYear() == 2013)
     }
   }
 
   "Getting games for a month" should {
     "return all games in that month" in txn { squerylDao => implicit games =>
       squerylDao.games(
-        Some(MonthGameFilter(2013, 2))) must matchFilter(g => g.datePlayed.getYear() == 2013 && g.datePlayed.getMonthOfYear() == 2)
+        MonthGameFilter(2013, 2)) must matchFilter(g => g.datePlayed.getYear() == 2013 && g.datePlayed.getMonthOfYear() == 2)
     }
   }
 
   "Getting games for a day" should {
     "return all games in that day" in txn { squerylDao => implicit games =>
       squerylDao.games(
-        Some(DayGameFilter(2013, 7, 6))) must matchFilter(
+        DayGameFilter(2013, 7, 6)) must matchFilter(
             g => g.datePlayed.getYear() == 2013 && g.datePlayed.getMonthOfYear() == 7 && g.datePlayed.getDayOfMonth() == 6)
     }
   }
