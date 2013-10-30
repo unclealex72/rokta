@@ -52,7 +52,6 @@ import filter.UntilGameFilter
 import filter.YearGameFilter
 import model.PersistedGame
 import model.PersistedPlayer
-import filter.WeekGameFilter
 import model.Player
 import model.Game
 
@@ -80,8 +79,6 @@ class SquerylDao extends GameDao with PlayerDao with Transactional {
       case YearGameFilter(yearPlayed) => year(g._datePlayed) === yearPlayed
       case MonthGameFilter(yearPlayed, monthPlayed) => 
         year(g._datePlayed) === yearPlayed and month(g._datePlayed) === monthPlayed
-      case WeekGameFilter(yearPlayed, weekPlayed) => 
-        year(g._datePlayed) === yearPlayed and weekOfYear(g._datePlayed) === weekPlayed
       case DayGameFilter(yearPlayed, monthPlayed, dayPlayed) => 
         year(g._datePlayed) === yearPlayed and 
         month(g._datePlayed) === monthPlayed and dayOfMonth(g._datePlayed) === dayPlayed

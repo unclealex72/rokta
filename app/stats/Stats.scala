@@ -26,6 +26,8 @@ import scala.collection.SortedSet
 import scala.collection.SortedMap
 import org.joda.time.DateTime
 import model.Player
+import filter.ContiguousGameFilter
+import filter.ContiguousGameFilter
 
 /**
  * An immutable collection of all current stats.
@@ -33,13 +35,40 @@ import model.Player
  *
  */
 case class Stats(
+  /**
+   * The contiguous game filter used to source these statistics.
+   */
+  contiguousGameFilter: ContiguousGameFilter,
+  /**
+   * True if these stats are current as the filter used to produce them contains today, false otherwise.
+   */
+  current: Boolean,
+  /**
+   * The current results for today, if any.
+   */
+  currentResults: Map[String, CurrentResults],
+  /**
+   * All known players.
+   */
   players: Set[Player],
+  /**
+   * The full league.
+   */
   league: SortedSet[LeagueRow],
+  /**
+   * All the snapshots for each game and player.
+   */
   snapshots: SortedMap[DateTime, Map[String, Snapshot]],
+  /**
+   * All winning and losing streaks.
+   */
   streaks: Streaks,
-  exemptPlayer: Option[Player],
-  numberOfGamesToday: Option[Int],
-  currentResults: Map[String, CurrentResults]
-) {
-
-}
+  /**
+   * The currently exempt player, on none if no games have been played today.
+   */
+  exemptPlayer: Option[String],
+  /**
+   * The number of games that have been played today.
+   */
+  numberOfGamesToday: Int  
+)

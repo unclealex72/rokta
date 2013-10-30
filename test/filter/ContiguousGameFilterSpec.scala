@@ -46,9 +46,6 @@ class ContiguousGameFilterSpec extends Specification with JsonSpec with DaysAndT
     "correctly deserialise a month filter" in {
       """{"type":"month","year":2013, "month": 5}""" must deserialiseTo(MonthGameFilter(2013, 5))
     }
-    "correctly deserialise a week filter" in {
-      """{"type":"week","year":2013, "week": 12}""" must deserialiseTo(WeekGameFilter(2013, 12))
-    }
     "correctly deserialise a day filter" in {
       """{"type":"day","year":2013, "month": 12, "day": 5}""" must deserialiseTo(DayGameFilter(2013, 12, 5))
     }

@@ -35,7 +35,6 @@ import filter.DayGameFilter
 import filter.MonthGameFilter
 import filter.SinceGameFilter
 import filter.UntilGameFilter
-import filter.WeekGameFilter
 import filter.YearGameFilter
 import model.PersistedGame
 import model.PersistedGame._
@@ -133,14 +132,6 @@ class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology 
     "return all games in that month" in txn { squerylDao => implicit games =>
       squerylDao.games(
         Some(MonthGameFilter(2013, 2))) must matchFilter(g => g.datePlayed.getYear() == 2013 && g.datePlayed.getMonthOfYear() == 2)
-    }
-  }
-
-  "Getting games for a week" should {
-    "return all games in that week" in txn { squerylDao => implicit games =>
-      squerylDao.games(
-        Some(WeekGameFilter(2013, 13))) must matchFilter(
-            g => g.datePlayed.getYear() == 2013 && g.datePlayed.getWeekOfWeekyear() == 13)
     }
   }
 

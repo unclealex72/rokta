@@ -42,7 +42,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type
     new Type(value = classOf[UntilGameFilter], name = "until"),
     new Type(value = classOf[YearGameFilter], name = "year"),
     new Type(value = classOf[MonthGameFilter], name = "month"),
-    new Type(value = classOf[WeekGameFilter], name = "week"),
     new Type(value = classOf[DayGameFilter], name = "day")
 ))
 sealed trait ContiguousGameFilter
@@ -99,21 +98,7 @@ case class MonthGameFilter(
    * The month when matched games were played.
    */  
   val month: Int) extends ContiguousGameFilter
-
 /**
- * A game filter that matches games played during a given week of the year.
- */
-case class WeekGameFilter(
-  /**
-   * The year when matched games were played.
-   */  
-  val year: Int,
-  /**
-   * The week when matched games were played.
-   */  
-  val week: Int) extends ContiguousGameFilter
-
-  /**
  * A game filter that matches games played during a given day.
  */
 case class DayGameFilter(

@@ -35,7 +35,6 @@ import filter.DayGameFilter
 import filter.MonthGameFilter
 import filter.SinceGameFilter
 import filter.UntilGameFilter
-import filter.WeekGameFilter
 import filter.YearGameFilter
 import model.Game
 import model.PersistedGame
