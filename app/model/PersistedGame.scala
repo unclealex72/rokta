@@ -56,7 +56,7 @@ case class PersistedGame(
    * The date and time that this game was played.
    */
   @Column("dateplayed")
-  val _datePlayed: Timestamp) extends KeyedEntity[Long] with Game {
+  val _datePlayed: Timestamp) extends KeyedEntity[Long] {
 
   /**
    * The Joda Time version of the date and time the game was played.
@@ -66,35 +66,12 @@ case class PersistedGame(
   /**
    * The persisted [[Round]] for this game.
    */
-  lazy val _rounds: StatefulOneToMany[Round] = gameToRounds.leftStateful(PersistedGame.this)
-
-  /**
-   * The sorted [[Round]]s for this game.
-   */
-  lazy val rounds = _rounds.foldLeft(SortedSet.empty[Round]) { case (rs, r) => rs + r }
+  lazy val rounds: StatefulOneToMany[Round] = gameToRounds.leftStateful(PersistedGame.this)
 
   /**
    * The persisted instigator for this game.
    */
-  lazy val _instigator: StatefulManyToOne[PersistedPlayer] = instigatorToGames.rightStateful(PersistedGame.this)
-
-  /**
-   * The instigator for this game.
-   */
-  lazy val instigator: PersistedPlayer = _instigator.one.get
-
-  lazy val participants: Set[Player] = rounds.headOption.map(_.participants).getOrElse(Set.empty[Player])
-  
-  /**
-   * Get the person who lost this game.
-   * @return The person who lost this game.
-   */
-  def loser: Option[Player] = rounds.lastOption flatMap { round =>
-    round.losers.size match {
-      case 1 => Some(round.losers.iterator.next)
-      case _ => None
-    }
-  }
+  lazy val instigator: StatefulManyToOne[PersistedPlayer] = instigatorToGames.rightStateful(PersistedGame.this)
 
   /**
    * Add a new round to this game.
@@ -103,17 +80,11 @@ case class PersistedGame(
    * @return this.
    */
   def addRound(counter: PersistedPlayer, plays: Map[PersistedPlayer, Hand]): PersistedGame = {
-    _rounds.associate((Round(counter, PersistedGame.this, numberOfRounds)).addPlays(plays))
+    rounds.associate((Round(counter, PersistedGame.this, numberOfRounds)).addPlays(plays))
     PersistedGame.this
   }
   
-  def numberOfRounds: Int = _rounds.size
-  
-  lazy val roundsPlayed: Map[Player, Int] = 
-    participants.foldLeft(Map.empty[Player, Int]){ (map, player) => 
-      val roundsPlayed = _rounds.filter(_.participants.contains(player)).size
-      map + (player -> roundsPlayed)
-    }.withDefaultValue(0)
+  def numberOfRounds: Int = rounds.size + 1
 }
 
 object PersistedGame {

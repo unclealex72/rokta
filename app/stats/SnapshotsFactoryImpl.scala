@@ -45,7 +45,7 @@ class SnapshotsFactoryImpl extends SnapshotsFactory {
    */
   def accumulateSnapshots: (SnapshotCumulation, Game) => SnapshotCumulation = { (previousSnapshotCumulation, game) =>
     val cumulativeSnapshot =
-      game.participants.map(_.name).foldLeft(previousSnapshotCumulation)(addToSnapshot(game)).cumulativeSnapshot
+      game.participants.foldLeft(previousSnapshotCumulation)(addToSnapshot(game)).cumulativeSnapshot
     val historicalSnapshots: SortedMap[DateTime, Map[String, Snapshot]] =
       previousSnapshotCumulation.historicalSnapshots + (game.datePlayed -> cumulativeSnapshot)
     SnapshotCumulation(cumulativeSnapshot, historicalSnapshots)
@@ -58,8 +58,8 @@ class SnapshotsFactoryImpl extends SnapshotsFactory {
     val previousSnapshotEntry = snapshotCumulation.cumulativeSnapshot.get(playerName).getOrElse(Snapshot(0, 0, 0, 0))
     game.loser match {
       case Some(loser) => {
-        val rounds = game.roundsPlayed.find(_._1.name == playerName).map(_._2).getOrElse(0)
-        val newSnapshotEntry = if (playerName == loser.name) {
+        val rounds = game.roundsPlayed.find(_._1 == playerName).map(_._2).getOrElse(0)
+        val newSnapshotEntry = if (playerName == loser) {
           previousSnapshotEntry.lose(rounds)
         } else {
           previousSnapshotEntry.win(rounds)

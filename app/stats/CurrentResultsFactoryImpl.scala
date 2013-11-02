@@ -51,8 +51,8 @@ class CurrentResultsFactoryImpl(val _now: Option[Now] = injected) extends Curren
   def currentResultsPerGame(currentResults: Map[String, CurrentResults], game: Game): Map[String, CurrentResults] = {
     game.loser match {
       case Some(loser) => game.participants.foldLeft(currentResults) { (currentResults, player) => 
-        val playersCurrentResults = currentResults.get(player.name).getOrElse(CurrentResults())
-        currentResults + (player.name -> (
+        val playersCurrentResults = currentResults.get(player).getOrElse(CurrentResults())
+        currentResults + (player -> (
             if (player == loser) playersCurrentResults.withLoss else playersCurrentResults.withWin))
       }
       case None => currentResults

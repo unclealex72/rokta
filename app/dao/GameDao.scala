@@ -22,23 +22,12 @@
 
 package dao
 
-import scala.collection.SortedSet
-
 import org.joda.time.DateTime
-
-import com.fasterxml.jackson.annotation.JsonSubTypes
-import com.fasterxml.jackson.annotation.JsonTypeInfo
-
-import filter.BetweenGameFilter
 import filter.ContiguousGameFilter
-import filter.DayGameFilter
-import filter.MonthGameFilter
-import filter.SinceGameFilter
-import filter.UntilGameFilter
-import filter.YearGameFilter
 import model.Game
 import model.PersistedGame
 import model.PersistedPlayer
+import scala.collection.SortedSet
 
 /**
  * A Data access object used to persist and retrieve [[Game]]s.
@@ -59,7 +48,7 @@ trait GameDao {
    * Get the first game played.
    * @return the first game played or none if no games have been played.
    */
-  def firstGamePlayed: Option[Game]
+  def firstGamePlayed: Option[DateTime]
 
   /**
    * Create a new game to which rounds can be added.

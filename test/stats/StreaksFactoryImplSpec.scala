@@ -24,12 +24,10 @@ package stats
 
 import org.specs2.mutable.Specification
 import org.joda.time.DateTime
-import model.Player
 import model.Game
 import model.Colour
 import stats.StreaksFactoryImplSpec._
 import scala.collection.SortedSet
-import model.NonPersistedPlayer
 import dates.IsoChronology
 import dates.DaysAndTimes
 /**
@@ -39,17 +37,17 @@ import dates.DaysAndTimes
 class StreaksFactoryImplSpec extends Specification with DaysAndTimes with IsoChronology {
 
   val streaksFactory: StreaksFactoryImpl = new StreaksFactoryImpl
-  val freddie: Player = "Freddie"
-  val roger: Player = "Roger"
-  val brian: Player = "Brian"
-  val john: Player = "John"
+  val freddie = "Freddie"
+  val roger = "Roger"
+  val brian = "Brian"
+  val john = "John"
     
   "A losing player" should {
     "end their winning streak" in {
       val game = September(5, 2013) at (11 oclock) lostBy(freddie) wonBy(john, roger, brian)
       val winningStreak = 
         Streak(freddie, September(5, 2013) at (9 oclock)) extendTo(September(5, 2013) at (10 oclock))
-      val winningStreaks: Map[Player, Streak] = Map(freddie -> winningStreak)
+      val winningStreaks: Map[String, Streak] = Map(freddie -> winningStreak)
       val streaksStatus = StreaksStatus(winningStreaks, Map.empty, Streaks())
       val newStreaksStatus = streaksFactory.updateStreaksStatusPerParticipant(game)(streaksStatus, freddie)
       newStreaksStatus.winningStreaks must beEmpty
@@ -61,7 +59,7 @@ class StreaksFactoryImplSpec extends Specification with DaysAndTimes with IsoChr
       val game = September(5, 2013) at (11 oclock) lostBy(freddie) wonBy(john, roger, brian)
       val losingStreak = 
         Streak(freddie, September(5, 2013) at (9 oclock)) extendTo(September(5, 2013) at (10 oclock))
-      val losingStreaks: Map[Player, Streak] = Map(freddie -> losingStreak)
+      val losingStreaks: Map[String, Streak] = Map(freddie -> losingStreak)
       val streaksStatus = StreaksStatus(Map.empty, losingStreaks, Streaks())
       val newStreaksStatus = streaksFactory.updateStreaksStatusPerParticipant(game)(streaksStatus, freddie)
       newStreaksStatus.losingStreaks must contain(
@@ -72,7 +70,7 @@ class StreaksFactoryImplSpec extends Specification with DaysAndTimes with IsoChr
       val game = September(5, 2013) at (11 oclock) lostBy(freddie) wonBy(john, roger, brian)
       val winningStreak = 
         Streak(freddie, September(5, 2013) at (9 oclock))
-      val winningStreaks: Map[Player, Streak] = Map(freddie -> winningStreak)
+      val winningStreaks: Map[String, Streak] = Map(freddie -> winningStreak)
       val streaksStatus = StreaksStatus(winningStreaks, Map.empty, Streaks())
       val newStreaksStatus = streaksFactory.updateStreaksStatusPerParticipant(game)(streaksStatus, freddie)
       newStreaksStatus.winningStreaks must beEmpty
@@ -87,7 +85,7 @@ class StreaksFactoryImplSpec extends Specification with DaysAndTimes with IsoChr
       val game = September(5, 2013) at (11 oclock) lostBy(freddie) wonBy(john, roger, brian)
       val losingStreak = 
         Streak(roger, September(5, 2013) at (9 oclock)) extendTo(September(5, 2013) at (10 oclock))
-      val losingStreaks: Map[Player, Streak] = Map(roger -> losingStreak)
+      val losingStreaks: Map[String, Streak] = Map(roger -> losingStreak)
       val streaksStatus = StreaksStatus(Map.empty, losingStreaks, Streaks())
       val newStreaksStatus = streaksFactory.updateStreaksStatusPerParticipant(game)(streaksStatus, roger)
       newStreaksStatus.losingStreaks must beEmpty
@@ -99,7 +97,7 @@ class StreaksFactoryImplSpec extends Specification with DaysAndTimes with IsoChr
       val game = September(5, 2013) at (11 oclock) lostBy(freddie) wonBy(john, roger, brian)
       val winningStreak = 
         Streak(roger, September(5, 2013) at (9 oclock)) extendTo(September(5, 2013) at (10 oclock))
-      val winningStreaks: Map[Player, Streak] = Map(roger -> winningStreak)
+      val winningStreaks: Map[String, Streak] = Map(roger -> winningStreak)
       val streaksStatus = StreaksStatus(winningStreaks, Map.empty, Streaks())
       val newStreaksStatus = streaksFactory.updateStreaksStatusPerParticipant(game)(streaksStatus, roger)
       newStreaksStatus.winningStreaks must contain(
@@ -110,7 +108,7 @@ class StreaksFactoryImplSpec extends Specification with DaysAndTimes with IsoChr
       val game = September(5, 2013) at (11 oclock) lostBy(freddie) wonBy(john, roger, brian)
       val losingStreak = 
         Streak(roger, September(5, 2013) at (9 oclock))
-      val losingStreaks: Map[Player, Streak] = Map(roger -> losingStreak)
+      val losingStreaks: Map[String, Streak] = Map(roger -> losingStreak)
       val streaksStatus = StreaksStatus(Map.empty, losingStreaks, Streaks())
       val newStreaksStatus = streaksFactory.updateStreaksStatusPerParticipant(game)(streaksStatus, roger)
       newStreaksStatus.losingStreaks must beEmpty
@@ -178,7 +176,7 @@ class StreaksFactoryImplSpec extends Specification with DaysAndTimes with IsoChr
       val expectedLosingStreaks: SortedSet[Streak] =
         Streak(brian, oneoclock, threeoclock).makeCurrent +
         Streak(freddie, tenoclock, twelveoclock)
-      val streaks = streaksFactory.apply(games, true) 
+      val streaks = streaksFactory.apply(games, true)
     "amalgamate all the winning streak information into one object" in {
       streaks.winningStreaks must be equalTo(expectedWinningStreaks)
     }
@@ -194,29 +192,27 @@ object StreaksFactoryImplSpec {
    * A DSL to create games that are lost by a player.
    */
   implicit class DateTimeImplicits(datePlayed: DateTime) {
-    def lostBy(loser: Player) = GameBuilder(datePlayed, loser)
+    def lostBy(loser: String) = GameBuilder(datePlayed, loser)
   }
 
-  implicit class PlayerImplicits(player: Player) {
-    def streak(dateTime: DateTime, dateTimes: DateTime*): Map[Player, Streak] = {
-      Map(player -> Streak(player.name, dateTime, dateTimes: _*))
+  implicit class StringImplicits(player: String) {
+    def streak(dateTime: DateTime, dateTimes: DateTime*): Map[String, Streak] = {
+      Map(player -> Streak(player, dateTime, dateTimes: _*))
     }
   }
 
   implicit class AnyImplicits[A](a: A) {
     def +(next: A)(implicit ord: Ordering[A]) = SortedSet(a, next)
   }
-  
-  implicit def player(playerName: String): Player = NonPersistedPlayer(playerName, "me@here", Colour.AQUA)
-  implicit def playerName(player: Player): String = player.name
-  
-  case class GameBuilder(dateGamePlayed: DateTime, _loser: Player) {
-    def wonBy(winners: Player*): Game = new Game() {
+    
+  case class GameBuilder(dateGamePlayed: DateTime, _loser: String) {
+    def wonBy(winners: String*): Game = new Game() {
+      val instigator = "Freddie"
       val datePlayed = dateGamePlayed
-      val loser: Option[Player] = Some(_loser)
+      val loser: Option[String] = Some(_loser)
       val participants = winners.toSet + _loser
       val numberOfRounds = 0
-      val roundsPlayed = Map.empty[Player, Int]
+      val roundsPlayed = Map.empty[String, Int]
     }
   }
 }

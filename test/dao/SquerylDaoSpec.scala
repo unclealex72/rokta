@@ -30,21 +30,24 @@ import org.squeryl.SessionFactory
 import org.squeryl.adapters.H2Adapter
 import dates.DaysAndTimes
 import dates.IsoChronology
-import filter.BetweenGameFilter
-import filter.DayGameFilter
-import filter.MonthGameFilter
-import filter.SinceGameFilter
-import filter.UntilGameFilter
-import filter.YearGameFilter
+import model.Game
 import model.PersistedGame
 import model.PersistedGame._
+import model.PersistedGameDsl
 import model.PersistedPlayer
-import model.Game
+import model.Hand._
+import filter.BetweenGameFilter
+import filter.YearGameFilter
+import filter.SinceGameFilter
+import filter.DayGameFilter
+import filter.MonthGameFilter
+import filter.UntilGameFilter
+
 /**
  * @author alex
  *
  */
-class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology {
+class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology with PersistedGameDsl {
 
   val DAYS_IN_YEAR : Int = 365
   
@@ -64,17 +67,19 @@ class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology 
     inTransaction {
       RoktaSchema.create
       val freddie  = PersistedPlayer(0, "Freddie", Some("freddie@queen.com"), "BLACK")
+      val brian  = PersistedPlayer(0, "Brian", Some("brian@queen.com"), "WHITE")
       freddie.save
+      brian.save
       
       val squerylDao = new SquerylDao
-      val gameFactory: DateTime => Game = dt => PersistedGame(freddie, dt)
-      val games: SortedSet[Game] = (0 until DAYS_IN_YEAR * 2).foldLeft(SortedSet.empty[Game]){ (games, days) =>
+      val gameFactory: DateTime => PersistedGame = dt => 
+        freddie instigatesAt dt and (brian plays ROCK, freddie plays SCISSORS) countedBy brian
+      for(days <- (0 until DAYS_IN_YEAR * 2)) {
         val dt = new DateTime(2013, 1, 1, 10, 0, 0).plusDays(days)
-        val early = gameFactory(dt)
-        val late = gameFactory(dt.plusHours(1))
-        games + early + late
+        gameFactory(dt)
+        gameFactory(dt.plusHours(1))
       }
-      block(squerylDao)(games.toSeq)
+      block(squerylDao)(squerylDao.filteredGames(g => g.id === g.id).toSeq)
     }
   }
 
@@ -136,12 +141,5 @@ class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology 
             g => g.datePlayed.getYear() == 2013 && g.datePlayed.getMonthOfYear() == 7 && g.datePlayed.getDayOfMonth() == 6)
     }
   }
-  
-  "Getting the first game" should {
-    "return the first game" in txn { squerylDao => implicit games =>
-      squerylDao.firstGamePlayed.toSeq must matchFilter(
-            g => g.datePlayed.getYear() == 2013 && g.datePlayed.getMonthOfYear() == 1 && g.datePlayed.getDayOfMonth() == 1
-            && g.datePlayed.getHourOfDay() == 10)
-    }
-  }
+
 }

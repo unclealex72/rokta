@@ -32,6 +32,7 @@ import stats.SnapshotsFactory
 import filter.YearGameFilter
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import stats.StatsFactory
 
 /**
  * @author alex
@@ -39,23 +40,20 @@ import scala.concurrent.Future
  */
 class StatsController(
   _tx: Option[Transactional] = injected,
-  _snapshotsFactory: Option[SnapshotsFactory] = injected) 
+  _statsFactory: Option[StatsFactory] = injected) 
   extends Controller with JsonResults with AutoInjectable {
 
   val tx = injectIfMissing(_tx)
-  val snapshotsFactory = injectIfMissing(_snapshotsFactory)
+  val statsFactory = injectIfMissing(_statsFactory)
   
-  def index = Action { request =>
+  def players = Action { request =>
     tx { playerDao => gameDao =>
       json(playerDao.allPlayers)
     }
   }
   
-  def snapshots = Action { request =>
-    val snapshots = Future { tx { playerDao => gameDao => 
-      snapshotsFactory(gameDao.games(Some(YearGameFilter(2013)))) } }
-    Async {
-      snapshots.map(obj => json(obj))
-    }
+  def stats = Action.async { request =>
+    val stats = Future { statsFactory(YearGameFilter(2013)) }
+    stats.map(obj => json(obj))
   }
 }

@@ -29,7 +29,7 @@ import org.joda.time.DateTime
  * @author alex
  *
  */
-object PersistedGameDsl {
+trait PersistedGameDsl {
 
   // Players
   

@@ -59,22 +59,12 @@ case class Round(
   /**
    * The persisted [[Person]] who is counting for this round.
    */
-  lazy val _counter: StatefulManyToOne[PersistedPlayer] = RoktaSchema.counterToRounds.rightStateful(this)
+  lazy val counter: StatefulManyToOne[PersistedPlayer] = RoktaSchema.counterToRounds.rightStateful(this)
 
-  /**
-   * The [[Person]] who counted this round.
-   */
-  lazy val counter: PersistedPlayer = _counter.one.get
-  
   /**
    * The [[Play]]s contained in this round
    */
   lazy val plays: StatefulOneToMany[Play] = RoktaSchema.roundToPlays.leftStateful(this)
-
-  /**
-   * The participants of this game.
-   */
-  lazy val participants: Set[Player] = playersOf(plays)
 
   /**
    * Add plays to this round
@@ -83,24 +73,6 @@ case class Round(
     plays.foreach { case (person, hand) => this.plays.associate(Play(this, person, hand)) }
     this
   }
-	/**
-	 * Get a list of all the people who lost this round. If exactly two types of hands are played then
-	 * the players who played the losing hand are returned, otherwise, all the participants are.
-	 * @return The people who lost this round.
-	 */
-	lazy val losers: Set[Player] = {
-	  val playedHands = plays.foldLeft(Set.empty[Hand]) { case (hands, play) => hands + play.hand }
-	  playedHands.size match {
-	    case 2 => {
-	      val playedHandSeq = playedHands toIndexedSeq
-	      val firstHand = playedHandSeq(0)
-	      val secondHand = playedHandSeq(1)
-	      val losingHand = if (firstHand.beats(secondHand)) secondHand else firstHand
-	      playersOf (plays filter { _.hand == losingHand})
-	    }
-	    case _ => participants
-	  }
-	}
 }
 
 object Round {
@@ -114,12 +86,5 @@ object Round {
     val rnd = Round(0, counter.id, game.id, round)
     rnd.save
     rnd
-  }
-  /**
-   * A convenience function to map [[Play]]s to their players.
-   */
-  def playersOf: Iterable[Play] => Set[Player] = plays =>
-    plays.foldLeft(Set.empty[Player]) { (ps, p) => ps + p.player }
-
-
+  }  
 }

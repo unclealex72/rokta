@@ -23,7 +23,6 @@
 package dao
 
 import java.sql.Timestamp
-import scala.collection.SortedSet
 import scala.math.Ordering
 import org.joda.time.DateTime
 import org.squeryl.dsl.NonNumericalExpression
@@ -35,13 +34,15 @@ import dao.EntryPoint.inTransaction
 import dao.EntryPoint.int2ScalarInt
 import dao.EntryPoint.month
 import dao.EntryPoint.orderByArg2OrderByExpression
-import dao.EntryPoint.select
+import dao.EntryPoint._
 import dao.EntryPoint.timestamp2ScalarTimestamp
 import dao.EntryPoint.typedExpression2OrderByArg
 import dao.EntryPoint.where
 import dao.EntryPoint.year
 import dao.EntryPoint.weekOfYear
 import dao.RoktaSchema.{games => tgames}
+import dao.RoktaSchema.{rounds => trounds}
+import dao.RoktaSchema.{plays => tplays}
 import dao.RoktaSchema.{players => tplayers}
 import filter.BetweenGameFilter
 import filter.ContiguousGameFilter
@@ -54,6 +55,9 @@ import model.PersistedGame
 import model.PersistedPlayer
 import model.Player
 import model.Game
+import model.CalculatedGame
+import scala.collection.immutable.Iterable
+import scala.collection.SortedSet
 
 /**
  * The Squeryl implementation of [[GameDao]], [[PersonDao]] and [[Transactional]].
@@ -64,11 +68,19 @@ class SquerylDao extends GameDao with PlayerDao with Transactional {
 
   def tx[B](block: PlayerDao => GameDao => B) = inTransaction(block(this)(this))
 
-  def games(contiguousGameFilter: ContiguousGameFilter): SortedSet[Game] = {
-    implicit val ordering: Ordering[PersistedGame] = Ordering.by(_.datePlayed.getMillis())
-    from(tgames)(g => where(contiguous(contiguousGameFilter)(g)) select (g)).
-      foldLeft(SortedSet.empty[Game]) { case (gs, g) => gs + g }
+  def filteredGames(filter: PersistedGame => LogicalBoolean): SortedSet[Game] = {
+    val gamesInstigatorsRoundsPlayersPlays = 
+    from(tgames, tplayers, trounds, tplays, tplayers)((g, i, r, p, pr) => 
+      where(
+        r.gameId === g.id and p.roundId === r.id and p.playerId === pr.id and g.instigatorId === i.id and 
+        filter(g)) 
+      select (g, i.name, r.round, pr.name, p._hand) 
+      orderBy(g.id, r.round))
+    SortedSet(gamesInstigatorsRoundsPlayersPlays.groupBy(kv => (kv._1, kv._2)).map(CalculatedGame(_)).toSeq: _*)
   }
+
+  def games(contiguousGameFilter: ContiguousGameFilter): SortedSet[Game] = 
+    filteredGames(contiguous(contiguousGameFilter))
 
   implicit def toTimestamp(dt: DateTime): NonNumericalExpression[Timestamp] = new Timestamp(dt.getMillis())
 
@@ -89,8 +101,8 @@ class SquerylDao extends GameDao with PlayerDao with Transactional {
 
   def allPlayers: Set[Player] = from(tplayers)(p => select(p)).toSet
   
-  def firstGamePlayed: Option[PersistedGame] = 
-    from(tgames)(g => select(g) orderBy(g._datePlayed).asc).page(0, 1).headOption
+  def firstGamePlayed: Option[DateTime] = 
+    from(tgames)(g => select(g._datePlayed) orderBy(g._datePlayed).asc).page(0, 1).headOption.map(new DateTime(_))
 
   def newGame(instigator: PersistedPlayer, datePlayed: DateTime): PersistedGame = PersistedGame(instigator, datePlayed)
 

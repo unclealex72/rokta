@@ -30,7 +30,7 @@ import model.JodaDateTime._
  * @author alex
  *
  */
-trait Game {
+trait Game extends Ordered[Game] {
 
   /**
    * The date and time this game was played.
@@ -40,7 +40,7 @@ trait Game {
   /**
    * The person who lost the game if it is finished or None otherwise.
    */
-  def loser: Option[Player]
+  def loser: Option[String]
   
   /**
    * The total number of rounds played.
@@ -48,16 +48,22 @@ trait Game {
   def numberOfRounds: Int
   
   /**
+   * The player who instigated this game.
+   */
+  def instigator: String
+  
+  /**
    * The original participants.
    */
-  def participants: Set[Player]
+  def participants: Set[String]
   
   /**
    * The number of rounds each player played.
    */
-  def roundsPlayed: Map[Player, Int]
-}
-
-object Game {
-  implicit def gameOrdering: Ordering[Game] = Ordering.by(_.datePlayed)
+  def roundsPlayed: Map[String, Int]
+ 
+  /**
+   * Games are ordered by the date and time they were played.
+   */
+  def compare(g: Game): Int = datePlayed.compareTo(g.datePlayed)
 }

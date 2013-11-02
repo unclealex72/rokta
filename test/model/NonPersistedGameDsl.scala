@@ -46,17 +46,20 @@ trait NonPersistedGameDsl {
   }  
 }
 
-case class GameBuilder(val _loser: Player, val datePlayed: DateTime, otherRoundsPlayed: Map[Player, Int]) extends Game {
+case class GameBuilder(val _loser: Player, val datePlayed: DateTime, _otherRoundsPlayed: Map[Player, Int]) extends Game with NonPersistedGameDsl {
   
-  def and: Pair[Player, Int] => GameBuilder = play => GameBuilder(_loser, datePlayed, otherRoundsPlayed + play)
+  val otherRoundsPlayed = _otherRoundsPlayed.foldLeft(Map.empty[String, Int])((rs, r) => rs + (r._1.name -> r._2))
+  def and: Pair[Player, Int] => GameBuilder = play => GameBuilder(_loser, datePlayed, _otherRoundsPlayed + play)
+  
+  def instigator: String = freddie.name
   
   def whilst = and
   
-  def loser: Option[Player] = Some(_loser)
+  def loser: Option[String] = Some(_loser.name)
   
-  def participants: Set[Player] = otherRoundsPlayed.keySet + _loser
+  def participants: Set[String] = otherRoundsPlayed.keySet + _loser.name
   
   def numberOfRounds: Int = otherRoundsPlayed.values.max
   
-  def roundsPlayed: Map[Player, Int] = otherRoundsPlayed + (_loser -> numberOfRounds)
+  def roundsPlayed: Map[String, Int] = otherRoundsPlayed + (_loser.name -> numberOfRounds)
 }

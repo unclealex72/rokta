@@ -22,23 +22,17 @@
 
 package stats
 
-import scala.collection.SortedMap
-import model.Player
-import org.joda.time.DateTime
-import scala.collection.SortedSet
-import model.Game
+import filter.ContiguousGameFilter
 
 /**
- * A factory for calculating winning and losing streaks.
+ * A trait that generates all the stats for a given filter.
  * @author alex
  *
  */
-trait StreaksFactory {
+trait StatsFactory {
 
   /**
-   * Calculate all winning and losting streaks of length greater than 2.
-   * @param games The games to search.
-   * @return The streaks that were found.
+   * Create all the stats for a [[ContiguousGameFilter]].
    */
-  def apply(games: SortedSet[Game], current: Boolean): Streaks
+  def apply(contiguousGameFilter: ContiguousGameFilter): Stats
 }
