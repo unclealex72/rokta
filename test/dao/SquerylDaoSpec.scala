@@ -49,12 +49,20 @@ import filter.UntilGameFilter
  */
 class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology with PersistedGameDsl {
 
+  class QueryCounter {
+    var queries: Int = 0
+    def increase: Unit = queries += 1
+    def reset: Unit = queries = 0
+  }
+
+  val queryCounter = new QueryCounter
+  
   val DAYS_IN_YEAR : Int = 365
   
   /**
    * Wrap tests with database creation and transactions
    */
-  def txn[B](block: SquerylDao => Seq[Game] => B) = {
+  def txn[B](block: SquerylDao => Int => Seq[Game] => B) = {
 
     import dao.RoktaSchema._
     import dao.EntryPoint._
@@ -79,7 +87,10 @@ class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology 
         gameFactory(dt)
         gameFactory(dt.plusHours(1))
       }
-      block(squerylDao)(squerylDao.filteredGames(g => g.id === g.id).toSeq)
+      Session.currentSession.setLogger(msg => { if (msg.startsWith("Select")) queryCounter.increase })
+      queryCounter.reset
+      val games = squerylDao.filteredGames(g => g.id === g.id).toSeq
+      block(squerylDao)(queryCounter.queries)(games)
     }
   }
 
@@ -97,48 +108,54 @@ class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology 
   }
   
   "Getting games between two dates" should {
-    "return all games between those two dates" in txn { squerylDao => implicit games =>
+    "return all games between those two dates in one query" in txn { squerylDao => queryCount => implicit games=>
       squerylDao.games(
         BetweenGameFilter(January(31, 2013) at (3 oclock).pm, February(2, 2013) at(1 oclock))) must matchFilter(
           playedOn(January(31, 2013), February(1, 2013), February(2, 2013)))
+      queryCount must be equalTo(1)
     }
   } 
 
   "Getting games since a date" should {
-    "return all games between since that date" in txn { squerylDao => implicit games =>
+    "return all games between since that date in one query" in txn { squerylDao => queryCount => implicit games=>
       squerylDao.games(
         SinceGameFilter(December(29, 2014) at (5 oclock).pm)) must matchFilter(
           playedOn(December(29, 2014), December(30, 2014), December(31, 2014)))
+      queryCount must be equalTo(1)
     }
   }
 
   "Getting games until a date" should {
-    "return all games between since that date" in txn { squerylDao => implicit games =>
+    "return all games between since that date in one query" in txn { squerylDao => queryCount => implicit games=>
       squerylDao.games(
         UntilGameFilter(January(3, 2013).at(midnight))) must matchFilter(
           playedOn(January(1, 2013), January(2, 2013), January(3, 2013)))
+      queryCount must be equalTo(1)
     }
   }
 
   "Getting games for a year" should {
-    "return all games in that year" in txn { squerylDao => implicit games =>
+    "return all games in that year in one query" in txn { squerylDao => queryCount => implicit games=>
       squerylDao.games(
         YearGameFilter(2013)) must matchFilter(g => g.datePlayed.getYear() == 2013)
+      queryCount must be equalTo(1)
     }
   }
 
   "Getting games for a month" should {
-    "return all games in that month" in txn { squerylDao => implicit games =>
+    "return all games in that month in one query" in txn { squerylDao => queryCount => implicit games=>
       squerylDao.games(
         MonthGameFilter(2013, 2)) must matchFilter(g => g.datePlayed.getYear() == 2013 && g.datePlayed.getMonthOfYear() == 2)
+      queryCount must be equalTo(1)
     }
   }
 
   "Getting games for a day" should {
-    "return all games in that day" in txn { squerylDao => implicit games =>
+    "return all games in that day in one query" in txn { squerylDao => queryCount => implicit games=>
       squerylDao.games(
         DayGameFilter(2013, 7, 6)) must matchFilter(
             g => g.datePlayed.getYear() == 2013 && g.datePlayed.getMonthOfYear() == 7 && g.datePlayed.getDayOfMonth() == 6)
+      queryCount must be equalTo(1)
     }
   }
 
