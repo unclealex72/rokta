@@ -36,9 +36,9 @@ import filter.ContiguousGameFilter
  */
 case class Stats(
   /**
-   * The contiguous game filter used to source these statistics.
+   * The serialised contiguous game filter used to source these statistics.
    */
-  contiguousGameFilter: ContiguousGameFilter,
+  contiguousGameFilter: String,
   /**
    * True if these stats are current as the filter used to produce them contains today, false otherwise.
    */

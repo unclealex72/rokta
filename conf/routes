@@ -4,7 +4,8 @@
 
 # Home page
 GET     /players                @controllers.StatsController.players
-GET     /stats                  @controllers.StatsController.stats
+GET     /stats                  @controllers.StatsController.defaultStats
+GET     /stats/:filter          @controllers.StatsController.stats(filter: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

@@ -33,6 +33,8 @@ import filter.YearGameFilter
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import stats.StatsFactory
+import dates.Now
+import filter.ContiguousGameFilter
 
 /**
  * @author alex
@@ -40,11 +42,13 @@ import stats.StatsFactory
  */
 class StatsController(
   _tx: Option[Transactional] = injected,
-  _statsFactory: Option[StatsFactory] = injected) 
+  _statsFactory: Option[StatsFactory] = injected,
+  _now: Option[Now] = injected) 
   extends Controller with JsonResults with AutoInjectable {
 
   val tx = injectIfMissing(_tx)
   val statsFactory = injectIfMissing(_statsFactory)
+  val now = injectIfMissing(_now)
   
   def players = Action { request =>
     tx { playerDao => gameDao =>
@@ -52,8 +56,15 @@ class StatsController(
     }
   }
   
-  def stats = Action.async { request =>
-    val stats = Future { statsFactory(YearGameFilter(2013)) }
+  def stats(filter: String) = filter match {
+    case ContiguousGameFilter(gameFilter) => statsForGameFilter(gameFilter)
+    case _ => Action { request => NotFound }
+  }
+  
+  def defaultStats = statsForGameFilter(YearGameFilter(now().getYear))
+  
+  def statsForGameFilter(gameFilter: ContiguousGameFilter) = Action.async { request =>
+    val stats = Future { statsFactory(gameFilter) }
     stats.map(obj => json(obj))
   }
 }

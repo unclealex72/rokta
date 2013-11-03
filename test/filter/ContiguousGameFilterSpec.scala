@@ -22,51 +22,39 @@
 
 package filter
 
-import org.specs2.mutable.Specification
-import json.JsonSpec
-import json.Json._
-import com.fasterxml.jackson.databind.ObjectMapper
-import dates.DaysAndTimes
 import org.joda.time.DateTime
-import org.joda.time.Chronology
-import org.joda.time.chrono.ISOChronology
+import org.specs2.mutable.Specification
+import dates.DaysAndTimes
 import dates.UtcChronology
+import json.Json._
+import json.JsonSpec
+import filter.ContiguousGameFilter._
+import dates.IsoChronology
 
 /**
  * Test JSON serialisation of [[ContiguousGameFilter]]s.
  * @author alex
  *
  */
-class ContiguousGameFilterSpec extends Specification with JsonSpec with DaysAndTimes {
+class ContiguousGameFilterSpec extends Specification with DaysAndTimes with IsoChronology {
 
-  "Deserialising a contiguous game filter" should {
-    "correctly deserialise a year filter" in {
-      """{"type":"year","year":2013}""" must deserialiseTo(YearGameFilter(2013))
+  "A year filter" represents(YearGameFilter(2013), "d2013")
+  "A month filter" represents(MonthGameFilter(2013, 5), "d201305")
+  "A day filter" represents(DayGameFilter(2013, 5, 20), "d20130520")
+  "A since filter" represents(SinceGameFilter(September(5, 2013)), "s20130905")
+  "An until filter" represents(UntilGameFilter(September(5, 2013)), "u20130905")
+  "A between filter" represents(BetweenGameFilter(November(5, 2012), February(20, 2013)), "b2012110520130220")
+  
+  implicit class TestNameImplicits(testName: String) {
+    def represents(filter: ContiguousGameFilter, str: String) = {
+      testName should {
+        "serialise correctly" in {
+          ContiguousGameFilter.unapply(str) must beSome(filter)
+        }
+        "deserialise correctly" in {
+          ContiguousGameFilter(filter) must be equalTo(str)
+        }
+      }
     }
-    "correctly deserialise a month filter" in {
-      """{"type":"month","year":2013, "month": 5}""" must deserialiseTo(MonthGameFilter(2013, 5))
-    }
-    "correctly deserialise a day filter" in {
-      """{"type":"day","year":2013, "month": 12, "day": 5}""" must deserialiseTo(DayGameFilter(2013, 12, 5))
-    }
-    "correctly deserialise a between filter" in {
-      """{
-      "type":"between",
-      "from":"2013-02-05T15:00:00.000Z",
-      "to":"2013-02-09T12:00:00.000Z"}""" must deserialiseTo(
-        BetweenGameFilter(February(5, 2013) at (3 oclock).pm, February(9, 2013) at midday))
-    }
-    "correctly deserialise a since filter" in {
-      """{
-      "type":"since",
-      "since":"2013-02-09T12:00:00.000Z"}""" must deserialiseTo(
-        SinceGameFilter(February(9, 2013) at midday))
-    }
-    "correctly deserialise an until filter" in {
-      """{
-      "type":"until",
-      "until":"2013-02-09T12:00:00.000Z"}""" must deserialiseTo(
-        UntilGameFilter(February(9, 2013) at midday))
-    }
-  }  
+  }
 }

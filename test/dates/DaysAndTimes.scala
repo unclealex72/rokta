@@ -62,6 +62,8 @@ trait DaysAndTimes { self: DefaultChronology =>
       new DateTime(month.year.year, month.month, day, time.hour, time.minute, defaultChronology)
   }
 
+  implicit def dayToDateTime(day: Day) = day at midnight
+  
   sealed class Month(val year: Year, val month: Int, val daysInMonth: Int, val extraDayDuringLeapYear: Boolean) {
 
     def daysInMonthForYear(year: Year): Int = {

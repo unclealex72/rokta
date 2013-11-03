@@ -22,23 +22,25 @@
 
 package stats
 
-import filter.ContiguousGameFilter
+import org.joda.time.DateTime
+
 import com.escalatesoft.subcut.inject.AutoInjectable
 import com.escalatesoft.subcut.inject.injected
-import dates.WhenImplicits
-import dates.Now
+
 import dao.GameDao
-import dao.Transactional
 import dao.PlayerDao
-import filter.DayGameFilter
-import org.joda.time.DateTime
-import model.Game
-import model.Player
+import dao.Transactional
+import dates.Now
+import dates.WhenImplicits
 import filter.BetweenGameFilter
+import filter.ContiguousGameFilter
+import filter.DayGameFilter
+import filter.MonthGameFilter
 import filter.SinceGameFilter
 import filter.UntilGameFilter
 import filter.YearGameFilter
-import filter.MonthGameFilter
+import model.Game
+import model.Player
 
 /**
  * @author alex
@@ -74,7 +76,7 @@ class StatsFactoryImpl(
     val league = leagueFactory(snapshots, todaysPlayers, exemptPlayer)
     val streaks = streaksFactory(games, current)
     val numberOfGamesToday = todaysGames.size
-    Stats(contiguousGameFilter, current, currentResults, players, league, snapshots, streaks, exemptPlayer,
+    Stats(ContiguousGameFilter(contiguousGameFilter), current, currentResults, players, league, snapshots, streaks, exemptPlayer,
     numberOfGamesToday)
   }
  
