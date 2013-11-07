@@ -40,25 +40,7 @@ import filter.ContiguousGameFilter
  * @author alex
  *
  */
-class StatsController(
-  _tx: Option[Transactional] = injected,
-  _statsFactory: Option[StatsFactory] = injected,
-  _now: Option[Now] = injected) 
-  extends Controller with JsonResults with AutoInjectable {
+class HomeController extends Controller {
 
-  val tx = injectIfMissing(_tx)
-  val statsFactory = injectIfMissing(_statsFactory)
-  val now = injectIfMissing(_now)
-  
-  def stats(filter: String) = filter match {
-    case ContiguousGameFilter(gameFilter) => statsForGameFilter(gameFilter)
-    case _ => Action { request => NotFound }
-  }
-  
-  def defaultStats = statsForGameFilter(YearGameFilter(now().getYear))
-  
-  def statsForGameFilter(gameFilter: ContiguousGameFilter) = Action.async { request =>
-    val stats = Future { statsFactory(gameFilter) }
-    stats.map(obj => json(obj))
-  }
+  def index = Action { Ok(views.html.index()) }
 }

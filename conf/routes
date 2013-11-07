@@ -3,7 +3,10 @@
 # ~~~~
 
 # Home page
-GET     /players                @controllers.StatsController.players
+GET     /                       @controllers.HomeController.index
+GET     /index.html             @controllers.HomeController.index
+
+# Stats
 GET     /stats                  @controllers.StatsController.defaultStats
 GET     /stats/:filter          @controllers.StatsController.stats(filter: String)
 

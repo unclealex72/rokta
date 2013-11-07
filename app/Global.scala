@@ -20,22 +20,20 @@
  *
  */
 
-import play.api.GlobalSettings
-import org.squeryl.internals.DatabaseAdapter
-import org.squeryl.SessionFactory
 import org.squeryl.Session
-import play.api.db.DB
-import com.typesafe.scalalogging.slf4j.Logging
-import play.api.Application
+import org.squeryl.SessionFactory
 import org.squeryl.adapters.H2Adapter
 import org.squeryl.adapters.PostgreSqlAdapter
+import org.squeryl.internals.DatabaseAdapter
+
 import com.escalatesoft.subcut.inject.Injectable
-import scala.reflect.ClassTag
-import scala.reflect.api.TypeTags
-import scala.reflect.ManifestFactory
-import com.escalatesoft.subcut.inject.BindingModule
+import com.typesafe.scalalogging.slf4j.Logging
+
+import controllers.HomeController
 import controllers.StatsController
-import controllers.StatsController
+import play.api.Application
+import play.api.GlobalSettings
+import play.api.db.DB
 import play.api.mvc.Controller
 
 /**
@@ -54,6 +52,7 @@ object Global extends GlobalSettings with Logging {
     }
     
     register[StatsController]
+    register[HomeController]
   }
 
   /**
@@ -64,7 +63,7 @@ object Global extends GlobalSettings with Logging {
     val controller = Context.controllers.get(controllerClass)
     controller match {
       case Some(controller) => controller.asInstanceOf[A]
-      case _ => throw new IllegalArgumentException(s"$controllerClass is not a valid controller class.")
+      case _ => throw new RuntimeException(s"$controllerClass is not a valid controller class.")
     }
   }
   

@@ -38,7 +38,7 @@ case class Stats(
   /**
    * The serialised contiguous game filter used to source these statistics.
    */
-  contiguousGameFilter: String,
+  contiguousGameFilter: ContiguousGameFilter,
   /**
    * True if these stats are current as the filter used to produce them contains today, false otherwise.
    */

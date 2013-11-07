@@ -76,8 +76,9 @@ class StatsFactoryImpl(
     val league = leagueFactory(snapshots, todaysPlayers, exemptPlayer)
     val streaks = streaksFactory(games, current)
     val numberOfGamesToday = todaysGames.size
-    Stats(ContiguousGameFilter(contiguousGameFilter), current, currentResults, players, league, snapshots, streaks, exemptPlayer,
-    numberOfGamesToday)
+    Stats(
+      contiguousGameFilter, current, currentResults, players, 
+      league, snapshots, streaks, exemptPlayer, numberOfGamesToday)
   }
  
   def filterIsCurrent(contiguousGameFilter: ContiguousGameFilter): Boolean = contiguousGameFilter match {
