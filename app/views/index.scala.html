@@ -67,59 +67,22 @@
       <!-- Begin page content -->
       <div class="container">
         <div class="row">
-          <div class="col-md-8">
+          <div class="col-md-8" ng-controller="LeagueCtrl">
             <h1>The League</h1>
-            <table class="table" ng-controller="LeagueCtrl">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>Rank</th>
-                  <th>Player</th>
-                  <th class="hidden-xs">Games</th>
-                  <th class="hidden-xs">Lost</th>
-                  <th class="hidden-xs">R/WG</th>
-                  <th class="hidden-xs">R/LG</th>
-                  <th>L/G</th>
-                  <th class="hidden-xs">Gap</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr 
-                  ng-repeat="row in league" 
-                  ng-class="{'danger': row.exempt, 'warning': !row.currentlyPlaying && current && anyGamesPlayedToday}">
-                  <td>
-                    <i ng-class="{
-                      'fa fa-arrow-up': row.movement < 0, 
-                      'fa fa-arrows-h': row.movement == 0, 'fa fa-arrow-down': row.movement > 0}"></i>
-                  </td>
-                  <td>{{$index + 1}}</td>
-                  <td>{{row.playerName}}</td>
-                  <td class="hidden-xs">{{row.gamesWon + row.gamesLost}}</td>
-                  <td class="hidden-xs">{{row.gamesLost}}</td>
-                  <td class="hidden-xs">{{ row.roundsDuringWinningGames / row.gamesWon | number:1 }}</td>
-                  <td class="hidden-xs">{{ row.roundsDuringLosingGames / row.gamesLost | number:1 }}</td>
-                  <td>{{ 100 * row.gamesLost / (row.gamesLost + row.gamesWon) | number:2 }}%</td>
-                  <td class="hidden-xs">{{row.gap}}</td>
-                </tr>
-              </tbody>
-            </table>
+            <rokta-league league="league" current="current && anyGamesPlayedToday">
+            </rokta-league>
           </div>
           <div class="col-md-4">
             <h2>Todays results</h2>
             <ul ng-controller="TodayCtrl">
               <li>{{numberOfGamesToday}} games have been played today</li>
-              <li ng-repeat="result in gamesWon">
-                <span rokta-join rokta-join-items="result.names" rokta-join-ordered="true"></span>
-                <ng-pluralize count="result.names.length" when="{'one': 'has', 'other': 'have'}"></ng-pluralize>
-                won
-                <ng-pluralize count="result.count" when="{'0': 'no games', 'one': '1 game', 'other': '{} games'}"></ng-pluralize>
-              </li>
-              <li ng-repeat="result in gamesLost">
-                <span rokta-join rokta-join-items="result.names" rokta-join-ordered="true"></span>
-                <ng-pluralize count="result.names.length" when="{'one': 'has', 'other': 'have'}"></ng-pluralize>
-                lost
-                <ng-pluralize count="result.count" when="{'0': 'no games', 'one': '1 game', 'other': '{} games'}"></ng-pluralize>
-              </li>
+              <rokta-today results="gamesWon" verb="won"></rokta-today>
+              <rokta-today results="gamesLost" verb="lost"></rokta-today>
+            </ul>
+            <h2>Current streaks</h2>
+            <ul ng-controller="StreaksCtrl">
+              <rokta-current-streaks streak-groups="winningStreakGroups" type="winning"></rokta-current-streaks>
+              <rokta-current-streaks streak-groups="losingStreakGroups" type="losing"></rokta-current-streaks>
             </ul>
           </div>
         </div>

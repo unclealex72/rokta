@@ -37,6 +37,36 @@ app.directive('roktaJoin', function () {
   }
 });
 
+app.directive('roktaLeague', function() {
+  return {
+    restrict: 'E',
+    templateUrl: '/assets/directives/league.html',
+    scope: {
+      league: '=',
+      current: '='
+    }};
+});
+
+app.directive('roktaToday', function() {
+  return {
+    restrict: 'E',
+    templateUrl: '/assets/directives/today.html',
+    scope: {
+      results: '=',
+      verb: '@'
+    }};
+});
+
+app.directive('roktaCurrentStreaks', function() {
+  return {
+    restrict: 'E',
+    templateUrl: '/assets/directives/current-streaks.html',
+    scope: {
+      streakGroups: '=',
+      type: '@'
+    }};
+});
+
 app.service('Stats', ['$rootScope', '$http', function($rootScope, $http) {
   var service = {
     stats: {},
@@ -52,7 +82,7 @@ app.service('Stats', ['$rootScope', '$http', function($rootScope, $http) {
   return service;
 }]);
 
-app.service('ResultGrouper', [function() {
+app.service('ResultGrouper', function() {
   var service = {
     group: function(currentResultsByPlayer, countExtractor) {
       var valueExtractor = function(value, key) {
@@ -67,7 +97,24 @@ app.service('ResultGrouper', [function() {
     }
   }
   return service;
-}]);
+});
+
+app.service('StreaksGrouper', function() {
+  var service = {
+    group: function(streaks) {
+      var sizedStreaks = _.map(streaks, function(streak) {
+    	return { "name": streak.playerName, "size": streak.dateTimes.length };
+      });
+      var sizedStreaksBySize = _(sizedStreaks).groupBy("size");
+      var namesBySize = [];
+      sizedStreaksBySize.forIn(function(value, key) {
+    	namesBySize.push({"size": key, "names": _.map(value, "name")});
+      });
+      return _.sortBy(namesBySize, function(v) { return -v.size});
+    }
+  }
+  return service;
+});
 
 app.controller('StatsCtrl', ['Stats', function(Stats) {
 	  Stats.refresh();
@@ -103,5 +150,17 @@ app.controller('TodayCtrl', ['$scope', 'Stats', 'ResultGrouper', function($scope
 	$scope.numberOfGamesToday = stats.numberOfGamesToday;
 	$scope.gamesWon = ResultGrouper.group(stats.currentResults, "gamesWon");
 	$scope.gamesLost = ResultGrouper.group(stats.currentResults, "gamesLost");
+  });
+}]);
+
+app.controller('StreaksCtrl', ['$scope', 'Stats', 'StreaksGrouper', function($scope, Stats, StreaksGrouper) {
+  $scope.$on('stats.update', function(event) {
+	var streaks = Stats.stats.streaks;
+	var groupCurrent = function(streaks) {
+	  var currentStreaks = _.filter(streaks, function(streak){ return streak.current; });
+	  return StreaksGrouper.group(currentStreaks);
+	}
+	$scope.winningStreakGroups = groupCurrent(streaks.winningStreaks);
+	$scope.losingStreakGroups = groupCurrent(streaks.losingStreaks);
   });
 }]);

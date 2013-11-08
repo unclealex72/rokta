@@ -1,0 +1,10 @@
+<li ng-repeat="result in results">
+  <span rokta-join rokta-join-items="result.names" rokta-join-ordered="true"></span>
+  <ng-pluralize 
+    count="result.names.length" offset="1" 
+    when="{'1': 'has', 'one': 'have both', 'other': 'have all'}">
+  </ng-pluralize>
+  {{verb}}
+  <ng-pluralize count="result.count" 
+    when="{'0': 'no games.', 'one': '1 game.', 'other': '{} games.'}"></ng-pluralize>
+</li>

@@ -1,0 +1,34 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Rank</th>
+      <th>Player</th>
+      <th class="hidden-xs">Games</th>
+      <th class="hidden-xs">Lost</th>
+      <th class="hidden-xs">R/WG</th>
+      <th class="hidden-xs">R/LG</th>
+      <th>L/G</th>
+      <th class="hidden-xs">Gap</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr 
+      ng-repeat="row in league" 
+      ng-class="{'danger': row.exempt, 'warning': !row.currentlyPlaying && current}">
+      <td>
+        <i ng-class="{
+          'fa fa-arrow-up': row.movement < 0, 
+          'fa fa-arrows-h': row.movement == 0, 'fa fa-arrow-down': row.movement > 0}"></i>
+      </td>
+      <td>{{$index + 1}}</td>
+      <td>{{row.playerName}}</td>
+      <td class="hidden-xs">{{row.gamesWon + row.gamesLost}}</td>
+      <td class="hidden-xs">{{row.gamesLost}}</td>
+      <td class="hidden-xs">{{ row.roundsDuringWinningGames / row.gamesWon | number:1 }}</td>
+      <td class="hidden-xs">{{ row.roundsDuringLosingGames / row.gamesLost | number:1 }}</td>
+      <td>{{ 100 * row.gamesLost / (row.gamesLost + row.gamesWon) | number:2 }}%</td>
+      <td class="hidden-xs">{{row.gap}}</td>
+    </tr>
+  </tbody>
+</table>
