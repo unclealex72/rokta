@@ -54,7 +54,7 @@ class RaceGapCalculator extends GapCalculator {
         None
       }
       else {
-        race(0, playingTop, playedTop, lostTop, exemptTop, playingBottom, playedBottom, lostBottom, exemptBottom)
+        race(1, playingTop, playedTop, lostTop, exemptTop, playingBottom, playedBottom, lostBottom, exemptBottom)
       }
     }
   }

@@ -52,40 +52,40 @@ class RaceGapCalculatorSpec extends Specification {
     "be 3" in {
       gapCalculator.calculateGap(
         played(313).lost(82).playing.notExempt,
-        played(13).lost(4).playing.notExempt) must beSome(3)
+        played(13).lost(4).playing.notExempt) must beSome(4)
     }
   }
 
   "The gap between a player with 13 games and 4 losses and a player with 336 games and 106 losses who is currently not playing" should {
     "be 1" in {
       gapCalculator.calculateGap(
-          played(13).lost(4), played(336).lost(106).notPlaying) must beSome(1)
+          played(13).lost(4), played(336).lost(106).notPlaying) must beSome(2)
     }
   }
 
   "The gap between a player with 336 games and 106 losses who is currently not playing and a player with 367 games and 118 losses" should {
     "be 8" in {
       gapCalculator.calculateGap(
-          played(336).lost(106).notPlaying, played(367).lost(118)) must beSome(8)
+          played(336).lost(106).notPlaying, played(367).lost(118)) must beSome(9)
     }
   }
 
   "The gap between a player with 367 games and 118 losses and a player with 63 games and 21 losses who is currently not playing" should {
     "be 13" in {
       gapCalculator.calculateGap(
-        played(367).lost(118), played(63).lost(21).notPlaying) must beSome(13)
+        played(367).lost(118), played(63).lost(21).notPlaying) must beSome(14)
     }
   }
   
   "The gap between a player with 63 games and 21 losses who is currently not playing and a player with 267 games and 90 losses" should {
     "be 4" in {
-      gapCalculator.calculateGap(played(63).lost(21).notPlaying, played(267).lost(90)) must beSome(4)
+      gapCalculator.calculateGap(played(63).lost(21).notPlaying, played(267).lost(90)) must beSome(5)
     }
   }
 
   "The gap between a player with 267 games and 90 losses and a player with 238 games and 83 losses who is exempt" should {
     "be 5" in {
-      gapCalculator.calculateGap(played(267).lost(90), played(238).lost(83).playing.exempt) must beSome(5)
+      gapCalculator.calculateGap(played(267).lost(90), played(238).lost(83).playing.exempt) must beSome(6)
     }
   }
 
