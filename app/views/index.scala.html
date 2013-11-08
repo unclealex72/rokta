@@ -73,13 +73,24 @@
             </rokta-league>
           </div>
           <div class="col-md-4">
-            <h2>Todays results</h2>
+            <div ng-controller="LastGameCtrl">
+              <h3 ng-if="lastGame">The Last Game</h3>
+              <ul ng-if="lastGame">
+                <li>was lost by {{lastGame.loser}}.</li>
+                <li>
+                  lasted 
+                  <ng-pluralize count="lastGame.numberOfRounds" when="{'one': '{} round.', 'other': '{} rounds.'}">
+                  </ng-pluralize>
+                </li>
+              </ul>
+            </div>
+            <h3>Todays results</h3>
             <ul ng-controller="TodayCtrl">
               <li>{{numberOfGamesToday}} games have been played today</li>
               <rokta-today results="gamesWon" verb="won"></rokta-today>
               <rokta-today results="gamesLost" verb="lost"></rokta-today>
             </ul>
-            <h2>Current streaks</h2>
+            <h3>Current streaks</h3>
             <ul ng-controller="StreaksCtrl">
               <rokta-current-streaks streak-groups="winningStreakGroups" type="winning"></rokta-current-streaks>
               <rokta-current-streaks streak-groups="losingStreakGroups" type="losing"></rokta-current-streaks>

@@ -28,13 +28,14 @@ import org.joda.time.DateTime
 import model.Player
 import filter.ContiguousGameFilter
 import filter.ContiguousGameFilter
+import model.Game
 
 /**
  * An immutable collection of all current stats.
  * @author alex
  *
  */
-case class Stats(
+case class Stats[G <: Game](
   /**
    * The serialised contiguous game filter used to source these statistics.
    */
@@ -67,6 +68,10 @@ case class Stats(
    * The currently exempt player, on none if no games have been played today.
    */
   exemptPlayer: Option[String],
+  /**
+   * The last game that was played if these Stats are current, None otherwise.
+   */
+  lastGame: Option[G],
   /**
    * The number of games that have been played today.
    */

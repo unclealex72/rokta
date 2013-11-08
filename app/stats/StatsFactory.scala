@@ -23,6 +23,7 @@
 package stats
 
 import filter.ContiguousGameFilter
+import model.Game
 
 /**
  * A trait that generates all the stats for a given filter.
@@ -34,5 +35,5 @@ trait StatsFactory {
   /**
    * Create all the stats for a [[ContiguousGameFilter]].
    */
-  def apply(contiguousGameFilter: ContiguousGameFilter): Stats
+  def apply(contiguousGameFilter: ContiguousGameFilter): Stats[Game]
 }

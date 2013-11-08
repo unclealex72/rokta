@@ -144,6 +144,12 @@ app.controller('LeagueCtrl', ['$scope', 'Stats', function($scope, Stats) {
   });
 }]);
 
+app.controller('LastGameCtrl', ['$scope', 'Stats', function($scope, Stats) {
+  $scope.$on('stats.update', function(event) {
+	$scope.lastGame = Stats.stats.lastGame;
+  });
+}]);
+
 app.controller('TodayCtrl', ['$scope', 'Stats', 'ResultGrouper', function($scope, Stats, ResultGrouper) {
   $scope.$on('stats.update', function(event) {
 	var stats = Stats.stats;

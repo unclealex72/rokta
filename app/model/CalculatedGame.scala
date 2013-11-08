@@ -26,6 +26,7 @@ import org.joda.time.DateTime
 import model.JodaDateTime._
 import scala.collection.immutable.Map
 import scala.collection.SortedMap
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 
 /**
  * A trait for [[PersistedGame]] that allows other components to be tested without having to set up a database.
@@ -36,27 +37,27 @@ case class CalculatedGame(
   /**
    * The date and time this game was played.
    */
-  val datePlayed: DateTime,
+  datePlayed: DateTime,
   /**
    * The person who lost the game if it is finished or None otherwise.
    */
-  val loser: Option[String],
+  loser: Option[String],
   /**
    * The total number of rounds played.
    */
-  val numberOfRounds: Int,
+  numberOfRounds: Int,
   /**
    * The player who instigated this game.
    */
-  val instigator: String,
+  instigator: String,
   /**
    * The original participants.
    */
-  val participants: Set[String],
+  participants: Set[String],
   /**
    * The number of rounds each player played.
    */
-  val roundsPlayed: Map[String, Int]) extends Game
+  roundsPlayed: Map[String, Int]) extends Game
 
 object CalculatedGame {
 

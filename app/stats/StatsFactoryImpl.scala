@@ -23,10 +23,8 @@
 package stats
 
 import org.joda.time.DateTime
-
 import com.escalatesoft.subcut.inject.AutoInjectable
 import com.escalatesoft.subcut.inject.injected
-
 import dao.GameDao
 import dao.PlayerDao
 import dao.Transactional
@@ -41,6 +39,8 @@ import filter.UntilGameFilter
 import filter.YearGameFilter
 import model.Game
 import model.Player
+import com.typesafe.scalalogging.slf4j.Logging
+import model.CalculatedGame
 
 /**
  * @author alex
@@ -62,7 +62,7 @@ class StatsFactoryImpl(
   val streaksFactory = injectIfMissing(_streaksFactory)
   val tx = injectIfMissing(_transactional)
   
-  def apply(contiguousGameFilter: ContiguousGameFilter): Stats = {
+  def apply(contiguousGameFilter: ContiguousGameFilter): Stats[Game] = {
     val (year, month, day) = ((dt: DateTime) => (dt.getYear, dt.getMonthOfYear(), dt.getDayOfMonth()))(now())
     val (games, todaysGames, players) = tx { (playerDao: PlayerDao) => (gameDao: GameDao) => 
       (gameDao.games(contiguousGameFilter),
@@ -76,9 +76,10 @@ class StatsFactoryImpl(
     val league = leagueFactory(snapshots, todaysPlayers, exemptPlayer)
     val streaks = streaksFactory(games, current)
     val numberOfGamesToday = todaysGames.size
+    val lastGame = if (current) games.lastOption else None
     Stats(
       contiguousGameFilter, current, currentResults, players, 
-      league, snapshots, streaks, exemptPlayer, numberOfGamesToday)
+      league, snapshots, streaks, exemptPlayer, lastGame, numberOfGamesToday)
   }
  
   def filterIsCurrent(contiguousGameFilter: ContiguousGameFilter): Boolean = contiguousGameFilter match {
