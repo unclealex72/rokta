@@ -64,10 +64,9 @@ class StatsFactoryImpl(
   
   def apply(contiguousGameFilter: ContiguousGameFilter): Stats[Game] = {
     val (year, month, day) = ((dt: DateTime) => (dt.getYear, dt.getMonthOfYear(), dt.getDayOfMonth()))(now())
-    val (games, todaysGames, players) = tx { (playerDao: PlayerDao) => (gameDao: GameDao) => 
+    val (games, todaysGames) = tx { (playerDao: PlayerDao) => (gameDao: GameDao) => 
       (gameDao.games(contiguousGameFilter),
-       gameDao.games(DayGameFilter(year, month, day)),
-       playerDao.allPlayers)}
+       gameDao.games(DayGameFilter(year, month, day)))}
     val current = filterIsCurrent(contiguousGameFilter)
     val currentResults = currentResultsFactory(todaysGames)
     val todaysPlayers = if (current) Some(findTodaysPlayers(todaysGames)) else None
@@ -78,7 +77,7 @@ class StatsFactoryImpl(
     val numberOfGamesToday = todaysGames.size
     val lastGame = if (current) games.lastOption else None
     Stats(
-      contiguousGameFilter, current, currentResults, players, 
+      contiguousGameFilter, current, currentResults, 
       league, snapshots, streaks, exemptPlayer, lastGame, numberOfGamesToday)
   }
  

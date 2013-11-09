@@ -1,13 +1,11 @@
-var app = angular.module('rokta', []);
+var app = angular.module('rokta', ['ui.bootstrap', 'ngRoute']);
 
-/*
 app.config(['$routeProvider', function($routeProvider) {
   $routeProvider.
-    when('/season', {templateUrl: 'assets/partials/season.html',   controller: MainCtrl}).
-    when('/season/:season/tickets/:ticketType', {templateUrl: 'assets/partials/season.html', controller: MainCtrl}).
-    otherwise({redirectTo: '/season'});
+    when('/league/:filter?', {templateUrl: 'assets/partials/league.html', controller: 'StatsCtrl'}).
+    when('/winningstreaks/:filter?', {templateUrl: 'assets/partials/winningstreaks.html', controller: 'StatsCtrl'}).
+    otherwise({redirectTo: '/league/'});
 }]);
-*/
 
 app.directive('roktaJoin', function () {
   return {
@@ -67,15 +65,36 @@ app.directive('roktaCurrentStreaks', function() {
     }};
 });
 
+app.service('Players', ['$rootScope', '$http', function($rootScope, $http) {
+	  var service = {
+	    players: [],
+	    refresh: function() {
+	      $http.get('players').success(function(players, status) {
+	    	service.players = players.players;
+	    	$rootScope.$broadcast('players.update');
+	      });
+	    }
+	  }
+	  return service;
+	}]);
+
 app.service('Stats', ['$rootScope', '$http', function($rootScope, $http) {
   var service = {
     stats: {},
     anyGamesPlayedToday: false,
     refresh: function(filter) {
-      $http.get('stats').success(function(stats, status) {
-    	service.stats = stats;
-    	service.anyGamesPlayedToday = !_.isEmpty(stats.currentResults)
-    	$rootScope.$broadcast('stats.update');
+      var statsPath = 'stats';
+      if (!(filter === undefined)) {
+    	  statsPath += '/' + filter
+      }
+      $http.get(statsPath).
+        success(function(stats, status) {
+	      service.stats = stats;
+	      service.anyGamesPlayedToday = !_.isEmpty(stats.currentResults)
+	      $rootScope.$broadcast('stats.update');
+        }).
+        error(function(data, status) {
+    	  alert(status);
       });
     }
   }
@@ -116,14 +135,18 @@ app.service('StreaksGrouper', function() {
   return service;
 });
 
-app.controller('StatsCtrl', ['Stats', function(Stats) {
-	  Stats.refresh();
+app.controller('RoktaCtrl', ['Players', function(Players) {
+  Players.refresh();
 }]);
 
-app.controller('NavCtrl', ['$scope', 'Stats', function($scope, Stats) {
-  $scope.$on('stats.update', function(event) {
+app.controller('StatsCtrl', ['Stats', '$routeParams', function(Stats, $routeParams) {
+  Stats.refresh($routeParams.filter);
+}]);
+
+app.controller('NavCtrl', ['$scope', 'Players', function($scope, Players) {
+  $scope.$on('players.update', function(event) {
     var players = 
-      _(Stats.stats.players).sortBy('name').map('name').
+      _(Players.players).sortBy('name').map('name').
       map(function(name) {return {"name": name, "link": "#" + name }}).toArray().value();
     $scope.nav = [
       { "name": "League", "icon": "trophy", "link": "#" },

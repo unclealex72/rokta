@@ -49,10 +49,6 @@ case class Stats[G <: Game](
    */
   currentResults: Map[String, CurrentResults],
   /**
-   * All known players.
-   */
-  players: Set[Player],
-  /**
    * The full league.
    */
   league: SortedSet[LeagueRow],

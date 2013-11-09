@@ -25,16 +25,15 @@ import org.squeryl.SessionFactory
 import org.squeryl.adapters.H2Adapter
 import org.squeryl.adapters.PostgreSqlAdapter
 import org.squeryl.internals.DatabaseAdapter
-
 import com.escalatesoft.subcut.inject.Injectable
 import com.typesafe.scalalogging.slf4j.Logging
-
 import controllers.HomeController
 import controllers.StatsController
 import play.api.Application
 import play.api.GlobalSettings
 import play.api.db.DB
 import play.api.mvc.Controller
+import controllers.PlayersController
 
 /**
  * The [[GlobalSettings]] used to set up Squeryl and Subcut
@@ -53,6 +52,7 @@ object Global extends GlobalSettings with Logging {
     
     register[StatsController]
     register[HomeController]
+    register[PlayersController]
   }
 
   /**
