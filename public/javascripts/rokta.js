@@ -2,8 +2,8 @@ var app = angular.module('rokta', ['ui.bootstrap', 'ngRoute']);
 
 app.config(['$routeProvider', function($routeProvider) {
   $routeProvider.
-    when('/league/:filter?', {templateUrl: 'assets/partials/league.html', controller: 'StatsCtrl'}).
-    when('/winningstreaks/:filter?', {templateUrl: 'assets/partials/winningstreaks.html', controller: 'StatsCtrl'}).
+    when('/league/:filter?', {templateUrl: 'assets/partials/league.html', controller: 'LeagueCtrl'}).
+    when('/winningstreaks/:filter?', {templateUrl: 'assets/partials/streaks.html'}).
     otherwise({redirectTo: '/league/'});
 }]);
 
@@ -65,36 +65,61 @@ app.directive('roktaCurrentStreaks', function() {
     }};
 });
 
-app.service('Players', ['$rootScope', '$http', function($rootScope, $http) {
-	  var service = {
-	    players: [],
-	    refresh: function() {
-	      $http.get('players').success(function(players, status) {
-	    	service.players = players.players;
-	    	$rootScope.$broadcast('players.update');
-	      });
-	    }
-	  }
-	  return service;
-	}]);
-
-app.service('Stats', ['$rootScope', '$http', function($rootScope, $http) {
+app.service('Events', ['$log', '$rootScope', '$http', function($log, $rootScope, $http) {
   var service = {
+    refresh: function(event, url, success) {
+      $log.info("Calling " + url)
+      $http.get(url).
+        success(function(data, status) {
+          success(data);
+          event.initialised = true;
+          $rootScope.$broadcast(event.name);
+        }).
+        error(function(data, status) {
+          alert(event.name + ": " + status);
+        })},
+    listenTo: function($scope, event, callback) {
+      $scope.$on('stats.update', function(evt) {
+    	callback();  
+      });
+      if (event.initialised) {
+    	callback();
+      }
+    }  
+  }
+  return service;
+}]);
+
+app.service('Players', ['Events', function(Events) {
+  var service = {
+    initialised: false,
+    name: 'players.update',
+    players: [],
+    refresh: function() {
+      Events.refresh(service, 'players', function(players) {
+	    service.players = players.players;
+      });
+    }
+  }
+  return service;
+}]);
+
+app.service('Stats', ['Events', '$routeParams', function(Events, $routeParams) {
+  var service = {
+	initialised: false,
+	name: 'stats.update',
     stats: {},
     anyGamesPlayedToday: false,
-    refresh: function(filter) {
+    refresh: function() {
+      var filter = $routeParams.filter;
+      alert(filter);
       var statsPath = 'stats';
       if (!(filter === undefined)) {
     	  statsPath += '/' + filter
       }
-      $http.get(statsPath).
-        success(function(stats, status) {
-	      service.stats = stats;
-	      service.anyGamesPlayedToday = !_.isEmpty(stats.currentResults)
-	      $rootScope.$broadcast('stats.update');
-        }).
-        error(function(data, status) {
-    	  alert(status);
+      Events.refresh(service, statsPath, function(stats) {
+        service.stats = stats;
+        service.anyGamesPlayedToday = !_.isEmpty(stats.currentResults)
       });
     }
   }
@@ -135,16 +160,12 @@ app.service('StreaksGrouper', function() {
   return service;
 });
 
-app.controller('RoktaCtrl', ['Players', function(Players) {
+app.controller('RoktaCtrl', ['Players', 'Stats', '$routeParams', function(Players, Stats, $routeParams) {
   Players.refresh();
 }]);
 
-app.controller('StatsCtrl', ['Stats', '$routeParams', function(Stats, $routeParams) {
-  Stats.refresh($routeParams.filter);
-}]);
-
-app.controller('NavCtrl', ['$scope', 'Players', function($scope, Players) {
-  $scope.$on('players.update', function(event) {
+app.controller('NavCtrl', ['$scope', 'Events', 'Players', function($scope, Events, Players) {
+  Events.listenTo($scope, Players, function() {
     var players = 
       _(Players.players).sortBy('name').map('name').
       map(function(name) {return {"name": name, "link": "#" + name }}).toArray().value();
@@ -158,8 +179,9 @@ app.controller('NavCtrl', ['$scope', 'Players', function($scope, Players) {
   });
 }]);
 
-app.controller('LeagueCtrl', ['$scope', 'Stats', function($scope, Stats) {
-  $scope.$on('stats.update', function(event) {
+app.controller('LeagueCtrl', ['$scope', 'Events', 'Stats', function($scope, Events, Stats) {
+  Stats.refresh();
+  Events.listenTo($scope, Stats, function() {
 	var stats = Stats.stats;
     $scope.current = Stats.stats.current;
     $scope.league = Stats.stats.league;
@@ -167,14 +189,14 @@ app.controller('LeagueCtrl', ['$scope', 'Stats', function($scope, Stats) {
   });
 }]);
 
-app.controller('LastGameCtrl', ['$scope', 'Stats', function($scope, Stats) {
-  $scope.$on('stats.update', function(event) {
+app.controller('LastGameCtrl', ['$scope', 'Events', 'Stats', function($scope, Events, Stats) {
+  Events.listenTo($scope, Stats, function() {
 	$scope.lastGame = Stats.stats.lastGame;
   });
 }]);
 
-app.controller('TodayCtrl', ['$scope', 'Stats', 'ResultGrouper', function($scope, Stats, ResultGrouper) {
-  $scope.$on('stats.update', function(event) {
+app.controller('TodayCtrl', ['$scope', 'Events', 'Stats', 'ResultGrouper', function($scope, Events, Stats, ResultGrouper) {
+  Events.listenTo($scope, Stats, function() {
 	var stats = Stats.stats;
 	$scope.numberOfGamesToday = stats.numberOfGamesToday;
 	$scope.gamesWon = ResultGrouper.group(stats.currentResults, "gamesWon");
@@ -182,8 +204,8 @@ app.controller('TodayCtrl', ['$scope', 'Stats', 'ResultGrouper', function($scope
   });
 }]);
 
-app.controller('StreaksCtrl', ['$scope', 'Stats', 'StreaksGrouper', function($scope, Stats, StreaksGrouper) {
-  $scope.$on('stats.update', function(event) {
+app.controller('CurrentStreaksCtrl', ['$scope', 'Events', 'Stats', 'StreaksGrouper', function($scope, Events, Stats, StreaksGrouper) {
+  Events.listenTo($scope, Stats, function() {
 	var streaks = Stats.stats.streaks;
 	var groupCurrent = function(streaks) {
 	  var currentStreaks = _.filter(streaks, function(streak){ return streak.current; });

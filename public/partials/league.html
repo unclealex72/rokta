@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-md-8" ng-controller="LeagueCtrl">
+  <div class="col-md-8">
     <h1>The League</h1>
     <rokta-league league="league" current="current && anyGamesPlayedToday">
     </rokta-league>
@@ -23,7 +23,7 @@
       <rokta-today results="gamesLost" verb="lost"></rokta-today>
     </ul>
     <h3>Current streaks</h3>
-    <ul ng-controller="StreaksCtrl">
+    <ul ng-controller="CurrentStreaksCtrl">
       <rokta-current-streaks streak-groups="winningStreakGroups" type="winning"></rokta-current-streaks>
       <rokta-current-streaks streak-groups="losingStreakGroups" type="losing"></rokta-current-streaks>
     </ul>
