@@ -1,0 +1,11 @@
+.day-suffix {
+  font-size: 50%;
+  position: relative;
+  top: -0.5em;
+}
+
+h1 .day-suffix {
+  font-size: 50%;
+  position: relative;
+  top: -0.7em;
+}
