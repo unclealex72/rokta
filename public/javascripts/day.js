@@ -100,7 +100,7 @@ day.filter('roktaDay', ['DateSuffix', 'Sanitiser', '$sce', '$filter', function(D
 	var output = 
 	  "the " + day.day + "<span class='day-suffix'>" + DateSuffix.suffixFor(day.day) + "</span>";
 	if (!excludeMonth) {
-	  output += " " + monthFilter(day, excludeYear);
+	  output += " of " + monthFilter(day, excludeYear);
 	}
 	return $sce.trustAsHtml(output);
   }

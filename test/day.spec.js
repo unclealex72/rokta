@@ -132,14 +132,19 @@ describe("The day module's", function() {
 	  return element;
 	}
 	
+	it("outputs the year, month and day for a day object", function() {
+	  var el = compile({ year: 2013, month: 9, day: 3 });
+	  expect(el.html().toString()).toEqual('the 3<span class="day-suffix">rd</span> of September 2013');
+	});
+	
 	it("outputs the year, month and day for a Date object", function() {
 	  var el = compile(new Date(2013, 8, 3));
-	  expect(el.html().toString()).toEqual('the 3<span class="day-suffix">rd</span> September 2013');
+	  expect(el.html().toString()).toEqual('the 3<span class="day-suffix">rd</span> of September 2013');
 	});
 
 	it("outputs the year, month and day for a string", function() {
 	  var el = compile("2013-09-03T12:00:00Z");
-	  expect(el.html().toString()).toEqual('the 3<span class="day-suffix">rd</span> September 2013');
+	  expect(el.html().toString()).toEqual('the 3<span class="day-suffix">rd</span> of September 2013');
 	});
   });
 });
