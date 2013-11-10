@@ -45,14 +45,16 @@
           <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
               <li ng-repeat="menu in nav" ng-class="{'dropdown': menu.submenu}">
-                <a ng-if="menu.link" href="{{menu.link}}"><i class="fa fa-{{menu.icon}}"></i> {{menu.name}}</a>
+                <a ng-if="menu.link" href="javascript:void(0);" ng-click="navigateTo(menu.link)">
+                  <i class="fa fa-{{menu.icon}}"></i> {{menu.name}}
+                </a>
                 <a ng-if="menu.submenu" href="#" class="dropdown-toggle" data-toggle="dropdown">
                   <i class="fa fa-{{menu.icon}}"></i>
                   {{menu.name}} <b class="caret"></b>
                 </a>
                 <ul ng-if="menu.submenu" class="dropdown-menu">
                   <li ng-repeat="submenu in menu.submenu">
-                    <a href="{{submenu.link}}">{{submenu.name}}</a>
+                    <a href="javascript:void(0);" ng-click="navigateTo(submenu.link)">{{submenu.name}}</a>
                   </li>
                 </ul>
               </li>
@@ -80,11 +82,18 @@
 		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
 		<script src='//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
 		
-		<script src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.3/angular.min.js'></script>
-		<script src='http://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.3/angular-route.min.js'></script>
+		<script src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.3/angular.js'></script>
+    <script src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.3/angular-sanitize.min.js'></script>
+ 		<script src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.3/angular-route.min.js'></script>
 		<script src='//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.2.1/lodash.min.js'></script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.6.0/ui-bootstrap-tpls.min.js'></script>
+    <script src='@routes.Assets.at("javascripts/day.js")'></script> 
+    <script src='@routes.Assets.at("javascripts/events.js")'></script> 
+    <script src='@routes.Assets.at("javascripts/stats.js")'></script>
+    <script src='@routes.Assets.at("javascripts/filter.js")'></script>
+    <script src='@routes.Assets.at("angular/league/javascripts/league.js")'></script> 
+		<script src='@routes.Assets.at("angular/streaks/javascripts/streaks.js")'></script> 		
 		<script src='@routes.Assets.at("javascripts/rokta.js")'></script> 
 		
-		<script src='//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.6.0/ui-bootstrap-tpls.min.js'></script>
   </body>
 </html>

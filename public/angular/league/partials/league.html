@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-md-8">
-    <h1>The League</h1>
+    <h1 ng-bind-html="'The league for games ' + (contiguousGameFilter | roktaGame)"></h1>
     <rokta-league league="league" current="current && anyGamesPlayedToday">
     </rokta-league>
   </div>
@@ -8,6 +8,7 @@
     <div ng-controller="LastGameCtrl">
       <h3 ng-if="lastGame">The Last Game</h3>
       <ul ng-if="lastGame">
+        <li ng-bind-html="'was played on ' + (lastGame.datePlayed | roktaDay)"></li>
         <li>was lost by {{lastGame.loser}}.</li>
         <li>
           lasted 
