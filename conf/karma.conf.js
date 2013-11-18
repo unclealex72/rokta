@@ -8,7 +8,7 @@ module.exports = function(config){
       'http://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular-sanitize.js',
       'http://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular-route.js',
       'http://code.angularjs.org/1.2.0/angular-mocks.js',
-      'http:////cdnjs.cloudflare.com/ajax/libs/lodash.js/2.2.1/lodash.js',
+      'http:////cdnjs.cloudflare.com/ajax/libs/lodash.js/2.3.0/lodash.js',
       'public/**/*.js',
       'test/**/*.js'
     ],
