@@ -19,7 +19,12 @@
     </div>
     <h3>Todays results</h3>
     <ul ng-controller="TodayCtrl">
-      <li>{{numberOfGamesToday}} games have been played today</li>
+      <li> 
+        <ng-pluralize 
+          count="numberOfGamesToday" 
+          when="{0: 'No games have', 'one': '1 game has', 'other': '{} games have'}"></ng-pluralize>
+        been played today
+      </li>
       <rokta-today results="gamesWon" verb="won"></rokta-today>
       <rokta-today results="gamesLost" verb="lost"></rokta-today>
     </ul>

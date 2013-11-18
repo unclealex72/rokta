@@ -52,6 +52,7 @@ class StatsFactoryImpl(
   _currentResultsFactory: Option[CurrentResultsFactory] = injected,
   _snapshotsFactory: Option[SnapshotsFactory] = injected,
   _streaksFactory: Option[StreaksFactory] = injected,
+  _headToHeadsFactory: Option[HeadToHeadsFactory] = injected,
   _transactional: Option[Transactional] = injected
   ) extends StatsFactory with WhenImplicits with AutoInjectable {
 
@@ -59,6 +60,7 @@ class StatsFactoryImpl(
   val leagueFactory = injectIfMissing(_leagueFactory)
   val currentResultsFactory = injectIfMissing(_currentResultsFactory)
   val snapshotsFactory = injectIfMissing(_snapshotsFactory)
+  val headToHeadsFactory = injectIfMissing(_headToHeadsFactory)
   val streaksFactory = injectIfMissing(_streaksFactory)
   val tx = injectIfMissing(_transactional)
   
@@ -72,13 +74,14 @@ class StatsFactoryImpl(
     val todaysPlayers = if (current) Some(findTodaysPlayers(todaysGames)) else None
     val exemptPlayer = findExemptPlayer(todaysGames)
     val snapshots = snapshotsFactory(games)
+    val headToHeads = headToHeadsFactory(games)
     val league = leagueFactory(snapshots, todaysPlayers, exemptPlayer)
     val streaks = streaksFactory(games, current)
     val numberOfGamesToday = todaysGames.size
     val lastGame = if (current) games.lastOption else None
     Stats(
       contiguousGameFilter, current, currentResults, 
-      league, snapshots, streaks, exemptPlayer, lastGame, numberOfGamesToday)
+      league, snapshots, headToHeads, streaks, exemptPlayer, lastGame, numberOfGamesToday)
   }
  
   def filterIsCurrent(contiguousGameFilter: ContiguousGameFilter): Boolean = contiguousGameFilter match {

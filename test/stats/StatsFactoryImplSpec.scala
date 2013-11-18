@@ -57,25 +57,26 @@ class StatsFactoryImplSpec extends Specification with Mockito
    * Give tests access to the concrete [[StatsFactoryImpl]] and its required mocks.
    */
   def mocked[B](
-    block: StatsFactoryImpl => LeagueFactory => CurrentResultsFactory => SnapshotsFactory => StreaksFactory => PlayerDao => GameDao => B): B = {
+    block: StatsFactoryImpl => LeagueFactory => CurrentResultsFactory => SnapshotsFactory => StreaksFactory => HeadToHeadsFactory => PlayerDao => GameDao => B): B = {
     val leagueFactory = mock[LeagueFactory]
     val currentResultsFactory = mock[CurrentResultsFactory]
     val snapshotsFactory = mock[SnapshotsFactory]
     val streaksFactory = mock[StreaksFactory]
     val gameDao = mock[GameDao]
     val playerDao = mock[PlayerDao]
+    val headToHeadsFactory = mock[HeadToHeadsFactory]
     val transactional = new Transactional() {
       def tx[T](block: PlayerDao => GameDao => T): T = block(playerDao)(gameDao)
     }
     val statsFactory = new StatsFactoryImpl(Some(now), Some(leagueFactory), Some(currentResultsFactory),
-        Some(snapshotsFactory), Some(streaksFactory), Some(transactional))
-    block(statsFactory)(leagueFactory)(currentResultsFactory)(snapshotsFactory)(streaksFactory)(playerDao)(gameDao)
+        Some(snapshotsFactory), Some(streaksFactory), Some(headToHeadsFactory), Some(transactional))
+    block(statsFactory)(leagueFactory)(currentResultsFactory)(snapshotsFactory)(streaksFactory)(headToHeadsFactory)(playerDao)(gameDao)
   }
 
   mocked {
     statsFactory: StatsFactoryImpl => leagueFactory: LeagueFactory => 
       currentResultsFactory: CurrentResultsFactory => snapshotsFactory: SnapshotsFactory => 
-        streaksFactory: StreaksFactory => playerDao: PlayerDao => implicit gameDao: GameDao =>
+        streaksFactory: StreaksFactory => headToHeadsFactory: HeadToHeadsFactory => playerDao: PlayerDao => implicit gameDao: GameDao =>
     def matchCurrent(beResult: Matcher[Boolean]): Matcher[ContiguousGameFilter] = 
       beResult ^^ { (f: ContiguousGameFilter) => statsFactory.filterIsCurrent(f) }
     def beCurrent = matchCurrent(beTrue)

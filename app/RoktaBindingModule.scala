@@ -50,6 +50,8 @@ import stats.CurrentResultsFactory
 import stats.CurrentResultsFactoryImpl
 import controllers.HomeController
 import controllers.PlayersController
+import stats.HeadToHeadsFactory
+import stats.HeadToHeadsFactoryImpl
 
 object RoktaBindingModule extends NewBindingModule(module => {
   import module._   // can now use bind directly
@@ -68,7 +70,7 @@ object RoktaBindingModule extends NewBindingModule(module => {
   bind[CurrentResultsFactory] toModuleSingle { implicit module => new CurrentResultsFactoryImpl }
   bind[Now] toSingle(SystemNow())
   bind[StatsFactory] toModuleSingle { implicit module => new StatsFactoryImpl}
-  
+  bind[HeadToHeadsFactory] toModuleSingle { implicit module => new HeadToHeadsFactoryImpl }
   // Controllers
   bind[StatsController] toModuleSingle { implicit module => new StatsController }
   bind[HomeController] toModuleSingle { implicit module => new HomeController }

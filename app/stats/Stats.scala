@@ -57,6 +57,10 @@ case class Stats[G <: Game](
    */
   snapshots: SortedMap[DateTime, Map[String, Snapshot]],
   /**
+   * The results of all head-to-head duels.
+   */
+  headToHeads: Map[String, Map[String, Int]],
+  /**
    * All winning and losing streaks.
    */
   streaks: Streaks,
@@ -71,5 +75,5 @@ case class Stats[G <: Game](
   /**
    * The number of games that have been played today.
    */
-  numberOfGamesToday: Int  
+  numberOfGamesToday: Int
 )
