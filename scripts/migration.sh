@@ -13,6 +13,8 @@ psql -h "$TARGET_HOST" -d "$TARGET_DB" -U "$TARGET_USER" << DB
     add column monthplayed bigint, 
     add column weekplayed bigint,
     add column yearplayed bigint;
+    
+  alter table round add column counter_id bigint;
 DB
 
 pg_dump -a -t person -t game -t round -t play "$SOURCE_DB" | sed 's/person/player/g' | \
@@ -25,6 +27,8 @@ psql -h "$TARGET_HOST" -d "$TARGET_DB" -U "$TARGET_USER" << DB
     drop column weekplayed,
     drop column yearplayed;
 
+  alter table round drop column round_id;
+  
   select setval('game_id_seq', (select max(id)+1 from game), false);
   select setval('play_id_seq', (select max(id)+1 from play), false);
   select setval('player_id_seq', (select max(id)+1 from player), false);

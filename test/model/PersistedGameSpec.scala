@@ -78,7 +78,7 @@ class PersistedGameSpec extends Specification with DaysAndTimes with IsoChronolo
       val persistedGame: PersistedGame = 
         rounds.foldLeft(freddieMercury instigatesAt now) { (game, plays) =>
           game and (plays: _*)
-        } countedBy (johnDeacon)
+        }
       val game = new SquerylDao().filteredGames(g => g.id === persistedGame.id)
       block(game.head)
     }

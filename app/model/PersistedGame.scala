@@ -75,12 +75,11 @@ case class PersistedGame(
 
   /**
    * Add a new round to this game.
-   * @param counter The [[Person]] who counted in the round.
    * @param plays The [[Hand]]s played by each [[Person]].
    * @return this.
    */
-  def addRound(counter: PersistedPlayer, plays: Map[PersistedPlayer, Hand]): PersistedGame = {
-    rounds.associate((Round(counter, PersistedGame.this, numberOfRounds)).addPlays(plays))
+  def addRound(plays: Map[PersistedPlayer, Hand]): PersistedGame = {
+    rounds.associate((Round(PersistedGame.this, numberOfRounds)).addPlays(plays))
     PersistedGame.this
   }
   

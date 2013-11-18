@@ -81,7 +81,7 @@ class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology 
       
       val squerylDao = new SquerylDao
       val gameFactory: DateTime => PersistedGame = dt => 
-        freddie instigatesAt dt and (brian plays ROCK, freddie plays SCISSORS) countedBy brian
+        freddie instigatesAt dt and (brian plays ROCK, freddie plays SCISSORS)
       for(days <- (0 until DAYS_IN_YEAR * 2)) {
         val dt = new DateTime(2013, 1, 1, 10, 0, 0).plusDays(days)
         gameFactory(dt)

@@ -31,6 +31,8 @@ import org.joda.time.DateTime
  */
 trait PersistedGameDsl {
 
+  implicit def gameBuilderToGame(gameBuilder: GameBuilder): PersistedGame = gameBuilder.finish
+
   // Players
   
   implicit class PlayerImplicits(val person: PersistedPlayer) {
@@ -47,9 +49,10 @@ trait PersistedGameDsl {
       val playMap = plays.foldLeft(Map.empty[PersistedPlayer, Hand]){ case (plays, play) => plays + play }
       GameBuilder(instigator, when, allPlays :+ playMap)
     }
-    def countedBy(counter: PersistedPlayer): PersistedGame = {
+    
+    def finish: PersistedGame = {
       val game = PersistedGame(instigator, when)
-      allPlays.foldLeft(game) { case (game, plays) => game.addRound(counter, plays)}
+      allPlays.foldLeft(game) { case (game, plays) => game.addRound(plays)}
     }
   }  
 

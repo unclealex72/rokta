@@ -40,11 +40,6 @@ case class Round(
   @Column("id")
   val id: Long,
 	/**
-	 * The [[Person]] who counted in this round.
-	 */
-  @Column("counter_id")
-	val counterId: Long,
-	/**
 	 * The ID of the [[Game]] to which this [[Round]] belongs
 	 */
 	@Column("game_id")
@@ -56,11 +51,6 @@ case class Round(
 
   import Round._
   
-  /**
-   * The persisted [[Person]] who is counting for this round.
-   */
-  lazy val counter: StatefulManyToOne[PersistedPlayer] = RoktaSchema.counterToRounds.rightStateful(this)
-
   /**
    * The [[Play]]s contained in this round
    */
@@ -82,8 +72,8 @@ object Round {
   
   implicit def ordering: Ordering[Round] = Ordering.fromLessThan(_.round < _.round)
 
-  def apply(counter: PersistedPlayer, game: PersistedGame, round: Int): Round = {
-    val rnd = Round(0, counter.id, game.id, round)
+  def apply(game: PersistedGame, round: Int): Round = {
+    val rnd = Round(0, game.id, round)
     rnd.save
     rnd
   }  
