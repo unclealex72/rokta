@@ -28,6 +28,7 @@ import model.Game
 import model.PersistedGame
 import model.PersistedPlayer
 import scala.collection.SortedSet
+import model.UploadableGame
 
 /**
  * A Data access object used to persist and retrieve [[Game]]s.
@@ -50,6 +51,14 @@ trait GameDao {
    */
   def firstGamePlayed: Option[DateTime]
 
+  /**
+   * Upload a game.
+   * @param datePlayed The date and time the game was played.
+   * @param uploadableGame The {@link UploadableGame} to upload.
+   * @return A newly persisted game.
+   */
+  def uploadGame(datePlayed: DateTime, uploadableGame: UploadableGame): PersistedGame
+  
   /**
    * Create a new game to which rounds can be added.
    * @param instigator The instigator

@@ -56,8 +56,9 @@ import model.PersistedPlayer
 import model.Player
 import model.Game
 import model.CalculatedGame
-import scala.collection.immutable.Iterable
 import scala.collection.SortedSet
+import model.UploadableGame
+import model.Hand
 
 /**
  * The Squeryl implementation of [[GameDao]], [[PersonDao]] and [[Transactional]].
@@ -99,11 +100,26 @@ class SquerylDao extends GameDao with PlayerDao with Transactional {
     }
   }
 
-  def allPlayers: Set[Player] = from(tplayers)(p => select(p)).toSet
+  def allPersistedPlayers: Iterable[PersistedPlayer] = from(tplayers)(p => select(p))
+  
+  def allPlayers: Set[Player] = allPersistedPlayers.toSet
   
   def firstGamePlayed: Option[DateTime] = 
     from(tgames)(g => select(g._datePlayed) orderBy(g._datePlayed).asc).page(0, 1).headOption.map(new DateTime(_))
 
   def newGame(instigator: PersistedPlayer, datePlayed: DateTime): PersistedGame = PersistedGame(instigator, datePlayed)
 
+  def uploadGame(datePlayed: DateTime, uploadableGame: UploadableGame) = {
+    val playersByName = allPersistedPlayers.foldLeft(Map.empty[String, PersistedPlayer]) { (map, player) => 
+      map + (player.name -> player) 
+    }
+    val game = newGame(playersByName(uploadableGame.instigator), datePlayed)
+    uploadableGame.rounds.foldLeft(game) { (game, plays) => 
+      val persistablePlays = plays.foldLeft(Map.empty[PersistedPlayer, Hand]){ (persistablePlays, playedHand) =>
+        persistablePlays + (playersByName(playedHand._1) -> Hand(playedHand._2).get)
+      }
+      game.addRound(persistablePlays)
+      game
+    }
+  }
 }
