@@ -20,43 +20,44 @@
  *
  */
 
-package controllers
+package stats
 
+import scala.collection.immutable.Set
 import com.escalatesoft.subcut.inject.AutoInjectable
 import com.escalatesoft.subcut.inject.injected
-import dao.PlayerDao
-import play.api.mvc._
-import json.Json._
-import stats.SnapshotsFactory
-import filter.YearGameFilter
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
-import stats.StatsFactory
 import dates.Now
-import filter.ContiguousGameFilter
-import json.JsonResults
+import model.Game
+import scala.collection.SortedSet
+import dao.Transactional
+import dao.GameDao
+import dao.PlayerDao
+import org.joda.time.DateTime
+import filter.DayGameFilter
 
 /**
+ * The default implementation of `TodaysGamesFactory`
  * @author alex
  *
  */
-class StatsController(
-  _statsFactory: Option[StatsFactory] = injected,
-  _now: Option[Now] = injected) 
-  extends Controller with JsonResults with AutoInjectable {
+class TodaysGamesFactoryImpl(
+  /**
+   * The service used to get today.
+   */
+  _now: Option[Now] = injected,
+  /**
+   * The service used to retrieve games.
+   */
+  _tx: Option[Transactional] = injected) extends TodaysGamesFactory with AutoInjectable {
 
-  val statsFactory = injectIfMissing(_statsFactory)
   val now = injectIfMissing(_now)
-  
-  def stats(filter: String) = filter match {
-    case ContiguousGameFilter(gameFilter) => statsForGameFilter(gameFilter)
-    case _ => Action { request => NotFound }
-  }
-  
-  def defaultStats = statsForGameFilter(YearGameFilter(now().getYear))
-  
-  def statsForGameFilter(gameFilter: ContiguousGameFilter) = Action.async { request =>
-    val stats = Future { statsFactory(gameFilter) }
-    stats.map(obj => json(obj))
+  val tx = injectIfMissing(_tx)
+
+  def apply(): SortedSet[Game] = {
+    val (year, month, day) = ((dt: DateTime) => (dt.getYear, dt.getMonthOfYear(), dt.getDayOfMonth()))(now())
+    tx {
+      (playerDao: PlayerDao) =>
+        (gameDao: GameDao) =>
+          gameDao.games(DayGameFilter(year, month, day))
+    }
   }
 }

@@ -20,32 +20,21 @@
  *
  */
 
-package controllers
+package stats
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
-import com.escalatesoft.subcut.inject.AutoInjectable
-import com.escalatesoft.subcut.inject.injected
-
-import dao.PlayerDao
-import dates.Now
-import json.Json._
-import play.api.mvc._
-import securesocial.core.SecureSocial
-import securesocial.core.java.SecureSocial.UserAwareAction
-import stats.SnapshotsFactory
-import stats.StatsFactory
+import model.Game
 
 /**
- * The controller used to serve the main Rokta page.
+ * A factory to determine who is currently exempt.
  * @author alex
  *
  */
-class HomeController extends Controller with SecureSocial {
+trait ExemptPlayerFactory {
 
-  def index = UserAwareAction { implicit request =>
-    val username = request.user.map(_.fullName)
-    Ok(views.html.index(username))
-  }
-
+  /**
+   * Find who is exempt.
+   * @param todaysGames The games that have been played today.
+   * @return The name of the exempt player or none if no-one is exempt.
+   */
+  def apply(todaysGames: Iterable[Game]) : Option[String]
 }

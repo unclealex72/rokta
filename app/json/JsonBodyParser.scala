@@ -20,32 +20,32 @@
  *
  */
 
-package controllers
+package json
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
-import com.escalatesoft.subcut.inject.AutoInjectable
-import com.escalatesoft.subcut.inject.injected
-
-import dao.PlayerDao
-import dates.Now
-import json.Json._
-import play.api.mvc._
-import securesocial.core.SecureSocial
-import securesocial.core.java.SecureSocial.UserAwareAction
-import stats.SnapshotsFactory
-import stats.StatsFactory
+import play.api.mvc.BodyParser
+import play.api.mvc.BodyParsers.parse.json
+import play.api.mvc.BodyParsers.parse.error
+import play.api.libs.json.JsValue
+import scala.concurrent.Future
+import play.api.Play
+import play.api.mvc.RequestHeader
+import play.api.mvc.Results
+import play.api.mvc.SimpleResult
+import play.api.libs.json.{Json => PlayJson}
 
 /**
- * The controller used to serve the main Rokta page.
+ * Parse JSON bodies into objects using {@link Json} support.
  * @author alex
  *
  */
-class HomeController extends Controller with SecureSocial {
+object JsonBodyParser {
 
-  def index = UserAwareAction { implicit request =>
-    val username = request.user.map(_.fullName)
-    Ok(views.html.index(username))
+  /**
+   * Parse the body as Json if the Content-Type is text/json or application/json.
+   * TODO: Error handling.
+   */
+  def apply[T](implicit m: Manifest[T]): BodyParser[T] = json map {
+    jsValue => Json.read(PlayJson.stringify(jsValue))
   }
 
 }

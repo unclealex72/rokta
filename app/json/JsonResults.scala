@@ -20,11 +20,10 @@
  *
  */
 
-package controllers
+package json
 
-import play.api.mvc._
-import json.Json
 import play.api.http.HeaderNames.CONTENT_TYPE
+import play.api.mvc.Results
 
 /**
  * @author alex
@@ -32,7 +31,6 @@ import play.api.http.HeaderNames.CONTENT_TYPE
  */
 trait JsonResults extends Results {
 
-  def json(a: Any) = 
-  Ok(Json(a)).withHeaders(CONTENT_TYPE -> "application/json")
+  def json(a: Any) = Ok(Json(a)).withHeaders(CONTENT_TYPE -> "application/json")
 
 }

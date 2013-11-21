@@ -20,32 +20,18 @@
  *
  */
 
-package controllers
+package stats
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
-import com.escalatesoft.subcut.inject.AutoInjectable
-import com.escalatesoft.subcut.inject.injected
-
-import dao.PlayerDao
-import dates.Now
-import json.Json._
-import play.api.mvc._
-import securesocial.core.SecureSocial
-import securesocial.core.java.SecureSocial.UserAwareAction
-import stats.SnapshotsFactory
-import stats.StatsFactory
+import scala.collection.Iterable
+import model.Game
 
 /**
- * The controller used to serve the main Rokta page.
+ * The default implementation of `ExemptPlayerFactory`.
  * @author alex
  *
  */
-class HomeController extends Controller with SecureSocial {
+class ExemptPlayerFactoryImpl extends ExemptPlayerFactory {
 
-  def index = UserAwareAction { implicit request =>
-    val username = request.user.map(_.fullName)
-    Ok(views.html.index(username))
-  }
+  def apply(todaysGames: Iterable[Game]) = todaysGames.lastOption.flatMap(_.loser)
 
 }

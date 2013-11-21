@@ -34,6 +34,7 @@ import play.api.GlobalSettings
 import play.api.db.DB
 import play.api.mvc.Controller
 import controllers.PlayersController
+import controllers.NewGameController
 
 /**
  * The [[GlobalSettings]] used to set up Squeryl and Subcut
@@ -53,6 +54,7 @@ object Global extends GlobalSettings with Logging {
     register[StatsController]
     register[HomeController]
     register[PlayersController]
+    register[NewGameController]
   }
 
   /**

@@ -53,6 +53,8 @@ class StatsFactoryImpl(
   _snapshotsFactory: Option[SnapshotsFactory] = injected,
   _streaksFactory: Option[StreaksFactory] = injected,
   _headToHeadsFactory: Option[HeadToHeadsFactory] = injected,
+  _exemptPlayerFactory: Option[ExemptPlayerFactory] = injected,
+  _todaysGamesFactory: Option[TodaysGamesFactory] = injected,
   _transactional: Option[Transactional] = injected
   ) extends StatsFactory with WhenImplicits with AutoInjectable {
 
@@ -62,17 +64,18 @@ class StatsFactoryImpl(
   val snapshotsFactory = injectIfMissing(_snapshotsFactory)
   val headToHeadsFactory = injectIfMissing(_headToHeadsFactory)
   val streaksFactory = injectIfMissing(_streaksFactory)
+  val exemptPlayerFactory = injectIfMissing(_exemptPlayerFactory)
+  val todaysGamesFactory = injectIfMissing(_todaysGamesFactory)
   val tx = injectIfMissing(_transactional)
   
   def apply(contiguousGameFilter: ContiguousGameFilter): Stats[Game] = {
-    val (year, month, day) = ((dt: DateTime) => (dt.getYear, dt.getMonthOfYear(), dt.getDayOfMonth()))(now())
-    val (games, todaysGames) = tx { (playerDao: PlayerDao) => (gameDao: GameDao) => 
-      (gameDao.games(contiguousGameFilter),
-       gameDao.games(DayGameFilter(year, month, day)))}
+    val games = tx { (playerDao: PlayerDao) => (gameDao: GameDao) => 
+      gameDao.games(contiguousGameFilter) }
+    val todaysGames = todaysGamesFactory()
     val current = filterIsCurrent(contiguousGameFilter)
     val currentResults = currentResultsFactory(todaysGames)
     val todaysPlayers = if (current) Some(findTodaysPlayers(todaysGames)) else None
-    val exemptPlayer = findExemptPlayer(todaysGames)
+    val exemptPlayer = exemptPlayerFactory(todaysGames)
     val snapshots = snapshotsFactory(games)
     val headToHeads = headToHeadsFactory(games)
     val league = leagueFactory(snapshots, todaysPlayers, exemptPlayer)
@@ -96,8 +99,5 @@ class StatsFactoryImpl(
   
   def findTodaysPlayers(todaysGames: Iterable[Game]): Set[String] = 
     todaysGames.flatMap(_.participants).toSet
-  
-  def findExemptPlayer(todaysGames: Iterable[Game]): Option[String] = 
-    todaysGames.lastOption.flatMap(_.loser)
   
 }

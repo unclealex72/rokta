@@ -13,5 +13,19 @@ GET     /stats/:filter          @controllers.StatsController.stats(filter: Strin
 # Players
 GET     /players                @controllers.PlayersController.players
 
+# New Game
+GET     /game                   @controllers.NewGameController.checkAuthorisation
+POST    /game                   @controllers.NewGameController.uploadGame
+GET     /game/availablePlayers  @controllers.NewGameController.availablePlayers
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+# Secure Social
+# Login page
+# GET     /login                      securesocial.controllers.LoginPage.login
+GET     /logout                     securesocial.controllers.LoginPage.logout
+# Providers entry points
+GET     /authenticate/$provider<google>     securesocial.controllers.ProviderController.authenticate(provider)
+POST    /authenticate/$provider<google>     securesocial.controllers.ProviderController.authenticateByPost(provider)
+GET     /not-authorized             securesocial.controllers.ProviderController.notAuthorized

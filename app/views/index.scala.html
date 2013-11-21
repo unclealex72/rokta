@@ -1,3 +1,4 @@
+@(name: Option[String])
 
 <!DOCTYPE html>
 <html ng-app="rokta" ng-controller="RoktaCtrl" lang="en">
@@ -60,6 +61,31 @@
                 </ul>
               </li>
             </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li>
+                @name match {
+                  case None => {
+                    <a href="authenticate/google">Login</a>
+                  }
+                  case Some(name) => {
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        @name <b class="caret"></b>
+                    </a>
+		                <ul class="dropdown-menu">
+		                  <li>
+		                    <a href="javascript:void(0);" ng-click="navigateTo('game')">New Game</a>
+		                  </li>
+		                  <li>
+                        <a href="javascript:void(0);" ng-click="navigateTo('administer')">Administer</a>
+		                  </li>
+		                  <li>
+		                    <a href="logout">Log out</a>
+		                  </li>
+		                </ul>
+                  }
+                }
+              </li>
+            </ul>
           </div><!--/.nav-collapse -->
         </div>
       </div>
@@ -94,6 +120,7 @@
     <script src='@routes.Assets.at("javascripts/filter.js")'></script>
     <script src='@routes.Assets.at("angular/league/javascripts/league.js")'></script> 
 		<script src='@routes.Assets.at("angular/streaks/javascripts/streaks.js")'></script> 		
+    <script src='@routes.Assets.at("angular/game/javascripts/game.js")'></script> 
 		<script src='@routes.Assets.at("javascripts/rokta.js")'></script> 
 		
   </body>

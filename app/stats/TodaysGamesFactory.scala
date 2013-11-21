@@ -20,32 +20,21 @@
  *
  */
 
-package controllers
+package stats
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
-import com.escalatesoft.subcut.inject.AutoInjectable
-import com.escalatesoft.subcut.inject.injected
-
-import dao.PlayerDao
-import dates.Now
-import json.Json._
-import play.api.mvc._
-import securesocial.core.SecureSocial
-import securesocial.core.java.SecureSocial.UserAwareAction
-import stats.SnapshotsFactory
-import stats.StatsFactory
+import model.Game
+import scala.collection.SortedSet
 
 /**
- * The controller used to serve the main Rokta page.
+ * A factory to get the games played today.
  * @author alex
  *
  */
-class HomeController extends Controller with SecureSocial {
+trait TodaysGamesFactory {
 
-  def index = UserAwareAction { implicit request =>
-    val username = request.user.map(_.fullName)
-    Ok(views.html.index(username))
-  }
-
+  /**
+   * Get today's games.
+   * @return All games played today.
+   */
+  def apply(): SortedSet[Game]
 }

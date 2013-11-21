@@ -10,6 +10,7 @@ libraryDependencies ++= Seq(
   "joda-time" % "joda-time" % "2.2",
   "org.joda" % "joda-convert" % "1.3.1",
   "com.escalatesoft.subcut" %% "subcut" % "2.0",
+  "securesocial" %% "securesocial" % "2.1.2",
   // JSON
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.2.3",
   "com.fasterxml.jackson.core" % "jackson-annotations" % "2.2.3",
@@ -23,7 +24,9 @@ libraryDependencies ++= Seq(
 
 addCompilerPlugin("com.escalatesoft.subcut" %% "subcut" % "2.0")
 
-resolvers ++= Seq("releases"  at "http://oss.sonatype.org/content/repositories/releases")
+resolvers += "releases" at "http://oss.sonatype.org/content/repositories/releases"
+
+resolvers += Resolver.url("sbt-plugin-releases", new URL("http://repo.scala-sbt.org/scalasbt/sbt-plugin-releases/"))(Resolver.ivyStylePatterns)
 
 play.Project.playScalaSettings
 

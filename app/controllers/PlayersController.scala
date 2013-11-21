@@ -35,6 +35,7 @@ import scala.concurrent.Future
 import stats.StatsFactory
 import dates.Now
 import filter.ContiguousGameFilter
+import json.JsonResults
 
 /**
  * @author alex
