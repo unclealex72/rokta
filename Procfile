@@ -1,0 +1,1 @@
+web: target/start -Dhttp.port=${PORT} ${JAVA_OPTS} -Dsecuresocial.ssl=${USE_SSL} -Dsecuresocial.google.clientId=${GOOGLE_CLIENT_ID} -Dsecuresocial.google.clientSecret=${GOOGLE_SECRET} -DapplyEvolutions.default=true -Ddb.default.driver=org.postgresql.Driver -Ddb.default.url=${DATABASE_URL} -Dlogger.root=INFO -Dlogger.application=INFO
