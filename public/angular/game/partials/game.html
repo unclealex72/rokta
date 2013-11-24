@@ -15,7 +15,8 @@
         <form name="hands">
           <div class="form-group" ng-repeat="name in currentPlayers">
             <label for="name_{{name}}">{{name}}</label>
-            <select id="name_{{name}}" class="form-control" ng-change="registerHand(name, hand)" ng-model="hand" required ng-options="hand for hand in ['ROCK', 'SCISSORS', 'PAPER']"></select>
+            <select id="name_{{name}}" class="form-control" ng-change="registerHand(name, hand)" ng-model="hand" required ng-options="hand for hand in ['ROCK', 'SCISSORS', 'PAPER']">
+            </select>
           </div>
           <button class="btn btn-default" ng-disabled="hands.$invalid" ng-click="next()">
             Next
@@ -28,11 +29,13 @@
       <form>
         <div class="form-group">
           <label for="instigator">Instigator</label>
-          <select id="instigator" class="form-control" ng-model="game.instigator" ng-options="player for player in players" required></select>
+          <select id="instigator" class="form-control" ng-model="game.instigator" ng-options="player for player in players" required>
+          </select>
         </div>
         <div class="form-group">
           <label for="players">Players</label>
-          <select ng-model="game.participants" ng-options="player for player in players" multiple="true"></select>
+          <select ng-model="game.participants" ng-options="player for player in players" multiple="true">
+          </select>
         </div>
         <button class="btn btn-default" ng-disabled="!game.participants || game.participants.length &lt; 2" ng-click="next(game)">
           Next

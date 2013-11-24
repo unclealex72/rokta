@@ -90,11 +90,11 @@ describe("The day module's", function() {
 	  $compile = _$compile_;
 	}));
 	var compile = function(day) {
-	  scope.day = day
+	  scope.day = day;
 	  var element = $compile(angular.element('<span ng-bind-html="day | roktaYear"></span>'))(scope);
 	  scope.$digest();
 	  return element;
-	}
+	};
 	it("outputs only the year", function() {
 	  var el = compile({year: 2013});
 	  expect(el.text()).toEqual("2013");
@@ -108,11 +108,11 @@ describe("The day module's", function() {
 	  $compile = _$compile_;
 	}));
 	var compile = function(day) {
-	  scope.day = day
+	  scope.day = day;
 	  var element = $compile(angular.element('<span ng-bind-html="day | roktaMonth"></span>'))(scope);
 	  scope.$digest();
 	  return element;
-	}
+	};
 	it("outputs only the year and month", function() {
 	  var el = compile({year: 2013, month: 9});
 	  expect(el.text()).toEqual("September 2013");
@@ -126,11 +126,11 @@ describe("The day module's", function() {
 	  $compile = _$compile_;
 	}));
 	var compile = function(day) {
-	  scope.day = day
+	  scope.day = day;
 	  var element = $compile(angular.element('<span ng-bind-html="day | roktaDay"></span>'))(scope);
 	  scope.$digest();
 	  return element;
-	}
+	};
 	
 	it("outputs the year, month and day for a day object", function() {
 	  var el = compile({ year: 2013, month: 9, day: 3 });

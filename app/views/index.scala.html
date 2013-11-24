@@ -38,9 +38,12 @@
           <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
               <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
+              <span class="icon-bar">
+              </span>
+              <span class="icon-bar">
+              </span>
+              <span class="icon-bar">
+              </span>
             </button>
             <a class="navbar-brand" href="#">Rokta</a>
           </div>
@@ -48,11 +51,16 @@
             <ul class="nav navbar-nav">
               <li ng-repeat="menu in nav" ng-class="{'dropdown': menu.submenu}">
                 <a ng-if="menu.link" href="javascript:void(0);" ng-click="navigateTo(menu.link)">
-                  <i class="fa fa-{{menu.icon}}"></i> {{menu.name}}
+                  <i class="fa fa-{{menu.icon}}">
+                  </i>
+                  {{menu.name}}
                 </a>
                 <a ng-if="menu.submenu" href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <i class="fa fa-{{menu.icon}}"></i>
-                  {{menu.name}} <b class="caret"></b>
+                  <i class="fa fa-{{menu.icon}}">
+                  </i>
+                  {{menu.name}}
+                  <b class="caret">
+                  </b>
                 </a>
                 <ul ng-if="menu.submenu" class="dropdown-menu">
                   <li ng-repeat="submenu in menu.submenu">
@@ -69,7 +77,9 @@
                   }
                   case Some(name) => {
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        @name <b class="caret"></b>
+                        @name
+                        <b class="caret">
+                        </b>
                     </a>
 		                <ul class="dropdown-menu">
 		                  <li>
@@ -92,7 +102,8 @@
 
       <!-- Begin page content -->
       <div class="container">
-        <div ng-view></div>
+        <div ng-view>
+        </div>
       </div>
     </div>
 
@@ -114,13 +125,16 @@
  		<script src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular-route.min.js'></script>
 		<script src='//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.3.0/lodash.min.js'></script>
     <script src='//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.6.0/ui-bootstrap-tpls.min.js'></script>
+    <script src='//code.highcharts.com/3.0.7/highcharts.js'></script>
     <script src='@routes.Assets.at("javascripts/day.js")'></script> 
     <script src='@routes.Assets.at("javascripts/events.js")'></script> 
     <script src='@routes.Assets.at("javascripts/stats.js")'></script>
     <script src='@routes.Assets.at("javascripts/filter.js")'></script>
+    <script src='@routes.Assets.at("javascripts/players.js")'></script>
     <script src='@routes.Assets.at("angular/league/javascripts/league.js")'></script> 
 		<script src='@routes.Assets.at("angular/streaks/javascripts/streaks.js")'></script> 		
     <script src='@routes.Assets.at("angular/game/javascripts/game.js")'></script> 
+    <script src='@routes.Assets.at("angular/graph/javascripts/graph.js")'></script> 
 		<script src='@routes.Assets.at("javascripts/rokta.js")'></script> 
 		
   </body>

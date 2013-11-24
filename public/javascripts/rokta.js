@@ -1,10 +1,15 @@
-var rokta = angular.module('rokta', ['rokta.game', 'rokta.league', 'rokta.events', 'rokta.streaks', 'ui.bootstrap', 'ngRoute']);
+var rokta = angular.module(
+  'rokta', 
+  ['rokta.players', 'rokta.game', 'rokta.graph', 'rokta.league', 'rokta.events', 'rokta.streaks', 'ui.bootstrap', 'ngRoute']);
 
 rokta.config(['$routeProvider',
 function($routeProvider) {
   $routeProvider.when('/league/:filter?', {
     templateUrl : 'assets/angular/league/partials/league.html',
     controller : 'LeagueCtrl'
+  }).when('/graph/:filter?', {
+    templateUrl : 'assets/angular/graph/partials/graph.html',
+    controller : 'GraphCtrl'
   }).when('/winningstreaks/:filter?', {
     templateUrl : 'assets/angular/streaks/partials/streaks.html',
     controller : 'WinningStreaksCtrl'
@@ -23,21 +28,6 @@ function($routeProvider) {
   }).otherwise({
     redirectTo : '/league/'
   });
-}]);
-
-rokta.service('Players', ['Events',
-function(Events) {
-  var service = {
-    initialised : false,
-    name : 'players.update',
-    players : [],
-    refresh : function() {
-      Events.refresh(service, 'players', function(players) {
-        service.players = players.players;
-      });
-    }
-  };
-  return service;
 }]);
 
 rokta.controller('RoktaCtrl', ['Players',
@@ -66,6 +56,10 @@ function($scope, Events, Players, $routeParams, $location) {
       "icon" : "trophy",
       "link" : "league"
     }, {
+      "name" : "Graph",
+      "icon" : "bar-chart-o",
+      "link" : "graph"
+    }, {
       "name" : "Statistics",
       "icon" : "edit",
       "submenu" : [{
@@ -81,4 +75,4 @@ function($scope, Events, Players, $routeParams, $location) {
       "submenu" : players
     }];
   });
-}]); 
+}]);

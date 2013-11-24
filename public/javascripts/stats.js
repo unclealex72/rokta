@@ -10,13 +10,13 @@ stats.service('Stats', ['Events', '$routeParams', function(Events, $routeParams)
       var filter = $routeParams.filter;
       var statsPath = 'stats';
       if (!(filter === undefined)) {
-    	  statsPath += '/' + filter
+    	  statsPath += '/' + filter;
       }
       Events.refresh(service, statsPath, function(stats) {
         service.stats = stats;
-        service.anyGamesPlayedToday = !_.isEmpty(stats.currentResults)
+        service.anyGamesPlayedToday = !_.isEmpty(stats.currentResults);
       });
     }
-  }
+  };
   return service;
 }]);

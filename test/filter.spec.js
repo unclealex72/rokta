@@ -37,28 +37,28 @@ describe("The filter module's", function() {
 	});
 
 	it('should serialise a year filter to d[0-9]{4}', function() {
-	  expect(filter.date({year: 2013})).toEqual("d2013")
+	  expect(filter.date({year: 2013})).toEqual("d2013");
 	});
 
 	it('should serialise a month filter to d[0-9]{6}', function() {
-	  expect(filter.date({year: 2013, month: 9})).toEqual("d201309")
+	  expect(filter.date({year: 2013, month: 9})).toEqual("d201309");
 	});
 
 	it('should serialise a day filter to d[0-9]{8}', function() {
-	  expect(filter.date({year: 2013, month: 9, day: 5})).toEqual("d20130905")
+	  expect(filter.date({year: 2013, month: 9, day: 5})).toEqual("d20130905");
 	});
 
 	it('should serialise a since filter to d[0-9]{8}', function() {
-	  expect(filter.since({year: 2013, month: 9, day: 5})).toEqual("s20130905")
+	  expect(filter.since({year: 2013, month: 9, day: 5})).toEqual("s20130905");
 	});
 
 	it('should serialise an until filter to d[0-9]{8}', function() {
-	  expect(filter.until({year: 2013, month: 9, day: 5})).toEqual("u20130905")
+	  expect(filter.until({year: 2013, month: 9, day: 5})).toEqual("u20130905");
 	});
 
 	it('should serialise a between filter to d[0-9]{8}', function() {
 	  expect(filter.between({year: 2012, month: 12, day:19}, {year: 2013, month: 9, day: 5})).toEqual(
-		"b2012121920130905")
+		"b2012121920130905");
 	});
   });
 
@@ -69,11 +69,11 @@ describe("The filter module's", function() {
 	  $compile = _$compile_;
 	}));
 	var compile = function(gameFilter) {
-	  scope.filter = gameFilter
+	  scope.filter = gameFilter;
 	  var element = $compile(angular.element('<span ng-bind-html="filter | roktaGame"></span>'))(scope);
 	  scope.$digest();
 	  return element;
-	}
+	};
 	
 	it("outputs only the year for a year filter", function() {
 	  var el = compile({type: "year", year: 2013});
