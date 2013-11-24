@@ -29,12 +29,12 @@ import play.api.mvc._
 import json.Json._
 import stats.SnapshotsFactory
 import filter.YearGameFilter
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import stats.StatsFactory
 import dates.Now
 import filter.ContiguousGameFilter
 import json.JsonResults
+import dao.Transactional
 
 /**
  * @author alex
@@ -42,21 +42,24 @@ import json.JsonResults
  */
 class StatsController(
   _statsFactory: Option[StatsFactory] = injected,
-  _now: Option[Now] = injected) 
-  extends Controller with JsonResults with AutoInjectable {
+  _now: Option[Now] = injected,
+  _tx: Option[Transactional] = injected)
+  extends Etag with JsonResults with AutoInjectable {
 
   val statsFactory = injectIfMissing(_statsFactory)
   val now = injectIfMissing(_now)
-  
+  val tx = injectIfMissing(_tx)
+
   def stats(filter: String) = filter match {
     case ContiguousGameFilter(gameFilter) => statsForGameFilter(gameFilter)
     case _ => Action { request => NotFound }
   }
-  
+
   def defaultStats = statsForGameFilter(YearGameFilter(now().getYear))
-  
-  def statsForGameFilter(gameFilter: ContiguousGameFilter) = Action.async { request =>
-    val stats = Future { statsFactory(gameFilter) }
-    stats.map(obj => json(obj))
+
+  def statsForGameFilter(gameFilter: ContiguousGameFilter) = ETag {
+    Action { request =>
+      json(statsFactory(gameFilter))
+    }
   }
 }

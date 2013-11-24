@@ -46,11 +46,17 @@ trait GameDao {
     contiguousGameFilter: ContiguousGameFilter): SortedSet[Game]
   
   /**
-   * Get the first game played.
-   * @return the first game played or none if no games have been played.
+   * Get the date of the first game played.
+   * @return the date of the first game played or none if no games have been played.
    */
   def firstGamePlayed: Option[DateTime]
 
+  /**
+   * Get the date of the last game played.
+   * @return the date of the last game played or none if no games have been played.
+   */
+  def lastGamePlayed: Option[DateTime]
+  
   /**
    * Upload a game.
    * @param datePlayed The date and time the game was played.

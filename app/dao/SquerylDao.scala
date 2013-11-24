@@ -107,7 +107,10 @@ class SquerylDao extends GameDao with PlayerDao with Transactional {
   def firstGamePlayed: Option[DateTime] = 
     from(tgames)(g => select(g._datePlayed) orderBy(g._datePlayed).asc).page(0, 1).headOption.map(new DateTime(_))
 
-  def newGame(instigator: PersistedPlayer, datePlayed: DateTime): PersistedGame = PersistedGame(instigator, datePlayed)
+  def lastGamePlayed: Option[DateTime] = 
+    from(tgames)(g => select(g._datePlayed) orderBy(g._datePlayed).desc).page(0, 1).headOption.map(new DateTime(_))
+
+    def newGame(instigator: PersistedPlayer, datePlayed: DateTime): PersistedGame = PersistedGame(instigator, datePlayed)
 
   def uploadGame(datePlayed: DateTime, uploadableGame: UploadableGame) = {
     val playersByName = allPersistedPlayers.foldLeft(Map.empty[String, PersistedPlayer]) { (map, player) => 
