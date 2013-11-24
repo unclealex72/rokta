@@ -43,6 +43,7 @@ import filter.UntilGameFilter
 import filter.YearGameFilter
 import filter.MonthGameFilter
 import filter.DayGameFilter
+import dates.StaticNow
 
 /**
  * @author alex
@@ -65,18 +66,23 @@ class StatsFactoryImplSpec extends Specification with Mockito
     val gameDao = mock[GameDao]
     val playerDao = mock[PlayerDao]
     val headToHeadsFactory = mock[HeadToHeadsFactory]
+    val exemptPlayerFactory = mock[ExemptPlayerFactory]
+    val todaysGamesFactory = mock[TodaysGamesFactory]
     val transactional = new Transactional() {
       def tx[T](block: PlayerDao => GameDao => T): T = block(playerDao)(gameDao)
     }
     val statsFactory = new StatsFactoryImpl(Some(now), Some(leagueFactory), Some(currentResultsFactory),
-        Some(snapshotsFactory), Some(streaksFactory), Some(headToHeadsFactory), Some(transactional))
+        Some(snapshotsFactory), Some(streaksFactory), Some(headToHeadsFactory), Some(exemptPlayerFactory), 
+        Some(todaysGamesFactory), Some(transactional))
     block(statsFactory)(leagueFactory)(currentResultsFactory)(snapshotsFactory)(streaksFactory)(headToHeadsFactory)(playerDao)(gameDao)
   }
 
   mocked {
     statsFactory: StatsFactoryImpl => leagueFactory: LeagueFactory => 
       currentResultsFactory: CurrentResultsFactory => snapshotsFactory: SnapshotsFactory => 
-        streaksFactory: StreaksFactory => headToHeadsFactory: HeadToHeadsFactory => playerDao: PlayerDao => implicit gameDao: GameDao =>
+        streaksFactory: StreaksFactory => headToHeadsFactory: HeadToHeadsFactory => 
+          exemptPlayerFactory: ExemptPlayerFactory => todaysGameFactory : TodaysGamesFactory =>
+          playerDao: PlayerDao => implicit gameDao: GameDao =>
     def matchCurrent(beResult: Matcher[Boolean]): Matcher[ContiguousGameFilter] = 
       beResult ^^ { (f: ContiguousGameFilter) => statsFactory.filterIsCurrent(f) }
     def beCurrent = matchCurrent(beTrue)
@@ -158,18 +164,7 @@ class StatsFactoryImplSpec extends Specification with Mockito
         statsFactory.findTodaysPlayers(Set(gameOne, gameTwo)) must contain(
           freddie.name, brian.name, roger.name, john.name).exactly
       }
-    }
-    
-    "The exempt player" should {
-      "be no-one when no games have been played today" in {
-        statsFactory.findExemptPlayer(Set()) must beNone
-      }
-      "be the loser of the last game played today" in {
-        val gameOne = freddie losesAt (September(5, 2013) at (midday)) whilst(brian plays 2) and (roger plays 1)
-        val gameTwo = brian losesAt (September(5, 2013) at (1 oclock).pm) whilst(john plays 2)
-        statsFactory.findExemptPlayer(Set(gameOne, gameTwo)) must beSome(brian.name)
-      }
-    }
+    }    
   }
   
 }
