@@ -1,6 +1,7 @@
 var rokta = angular.module(
   'rokta', 
-  ['rokta.players', 'rokta.game', 'rokta.graph', 'rokta.league', 'rokta.events', 'rokta.streaks', 'ui.bootstrap', 'ngRoute']);
+  ['rokta.players', 'rokta.game', 'rokta.graph', 'rokta.league', 'rokta.stats',
+   'rokta.events', 'rokta.streaks', 'ui.bootstrap', 'ngRoute']);
 
 rokta.config(['$routeProvider',
 function($routeProvider) {
@@ -74,5 +75,13 @@ function($scope, Events, Players, $routeParams, $location) {
       "icon" : "edit",
       "submenu" : players
     }];
+  });
+}]);
+
+rokta.controller('GameFilterCtrl', ['$scope', 'Events', 'Stats', function($scope, Events, Stats) {
+  Stats.refresh();
+  Events.listenTo($scope, Stats, function() {
+    var stats = Stats.stats;
+    $scope.contiguousGameFilter = stats.contiguousGameFilter;
   });
 }]);
