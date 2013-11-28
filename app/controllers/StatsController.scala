@@ -62,4 +62,13 @@ class StatsController(
       json(statsFactory(gameFilter))
     }
   }
+  
+  def gameLimits = ETag {
+    Action { request =>
+      val (first, last) = tx { playerDao => gameDao => 
+        (gameDao.firstGamePlayed, gameDao.lastGamePlayed)
+      }
+      json(Map("first" -> first, "last" -> last))
+    }
+  }
 }

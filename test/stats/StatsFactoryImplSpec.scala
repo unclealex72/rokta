@@ -88,42 +88,42 @@ class StatsFactoryImplSpec extends Specification with Mockito
     def beCurrent = matchCurrent(beTrue)
     def notBeCurrent = matchCurrent(beFalse)
     "The between game filter" should {
-      "be current if it starts any time today" in {
-        BetweenGameFilter(September(5, 2013) at (1 oclock).pm, September(6, 2013) at (2 oclock).pm) must beCurrent
+      "be current if it starts today" in {
+        BetweenGameFilter(September(5, 2013), September(6, 2013)) must beCurrent
       }
-      "be current if it finishes any time today" in {
-        BetweenGameFilter(September(4, 2013) at (1 oclock).pm, September(5, 2013) at (2 oclock)) must beCurrent
+      "be current if it finishes today" in {
+        BetweenGameFilter(September(4, 2013), September(5, 2013)) must beCurrent
       }
       "be current if it encloses today" in {
-        BetweenGameFilter(September(4, 2013) at (1 oclock).pm, September(6, 2013) at (2 oclock)) must beCurrent
+        BetweenGameFilter(September(4, 2013), September(6, 2013)) must beCurrent
       }
       "not be current if it finishes before today" in {
-        BetweenGameFilter(September(2, 2013) at (1 oclock).pm, September(4, 2013) at (2 oclock)) must notBeCurrent
+        BetweenGameFilter(September(2, 2013), September(4, 2013)) must notBeCurrent
       }
       "not be current if it starts after today" in {
-        BetweenGameFilter(September(7, 2013) at (1 oclock).pm, September(8, 2013) at (2 oclock)) must notBeCurrent
+        BetweenGameFilter(September(7, 2013), September(8, 2013)) must notBeCurrent
       }
     }
     "The since game filter" should {
       "be current if it starts today" in {
-        SinceGameFilter(September(5, 2013) at (1 oclock).pm) must beCurrent
+        SinceGameFilter(September(5, 2013)) must beCurrent
       }
       "be current if it starts in the past" in {
-        SinceGameFilter(September(4, 2013) at (1 oclock).pm) must beCurrent
+        SinceGameFilter(September(4, 2013)) must beCurrent
       }
       "not be current if it starts in the future" in {
-        SinceGameFilter(September(6, 2013) at (1 oclock).pm) must notBeCurrent
+        SinceGameFilter(September(6, 2013)) must notBeCurrent
       }
     }
     "The until game filter" should {
       "be current if it ends today" in {
-        UntilGameFilter(September(5, 2013) at (1 oclock)) must beCurrent
+        UntilGameFilter(September(5, 2013)) must beCurrent
       }
       "be current if it ends in the future" in {
-        UntilGameFilter(September(6, 2013) at (1 oclock).pm) must beCurrent
+        UntilGameFilter(September(6, 2013)) must beCurrent
       }
       "not be current if it ends in the past" in {
-        UntilGameFilter(September(4, 2013) at (1 oclock).pm) must notBeCurrent
+        UntilGameFilter(September(4, 2013)) must notBeCurrent
       }
     }
     "The year game filter" should {

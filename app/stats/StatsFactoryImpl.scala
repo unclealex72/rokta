@@ -37,10 +37,12 @@ import filter.MonthGameFilter
 import filter.SinceGameFilter
 import filter.UntilGameFilter
 import filter.YearGameFilter
+import filter.DayLikeImplicits._
 import model.Game
 import model.Player
 import com.typesafe.scalalogging.slf4j.Logging
 import model.CalculatedGame
+import filter.Day
 
 /**
  * @author alex
@@ -89,8 +91,14 @@ class StatsFactoryImpl(
  
   def filterIsCurrent(contiguousGameFilter: ContiguousGameFilter): Boolean = contiguousGameFilter match {
     case BetweenGameFilter(from, to) => from.isToday || to.isToday || (now().isAfter(from) && now().isBefore(to))
-    case SinceGameFilter(from) => from.isToday || now().isAfter(from)
-    case UntilGameFilter(to) => to.isToday || now().isBefore(to)
+    case SinceGameFilter(year, month, day) => {
+      val from = Day(year, month, day)
+      from.isToday || now().isAfter(from)
+    }
+    case UntilGameFilter(year, month, day) => {
+      val to = Day(year, month, day)
+      to.isToday || now().isBefore(to)
+    }
     case YearGameFilter(year) => now().getYear() == year
     case MonthGameFilter(year, month) => now().getYear == year && now().getMonthOfYear == month
     case DayGameFilter(year, month, day) => 

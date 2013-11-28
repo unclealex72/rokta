@@ -23,27 +23,30 @@
 package dao
 
 import java.sql.Timestamp
-import scala.math.Ordering
+import scala.collection.SortedSet
 import org.joda.time.DateTime
 import org.squeryl.dsl.NonNumericalExpression
+import org.squeryl.dsl.UnaryAgregateLengthNeutralOp
 import org.squeryl.dsl.ast.LogicalBoolean
+import dao.EntryPoint.compute
 import dao.EntryPoint.createOutMapperIntType
 import dao.EntryPoint.dayOfMonth
 import dao.EntryPoint.from
 import dao.EntryPoint.inTransaction
 import dao.EntryPoint.int2ScalarInt
+import dao.EntryPoint.long2ScalarLong
+import dao.EntryPoint.max
+import dao.EntryPoint.min
 import dao.EntryPoint.month
-import dao.EntryPoint.orderByArg2OrderByExpression
-import dao.EntryPoint._
+import dao.EntryPoint.select
 import dao.EntryPoint.timestamp2ScalarTimestamp
-import dao.EntryPoint.typedExpression2OrderByArg
+import dao.EntryPoint.unaryOpConv17
 import dao.EntryPoint.where
 import dao.EntryPoint.year
-import dao.EntryPoint.weekOfYear
 import dao.RoktaSchema.{games => tgames}
-import dao.RoktaSchema.{rounds => trounds}
-import dao.RoktaSchema.{plays => tplays}
 import dao.RoktaSchema.{players => tplayers}
+import dao.RoktaSchema.{plays => tplays}
+import dao.RoktaSchema.{rounds => trounds}
 import filter.BetweenGameFilter
 import filter.ContiguousGameFilter
 import filter.DayGameFilter
@@ -51,14 +54,16 @@ import filter.MonthGameFilter
 import filter.SinceGameFilter
 import filter.UntilGameFilter
 import filter.YearGameFilter
+import filter.DayLikeImplicits._
+import model.CalculatedGame
+import model.Game
+import model.Hand
 import model.PersistedGame
 import model.PersistedPlayer
 import model.Player
-import model.Game
-import model.CalculatedGame
-import scala.collection.SortedSet
 import model.UploadableGame
-import model.Hand
+import org.squeryl.dsl.Measures
+import filter.Day
 
 /**
  * The Squeryl implementation of [[GameDao]], [[PersonDao]] and [[Transactional]].
@@ -85,16 +90,16 @@ class SquerylDao extends GameDao with PlayerDao with Transactional {
 
   implicit def toTimestamp(dt: DateTime): NonNumericalExpression[Timestamp] = new Timestamp(dt.getMillis())
 
-  def contiguous(contiguousGameFilter: ContiguousGameFilter): PersistedGame => LogicalBoolean = { g: PersistedGame =>
-    contiguousGameFilter match {
+  def contiguous(filter: ContiguousGameFilter): PersistedGame => LogicalBoolean = { g: PersistedGame =>
+    filter match {
       case YearGameFilter(yearPlayed) => year(g._datePlayed) === yearPlayed
       case MonthGameFilter(yearPlayed, monthPlayed) => 
         year(g._datePlayed) === yearPlayed and month(g._datePlayed) === monthPlayed
       case DayGameFilter(yearPlayed, monthPlayed, dayPlayed) => 
         year(g._datePlayed) === yearPlayed and 
         month(g._datePlayed) === monthPlayed and dayOfMonth(g._datePlayed) === dayPlayed
-      case SinceGameFilter(from) => g.datePlayed >= from.withTimeAtStartOfDay
-      case UntilGameFilter(to) => g.datePlayed < to.withTimeAtStartOfDay.plusDays(1)
+      case SinceGameFilter(year, month, day) => g.datePlayed >= Day(year, month, day).withTimeAtStartOfDay
+      case UntilGameFilter(year, month, day) => g.datePlayed < Day(year, month, day).withTimeAtStartOfDay.plusDays(1)
       case BetweenGameFilter(from, to) => 
         g.datePlayed between (from.withTimeAtStartOfDay, to.withTimeAtStartOfDay.plusDays(1).minusMillis(1))
     }
@@ -104,11 +109,12 @@ class SquerylDao extends GameDao with PlayerDao with Transactional {
   
   def allPlayers: Set[Player] = allPersistedPlayers.toSet
   
-  def firstGamePlayed: Option[DateTime] = 
-    from(tgames)(g => select(g._datePlayed) orderBy(g._datePlayed).asc).page(0, 1).headOption.map(new DateTime(_))
+  def limitGamePlayed(f: NonNumericalExpression[Timestamp] => UnaryAgregateLengthNeutralOp[Timestamp]): Option[DateTime] = 
+    from(tgames)(g => compute(f(g._datePlayed))).headOption.map(_.measures.get).map(new DateTime(_))
 
-  def lastGamePlayed: Option[DateTime] = 
-    from(tgames)(g => select(g._datePlayed) orderBy(g._datePlayed).desc).page(0, 1).headOption.map(new DateTime(_))
+  def firstGamePlayed: Option[DateTime] = limitGamePlayed(min[Timestamp]);
+
+  def lastGamePlayed: Option[DateTime] = limitGamePlayed(max[Timestamp]);
 
     def newGame(instigator: PersistedPlayer, datePlayed: DateTime): PersistedGame = PersistedGame(instigator, datePlayed)
 

@@ -11,6 +11,9 @@ function($routeProvider) {
   }).when('/graph/:filter?', {
     templateUrl : 'assets/angular/graph/partials/graph.html',
     controller : 'GraphCtrl'
+  }).when('/filters/:filter?', {
+    templateUrl : 'assets/angular/filters/partials/filters.html',
+    controller : 'FiltersCtrl'
   }).when('/winningstreaks/:filter?', {
     templateUrl : 'assets/angular/streaks/partials/streaks.html',
     controller : 'WinningStreaksCtrl'
@@ -60,6 +63,10 @@ function($scope, Events, Players, $routeParams, $location) {
       "name" : "Graph",
       "icon" : "bar-chart-o",
       "link" : "graph"
+    }, {
+      "name" : "Filters",
+      "icon" : "adjust",
+      "link" : "filters"
     }, {
       "name" : "Statistics",
       "icon" : "edit",

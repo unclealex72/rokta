@@ -9,6 +9,7 @@ GET     /index.html             @controllers.HomeController.index
 # Stats
 GET     /stats                  @controllers.StatsController.defaultStats
 GET     /stats/:filter          @controllers.StatsController.stats(filter: String)
+GET     /limits                 @controllers.StatsController.gameLimits
 
 # Players
 GET     /players                @controllers.PlayersController.players

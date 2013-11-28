@@ -23,6 +23,8 @@
 package dates
 
 import org.joda.time.DateTime
+import filter.Day
+import filter.DayLike
 
 /**
  * A trait that can be used to return the current date and time or, in the case of testing, any
@@ -51,16 +53,31 @@ trait WhenImplicits {
 
   implicit class DateTimeImplicits(when: DateTime) {
 
-    def isThisYear: Boolean = when.year == now().year
+    def isThisYear: Boolean = when.getYear() == now().getYear()
 
     def isThisMonth: Boolean = {
       val today = now()
-      when.year == today.year && when.monthOfYear == today.monthOfYear
+      when.getYear() == today.getYear() && when.getMonthOfYear() == today.getMonthOfYear()
     }
 
     def isToday: Boolean = {
       val today = now()
-      when.year == today.year && when.dayOfYear == today.dayOfYear
+      when.getYear() == today.getYear() && when.getDayOfYear() == today.getDayOfYear()
+    }
+  }
+
+  implicit class DayImplicits(when: DayLike) {
+
+    def isThisYear: Boolean = when.year == now().getYear()
+
+    def isThisMonth: Boolean = {
+      val today = now()
+      when.year == today.getYear() && when.month == today.getMonthOfYear()
+    }
+
+    def isToday: Boolean = {
+      val today = now()
+      when.year == today.getYear() && when.month == today.getMonthOfYear() && when.day == today.getDayOfMonth()
     }
   }
 }

@@ -25,6 +25,8 @@ package dates
 import org.joda.time.DateTime
 import org.joda.time.Chronology
 import org.joda.time.chrono.ISOChronology
+import filter.DayLike
+import filter.{Day => FDay}
 
 /**
  * A small DSL for creating easily readable dates and times.
@@ -64,6 +66,8 @@ trait DaysAndTimes { self: DefaultChronology =>
 
   implicit def dayToDateTime(day: Day) = day at midnight
   
+  implicit def dayToFilterDay(day: Day): DayLike = FDay(day.month.year.year, day.month.month, day.day) 
+    
   sealed class Month(val year: Year, val month: Int, val daysInMonth: Int, val extraDayDuringLeapYear: Boolean) {
 
     def daysInMonthForYear(year: Year): Int = {

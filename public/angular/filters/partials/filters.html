@@ -1,0 +1,73 @@
+<div class="row">
+  <div class="col-md-12">
+    <form role="form">
+      <div class="radio">
+        <input type="radio" name="filterTypes" value="year" ng-model="type">
+        <p>
+          Games in
+          <select
+          ng-disabled="type != 'year'"
+          ng-required="type == 'year'"
+          ng-model="filters.year.year"
+          ng-options="year for year in years"></select>
+        </p>
+      </div>
+      <div class="radio">
+        <input type="radio" name="filterTypes" value="month" ng-model="type">
+        <p>
+          Games in
+          <select
+          ng-disabled="type != 'month'"
+          ng-required="type == 'year'"
+          ng-model="filters.month.year"
+          ng-options="year for year in years">
+          </select>
+          <select
+          ng-disabled="type != 'month'"
+          ng-required="type == 'month'"
+          ng-model="filters.month.month"
+          ng-options="obj.index as obj.month for obj in months(filters.month.year)">
+          </select>
+        </p>
+      </div>
+      <div class="radio">
+        <input type="radio" name="filterTypes" value="day" ng-model="type">
+        <p>
+          Games on
+          <div rokta-day-picker ng-disabled="type != 'day'" ng-model="filters.day" min="{{firstGameDate}}" max="{{lastGameDate}}">
+          </div>
+        </p>
+      </div>
+      <div class="radio">
+        <input type="radio" name="filterTypes" value="since" ng-model="type">
+        <p>
+          Games since
+          <div rokta-day-picker ng-disabled="type != 'since'" ng-model="filters.since" min="{{firstGameDate}}" max="{{lastGameDate}}">
+          </div>
+        </p>
+      </div>
+      <div class="radio">
+        <input type="radio" name="filterTypes" value="until" ng-model="type">
+        <p>
+          Games until
+          <div rokta-day-picker ng-disabled="type != 'until'" ng-model="filters.until" min="{{firstGameDate}}" max="{{lastGameDate}}">
+          </div>
+        </p>
+      </div>
+      <div class="radio">
+        <input type="radio" name="filterTypes" value="between" ng-model="type">
+        <p>
+          Games between
+          <div rokta-day-picker ng-disabled="type != 'between'" ng-model="filters.between.from" min="{{firstGameDate}}" max="{{lastGameDate}}">
+          </div>
+          and
+          <div rokta-day-picker ng-disabled="type != 'between'" ng-model="filters.between.to" min="{{firstGameDate}}" max="{{lastGameDate}}">
+          </div>
+        </p>
+      </div>
+      <button ng-click="go()">
+        Go
+      </button>
+    </form>
+  </div>
+</div>

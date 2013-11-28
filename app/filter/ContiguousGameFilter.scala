@@ -46,7 +46,26 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize
     new Type(value = classOf[DayGameFilter], name = "day")
 ))
 sealed trait ContiguousGameFilter
+
+/**
+ * A trait for any object that is like a day. That is, it has a year, month and day.
+ */
+trait DayLike {
+  val year: Int
+  val month: Int
+  val day: Int
+}
+
+object DayLikeImplicits {
   
+  implicit def toDateTime(day: DayLike): DateTime = new DateTime(day.year, day.month, day.day, 0, 0)
+  
+}
+/**
+ * A solid implementation of `DayLike`
+ */
+case class Day(year: Int, month: Int, day: Int) extends DayLike
+
 /**
  * A game filter that matches any game between two days inclusive.
  */
@@ -54,29 +73,26 @@ case class BetweenGameFilter(
   /**
    * The earliest day to include.
    */
-  from: DateTime,
+  from: DayLike,
   /**
    * The last day to include.
    */
-  to: DateTime) extends ContiguousGameFilter
+  to: DayLike) extends ContiguousGameFilter
 
 /**
  * A game filter that matches any game played since a given day.
  */
-case class SinceGameFilter(
-  /**
-   * The earliest time a matched game can be played.
-   */
-  since: DateTime) extends ContiguousGameFilter
-
+case class SinceGameFilter(year: Int, month: Int, day: Int) extends ContiguousGameFilter with DayLike
+object SinceGameFilter {
+  def apply(day: DayLike): SinceGameFilter = SinceGameFilter(day.year, day.month, day.day)
+}
 /**
  * A game filter that matches any game played until a given day.
  */
-case class UntilGameFilter(
-  /**
-   * The earliest day a matched game can be played.
-   */
-  until: DateTime) extends ContiguousGameFilter
+case class UntilGameFilter(year: Int, month: Int, day: Int) extends ContiguousGameFilter with DayLike
+object UntilGameFilter {
+  def apply(day: DayLike): UntilGameFilter = UntilGameFilter(day.year, day.month, day.day)
+}
 
 /**
  * A game filter that matches games played during a given year.
@@ -114,7 +130,10 @@ case class DayGameFilter(
   /**
    * The day when matched games were played.
    */  
-  val day: Int) extends ContiguousGameFilter
+  val day: Int) extends ContiguousGameFilter with DayLike
+object DayGameFilter {
+  def apply(day: DayLike): DayGameFilter = DayGameFilter(day.year, day.month, day.day)
+}
   
 /**
  * A companion object for [[ContiguousGameFilter]] that allows filters to be serialised and deserialised
@@ -138,9 +157,9 @@ object ContiguousGameFilter {
     str match {
       case(between(fromYear, fromMonth, fromDay, toYear, toMonth, toDay)) =>
         Some(BetweenGameFilter(
-            dt(fromYear, fromMonth, fromDay), dt(toYear, toMonth, toDay)))
-      case(since(year, month, day)) => Some(SinceGameFilter(dt(year, month, day)))
-      case(until(year, month, day)) => Some(UntilGameFilter(dt(year, month, day)))
+            Day(fromYear.toInt, fromMonth.toInt, fromDay.toInt), Day(toYear.toInt, toMonth.toInt, toDay.toInt)))
+      case(since(year, month, day)) => Some(SinceGameFilter(year.toInt, month.toInt, day.toInt))
+      case(until(year, month, day)) => Some(UntilGameFilter(year.toInt, month.toInt, day.toInt))
       case(year(year)) => Some(YearGameFilter(year.toInt))
       case(month(year, month)) => Some(MonthGameFilter(year.toInt, month.toInt))
       case(day(year, month, day)) => Some(DayGameFilter(year.toInt, month.toInt, day.toInt))
@@ -151,9 +170,9 @@ object ContiguousGameFilter {
   def apply(filter: ContiguousGameFilter): String = filter match {
     case BetweenGameFilter(from, to) => 
       "b%04d%02d%02d%04d%02d%02d".format(
-        from.getYear, from.getMonthOfYear, from.getDayOfMonth, to.getYear, to.getMonthOfYear, to.getDayOfMonth)
-    case SinceGameFilter(dt) => "s%04d%02d%02d".format(dt.getYear, dt.getMonthOfYear, dt.getDayOfMonth)
-    case UntilGameFilter(dt) => "u%04d%02d%02d".format(dt.getYear, dt.getMonthOfYear, dt.getDayOfMonth)
+        from.year, from.month, from.day, to.year, to.month, to.day)
+    case SinceGameFilter(year, month, day) => "s%04d%02d%02d".format(year, month, day)
+    case UntilGameFilter(year, month, day) => "u%04d%02d%02d".format(year, month, day)
     case YearGameFilter(year) => "d%04d".format(year)
     case MonthGameFilter(year, month) => "d%04d%02d".format(year, month)
     case DayGameFilter(year, month, day) => "d%04d%02d%02d".format(year, month, day)

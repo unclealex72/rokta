@@ -122,7 +122,7 @@ class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology 
       "return all games between those two dates in one query" in txn { squerylDao =>
         queryCount => implicit games =>
           squerylDao.games(
-            BetweenGameFilter(January(31, 2013) at (3 oclock).pm, February(2, 2013) at (1 oclock))) must matchFilter(
+            BetweenGameFilter(January(31, 2013), February(2, 2013))) must matchFilter(
               playedOn(January(31, 2013), February(1, 2013), February(2, 2013)))
           queryCount must be equalTo (1)
       }
@@ -132,7 +132,7 @@ class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology 
       "return all games between since that date in one query" in txn { squerylDao =>
         queryCount => implicit games =>
           squerylDao.games(
-            SinceGameFilter(December(29, 2014) at (5 oclock).pm)) must matchFilter(
+            SinceGameFilter(December(29, 2014))) must matchFilter(
               playedOn(December(29, 2014), December(30, 2014), December(31, 2014)))
           queryCount must be equalTo (1)
       }
@@ -142,7 +142,7 @@ class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology 
       "return all games between since that date in one query" in txn { squerylDao =>
         queryCount => implicit games =>
           squerylDao.games(
-            UntilGameFilter(January(3, 2013).at(midnight))) must matchFilter(
+            UntilGameFilter(January(3, 2013))) must matchFilter(
               playedOn(January(1, 2013), January(2, 2013), January(3, 2013)))
           queryCount must be equalTo (1)
       }

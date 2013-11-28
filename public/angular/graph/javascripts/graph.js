@@ -1,4 +1,4 @@
-var graph = angular.module('rokta.graph', ['rokta.events', 'rokta.players', 'rokta.stats', 'rokta.filter']);
+var graph = angular.module('rokta.graph', ['rokta.events', 'rokta.players', 'rokta.stats', 'rokta.filters']);
 
 // A factory to create a Graph object used to create the graph series..
 graph.factory('Graph', [

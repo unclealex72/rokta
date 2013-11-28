@@ -1,13 +1,13 @@
-var stats = angular.module('rokta.stats', ['rokta.events']);
+var stats = angular.module('rokta.stats', ['rokta.events', 'rokta.filters']);
 
-stats.service('Stats', ['Events', '$routeParams', function(Events, $routeParams) {
+stats.service('Stats', ['Events', 'CurrentFilter', function(Events, CurrentFilter) {
   var service = {
 	initialised: false,
 	name: 'stats.update',
     stats: {},
     anyGamesPlayedToday: false,
     refresh: function() {
-      var filter = $routeParams.filter;
+      var filter = CurrentFilter.asString();
       var statsPath = 'stats';
       if (!(filter === undefined)) {
     	  statsPath += '/' + filter;
