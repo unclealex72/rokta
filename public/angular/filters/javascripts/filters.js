@@ -18,13 +18,17 @@ filter.directive('roktaDayPicker', ['$timeout', '$filter', function($timeout, $f
           $scope.opened = true;
         });
       };
-      $scope.rawDate = $filter('date')(
-        new Date($scope.ngModel.year, $scope.ngModel.month - 1, $scope.ngModel.day), 'dd-MMMM-yyyy');
-      $scope.$watch('rawDate', function(rawDate) {
-        var date = new Date(rawDate);
-        $scope.ngModel.year = date.getFullYear();
-        $scope.ngModel.month = date.getMonth() + 1;
-        $scope.ngModel.day = date.getDate();
+      $scope.$watch('ngModel', function(ngModel) {
+        if (ngModel) {
+          $scope.rawDate = $filter('date')(
+            new Date(ngModel.year, ngModel.month - 1, ngModel.day), 'dd-MMMM-yyyy');
+          $scope.$watch('rawDate', function(rawDate) {
+            var date = new Date(rawDate);
+            ngModel.year = date.getFullYear();
+            ngModel.month = date.getMonth() + 1;
+            ngModel.day = date.getDate();
+          });
+        }
       });
     }
    };
