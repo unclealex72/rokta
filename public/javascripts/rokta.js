@@ -1,7 +1,7 @@
 var rokta = angular.module(
   'rokta', 
   ['rokta.players', 'rokta.game', 'rokta.graph', 'rokta.league', 'rokta.stats',
-   'rokta.events', 'rokta.streaks', 'ui.bootstrap', 'ngRoute']);
+   'rokta.headtoheads', 'rokta.events', 'rokta.streaks', 'ui.bootstrap', 'ngRoute']);
 
 rokta.config(['$routeProvider',
 function($routeProvider) {
@@ -14,6 +14,9 @@ function($routeProvider) {
   }).when('/filters/:filter?', {
     templateUrl : 'assets/angular/filters/partials/filters.html',
     controller : 'FiltersCtrl'
+  }).when('/headtoheads/:filter?', {
+    templateUrl : 'assets/angular/headtoheads/partials/headtoheads.html',
+    controller : 'HeadToHeadsCtrl'
   }).when('/winningstreaks/:filter?', {
     templateUrl : 'assets/angular/streaks/partials/streaks.html',
     controller : 'WinningStreaksCtrl'
@@ -76,6 +79,9 @@ function($scope, Events, Players, $routeParams, $location) {
       }, {
         "name" : "Losing Streaks",
         "link" : "losingstreaks"
+      }, {
+        "name" : "Head to Heads",
+        "link" : "headtoheads"
       }]
     }, {
       "name" : "Players",
