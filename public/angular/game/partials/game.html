@@ -53,7 +53,7 @@
           <select ng-model="game.participants" ng-options="player for player in players" multiple="true" size="14">
           </select>
         </div>
-        <button class="btn btn-default" ng-disabled="!game.participants || game.participants.length &lt; 2" ng-click="next(game)">
+        <button class="btn btn-default" ng-disabled="!game.instigator || !game.participants || game.participants.length &lt; 2" ng-click="next(game)">
           Next
         </button>
       </form>
