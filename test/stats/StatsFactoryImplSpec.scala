@@ -44,6 +44,7 @@ import filter.YearGameFilter
 import filter.MonthGameFilter
 import filter.DayGameFilter
 import dates.StaticNow
+import model.Hand._
 
 /**
  * @author alex
@@ -159,8 +160,12 @@ class StatsFactoryImplSpec extends Specification with Mockito
         statsFactory.findTodaysPlayers(Set()) must beEmpty
       }
       "include everyone who has played today" in {
-        val gameOne = freddie losesAt (September(5, 2013) at (midday)) whilst(brian plays 2) and (roger plays 1)
-        val gameTwo = brian losesAt (September(5, 2013) at (1 oclock).pm) whilst(john plays 2)
+        val gameOne = 
+          at(September(5, 2013) at (midday), roger plays ROCK, brian plays SCISSORS, freddie plays SCISSORS).and(
+            freddie plays SCISSORS, brian plays ROCK)
+        val gameTwo =
+          at(September(5, 2013) at (1 oclock).pm, roger plays PAPER, john plays PAPER).and(
+              roger plays PAPER, john plays SCISSORS)
         statsFactory.findTodaysPlayers(Set(gameOne, gameTwo)) must contain(
           freddie.name, brian.name, roger.name, john.name).exactly
       }

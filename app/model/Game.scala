@@ -24,6 +24,7 @@ package model
 
 import org.joda.time.DateTime
 import model.JodaDateTime._
+import scala.collection.SortedMap
 
 /**
  * A trait for [[PersistedGame]] that allows other components to be tested without having to set up a database.
@@ -40,12 +41,23 @@ trait Game extends Ordered[Game] {
   /**
    * The person who lost the game if it is finished or None otherwise.
    */
-  def loser: Option[String]
+  lazy val loser: Option[String] = rounds.lastOption.map(_._2).flatMap{ plays =>
+    val hands = plays.values.toSet
+    hands.size match {
+      case 2 =>
+        val firstHand = hands.head
+        val secondHand = hands.last
+        val losingHand = if (firstHand.beats(secondHand)) secondHand else firstHand
+        val losers = plays.filter(_._2 == losingHand).map(_._1)
+        if (losers.size == 1) losers.headOption else None
+      case _ => None
+    }
+  }
   
   /**
    * The total number of rounds played.
    */
-  def numberOfRounds: Int
+  lazy val numberOfRounds: Int = rounds.size
   
   /**
    * The player who instigated this game.
@@ -55,13 +67,23 @@ trait Game extends Ordered[Game] {
   /**
    * The original participants.
    */
-  def participants: Set[String]
+  lazy val participants: Set[String] = roundsPlayed.keySet
   
   /**
    * The number of rounds each player played.
    */
-  def roundsPlayed: Map[String, Int]
+  lazy val roundsPlayed: Map[String, Int] = 
+    rounds.values.foldLeft(Map.empty[String, Int]){ (roundsPlayed, plays) => 
+      plays.keys.foldLeft(roundsPlayed){ (roundsPlayed, player) =>
+        roundsPlayed + (player -> (1 + roundsPlayed.get(player).getOrElse(0)))
+      }
+    }
  
+  /**
+   * The actual hands played during the game.
+   */
+  def rounds: SortedMap[Int, Map[String, Hand]]
+  
   /**
    * Games are ordered by the date and time they were played.
    */

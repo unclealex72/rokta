@@ -30,6 +30,9 @@ import stats.StreaksFactoryImplSpec._
 import scala.collection.SortedSet
 import dates.IsoChronology
 import dates.DaysAndTimes
+import model.Hand
+import scala.collection.SortedMap
+import model.Hand._
 /**
  * @author alex
  *
@@ -209,10 +212,9 @@ object StreaksFactoryImplSpec {
     def wonBy(winners: String*): Game = new Game() {
       val instigator = "Freddie"
       val datePlayed = dateGamePlayed
-      val loser: Option[String] = Some(_loser)
-      val participants = winners.toSet + _loser
-      val numberOfRounds = 0
-      val roundsPlayed = Map.empty[String, Int]
+      val round: Map[String, Hand] = 
+        winners.foldLeft(Map(_loser -> ROCK.asInstanceOf[Hand]))((plays, player) => plays + (player -> PAPER) )
+      val rounds = SortedMap(1 -> round)
     }
   }
 }

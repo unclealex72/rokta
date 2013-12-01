@@ -26,7 +26,7 @@ import model.NonPersistedGameDsl
 import org.specs2.mutable.Specification
 import dates.DaysAndTimes
 import dates.UtcChronology
-
+import model.Hand._
 /**
  * @author alex
  *
@@ -34,50 +34,60 @@ import dates.UtcChronology
 class HeadToHeadsFactoryImplSpec extends Specification with NonPersistedGameDsl with DaysAndTimes with UtcChronology {
 
   val headToHeadsFactory = new HeadToHeadsFactoryImpl
-  
+
   "A game that does not end with a head to head" should {
     "be ignored" in {
-      val game = freddie losesAt September(5, 1972) whilst (brian plays 4) and (roger plays 4)
+      val game = at(September(5, 1972), freddie plays ROCK, brian plays SCISSORS, roger plays ROCK)
       headToHeadsFactory(Seq(game)) must beEmpty
     }
   }
 
   "A game that does end with a head to head" should {
     "be recorded as a win for the winner" in {
-      val game = freddie losesAt September(5, 1972) whilst (brian plays 4) and (roger plays 3)
+      val game = at(September(5, 1972), freddie plays ROCK, brian plays ROCK, roger plays PAPER) and
+        (freddie plays PAPER, brian plays SCISSORS)
       val headToHeads = headToHeadsFactory(Seq(game))
       headToHeads.keys must containTheSameElementsAs(Seq(brian.name))
-      headToHeads(brian.name)  must containTheSameElementsAs(Seq(freddie.name -> 1))
+      headToHeads(brian.name) must containTheSameElementsAs(Seq(freddie.name -> 1))
     }
   }
 
   "Two games that end with the same head to head" should {
     "be recorded as two wins for the winner" in {
-      val game = freddie losesAt September(5, 1972) whilst (brian plays 4) and (roger plays 3)
+      val game = at(September(5, 1972), freddie plays ROCK, brian plays ROCK, roger plays PAPER) and
+        (freddie plays ROCK, brian plays PAPER)
       val headToHeads = headToHeadsFactory(Seq(game, game))
       headToHeads.keys must containTheSameElementsAs(Seq(brian.name))
-      headToHeads(brian.name)  must containTheSameElementsAs(Seq(freddie.name -> 2))
+      headToHeads(brian.name) must containTheSameElementsAs(Seq(freddie.name -> 2))
     }
   }
 
   "Two games that end with different head to heads with the same winner" should {
     "be recorded as two wins for the winner" in {
-      val gameA = freddie losesAt September(5, 1972) whilst (brian plays 4) and (roger plays 3)
-      val gameB = roger losesAt September(5, 1972) whilst (brian plays 4) and (freddie plays 3)
+      val gameA = 
+        at(September(5, 1972), freddie plays ROCK, brian plays ROCK, roger plays PAPER) and
+        (freddie plays SCISSORS, brian plays ROCK)
+      val gameB = 
+        at(September(5, 1972), roger plays ROCK, brian plays ROCK, freddie plays PAPER) and
+        (roger plays SCISSORS, brian plays ROCK)
       val headToHeads = headToHeadsFactory(Seq(gameA, gameB))
       headToHeads.keys must containTheSameElementsAs(Seq(brian.name))
-      headToHeads(brian.name)  must containTheSameElementsAs(Seq(freddie.name -> 1, roger.name -> 1))
+      headToHeads(brian.name) must containTheSameElementsAs(Seq(freddie.name -> 1, roger.name -> 1))
     }
   }
 
   "Two games that end with different head to heads with different winners" should {
     "be recorded as wins for each winner" in {
-      val gameA = freddie losesAt September(5, 1972) whilst (brian plays 4) and (roger plays 3)
-      val gameB = roger losesAt September(5, 1972) whilst (freddie plays 4) and (brian plays 3)
+      val gameA =
+        at(September(5, 1972), freddie plays ROCK, brian plays ROCK, roger plays PAPER) and
+        (freddie plays SCISSORS, brian plays ROCK)
+      val gameB = 
+        at(September(5, 1972), freddie plays ROCK, brian plays PAPER, roger plays ROCK) and
+        (freddie plays PAPER, roger plays ROCK)
       val headToHeads = headToHeadsFactory(Seq(gameA, gameB))
       headToHeads.keys must containTheSameElementsAs(Seq(brian.name, freddie.name))
-      headToHeads(brian.name)  must containTheSameElementsAs(Seq(freddie.name -> 1))
-      headToHeads(freddie.name)  must containTheSameElementsAs(Seq(roger.name -> 1))
+      headToHeads(brian.name) must containTheSameElementsAs(Seq(freddie.name -> 1))
+      headToHeads(freddie.name) must containTheSameElementsAs(Seq(roger.name -> 1))
     }
   }
 }

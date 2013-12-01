@@ -41,7 +41,7 @@ import filter.DayLikeImplicits._
 import model.Game
 import model.Player
 import com.typesafe.scalalogging.slf4j.Logging
-import model.CalculatedGame
+import model.NonPersistedGame
 import filter.Day
 
 /**

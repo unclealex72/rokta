@@ -29,42 +29,30 @@ import scala.collection.SortedMap
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 
 /**
- * A trait for [[PersistedGame]] that allows other components to be tested without having to set up a database.
+ * A class for [[PersistedGame]] that allows other components to be tested without having to set up a database.
  * @author alex
  *
  */
-case class CalculatedGame(
+case class NonPersistedGame(
   /**
    * The date and time this game was played.
    */
   datePlayed: DateTime,
   /**
-   * The person who lost the game if it is finished or None otherwise.
-   */
-  loser: Option[String],
-  /**
-   * The total number of rounds played.
-   */
-  numberOfRounds: Int,
-  /**
    * The player who instigated this game.
    */
   instigator: String,
   /**
-   * The original participants.
+   * The actual hands played during the game.
    */
-  participants: Set[String],
-  /**
-   * The number of rounds each player played.
-   */
-  roundsPlayed: Map[String, Int]) extends Game
+  rounds: SortedMap[Int, Map[String, Hand]]) extends Game
 
-object CalculatedGame {
+object NonPersistedGame {
 
   /**
    * Create a new game from a Squeryl grouped tuple.
    */
-  def apply(info: ((PersistedGame, String), Iterable[(PersistedGame, String, Int, String, String)])): CalculatedGame = {
+  def apply(info: ((PersistedGame, String), Iterable[(PersistedGame, String, Int, String, String)])): NonPersistedGame = {
     val (key, value) = info
     val (persistedGame, instigator) = key
     val rounds = value.groupBy(kv => (kv._1, kv._2, kv._3))
@@ -72,9 +60,9 @@ object CalculatedGame {
   }
 
   def calculateGame(
-    persistedGame: PersistedGame, instigator: String,
+    persistedGame: PersistedGame, instigator: String, 
     gamesInstigatorsRoundsPlayersPlays: 
-      Map[(PersistedGame, String, Int), Iterable[(PersistedGame, String, Int, String, String)]]): CalculatedGame = {
+      Map[(PersistedGame, String, Int), Iterable[(PersistedGame, String, Int, String, String)]]): NonPersistedGame = {
     val rounds = gamesInstigatorsRoundsPlayersPlays.foldLeft(SortedMap.empty[Int, Map[String, Hand]]) { (rounds, round) =>
       val roundNumber = round._1._3
       val plays =
@@ -90,37 +78,6 @@ object CalculatedGame {
       rounds + (roundNumber -> plays)
     }
     val datePlayed = persistedGame.datePlayed
-    val numberOfRounds = rounds.size
-    val loser = rounds.lastOption.map(_._2).flatMap(calculateLoserOfRound(_))
-    val roundsPlayed = countRoundsPlayed(rounds)
-    val participants = roundsPlayed.keys.toSet
-    CalculatedGame(datePlayed, loser, numberOfRounds, instigator, participants, roundsPlayed)
-  }
-
-  /**
-   * Calculate the loser of a round, if any.
-   */
-  def calculateLoserOfRound(plays: Map[String, Hand]): Option[String] = {
-    val hands = plays.values.toSet
-    hands.size match {
-      case 2 =>
-        val firstHand = hands.head
-        val secondHand = hands.last
-        val losingHand = if (firstHand.beats(secondHand)) secondHand else firstHand
-        val losers = plays.filter(_._2 == losingHand).map(_._1)
-        if (losers.size == 1) losers.headOption else None
-      case _ => None
-    }
-  }
-  
-  /**
-   * Count the number of times each player has played.
-   */
-  def countRoundsPlayed(rounds: SortedMap[Int, Map[String, Hand]]): Map[String, Int] = {
-    rounds.values.foldLeft(Map.empty[String, Int]){ (roundsPlayed, plays) => 
-      plays.keys.foldLeft(roundsPlayed){ (roundsPlayed, player) =>
-        roundsPlayed + (player -> (1 + roundsPlayed.get(player).getOrElse(0)))
-      }
-    }
+    NonPersistedGame(datePlayed, instigator, rounds)
   }
 }

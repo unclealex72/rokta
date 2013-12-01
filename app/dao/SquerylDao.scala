@@ -55,7 +55,7 @@ import filter.SinceGameFilter
 import filter.UntilGameFilter
 import filter.YearGameFilter
 import filter.DayLikeImplicits._
-import model.CalculatedGame
+import model.NonPersistedGame
 import model.Game
 import model.Hand
 import model.PersistedGame
@@ -64,6 +64,7 @@ import model.Player
 import model.UploadableGame
 import org.squeryl.dsl.Measures
 import filter.Day
+import model.NonPersistedGame
 
 /**
  * The Squeryl implementation of [[GameDao]], [[PersonDao]] and [[Transactional]].
@@ -82,7 +83,7 @@ class SquerylDao extends GameDao with PlayerDao with Transactional {
         filter(g)) 
       select (g, i.name, r.round, pr.name, p._hand) 
       orderBy(g.id, r.round))
-    SortedSet(gamesInstigatorsRoundsPlayersPlays.groupBy(kv => (kv._1, kv._2)).map(CalculatedGame(_)).toSeq: _*)
+    SortedSet(gamesInstigatorsRoundsPlayersPlays.groupBy(kv => (kv._1, kv._2)).map(NonPersistedGame(_)).toSeq: _*)
   }
 
   def games(contiguousGameFilter: ContiguousGameFilter): SortedSet[Game] = 

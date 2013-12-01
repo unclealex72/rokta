@@ -24,6 +24,7 @@ package model
 
 import model.Colour._
 import org.joda.time.DateTime
+import scala.collection.SortedMap
 /**
  * @author alex
  *
@@ -38,28 +39,33 @@ trait NonPersistedGameDsl {
   val roger: Player = NonPersistedPlayer("Roger", "roger@queen.com", RED)
   val john: Player = NonPersistedPlayer("John", "john@queen.com", WHITE)
 
+  def at(datePlayed: DateTime, play: Pair[Player, Hand], plays: Pair[Player, Hand]*) = 
+    new GameBuilder(datePlayed, freddie.name, SortedMap.empty[Int, Map[String, Hand]]).and(play, plays :_*)
+
   implicit class PlayerImplicits(player: Player) {
     
-    def losesAt(dateTime: DateTime): GameBuilder = GameBuilder(player, dateTime, Map.empty[Player, Int])
-    
-    def plays(rounds: Int): Pair[Player, Int] = player -> rounds
+    def plays(hand: Hand): Pair[Player, Hand] = player -> hand
   }  
 }
 
-case class GameBuilder(val _loser: Player, val datePlayed: DateTime, _otherRoundsPlayed: Map[Player, Int]) extends Game with NonPersistedGameDsl {
-  
-  val otherRoundsPlayed = _otherRoundsPlayed.foldLeft(Map.empty[String, Int])((rs, r) => rs + (r._1.name -> r._2))
-  def and: Pair[Player, Int] => GameBuilder = play => GameBuilder(_loser, datePlayed, _otherRoundsPlayed + play)
-  
-  def instigator: String = freddie.name
-  
-  def whilst = and
-  
-  def loser: Option[String] = Some(_loser.name)
-  
-  def participants: Set[String] = otherRoundsPlayed.keySet + _loser.name
-  
-  def numberOfRounds: Int = otherRoundsPlayed.values.max
-  
-  def roundsPlayed: Map[String, Int] = otherRoundsPlayed + (_loser.name -> numberOfRounds)
+class GameBuilder(
+  /**
+   * The date and time this game was played.
+   */
+  override val datePlayed: DateTime,
+  /**
+   * The player who instigated this game.
+   */
+  override val instigator: String,
+  /**
+   * The actual hands played during the game.
+   */
+  override val rounds: SortedMap[Int, Map[String, Hand]]) 
+  extends NonPersistedGame(datePlayed, instigator, rounds) with NonPersistedGameDsl {
+
+  def and(play: Pair[Player, Hand], plays: Pair[Player, Hand]*) = {
+    val nextRound = rounds.size + 1
+    val round = (Seq(play) ++ plays).foldLeft(Map.empty[String, Hand])((plays, play) => plays + (play._1.name -> play._2))
+    new GameBuilder(datePlayed, instigator, rounds + (nextRound -> round))
+  }
 }

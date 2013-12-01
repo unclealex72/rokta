@@ -29,7 +29,7 @@ import dates.IsoChronology
 import dates.StaticNow
 import module.EmptyBindingModule
 import model.NonPersistedGameDsl
-
+import model.Hand._
 /**
  * @author alex
  *
@@ -42,16 +42,19 @@ class CurrentResultsFactoryImplSpec extends Specification
   
   "No games being played today" should {
     "mean that no results are collated" in {
-      val game = freddie losesAt (September(4, 2013) at midday) and (brian plays 4)
+      val game = at(September(4, 2013) at midday, freddie plays ROCK, brian plays SCISSORS)
       currentResultsFactory(Seq(game)) must beEmpty
     }
   }
   
   "2 games being played today and 1 yesterday" should {
     "mean that only the 2 games from today are collated" in {
-      val yesterday = freddie losesAt (September(4, 2013) at midday) and (brian plays 4)
-      val thisMorning = brian losesAt (September(5, 2013) at (10 oclock)) and (roger plays 1) and (john plays 3)
-      val thisAfternoon = john losesAt (September(5, 2013) at (3 oclock).pm) and (roger plays 3)
+      val yesterday = at(September(4, 2013) at midday, freddie plays SCISSORS, brian plays ROCK)
+      val thisMorning = //brian losesAt (September(5, 2013) at (10 oclock)) and (roger plays 1) and (john plays 3)
+        at(September(5, 2013) at (10 oclock), brian plays SCISSORS, roger plays ROCK, john plays SCISSORS) and
+        (brian plays PAPER, roger plays SCISSORS)
+      val thisAfternoon = //john losesAt (September(5, 2013) at (3 oclock).pm) and (roger plays 3)
+        at(September(5, 2013) at (3 oclock).pm, john plays SCISSORS, roger plays ROCK)
       currentResultsFactory(Seq(yesterday, thisMorning, thisAfternoon)) must contain(
         roger.name -> CurrentResults(2, 0),
         brian.name -> CurrentResults(0, 1),

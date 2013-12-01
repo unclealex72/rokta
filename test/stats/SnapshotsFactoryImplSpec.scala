@@ -33,7 +33,7 @@ import stats.Snapshot._
 import scala.collection.SortedSet
 import dates.IsoChronology
 import model.NonPersistedGameDsl
-
+import model.Hand._
 /**
  * @author alex
  *
@@ -43,7 +43,10 @@ class SnapshotsFactoryImplSpec extends Specification with DaysAndTimes with IsoC
   val snapshotsFactory = new SnapshotsFactoryImpl
 
   "Adding a new player to a snapshot" should {
-    val game: Game = freddie losesAt (September(12, 2013) at (11 oclock)) whilst (brian plays (3)) and (roger plays (2))
+    val game = at(September(12, 2013) at (11 oclock), freddie plays PAPER, brian plays PAPER, roger plays PAPER) and (
+        freddie plays ROCK, brian plays ROCK, roger plays PAPER) and (
+        freddie plays SCISSORS, brian plays ROCK)
+    
     val startingPoint = SnapshotCumulation()
     "record their wins if they win" in {
       val newCumulation = snapshotsFactory.addToSnapshot(game)(startingPoint, roger.name)
@@ -60,7 +63,10 @@ class SnapshotsFactoryImplSpec extends Specification with DaysAndTimes with IsoC
   }
 
   "Updating a player in a snapshot" should {
-    val game: Game = freddie losesAt (September(12, 2013) at (11 oclock)) whilst (brian plays 3) and (roger plays 2)
+    val game = at(September(12, 2013) at (11 oclock), freddie plays PAPER, brian plays PAPER, roger plays PAPER) and (
+        freddie plays ROCK, brian plays ROCK, roger plays PAPER) and (
+        freddie plays SCISSORS, brian plays ROCK)
+    
     val startingPoint = SnapshotCumulation(
       Map(freddie -> win(1), roger -> lose(3), brian -> win(4)), 
       SortedMap.empty[DateTime, Map[String, Snapshot]])
@@ -90,7 +96,12 @@ class SnapshotsFactoryImplSpec extends Specification with DaysAndTimes with IsoC
     val startingPoint = SnapshotCumulation(
       previousSnapshot, 
       SortedMap((September(12, 2013) at (11 oclock)) -> previousSnapshot))
-    val game: Game = freddie losesAt (September(12, 2013) at (12 oclock)) whilst (brian plays 3) and (john plays 2)
+      
+    val game = at(September(12, 2013) at midday, freddie plays PAPER, brian plays PAPER, john plays PAPER) and (
+        freddie plays ROCK, brian plays ROCK, john plays PAPER) and (
+        freddie plays SCISSORS, brian plays ROCK)
+    
+    
     val expectedSnapshot: Map[String, Snapshot] =
       Map(freddie -> win(2).lose(3), brian -> lose(3).win(3), roger -> lose(4), john -> win(2))
     val newCumulation = snapshotsFactory.accumulateSnapshots(startingPoint, game)
@@ -107,9 +118,14 @@ class SnapshotsFactoryImplSpec extends Specification with DaysAndTimes with IsoC
     val timeA = September(12, 2013) at (11 oclock)
     val timeB = September(12, 2013) at (15 oclock)
     val timeC = September(13, 2013) at (9 oclock)
-    val gameA: Game = freddie losesAt timeA whilst (brian plays 3) and (roger plays 4)
-    val gameB: Game = brian losesAt timeB whilst (roger plays 2)
-    val gameC: Game = freddie losesAt timeC whilst (brian plays 1) and (roger plays 2)
+    val gameA: Game = //freddie losesAt timeA whilst (brian plays 3) and (roger plays 4)
+      at(timeA, freddie plays PAPER, brian plays SCISSORS, roger plays ROCK) and (
+        freddie plays ROCK, brian plays ROCK, roger plays ROCK) and (
+        freddie plays SCISSORS, brian plays ROCK, roger plays SCISSORS) and (freddie plays SCISSORS, roger plays ROCK)
+    val gameB: Game = //brian losesAt timeB whilst (roger plays 2)
+      at(timeB, brian plays ROCK, roger plays ROCK) and (brian plays PAPER, roger plays SCISSORS)
+    val gameC: Game = //freddie losesAt timeC whilst (brian plays 1) and (roger plays 2)
+      at(timeC, freddie plays ROCK, roger plays ROCK, brian plays SCISSORS) and (roger plays ROCK, freddie plays SCISSORS)
     val snapshotA: Map[String, Snapshot] = Map(freddie -> lose(4), brian -> win(3), roger -> win(4))
     val snapshotAB: Map[String, Snapshot] = Map(freddie -> lose(4), brian -> win(3).lose(2), roger -> win(4).win(2))
     val snapshotABC: Map[String, Snapshot] = 
