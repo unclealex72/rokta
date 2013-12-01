@@ -61,6 +61,10 @@ case class Stats[G <: Game](
    */
   headToHeads: Map[String, Map[String, Int]],
   /**
+   * The count of hands played for each player.
+   */
+  handCounts: Map[String, HandCount],
+  /**
    * All winning and losing streaks.
    */
   streaks: Streaks,

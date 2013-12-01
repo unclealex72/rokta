@@ -67,14 +67,15 @@ class StatsFactoryImplSpec extends Specification with Mockito
     val gameDao = mock[GameDao]
     val playerDao = mock[PlayerDao]
     val headToHeadsFactory = mock[HeadToHeadsFactory]
+    val handCountsFactory = mock[HandCountsFactory]
     val exemptPlayerFactory = mock[ExemptPlayerFactory]
     val todaysGamesFactory = mock[TodaysGamesFactory]
     val transactional = new Transactional() {
       def tx[T](block: PlayerDao => GameDao => T): T = block(playerDao)(gameDao)
     }
     val statsFactory = new StatsFactoryImpl(Some(now), Some(leagueFactory), Some(currentResultsFactory),
-        Some(snapshotsFactory), Some(streaksFactory), Some(headToHeadsFactory), Some(exemptPlayerFactory), 
-        Some(todaysGamesFactory), Some(transactional))
+        Some(snapshotsFactory), Some(streaksFactory), Some(headToHeadsFactory), Some(handCountsFactory),
+        Some(exemptPlayerFactory), Some(todaysGamesFactory), Some(transactional))
     block(statsFactory)(leagueFactory)(currentResultsFactory)(snapshotsFactory)(streaksFactory)(headToHeadsFactory)(playerDao)(gameDao)
   }
 
