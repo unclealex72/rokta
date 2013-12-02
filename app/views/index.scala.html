@@ -49,7 +49,7 @@
           </div>
           <div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
             <ul class="nav navbar-nav">
-              <li ng-repeat="menu in nav" ng-class="{'dropdown': menu.submenu}">
+              <li ng-repeat="menu in nav" ng-class="{'dropdown': menu.submenu}" ng-cloak>
                 <a ng-if="menu.link" href="javascript:void(0);" ng-click="navigateTo(menu.link)">
                   <i class="fa fa-{{menu.icon}}">
                   </i>
@@ -109,7 +109,7 @@
 
     <div id="footer">
       <div class="container" ng-controller="GameFilterCtrl">
-        <p class="text-muted credit" ng-bind-html="'You are currently viewing all games ' + (contiguousGameFilter | roktaGame)">
+        <p ng-cloak class="text-muted credit" ng-bind-html="'You are currently viewing all games ' + (contiguousGameFilter | roktaGame)">
         </p>
       </div>
     </div>
@@ -120,8 +120,9 @@
     <!-- Placed at the end of the document so the pages load faster -->
 		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
 		<script src='//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
-		
-		<script src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.3/angular.min.js'></script>
+		    <!-- Placed in head for proper ng-cloak support -->
+    <script src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.3/angular.min.js'></script>
+
     <script src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.3/angular-sanitize.min.js'></script>
  		<script src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.3/angular-route.min.js'></script>
 		<script src='//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.0/lodash.min.js'></script>
