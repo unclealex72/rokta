@@ -97,12 +97,17 @@ function() {
           layout: 'vertical'
       },
       
-      series: headToHeads.series
+      series: headToHeads.series,
 
+      plotOptions: {
+        line: {
+          connectNulls: true
+        }
+      }
         });
       };
       $scope.$watch('roktaHeadtoheads', function(roktaHeadToHeads) {
-        if ( typeof roktaHeadToHeads !== "undefined") {
+        if (roktaHeadToHeads) {
           drawChart();
         }
       });
