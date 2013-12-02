@@ -51,7 +51,6 @@ function() {
     },
     link : function($scope, elem, attrs) {
       var headToHeads = $scope.roktaHeadtoheads;
-      alert(headToHeads.min + " " + headToHeads.max);
       var drawChart = function() {
         elem.highcharts({
                         
