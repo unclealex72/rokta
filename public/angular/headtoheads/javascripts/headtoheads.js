@@ -23,14 +23,13 @@ function() {
       // Populate the data
       var max, min;
       activePlayerNames.forEach(function(winner, idx) {
-        var data = series[idx].data;
         _(headToHeads[winner]).forIn(function(wins, loser) {
           var losses = headToHeads[loser][winner]
           if (losses) {
             var result = parseFloat((100 * wins / (wins + losses)).toFixed(2));
             max = max ? Math.max(max, result) : result;
             min = min ? Math.min(min, result) : result; 
-            data[playerIndiciesByName[loser]] = 
+            series[playerIndiciesByName[loser]].data[idx] = 
               {y: result, winner: winner, wins: wins, loser: loser, losses: losses};
           }
         });
