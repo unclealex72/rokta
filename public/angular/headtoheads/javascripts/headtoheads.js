@@ -22,16 +22,16 @@ function() {
       });
       // Populate the data
       var max, min;
-      activePlayerNames.forEach(function(victor, idx) {
+      activePlayerNames.forEach(function(winner, idx) {
         var data = series[idx].data;
-        _(headToHeads[victor]).forIn(function(wins, loser) {
-          var losses = headToHeads[loser][victor]
+        _(headToHeads[winner]).forIn(function(wins, loser) {
+          var losses = headToHeads[loser][winner]
           if (losses) {
             var result = parseFloat((100 * wins / (wins + losses)).toFixed(2));
             max = max ? Math.max(max, result) : result;
             min = min ? Math.min(min, result) : result; 
             data[playerIndiciesByName[loser]] = 
-              {y: result, wins: wins, losses: losses};
+              {y: result, winner: winner, wins: wins, loser: loser, losses: losses};
           }
         });
       });
@@ -87,7 +87,8 @@ function() {
 
       tooltip: {
         shared: true,
-          pointFormat: '<span style="color:{series.color}">{series.name}: <b>{point.y:,.0f}%</b><br/>'
+          pointFormat: 
+            '<span style="color:{series.color}">{series.name}: <b>{point.y:,.0f}% ({point.winner}: {point.wins} / {point.loser}: {point.losses})</b><br/>'
       },
       
       legend: {
