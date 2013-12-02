@@ -54,6 +54,8 @@ function() {
       var drawChart = function() {
         elem.highcharts({
                         
+      colors: headToHeads.colours,
+      
       chart: {
           polar: true,
           type: 'line'
@@ -61,10 +63,7 @@ function() {
       
       title: {
           text: $scope.roktaTitle,
-          x: -80
-      },
-      
-      pane: {
+          x: 80, 
       },
       
       xAxis: {
@@ -76,13 +75,19 @@ function() {
       yAxis: {
           gridLineInterpolation: 'polygon',
           lineWidth: 0,
+          startOnTick: false,
+          endOnTick: false,
           min: headToHeads.min,
           max: headToHeads.max
       },
       
+            pane: {
+        size: '100%'
+      },
+
       tooltip: {
-        shared: false,
-          pointFormat: '<span style="color:{series.color}">{series.name}: <b>${point.y:,.0f}</b><br/>'
+        shared: true,
+          pointFormat: '<span style="color:{series.color}">{series.name}: <b>{point.y:,.0f}%</b><br/>'
       },
       
       legend: {
