@@ -27,7 +27,7 @@ function($log, $rootScope, $http) {
         $scope.$on(evt.name, function(evt) {
           runCallbacks();
         });
-        runCallbacks();
+        //runCallbacks();
       });
     }
   };
