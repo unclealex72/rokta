@@ -22,7 +22,7 @@
 
 package json
 
-import play.api.http.HeaderNames.CONTENT_TYPE
+import play.api.http.HeaderNames._
 import play.api.mvc.Results
 
 /**
@@ -31,6 +31,7 @@ import play.api.mvc.Results
  */
 trait JsonResults extends Results {
 
-  def json(a: Any) = Ok(Json(a)).withHeaders(CONTENT_TYPE -> "application/json")
+  def json(a: Any) = 
+    Ok(Json(a)).withHeaders(CONTENT_TYPE -> "application/json", CACHE_CONTROL -> "max-age=0, no-cache, no-store")
 
 }
