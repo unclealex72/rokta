@@ -49,61 +49,51 @@ function() {
       roktaTitle : '@'
     },
     link : function($scope, elem, attrs) {
-      var headToHeads = $scope.roktaHeadtoheads;
       var drawChart = function() {
+        var headToHeads = $scope.roktaHeadtoheads;
         elem.highcharts({
-                        
-      colors: headToHeads.colours,
-      
-      chart: {
-          polar: true,
-          type: 'line'
-      },
-      
-      title: {
-          text: $scope.roktaTitle,
-          x: 80, 
-      },
-      
-      xAxis: {
-          categories: headToHeads.names,
-          tickmarkPlacement: 'on',
-          lineWidth: 0
-      },
-          
-      yAxis: {
-          gridLineInterpolation: 'polygon',
-          lineWidth: 0,
-          startOnTick: false,
-          endOnTick: false,
-          min: headToHeads.min,
-          max: headToHeads.max
-      },
-      
-            pane: {
-        size: '100%'
-      },
-
-      tooltip: {
-        shared: true,
-          pointFormat: 
-            '<span style="color:{series.color}">{series.name}: <b>{point.y:,.0f}% ({point.winner}: {point.wins} / {point.loser}: {point.losses})</b><br/>'
-      },
-      
-      legend: {
-          align: 'right',
-          verticalAlign: 'top',
-          y: 70,
-          layout: 'vertical'
-      },
-      
-      series: headToHeads.series,
-
-      plotOptions: {
-        line: {
-          connectNulls: true
-        }
-      }
+          colors: headToHeads.colours,
+          chart: {
+            polar: true,
+            type: 'line'
+          },
+          title: {
+            text: $scope.roktaTitle,
+            x: 80, 
+          },
+          xAxis: {
+            categories: headToHeads.names,
+            tickmarkPlacement: 'on',
+            lineWidth: 0
+          },
+          yAxis: {
+            gridLineInterpolation: 'polygon',
+            lineWidth: 0,
+            startOnTick: false,
+            endOnTick: false,
+            min: headToHeads.min,
+            max: headToHeads.max
+          },
+          pane: {
+            size: '100%'
+          },
+          tooltip: {
+            shared: true,
+              pointFormat: 
+                '<span style="color:{series.color}">{series.name}: <b>{point.y:,.0f}% ({point.winner}: {point.wins} / {point.loser}: {point.losses})</b><br/>'
+          },
+          legend: {
+            align: 'right',
+            verticalAlign: 'top',
+            y: 70,
+            layout: 'vertical'
+          },
+          series: headToHeads.series,
+          plotOptions: {
+            line: {
+              connectNulls: true
+            }
+          }
         });
       };
       $scope.$watch('roktaHeadtoheads', function(roktaHeadToHeads) {
