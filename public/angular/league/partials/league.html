@@ -15,14 +15,14 @@
         The Last Game
       </div>
       <div class="panel-body">
-        <p ng-bind-html="'It was played on ' + (lastGame.datePlayed | roktaDay)"></p>
-        <p>
+        <div ng-bind-html="'It was played on ' + (lastGame.datePlayed | roktaDay)"></div>
+        <div>
           It was lost by {{lastGame.loser}}.
-        </p>
-        <p>
+        </div>
+        <div>
           It lasted
           <span ng-pluralize count="lastGame.numberOfRounds" when="{'one': '{} round.', 'other': '{} rounds.'}"> </span>
-        </p>
+        </div>
       </div>
     </div>
     <div class="panel panel-default">
@@ -30,12 +30,12 @@
         Todays results
       </div>
       <div class="panel-body" ng-controller="TodayCtrl">
-        <p>
+        <div>
           <span ng-pluralize
           count="numberOfGamesToday"
           when="{0: 'No games have', 'one': '1 game has', 'other': '{} games have'}"> </span>
           been played today.
-        </p>
+        </div>
         <div rokta-today results="gamesWon" verb="won"></div>
         <div rokta-today results="gamesLost" verb="lost"></div>
       </div>

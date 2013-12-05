@@ -1,4 +1,4 @@
-<p ng-repeat="result in results">
+<div ng-repeat="result in results">
   <span rokta-join rokta-join-items="result.names" rokta-join-ordered="true">
   </span>
   <span ng-pluralize 
@@ -8,4 +8,4 @@
   {{verb}}
   <span ng-pluralize data-count="result.count" data-when="{'0': 'no games.', 'one': '1 game.', 'other': '{} games.'}">
   </span>
-</p>
+</div>
