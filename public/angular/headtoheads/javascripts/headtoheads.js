@@ -58,8 +58,7 @@ function() {
             type: 'line'
           },
           title: {
-            text: $scope.roktaTitle,
-            x: 80, 
+            text: ""
           },
           xAxis: {
             categories: headToHeads.names,
@@ -75,7 +74,7 @@ function() {
             max: headToHeads.max
           },
           pane: {
-            size: '100%'
+            size: '90%'
           },
           tooltip: {
             shared: true,
