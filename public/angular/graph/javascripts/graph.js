@@ -57,8 +57,7 @@ function($log) {
   return {
     restrict : 'A',
     scope : {
-      roktaGraph : '=',
-      roktaTitle : '@'
+      roktaGraph : '='
     },
     link : function($scope, elem, attrs) {
       var drawGraph = function() {
@@ -69,7 +68,7 @@ function($log) {
           },
           colors : $scope.roktaGraph.colours,
           title : {
-            text : $scope.roktaTitle
+            text : ""
           },
           xAxis : {
             type : 'datetime',
