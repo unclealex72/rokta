@@ -16,6 +16,7 @@
   <tbody>
     <tr 
       ng-repeat="row in league" 
+      class="league-row"
       ng-class="{'danger': row.exempt, 'success': !row.currentlyPlaying && current}">
       <td>
         <i ng-class="{

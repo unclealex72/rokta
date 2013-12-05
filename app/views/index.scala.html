@@ -101,7 +101,7 @@
       </div>
 
       <!-- Begin page content -->
-      <div class="container">
+      <div class="container" ng-hide>
         <div ng-view>
         </div>
       </div>
@@ -120,11 +120,10 @@
     <!-- Placed at the end of the document so the pages load faster -->
 		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
 		<script src='//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
-		    <!-- Placed in head for proper ng-cloak support -->
-    <script src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.3/angular.min.js'></script>
-
-    <script src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.3/angular-sanitize.min.js'></script>
- 		<script src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.3/angular-route.min.js'></script>
+		
+		@for(suffix <- Seq("", "-sanitize", "-route", "-animate")) {
+      <script src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.3/angular@{suffix}.min.js'></script>
+    }
 		<script src='//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.0/lodash.min.js'></script>
     <script src='//cdn.jsdelivr.net/angular.bootstrap/0.7.0/ui-bootstrap-tpls.min.js'></script>
     <script src='//code.highcharts.com/3.0.7/highcharts.js'></script>

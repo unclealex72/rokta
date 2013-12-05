@@ -1,43 +1,53 @@
 <div class="row">
   <div class="col-md-8">
-    <h1>The league</h1>
-    <div rokta-league league="league" current="current && anyGamesPlayedToday">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        The league
+      </div>
+      <div class="panel-body">
+        <div rokta-league league="league" current="current && anyGamesPlayedToday"></div>
+      </div>
     </div>
   </div>
   <div class="col-md-4">
-    <div ng-controller="LastGameCtrl">
-      <h3>The Last Game</h3>
-      <ul>
-        <li ng-bind-html="'was played on ' + (lastGame.datePlayed | roktaDay)">
-        </li>
-        <li>was lost by {{lastGame.loser}}.</li>
-        <li>
-          lasted 
-          <span ng-pluralize count="lastGame.numberOfRounds" when="{'one': '{} round.', 'other': '{} rounds.'}">
-          </span>
-        </li>
-      </ul>
+    <div ng-controller="LastGameCtrl" class="panel panel-default">
+      <div class="panel-heading">
+        The Last Game
+      </div>
+      <div class="panel-body">
+        <p ng-bind-html="'It was played on ' + (lastGame.datePlayed | roktaDay)"></p>
+        <p>
+          It was lost by {{lastGame.loser}}.
+        </p>
+        <p>
+          It lasted
+          <span ng-pluralize count="lastGame.numberOfRounds" when="{'one': '{} round.', 'other': '{} rounds.'}"> </span>
+        </p>
+      </div>
     </div>
-    <h3>Todays results</h3>
-    <ul ng-controller="TodayCtrl">
-      <li> 
-        <span ng-pluralize 
-          count="numberOfGamesToday" 
-          when="{0: 'No games have', 'one': '1 game has', 'other': '{} games have'}">
-        </span>
-        been played today
-      </li>
-      <div rokta-today results="gamesWon" verb="won">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Todays results
       </div>
-      <div rokta-today results="gamesLost" verb="lost">
+      <div class="panel-body" ng-controller="TodayCtrl">
+        <p>
+          <span ng-pluralize
+          count="numberOfGamesToday"
+          when="{0: 'No games have', 'one': '1 game has', 'other': '{} games have'}"> </span>
+          been played today.
+        </p>
+        <div rokta-today results="gamesWon" verb="won"></div>
+        <div rokta-today results="gamesLost" verb="lost"></div>
       </div>
-    </ul>
-    <h3>Current streaks</h3>
-    <ul ng-controller="CurrentStreaksCtrl">
-      <div rokta-current-streaks streak-groups="winningStreakGroups" type="winning">
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Current streaks
       </div>
-      <div rokta-current-streaks streak-groups="losingStreakGroups" type="losing">
+      <div class="panel-body" ng-controller="CurrentStreaksCtrl">
+        <div rokta-current-streaks streak-groups="winningStreakGroups" type="winning"></div>
+        <div rokta-current-streaks streak-groups="losingStreakGroups" type="losing"></div>
       </div>
-    </ul>
+    </div>
   </div>
 </div>

@@ -1,4 +1,4 @@
-<li ng-repeat="streakGroup in streakGroups">
+<p ng-repeat="streakGroup in streakGroups">
   <span rokta-join rokta-join-items="streakGroup.names" rokta-join-ordered="true">
   </span>
   <span ng-pluralize 
@@ -6,4 +6,4 @@
     when="{'1': 'is', 'one': 'are both', 'other': 'are all'}">
   </span>
   on a {{type}} streak of {{streakGroup.size}}.
-</li>
+</p>
