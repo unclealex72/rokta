@@ -10,6 +10,9 @@ h1 .day-suffix {
   top: -0.7em;
 }
 
+body {
+  background-image: url(../images/fresh_snow.png);
+}
 /* 
   Allow angular.js to be loaded in body, hiding cloaked elements until 
   templates compile.  The !important is important given that there may be 
