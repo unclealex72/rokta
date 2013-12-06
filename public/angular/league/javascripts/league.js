@@ -1,4 +1,4 @@
-var league = angular.module('rokta.league', ['rokta.events', 'rokta.stats', 'rokta.filters']);
+var league = angular.module('rokta.league', ['rokta.events', 'rokta.stats', 'rokta.filters', 'rokta.panel']);
 
 league.directive('roktaJoin', function() {
   return {
