@@ -19,16 +19,20 @@
         Win next: {{ 100 * row.gamesLost / (row.gamesWon + 1 + row.gamesLost) | number:2 }}%,<br/> 
         Lose next: {{ 100 * (row.gamesLost + 1) / (row.gamesWon + 1 + row.gamesLost) | number:2 }}%" 
       ng-repeat="row in league" 
-      class="league-row"
-      ng-class="{'danger': row.exempt, 'success': !row.currentlyPlaying && current}">
+      class="league-row">
       <td>
         <i ng-class="{
-          'fa fa-arrow-up': row.movement < 0, 
-          'fa fa-arrows-h': row.movement == 0, 'fa fa-arrow-down': row.movement > 0}">
+          'fa fa-arrow-up leagueup': row.movement < 0, 
+          'fa fa-arrows-h': row.movement == 0, 'fa fa-arrow-down leaguedown': row.movement > 0}">
         </i>
       </td>
       <td>{{$index + 1}}</td>
-      <td>{{row.playerName}}</td>
+      <td>
+        {{row.playerName}}
+        <span ng-if="row.exempt || (!row.currentlyPlaying && current)" ng-class="{'exempt': row.exempt, 'notplaying': !row.currentlyPlaying && current}">
+          *
+        </span>
+      </td>
       <td class="hidden-xs">{{row.gamesWon + row.gamesLost}}</td>
       <td class="hidden-xs">{{row.gamesLost}}</td>
       <td class="hidden-xs">{{ row.roundsDuringWinningGames / row.gamesWon | number:1 }}</td>
@@ -38,3 +42,11 @@
     </tr>
   </tbody>
 </table>
+<div class="pull-right">
+  <span class="exempt">
+    *
+  </span> = exempt
+  <span class="notplaying">
+    *
+  </span> = not playing
+</div>
