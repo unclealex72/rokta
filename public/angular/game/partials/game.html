@@ -2,61 +2,70 @@
   <div class="col-md-4">
     <div ng-if="game">
       <div ng-if="finished">
+        <div rokta-panel header="Game over">
         <p>
           {{loser}} has lost.
         </p>
         <p>
-          <button class="btn btn-danger" ng-click="next()">
+          <button class="btn btn-danger pull-right" ng-click="next()" autofocus>
             Submit
           </button>
         </p>
+        </div>
       </div>
       <div ng-if="!finished">
-        <h3>Round {{round}}</h3>
-        <form name="hands">
-          <div class="form-group" ng-repeat="name in currentPlayers">
-            <label for="name_{{name}}">{{name}}</label>
-            <select ng-if="$first"
-              id="name_{{name}}" 
-              class="form-control" 
-              ng-change="registerHand(name, hand)" 
-              ng-model="hand" 
-              required 
+        <div rokta-panel header="Round {{round}}">
+          <form name="hands">
+            <div class="form-group" ng-repeat="name in currentPlayers">
+              <label for="name_{{name}}">{{name}}</label>
+              <select ng-if="$first"
+              id="name_{{name}}"
+              class="form-control"
+              ng-change="registerHand(name, hand)"
+              ng-model="hand"
+              required
               autofocus
-              ng-options="hand for hand in ['ROCK', 'SCISSORS', 'PAPER']">
-            </select>
-            <select ng-if="!$first"
-              id="name_{{name}}" 
-              class="form-control" 
-              ng-change="registerHand(name, hand)" 
-              ng-model="hand" 
-              required 
-              ng-options="hand for hand in ['ROCK', 'SCISSORS', 'PAPER']">
-            </select>
+              ng-options="hand for hand in ['ROCK', 'SCISSORS', 'PAPER']"></select>
+              <select ng-if="!$first"
+              id="name_{{name}}"
+              class="form-control"
+              ng-change="registerHand(name, hand)"
+              ng-model="hand"
+              required
+              ng-options="hand for hand in ['ROCK', 'SCISSORS', 'PAPER']"></select>
+            </div>
+            <button class="btn btn-default" ng-disabled="hands.$invalid" ng-click="next()">
+              Next
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div ng-if="!game">
+      <div rokta-panel header="Select players">
+        <form>
+          <div class="form-group">
+            <label for="instigator">Instigator</label>
+            <select id="instigator" class="form-control" ng-model="instigator" ng-options="instigator for instigator in instigators" required></select>
           </div>
-          <button class="btn btn-default" ng-disabled="hands.$invalid" ng-click="next()">
+          <div class="form-group">
+            <label for="players">Players</label>
+            <div class="list-group">
+              <a href="javascript:void(0);" 
+                ng-repeat="player in players" 
+                class="list-group-item" 
+                ng-click="toggle(player)"
+                ng-class="isPlaying(player) ? 'active' : ''">
+                {{player}}
+              </a>
+            </div>
+            <!--select ng-model="game.participants" ng-options="player for player in players" multiple="true" size="14"></select-->
+          </div>
+          <button class="btn btn-default" ng-disabled="!instigator || !participants || participants.length &lt; 2" ng-click="next(instigator, participants)">
             Next
           </button>
         </form>
       </div>
-    </div>
-    <div ng-if="!game">
-      <h2>Select Players</h2>
-      <form>
-        <div class="form-group">
-          <label for="instigator">Instigator</label>
-          <select id="instigator" class="form-control" ng-model="game.instigator" ng-options="player for player in players" required>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="players">Players</label>
-          <select ng-model="game.participants" ng-options="player for player in players" multiple="true" size="14">
-          </select>
-        </div>
-        <button class="btn btn-default" ng-disabled="!game.instigator || !game.participants || game.participants.length &lt; 2" ng-click="next(game)">
-          Next
-        </button>
-      </form>
     </div>
   </div>
 

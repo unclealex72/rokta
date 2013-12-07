@@ -1,4 +1,4 @@
-var game = angular.module('rokta.game', []);
+var game = angular.module('rokta.game', ['rokta.panel']);
 
 game.constant('ROCK', 'ROCK');
 game.constant('SCISSORS', 'SCISSORS');
@@ -118,8 +118,8 @@ function(Game, RoundCodec) {
   return service;
 }]);
 
-game.controller('GameCtrl', ['GameCodec', '$routeParams', '$scope', '$http', '$location',
-function(GameCodec, $routeParams, $scope, $http, $location) {
+game.controller('GameCtrl', ['Game', 'GameCodec', '$routeParams', '$scope', '$http', '$location',
+function(Game, GameCodec, $routeParams, $scope, $http, $location) {
   $http.get('game').success(function(data, status) {
     $scope.authenticated = true;
     var serialisedGame = $routeParams.game;
@@ -152,8 +152,27 @@ function(GameCodec, $routeParams, $scope, $http, $location) {
     else {
       $http.get('game/availablePlayers').success(function(data, status) {
         $scope.players = _.sortBy(data.availablePlayers);
-        $scope.next = function(game) {
+        $scope.instigators = _.sortBy(data.instigators);
+        $scope.next = function(instigator, participants) {
+          var game = new Game(instigator, _.sortBy(participants));
           $location.path("game/" + GameCodec.serialise(game));
+        };
+        var isPlaying = function(player) {
+          return $scope.participants && _($scope.participants).contains(player);
+        };
+        $scope.isPlaying = isPlaying;
+        $scope.toggle = function(player) {
+          if (isPlaying(player)) {
+            _($scope.participants).pull(player);
+          }
+          else {
+            if (!$scope.participants) {
+              $scope.participants = [player];
+            }
+            else {
+              $scope.participants.push(player);
+            }
+          }
         };
       });
     }

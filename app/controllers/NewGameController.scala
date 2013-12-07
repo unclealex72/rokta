@@ -50,8 +50,13 @@ class NewGameController(
   
   def availablePlayers = AuthorisedAjaxAction { implicit request =>
     val players = (tx { playerDao => gameDao => playerDao.allPlayers }).map(_.name)
-    val exemptPlayer = exemptPlayerFactory(todaysGamesFactory())
-    json(Map("availablePlayers" -> exemptPlayer.foldLeft(players){(players, exemptPlayer) => players - exemptPlayer}))
+    val exemptPlayer: Option[String] = exemptPlayerFactory(todaysGamesFactory())
+    json(Map(
+      "availablePlayers" -> (exemptPlayer match {
+        case Some(exemptPlayer) => players - exemptPlayer
+        case None => players
+      }),
+      "instigators" -> players))
   }
   
   def uploadGame = AuthorisedAjaxAction(JsonBodyParser[UploadableGame]) { implicit request => 
