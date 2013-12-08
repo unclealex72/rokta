@@ -12,8 +12,7 @@ function($routeProvider) {
     templateUrl : 'assets/angular/graph/partials/graph.html',
     controller : 'GraphCtrl'
   }).when('/filters/:filter?', {
-    templateUrl : 'assets/angular/filters/partials/filters.html',
-    controller : 'FiltersCtrl'
+    templateUrl : 'assets/angular/filters/partials/filters.html'
   }).when('/headtoheads/:filter?', {
     templateUrl : 'assets/angular/headtoheads/partials/headtoheads.html',
     controller : 'HeadToHeadsCtrl'

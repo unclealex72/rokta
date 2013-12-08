@@ -1,4 +1,4 @@
-var filter = angular.module('rokta.filters', ['rokta.day', 'rokta.events', 'ngRoute']);
+var filter = angular.module('rokta.filters', ['rokta.day', 'rokta.events', 'ngRoute', 'ui.bootstrap']);
 
 filter.directive('roktaDayPicker', ['$timeout', '$filter', function($timeout, $filter) {
   return {

@@ -10,15 +10,18 @@ h1 .day-suffix {
   top: -0.7em;
 }
 
-.exempt {
-  color: red;
-}
-
 .leagueup {
   color: green;
 }
 
 .leaguedown {
+  color: red;
+}
+
+.exempt, .notplaying {
+  font-size: large;
+}
+.exempt {
   color: red;
 }
 
