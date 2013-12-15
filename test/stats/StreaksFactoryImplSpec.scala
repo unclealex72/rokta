@@ -33,24 +33,23 @@ import dates.DaysAndTimes
 import model.Hand
 import scala.collection.SortedMap
 import model.Hand._
+import model.NonPersistedGameDsl
+import model.Player
+
 /**
  * @author alex
  *
  */
-class StreaksFactoryImplSpec extends Specification with DaysAndTimes with IsoChronology {
+class StreaksFactoryImplSpec extends Specification with DaysAndTimes with IsoChronology with NonPersistedGameDsl {
 
   val streaksFactory: StreaksFactoryImpl = new StreaksFactoryImpl
-  val freddie = "Freddie"
-  val roger = "Roger"
-  val brian = "Brian"
-  val john = "John"
     
   "A losing player" should {
     "end their winning streak" in {
       val game = September(5, 2013) at (11 oclock) lostBy(freddie) wonBy(john, roger, brian)
       val winningStreak = 
         Streak(freddie, September(5, 2013) at (9 oclock)) extendTo(September(5, 2013) at (10 oclock))
-      val winningStreaks: Map[String, Streak] = Map(freddie -> winningStreak)
+      val winningStreaks: Map[Player, Streak] = Map(freddie -> winningStreak)
       val streaksStatus = StreaksStatus(winningStreaks, Map.empty, Streaks())
       val newStreaksStatus = streaksFactory.updateStreaksStatusPerParticipant(game)(streaksStatus, freddie)
       newStreaksStatus.winningStreaks must beEmpty
@@ -62,7 +61,7 @@ class StreaksFactoryImplSpec extends Specification with DaysAndTimes with IsoChr
       val game = September(5, 2013) at (11 oclock) lostBy(freddie) wonBy(john, roger, brian)
       val losingStreak = 
         Streak(freddie, September(5, 2013) at (9 oclock)) extendTo(September(5, 2013) at (10 oclock))
-      val losingStreaks: Map[String, Streak] = Map(freddie -> losingStreak)
+      val losingStreaks: Map[Player, Streak] = Map(freddie -> losingStreak)
       val streaksStatus = StreaksStatus(Map.empty, losingStreaks, Streaks())
       val newStreaksStatus = streaksFactory.updateStreaksStatusPerParticipant(game)(streaksStatus, freddie)
       newStreaksStatus.losingStreaks must contain(
@@ -73,7 +72,7 @@ class StreaksFactoryImplSpec extends Specification with DaysAndTimes with IsoChr
       val game = September(5, 2013) at (11 oclock) lostBy(freddie) wonBy(john, roger, brian)
       val winningStreak = 
         Streak(freddie, September(5, 2013) at (9 oclock))
-      val winningStreaks: Map[String, Streak] = Map(freddie -> winningStreak)
+      val winningStreaks: Map[Player, Streak] = Map(freddie -> winningStreak)
       val streaksStatus = StreaksStatus(winningStreaks, Map.empty, Streaks())
       val newStreaksStatus = streaksFactory.updateStreaksStatusPerParticipant(game)(streaksStatus, freddie)
       newStreaksStatus.winningStreaks must beEmpty
@@ -88,7 +87,7 @@ class StreaksFactoryImplSpec extends Specification with DaysAndTimes with IsoChr
       val game = September(5, 2013) at (11 oclock) lostBy(freddie) wonBy(john, roger, brian)
       val losingStreak = 
         Streak(roger, September(5, 2013) at (9 oclock)) extendTo(September(5, 2013) at (10 oclock))
-      val losingStreaks: Map[String, Streak] = Map(roger -> losingStreak)
+      val losingStreaks: Map[Player, Streak] = Map(roger -> losingStreak)
       val streaksStatus = StreaksStatus(Map.empty, losingStreaks, Streaks())
       val newStreaksStatus = streaksFactory.updateStreaksStatusPerParticipant(game)(streaksStatus, roger)
       newStreaksStatus.losingStreaks must beEmpty
@@ -100,7 +99,7 @@ class StreaksFactoryImplSpec extends Specification with DaysAndTimes with IsoChr
       val game = September(5, 2013) at (11 oclock) lostBy(freddie) wonBy(john, roger, brian)
       val winningStreak = 
         Streak(roger, September(5, 2013) at (9 oclock)) extendTo(September(5, 2013) at (10 oclock))
-      val winningStreaks: Map[String, Streak] = Map(roger -> winningStreak)
+      val winningStreaks: Map[Player, Streak] = Map(roger -> winningStreak)
       val streaksStatus = StreaksStatus(winningStreaks, Map.empty, Streaks())
       val newStreaksStatus = streaksFactory.updateStreaksStatusPerParticipant(game)(streaksStatus, roger)
       newStreaksStatus.winningStreaks must contain(
@@ -111,7 +110,7 @@ class StreaksFactoryImplSpec extends Specification with DaysAndTimes with IsoChr
       val game = September(5, 2013) at (11 oclock) lostBy(freddie) wonBy(john, roger, brian)
       val losingStreak = 
         Streak(roger, September(5, 2013) at (9 oclock))
-      val losingStreaks: Map[String, Streak] = Map(roger -> losingStreak)
+      val losingStreaks: Map[Player, Streak] = Map(roger -> losingStreak)
       val streaksStatus = StreaksStatus(Map.empty, losingStreaks, Streaks())
       val newStreaksStatus = streaksFactory.updateStreaksStatusPerParticipant(game)(streaksStatus, roger)
       newStreaksStatus.losingStreaks must beEmpty
@@ -195,11 +194,11 @@ object StreaksFactoryImplSpec {
    * A DSL to create games that are lost by a player.
    */
   implicit class DateTimeImplicits(datePlayed: DateTime) {
-    def lostBy(loser: String) = GameBuilder(datePlayed, loser)
+    def lostBy(loser: Player) = GameBuilder(datePlayed, loser)
   }
 
-  implicit class StringImplicits(player: String) {
-    def streak(dateTime: DateTime, dateTimes: DateTime*): Map[String, Streak] = {
+  implicit class PlayerStreakImplicits(player: Player) {
+    def streak(dateTime: DateTime, dateTimes: DateTime*): Map[Player, Streak] = {
       Map(player -> Streak(player, dateTime, dateTimes: _*))
     }
   }
@@ -208,11 +207,11 @@ object StreaksFactoryImplSpec {
     def +(next: A)(implicit ord: Ordering[A]) = SortedSet(a, next)
   }
     
-  case class GameBuilder(dateGamePlayed: DateTime, _loser: String) {
-    def wonBy(winners: String*): Game = new Game() {
-      val instigator = "Freddie"
+  case class GameBuilder(dateGamePlayed: DateTime, _loser: Player) extends NonPersistedGameDsl {
+    def wonBy(winners: Player*): Game = new Game() {
+      val instigator = freddie
       val datePlayed = dateGamePlayed
-      val round: Map[String, Hand] = 
+      val round: Map[Player, Hand] = 
         winners.foldLeft(Map(_loser -> ROCK.asInstanceOf[Hand]))((plays, player) => plays + (player -> PAPER) )
       val rounds = SortedMap(1 -> round)
     }

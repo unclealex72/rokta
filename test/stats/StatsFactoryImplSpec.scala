@@ -168,7 +168,7 @@ class StatsFactoryImplSpec extends Specification with Mockito
           at(September(5, 2013) at (1 oclock).pm, roger plays PAPER, john plays PAPER).and(
               roger plays PAPER, john plays SCISSORS)
         statsFactory.findTodaysPlayers(Set(gameOne, gameTwo)) must contain(
-          freddie.name, brian.name, roger.name, john.name).exactly
+          freddie, brian, roger, john).exactly
       }
     }    
   }

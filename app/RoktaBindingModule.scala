@@ -27,11 +27,7 @@
  */
 import com.escalatesoft.subcut.inject.NewBindingModule
 import com.escalatesoft.subcut.inject.NewBindingModule._
-import controllers.HomeController
-import controllers.NewGameController
-import controllers.PlayersController
-import controllers.StatsController
-import controllers.StatsController
+import controllers._
 import dao.GameDao
 import dao.PlayerDao
 import dao.SquerylDao
@@ -86,5 +82,6 @@ object RoktaBindingModule extends NewBindingModule(module => {
   bind[StatsController] toModuleSingle { implicit module => new StatsController }
   bind[HomeController] toModuleSingle { implicit module => new HomeController }
   bind[PlayersController] toModuleSingle { implicit module => new PlayersController }
+  bind[ColoursController] toModuleSingle { implicit module => new ColoursController }
   bind[NewGameController] toModuleSingle { implicit module => new NewGameController }
     })

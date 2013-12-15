@@ -23,6 +23,9 @@
 package stats
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import model.Player
+import model.PlayerNameEncodeJson._
+import argonaut._, Argonaut._
 
 /**
  * A row in a Rokta league.
@@ -31,7 +34,7 @@ case class LeagueRow(
   /**
    * The name of the player for whom this row is for.
    */
-  playerName: String,
+  player: Player,
   /**
    * The number of games the player has won.
    */
@@ -49,11 +52,11 @@ case class LeagueRow(
    */
   roundsDuringLosingGames: Int,
   /**
-   * The number of places the player has dropped since the last league 
+   * The number of places the player has dropped since the last league
    * (e.g. 2 means the player has dropped from 1st to 3rd). This will be <code>None</code> if the player did not
    * partake in the previous league.
    */
-  movement: Option[Int], 
+  movement: Option[Int],
   /**
    * True if the player is currently playing today, false otherwise.
    */
@@ -70,54 +73,54 @@ case class LeagueRow(
   /**
    * Create a new league row based on this one but with a new [[#movement]] property
    */
-  def withMovement(newMovement: Int) = 
+  def withMovement(newMovement: Int) =
     LeagueRow(
-      playerName, gamesWon, gamesLost, roundsDuringWinningGames, 
+      player, gamesWon, gamesLost, roundsDuringWinningGames,
       roundsDuringLosingGames, Some(newMovement), currentlyPlaying, exempt, gap)
 
   /**
    * Create a new league row based on this one but with a new [[#currentlyPlaying]] property
    */
-  def withCurrentlyPlaying(newCurrentlyPlaying: Boolean) = 
+  def withCurrentlyPlaying(newCurrentlyPlaying: Boolean) =
     LeagueRow(
-      playerName, gamesWon, gamesLost, roundsDuringWinningGames, 
+      player, gamesWon, gamesLost, roundsDuringWinningGames,
       roundsDuringLosingGames, movement, newCurrentlyPlaying, exempt, gap)
 
   /**
    * Create a new league row based on this one but with a new [[#exempt]] property
    */
-  def withExempt(newExempt: Boolean) = 
+  def withExempt(newExempt: Boolean) =
     LeagueRow(
-      playerName, gamesWon, gamesLost, roundsDuringWinningGames, 
+      player, gamesWon, gamesLost, roundsDuringWinningGames,
       roundsDuringLosingGames, movement, currentlyPlaying, newExempt, gap)
 
-      /**
+  /**
    * Create a new league row based on this one but with a new [[#gap]] property
    */
-  def withGap(newGap: Int) = 
+  def withGap(newGap: Int) =
     LeagueRow(
-      playerName, gamesWon, gamesLost, roundsDuringWinningGames, 
+      player, gamesWon, gamesLost, roundsDuringWinningGames,
       roundsDuringLosingGames, movement, currentlyPlaying, exempt, Some(newGap))
-      
+
   /**
    * The total number of games played.
    */
   @JsonIgnore
   lazy val gamesPlayed: Int = gamesWon + gamesLost
 }
-  
+
 object LeagueRow {
-  
+
   /**
    * Create a new [[LeagueRow]] without no gap information and with every player not moving.
    */
   def apply(
-  playerName: String,
-  gamesWon: Int,
-  gamesLost: Int,
-  roundsDuringWinningGames: Int,
-  roundsDuringLosingGames: Int): LeagueRow = LeagueRow(
-      playerName, gamesWon, gamesLost, roundsDuringWinningGames, roundsDuringLosingGames, None, false, false, None)
+    player: Player,
+    gamesWon: Int,
+    gamesLost: Int,
+    roundsDuringWinningGames: Int,
+    roundsDuringLosingGames: Int): LeagueRow = LeagueRow(
+    player, gamesWon, gamesLost, roundsDuringWinningGames, roundsDuringLosingGames, None, false, false, None)
 
   /**
    * A class that represents fractions.
@@ -131,11 +134,10 @@ object LeagueRow {
       f1.numerator * f2.denominator - f2.numerator * f1.denominator
     }
   }
-  
+
   implicit class IntImplicit(numerator: Int) {
     def over(denominator: Int) = Fraction(numerator, denominator)
   }
-  
 
   /**
    * Define the ordering on [[LeagueRow]]s. The ordering is defined using the following steps:
@@ -146,7 +148,7 @@ object LeagueRow {
    *  <li>rows with more games played are less than rows with less games played,</li>
    *  <li>rows are then compared by player name.
    * </ol>
-   * 
+   *
    * Note that <em>less than</em> means earlier in the league and thus being less than is better.
    */
   implicit val leagueRowOrdering = {
@@ -154,9 +156,19 @@ object LeagueRow {
     val winningRoundOrdering = (lr: LeagueRow) => lr.roundsDuringWinningGames over lr.gamesWon
     val losingRoundOrdering = (lr: LeagueRow) => -lr.roundsDuringLosingGames over lr.gamesLost
     val gamesPlayedOrdering = (lr: LeagueRow) => -lr.gamesPlayed
-    val playerNameOrdering = (lr: LeagueRow) => lr.playerName
-    Ordering.by{ (lr: LeagueRow) => 
+    val playerNameOrdering = (lr: LeagueRow) => lr.player.name
+    Ordering.by { (lr: LeagueRow) =>
       (lossOrdering(lr), winningRoundOrdering(lr), losingRoundOrdering(lr), gamesPlayedOrdering(lr), playerNameOrdering(lr))
     }
   }
+
+  /**
+   * JSON serialisation
+   */
+  implicit val leagueRowEncodeJson: EncodeJson[LeagueRow] =
+    jencode9L((lr: LeagueRow) =>
+      (lr.player, lr.gamesWon, lr.gamesLost, lr.roundsDuringWinningGames, lr.roundsDuringLosingGames,
+        lr.movement, lr.currentlyPlaying, lr.exempt, lr.gap))(
+      "player", "gamesWon", "gamesLost", "roundsDuringWinningGames", "roundsDuringLosingGames",
+      "movement", "currentlyPlaying", "exempt", "gap")
 }

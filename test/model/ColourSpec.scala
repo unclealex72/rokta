@@ -26,6 +26,7 @@ import org.specs2.mutable.Specification
 import model.ColourGroup._
 import model.Darkness._
 import model.Colour._
+import argonaut._, Argonaut._, DecodeResult._
 
 /**
  * @author alex
@@ -133,4 +134,17 @@ class ColourSpec extends Specification {
     }
   }
 
+  "A dark colour" should {
+    "serialise with 'dark' as true" in {
+      GRAY.asJson.toString must be equalTo(
+        """{"rgb":"#808080","name":["gray"],"dark":true,"token":"GRAY","htmlName":"Gray","group":"Greys"}""")
+    }
+  }
+
+  "A light colour" should {
+    "serialise with 'dark' as false" in {
+      WHITE.asJson.toString must be equalTo(
+        """{"rgb":"#FFFFFF","name":["white"],"dark":false,"token":"WHITE","htmlName":"White","group":"Whites"}""")
+    }
+  }
 }

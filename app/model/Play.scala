@@ -28,6 +28,7 @@ import org.squeryl.dsl.ManyToOne
 import org.squeryl.dsl.StatefulManyToOne
 import dao.RoktaSchema
 import org.squeryl.annotations.Column
+import model.Hand._
 
 /**
  * A [[Hand]] played by a [[Person]] during a [[Round]] of a [[Game]].
@@ -57,8 +58,10 @@ case class Play (
   /**
    * Get the hand played in this play.
    */
-  lazy val hand: Hand = Hand(_hand).getOrElse({
-    throw new IllegalStateException(s"${_hand} is not a valid hand.")})
+  lazy val hand: Hand = _hand match {
+    case Hand(hand) => hand
+    case _ => throw new IllegalStateException(s"${_hand} is not a valid hand.")
+  } 
   
   /**
    * The persisted player of this hand. 

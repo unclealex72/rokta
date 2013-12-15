@@ -20,28 +20,32 @@
  *
  */
 
-package stats
+package model
 
-import scala.collection.SortedMap
-
-import org.joda.time.DateTime
-
-import model.Game
-import model.Player
+import org.specs2.mutable.Specification
+import model.Colour._
+import model.PlayerFullEncodeJson._
+import json.JsonMatchers
 
 /**
- * A trait to generate [[Snapshot]]s from [[Game]]s. [[Snapshot]]s are used to both plot player graphs and
- * to generate [[League]]s.
  * @author alex
  *
  */
-trait SnapshotsFactory {
+class PlayerSpec extends Specification with JsonMatchers {
 
-  /**
-   * Calculate all the snapshots for each player.
-   * @param games The games to create snapshots for.
-   * @return A map of snapshots for each player by the date and time of the game played
-   * that brought the snapshot into existence.
-   */
-  def apply(games: Iterable[Game]): SortedMap[DateTime, Map[Player, Snapshot]]
+  "A player with no email" should {
+    "serialise to an object with two fields." in {
+      SimplePlayer("Freddie", None, BLACK) must serialiseTo(
+          """{"name":"Freddie","email":null,"colour":"BLACK"}""")
+    }
+  }
+  
+  "A player with an email" should {
+    "serialise to an object with three fields." in {
+      SimplePlayer("Freddie", Some("freddie@queen.com"), BLACK) must serialiseTo(
+          """{"name":"Freddie","email":"freddie@queen.com","colour":"BLACK"}""")
+    }
+  }
+  
+  case class SimplePlayer(name: String, email: Option[String], colour: Colour) extends Player
 }

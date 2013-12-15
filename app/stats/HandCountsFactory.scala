@@ -23,6 +23,7 @@
 package stats
 
 import model.Game
+import model.Player
 
 /**
  * A factory used to count all the hands played in a list of games.
@@ -34,5 +35,5 @@ trait HandCountsFactory {
   /**
    * Count all the hands for each player in a list of games.
    */
-  def apply(games: Iterable[Game]): Map[String, HandCount]
+  def apply(games: Iterable[Game]): Map[Player, HandCount]
 }

@@ -22,6 +22,9 @@
 
 package model
 
+import argonaut.CodecJson
+import argonaut.EncodeJson
+
 /**
  * A hand played in a game of rock, scissors paper.
  * @author alex
@@ -72,4 +75,11 @@ object Hand extends PersistableEnumeration[Hand] {
     def beats(otherHand: Hand): Boolean = otherHand == ROCK    
   }
   PAPER
+
+  /**
+   * JSON
+   */
+  implicit val jsonField = defaultJsonField
+  implicit val handJsonEncoder = defaultJsonEncoder
+  implicit val handJsonDecoder = defaultJsonDecoder
 }

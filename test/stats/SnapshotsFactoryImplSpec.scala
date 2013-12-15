@@ -22,18 +22,19 @@
 
 package stats
 
-import org.specs2.mutable.Specification
-import dates.DaysAndTimes
-import model.Game
-import model.Player
 import scala.collection.SortedMap
+
 import org.joda.time.DateTime
-import model.JodaDateTime._
-import stats.Snapshot._
-import scala.collection.SortedSet
+import org.specs2.mutable.Specification
+
+import dates.DaysAndTimes
 import dates.IsoChronology
-import model.NonPersistedGameDsl
+import model.Game
 import model.Hand._
+import model.JodaDateTime._
+import model.NonPersistedGameDsl
+import model.Player
+import stats.Snapshot._
 /**
  * @author alex
  *
@@ -49,15 +50,15 @@ class SnapshotsFactoryImplSpec extends Specification with DaysAndTimes with IsoC
     
     val startingPoint = SnapshotCumulation()
     "record their wins if they win" in {
-      val newCumulation = snapshotsFactory.addToSnapshot(game)(startingPoint, roger.name)
+      val newCumulation = snapshotsFactory.addToSnapshot(game)(startingPoint, roger)
       val newSnapshot = newCumulation.cumulativeSnapshot
-      newSnapshot.toSeq must contain(exactly(roger.name -> win(2)))
+      newSnapshot.toSeq must contain(exactly(roger -> win(2)))
       newCumulation.historicalSnapshots.toSeq must be empty
     }
     "record their losses if they lose" in {
-      val newCumulation = snapshotsFactory.addToSnapshot(game)(startingPoint, freddie.name)
+      val newCumulation = snapshotsFactory.addToSnapshot(game)(startingPoint, freddie)
       val newSnapshot = newCumulation.cumulativeSnapshot
-      newSnapshot.toSeq must contain(exactly(freddie.name -> lose(3)))
+      newSnapshot.toSeq must contain(exactly(freddie -> lose(3)))
       newCumulation.historicalSnapshots.toSeq must be empty
     }
   }
@@ -69,29 +70,29 @@ class SnapshotsFactoryImplSpec extends Specification with DaysAndTimes with IsoC
     
     val startingPoint = SnapshotCumulation(
       Map(freddie -> win(1), roger -> lose(3), brian -> win(4)), 
-      SortedMap.empty[DateTime, Map[String, Snapshot]])
+      SortedMap.empty[DateTime, Map[Player, Snapshot]])
     "update their wins if they win" in {
-      val newCumulation = snapshotsFactory.addToSnapshot(game)(startingPoint, roger.name)
+      val newCumulation = snapshotsFactory.addToSnapshot(game)(startingPoint, roger)
       val newSnapshot = newCumulation.cumulativeSnapshot
       newSnapshot.toSeq must contain(exactly(
-          freddie.name -> win(1),
-          roger.name -> lose(3).win(2),
-          brian.name -> win(4)))
+          freddie -> win(1),
+          roger -> lose(3).win(2),
+          brian -> win(4)))
       newCumulation.historicalSnapshots.toSeq must be empty
     }
     "record their losses if they lose" in {
-      val newCumulation = snapshotsFactory.addToSnapshot(game)(startingPoint, freddie.name)
+      val newCumulation = snapshotsFactory.addToSnapshot(game)(startingPoint, freddie)
       val newSnapshot = newCumulation.cumulativeSnapshot
       newSnapshot.toSeq must contain(exactly(
-          freddie.name -> win(1).lose(3),
-          roger.name -> lose(3),
-          brian.name -> win(4)))
+          freddie -> win(1).lose(3),
+          roger -> lose(3),
+          brian -> win(4)))
       newCumulation.historicalSnapshots.toSeq must be empty
     }
   }
   
   "Adding a game to a snapshot" should {
-    val previousSnapshot: Map[String, Snapshot] = 
+    val previousSnapshot: Map[Player, Snapshot] = 
       Map(freddie -> win(2), brian -> lose(3), roger -> lose(4))
     val startingPoint = SnapshotCumulation(
       previousSnapshot, 
@@ -102,7 +103,7 @@ class SnapshotsFactoryImplSpec extends Specification with DaysAndTimes with IsoC
         freddie plays SCISSORS, brian plays ROCK)
     
     
-    val expectedSnapshot: Map[String, Snapshot] =
+    val expectedSnapshot: Map[Player, Snapshot] =
       Map(freddie -> win(2).lose(3), brian -> lose(3).win(3), roger -> lose(4), john -> win(2))
     val newCumulation = snapshotsFactory.accumulateSnapshots(startingPoint, game)
     "Add the game data to the latest cumulation" in {
@@ -126,11 +127,11 @@ class SnapshotsFactoryImplSpec extends Specification with DaysAndTimes with IsoC
       at(timeB, brian plays ROCK, roger plays ROCK) and (brian plays PAPER, roger plays SCISSORS)
     val gameC: Game = //freddie losesAt timeC whilst (brian plays 1) and (roger plays 2)
       at(timeC, freddie plays ROCK, roger plays ROCK, brian plays SCISSORS) and (roger plays ROCK, freddie plays SCISSORS)
-    val snapshotA: Map[String, Snapshot] = Map(freddie -> lose(4), brian -> win(3), roger -> win(4))
-    val snapshotAB: Map[String, Snapshot] = Map(freddie -> lose(4), brian -> win(3).lose(2), roger -> win(4).win(2))
-    val snapshotABC: Map[String, Snapshot] = 
+    val snapshotA: Map[Player, Snapshot] = Map(freddie -> lose(4), brian -> win(3), roger -> win(4))
+    val snapshotAB: Map[Player, Snapshot] = Map(freddie -> lose(4), brian -> win(3).lose(2), roger -> win(4).win(2))
+    val snapshotABC: Map[Player, Snapshot] = 
       Map(freddie -> lose(4).lose(2), brian -> win(3).lose(2).win(1), roger -> win(4).win(2).win(2))
-    val snapshots: IndexedSeq[Pair[DateTime, Map[String, Snapshot]]] = 
+    val snapshots: IndexedSeq[Pair[DateTime, Map[Player, Snapshot]]] = 
       snapshotsFactory(Seq(gameA, gameB, gameC)).toIndexedSeq
     "record three snapshots" in {
       snapshots must have size(3)
@@ -147,5 +148,5 @@ class SnapshotsFactoryImplSpec extends Specification with DaysAndTimes with IsoC
   }
   
   implicit def toNameAndSnapshot(playerAndSnapshot: Pair[Player, Snapshot]): Pair[String, Snapshot] =
-    playerAndSnapshot._1.name -> playerAndSnapshot._2
+    playerAndSnapshot._1 -> playerAndSnapshot._2
 }

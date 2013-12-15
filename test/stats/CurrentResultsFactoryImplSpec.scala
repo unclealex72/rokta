@@ -56,9 +56,9 @@ class CurrentResultsFactoryImplSpec extends Specification
       val thisAfternoon = //john losesAt (September(5, 2013) at (3 oclock).pm) and (roger plays 3)
         at(September(5, 2013) at (3 oclock).pm, john plays SCISSORS, roger plays ROCK)
       currentResultsFactory(Seq(yesterday, thisMorning, thisAfternoon)) must contain(
-        roger.name -> CurrentResults(2, 0),
-        brian.name -> CurrentResults(0, 1),
-        john.name -> CurrentResults(1, 1)
+        roger -> CurrentResults(2, 0),
+        brian -> CurrentResults(0, 1),
+        john -> CurrentResults(1, 1)
       ).exactly
     }
   } 

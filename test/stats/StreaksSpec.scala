@@ -23,11 +23,11 @@
 package stats
 
 import org.specs2.mutable.Specification
-import json.JsonSpec
+import json.JsonMatchers
 import dates.DaysAndTimes
 import play.api.libs.json.Json._
-
 import scala.collection.SortedSet
+import model.NonPersistedGameDsl
 /**
  * Tests for deserialising [[Streaks]].
  * @author alex
@@ -35,39 +35,39 @@ import scala.collection.SortedSet
  */
 case class Quickie(value: Boolean, values: Set[String])
 
-class StreaksSpec extends Specification with JsonSpec with DaysAndTimes {
+class StreaksSpec extends Specification with JsonMatchers with DaysAndTimes with NonPersistedGameDsl {
 
   "Deserialising a streaks JSON object" should {
     "produce the correct streaks object" in {
       val winningStreaks = 
         SortedSet(
-          Streak("freddie", January(1, 2013) at (5 oclock).pm) extendTo(January(2, 2013) at midday),
-          Streak("brian", January(3, 2013) at (2 oclock).pm) extendTo(January(3, 2013) at (1 oclock).pm))
+          Streak(freddie, January(1, 2013) at (5 oclock).pm) extendTo(January(2, 2013) at midday),
+          Streak(brian, January(3, 2013) at (2 oclock).pm) extendTo(January(3, 2013) at (1 oclock).pm))
       val losingStreaks = 
         SortedSet(
-          Streak("roger", January(3, 2013) at (5 oclock).pm) extendTo(January(5, 2013) at midday) makeCurrent,
-          Streak("brian", January(1, 2013) at (2 oclock).pm) extendTo(January(2, 2013) at (1 oclock).pm))
+          Streak(roger, January(3, 2013) at (5 oclock).pm) extendTo(January(5, 2013) at midday) makeCurrent,
+          Streak(brian, January(1, 2013) at (2 oclock).pm) extendTo(January(2, 2013) at (1 oclock).pm))
       val streaks = Streaks(winningStreaks, losingStreaks)
       streaks must serialiseTo(
         obj(
           "winningStreaks" ->
             arr(
               obj(
-                "playerName" -> "brian",
+                "player" -> brian.name,
                 "dateTimes" -> arr("2013-01-03T13:00:00.000Z", "2013-01-03T14:00:00.000Z"),
                 "current" -> false), 
               obj(
-                "playerName" -> "freddie",
+                "player" -> freddie.name,
                 "dateTimes" -> arr("2013-01-01T17:00:00.000Z", "2013-01-02T12:00:00.000Z"),
                 "current" -> false)),
           "losingStreaks" -> 
             arr(
               obj(
-                "playerName" -> "roger",
+                "player" -> roger.name,
                 "dateTimes" -> arr("2013-01-03T17:00:00.000Z", "2013-01-05T12:00:00.000Z"),
                 "current" -> true), 
               obj(
-                "playerName" -> "brian",
+                "player" -> brian.name,
                 "dateTimes" -> arr("2013-01-01T14:00:00.000Z", "2013-01-02T13:00:00.000Z"),
                 "current" -> false))))
     }

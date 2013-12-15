@@ -26,9 +26,17 @@ import scala.collection.SortedSet
 import scala.collection.SortedMap
 import org.joda.time.DateTime
 import model.Player
+import model.PlayerNameEncodeJson._
 import filter.ContiguousGameFilter
-import filter.ContiguousGameFilter
+import filter.ContiguousGameFilter._
+import stats.CurrentResults._
+import stats.LeagueRow._
 import model.Game
+import argonaut._, Argonaut._
+import json.Json._
+import dates.DateTimeJsonCodec._
+import stats.Snapshot._
+import stats.HandCount._
 
 /**
  * An immutable collection of all current stats.
@@ -47,7 +55,7 @@ case class Stats[G <: Game](
   /**
    * The current results for today, if any.
    */
-  currentResults: Map[String, CurrentResults],
+  currentResults: Map[Player, CurrentResults],
   /**
    * The full league.
    */
@@ -55,15 +63,15 @@ case class Stats[G <: Game](
   /**
    * All the snapshots for each game and player.
    */
-  snapshots: SortedMap[DateTime, Map[String, Snapshot]],
+  snapshots: SortedMap[DateTime, Map[Player, Snapshot]],
   /**
    * The results of all head-to-head duels.
    */
-  headToHeads: Map[String, Map[String, Int]],
+  headToHeads: Map[Player, Map[Player, Int]],
   /**
    * The count of hands played for each player.
    */
-  handCounts: Map[String, HandCount],
+  handCounts: Map[Player, HandCount],
   /**
    * All winning and losing streaks.
    */
@@ -71,7 +79,7 @@ case class Stats[G <: Game](
   /**
    * The currently exempt player, on none if no games have been played today.
    */
-  exemptPlayer: Option[String],
+  exemptPlayer: Option[Player],
   /**
    * The last game that was played if these Stats are current, None otherwise.
    */
@@ -81,3 +89,14 @@ case class Stats[G <: Game](
    */
   numberOfGamesToday: Int
 )
+
+object Stats {
+  
+  implicit def statsEncodeJson[G <: Game]: EncodeJson[Stats[G]] =
+    jencode11L((s: Stats[G]) => 
+      (s.contiguousGameFilter, s.current, s.currentResults, s.league, s.snapshots.toList, s.headToHeads,
+       s.handCounts, s.streaks, s.exemptPlayer, s.lastGame, s.numberOfGamesToday))(
+      "contiguousGameFilter", "current", "currentResults", "league", "snapshots", "headToHeads", 
+       "handCounts", "streaks", "exemptPlayer", "lastGame", "numberOfGamesToday")
+}
+

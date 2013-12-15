@@ -23,6 +23,9 @@
 package stats
 
 import model.Hand
+import model.Hand._
+import argonaut._, Argonaut._, DecodeResult._
+import json.Json._
 
 /**
  * A class to hold the counts of hands played for a player.
@@ -62,4 +65,11 @@ object HandCount {
    * Create an empty [[HandCount]]
    */
   def apply() : HandCount = new HandCount(Map.empty[Hand, Int], Map.empty[Hand, Int])
+  
+  /**
+   * JSON serialisation
+   */
+  implicit val handCountJsonEncode: EncodeJson[HandCount] = EncodeJson { (hc: HandCount) =>
+    ("countsForFirstRounds" := hc.countsForFirstRounds) ->: ("countsForAllRounds" := hc.countsForAllRounds) ->: jEmptyObject
+  }
 }

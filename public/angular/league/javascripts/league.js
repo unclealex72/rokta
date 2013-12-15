@@ -90,7 +90,7 @@ league.service('StreaksGrouper', function() {
     group : function(streaks) {
       var sizedStreaks = _.map(streaks, function(streak) {
         return {
-          "name" : streak.playerName,
+          "player" : streak.player,
           "size" : streak.dateTimes.length
         };
       });
@@ -99,7 +99,7 @@ league.service('StreaksGrouper', function() {
       sizedStreaksBySize.forIn(function(value, key) {
         namesBySize.push({
           "size" : key,
-          "names" : _.map(value, "name")
+          "players" : _.map(value, 'player')
         });
       });
       return _.sortBy(namesBySize, function(v) {

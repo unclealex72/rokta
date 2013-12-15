@@ -23,6 +23,7 @@
 package stats
 
 import model.Game
+import model.Player
 
 /**
  * A factory to determine who is currently exempt.
@@ -36,5 +37,5 @@ trait ExemptPlayerFactory {
    * @param todaysGames The games that have been played today.
    * @return The name of the exempt player or none if no-one is exempt.
    */
-  def apply(todaysGames: Iterable[Game]) : Option[String]
+  def apply(todaysGames: Iterable[Game]) : Option[Player]
 }

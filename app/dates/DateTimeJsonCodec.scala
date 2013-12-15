@@ -20,41 +20,37 @@
  *
  */
 
-package stats
+package dates
 
+import org.joda.time.format.ISODateTimeFormat
 import argonaut._, Argonaut._, DecodeResult._
+import org.joda.time.DateTime
 
 /**
- * An object used to keep track of the number of games a player has won and lost (and thus played) during one day.
+ * Serialisation and deserialisation into ISO 8601 UTC strings.
  * @author alex
  *
  */
-case class CurrentResults(
-  /**
-   * The number of games the player has won.
-   */  
-  val gamesWon: Int = 0, 
-  /**
-   * The number of games the player has lost.
-   */
-  val gamesLost: Int = 0) {
-  
-  /**
-   * Create a new [[CurrentResults]] with an extra win.
-   */
-  def withWin: CurrentResults = CurrentResults(gamesWon + 1, gamesLost)
+object DateTimeJsonCodec {
 
-  /**
-   * Create a new [[CurrentResults]] with an extra loss.
-   */
-  def withLoss: CurrentResults = CurrentResults(gamesWon, gamesLost + 1)
-}
-
-object CurrentResults {
+  private val formatter = ISODateTimeFormat.dateTime
   
-  /**
-   * Json Serialisation
-   */
-  implicit val CurrentResultsEncodeJson: EncodeJson[CurrentResults] = 
-    jencode2L((cr: CurrentResults) => (cr.gamesWon, cr.gamesLost))("gamesWon", "gamesLost")
+  implicit def dateTimeJsonField: DateTime => JsonField = formatter.print
+  
+  implicit val DateTimeJsonCodec: CodecJson[DateTime] = CodecJson(
+    dt => jString(dt),
+    c => c.focus.string match {
+      case Some(str) => {
+        try {
+          ok(formatter.parseDateTime(str))
+        }
+        catch {
+          case e: IllegalArgumentException => fail(e.getMessage, c.history)
+        }
+      }
+     case None => fail("Expected a string for a date time.", c.history)
+    }
+  )
+  
+  
 }

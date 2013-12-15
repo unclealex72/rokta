@@ -24,6 +24,7 @@ package stats
 
 import model.Game
 import model.Hand
+import model.Player
 
 /**
  * The default implementation of [[HandCountsFactory]]
@@ -32,20 +33,20 @@ import model.Hand
  */
 class HandCountsFactoryImpl extends HandCountsFactory {
 
-  def apply(games: Iterable[Game]): Map[String, HandCount] = {
-    games.foldLeft(Map.empty[String, HandCount])(countHandsForGame)
+  def apply(games: Iterable[Game]): Map[Player, HandCount] = {
+    games.foldLeft(Map.empty[Player, HandCount])(countHandsForGame)
   }
   
-  def countHandsForGame = { (handCounts: Map[String, HandCount], game: Game) => 
+  def countHandsForGame = { (handCounts: Map[Player, HandCount], game: Game) => 
     game.rounds.foldLeft(handCounts)(countHandsForRound)
   }
   
-  def countHandsForRound = { (handCounts: Map[String, HandCount], round: Pair[Int, Map[String, Hand]]) => 
+  def countHandsForRound = { (handCounts: Map[Player, HandCount], round: Pair[Int, Map[Player, Hand]]) => 
     val roundNumber = round._1
     round._2.foldLeft(handCounts)(countHandsForPlay(roundNumber))
   }
   
-  def countHandsForPlay = { roundNumber: Int => (handCounts: Map[String, HandCount], play: Pair[String, Hand]) =>
+  def countHandsForPlay = { roundNumber: Int => (handCounts: Map[Player, HandCount], play: Pair[Player, Hand]) =>
     val playerName = play._1
     val hand = play._2
     val handCountForPlayer = handCounts.getOrElse(playerName, HandCount())

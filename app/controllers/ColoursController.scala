@@ -19,29 +19,26 @@
  * under the License.
  *
  */
+package controllers
 
-package stats
-
-import scala.collection.SortedMap
-
+import play.api.mvc.Action
+import json.JsonResults
+import model.Colour
+import com.escalatesoft.subcut.inject._
+import dates.Now
 import org.joda.time.DateTime
 
-import model.Game
-import model.Player
-
 /**
- * A trait to generate [[Snapshot]]s from [[Game]]s. [[Snapshot]]s are used to both plot player graphs and
- * to generate [[League]]s.
- * @author alex
- *
+ * Present all known colours to the client.
  */
-trait SnapshotsFactory {
+class ColoursController(_now: Option[Now] = injected) extends Etag with JsonResults with AutoInjectable {
 
   /**
-   * Calculate all the snapshots for each player.
-   * @param games The games to create snapshots for.
-   * @return A map of snapshots for each player by the date and time of the game played
-   * that brought the snapshot into existence.
+   * Treat the colours as constant from installation time.
    */
-  def apply(games: Iterable[Game]): SortedMap[DateTime, Map[Player, Snapshot]]
+  val nowEtag: String = injectIfMissing(_now).apply().toString
+
+  def colours = ETag(nowEtag) {
+    Action { request => json(Map("colours" -> Colour.values)) }
+  }
 }

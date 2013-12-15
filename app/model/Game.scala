@@ -25,6 +25,10 @@ package model
 import org.joda.time.DateTime
 import model.JodaDateTime._
 import scala.collection.SortedMap
+import argonaut._, Argonaut._, DecodeResult._
+import json.Json._
+import dates.DateTimeJsonCodec._
+import model.PlayerNameEncodeJson._
 
 /**
  * A trait for [[PersistedGame]] that allows other components to be tested without having to set up a database.
@@ -41,7 +45,7 @@ trait Game extends Ordered[Game] {
   /**
    * The person who lost the game if it is finished or None otherwise.
    */
-  lazy val loser: Option[String] = rounds.lastOption.map(_._2).flatMap{ plays =>
+  lazy val loser: Option[Player] = rounds.lastOption.map(_._2).flatMap{ plays =>
     val hands = plays.values.toSet
     hands.size match {
       case 2 =>
@@ -62,18 +66,18 @@ trait Game extends Ordered[Game] {
   /**
    * The player who instigated this game.
    */
-  def instigator: String
+  def instigator: Player
   
   /**
    * The original participants.
    */
-  lazy val participants: Set[String] = roundsPlayed.keySet
+  lazy val participants: Set[Player] = roundsPlayed.keySet
   
   /**
    * The number of rounds each player played.
    */
-  lazy val roundsPlayed: Map[String, Int] = 
-    rounds.values.foldLeft(Map.empty[String, Int]){ (roundsPlayed, plays) => 
+  lazy val roundsPlayed: Map[Player, Int] = 
+    rounds.values.foldLeft(Map.empty[Player, Int]){ (roundsPlayed, plays) => 
       plays.keys.foldLeft(roundsPlayed){ (roundsPlayed, player) =>
         roundsPlayed + (player -> (1 + roundsPlayed.get(player).getOrElse(0)))
       }
@@ -82,10 +86,21 @@ trait Game extends Ordered[Game] {
   /**
    * The actual hands played during the game.
    */
-  def rounds: SortedMap[Int, Map[String, Hand]]
+  def rounds: SortedMap[Int, Map[Player, Hand]]
   
   /**
    * Games are ordered by the date and time they were played.
    */
   def compare(g: Game): Int = datePlayed.compareTo(g.datePlayed)
+}
+
+object Game {
+  
+  implicit val intJsonField = (i: Int) => i.toString
+  /**
+   * JSON Serialisation
+   */
+  implicit val gameEncodeJson: EncodeJson[Game] =
+    jencode7L((g: Game) => (g.datePlayed, g.instigator, g.loser, g.participants, g.numberOfRounds, g.rounds.toList, g.roundsPlayed.toList))(
+      "datePlayed", "instigator", "loser", "participants", "numberOfRounds", "rounds", "roundsPlayed")
 }

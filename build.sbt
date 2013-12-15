@@ -12,10 +12,7 @@ libraryDependencies ++= Seq(
   "com.escalatesoft.subcut" %% "subcut" % "2.0",
   "securesocial" %% "securesocial" % "2.1.2",
   // JSON
-  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.2.3",
-  "com.fasterxml.jackson.core" % "jackson-annotations" % "2.2.3",
-  "com.fasterxml.jackson.core" % "jackson-databind" % "2.2.3",
-  "com.fasterxml.jackson.datatype" % "jackson-datatype-joda" % "2.2.3",
+  "io.argonaut" %% "argonaut" % "6.0.1",
   jdbc,
   cache,
   "org.mockito" % "mockito-core" % "1.9.5" % "test",

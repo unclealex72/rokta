@@ -23,10 +23,9 @@
 package stats
 
 import scala.collection.SortedSet
-
 import org.joda.time.DateTime
-
 import model.Game
+import model.Player
 /**
  * @author alex
  *
@@ -89,15 +88,15 @@ class StreaksFactoryImpl extends StreaksFactory {
   /**
    * Update the status of the streaks with the results of a game for a player.
    */
-  def updateStreaksStatusPerParticipant: Game => (StreaksStatus, String) => StreaksStatus = {
+  def updateStreaksStatusPerParticipant: Game => (StreaksStatus, Player) => StreaksStatus = {
     game =>
       (streaksStatus, player) =>
         val (sameStreaks, oppositeStreaks, addStreak, streaksOrdering) = if (Some(player) == game.loser) {
-          val swap = (pair: Pair[Map[String, Streak], Map[String, Streak]]) => (pair._2, pair._1)
+          val swap = (pair: Pair[Map[Player, Streak], Map[Player, Streak]]) => (pair._2, pair._1)
           (streaksStatus.losingStreaks, streaksStatus.winningStreaks, addWinningStreak, swap)
         }
         else {
-          val dontswap = (pair: Pair[Map[String, Streak], Map[String, Streak]]) => pair
+          val dontswap = (pair: Pair[Map[Player, Streak], Map[Player, Streak]]) => pair
           (streaksStatus.winningStreaks, streaksStatus.losingStreaks, addLosingStreak, dontswap)
         }
         updateStreaksForWinnerOrLoser(
@@ -109,10 +108,10 @@ class StreaksFactoryImpl extends StreaksFactory {
    * The required streaks and function to add a streak are supplied.
    */
   def updateStreaksForWinnerOrLoser(
-    streaksStatus: StreaksStatus, player: String, game: Game,
-    sameStreaks: Map[String, Streak], oppositeStreaks: Map[String, Streak],
+    streaksStatus: StreaksStatus, player: Player, game: Game,
+    sameStreaks: Map[Player, Streak], oppositeStreaks: Map[Player, Streak],
     addStreak: Streaks => Streak => Streaks,
-    streaksOrdering: Pair[Map[String, Streak], Map[String, Streak]] => Pair[Map[String, Streak], Map[String, Streak]]) = {
+    streaksOrdering: Pair[Map[Player, Streak], Map[Player, Streak]] => Pair[Map[Player, Streak], Map[Player, Streak]]) = {
     // If the winner/loser has a current winning/losing streak we add to that.
     // If the winner/loser has a current losing/winning streak we cancel that and, if it is a candidate to be a streak, 
     // add it to the streaks.
@@ -123,7 +122,7 @@ class StreaksFactoryImpl extends StreaksFactory {
       case _ => sameStreaks + (player -> Streak(player, game.datePlayed))
     }
     val playersCurrentOppositeStreak = oppositeStreaks.get(player)
-    val (newOppositeStreaks, newStreaks): (Map[String, Streak], Streaks) = playersCurrentOppositeStreak match {
+    val (newOppositeStreaks, newStreaks): (Map[Player, Streak], Streaks) = playersCurrentOppositeStreak match {
       case Some(oppositeStreak) => {
         val newOppositeStreaks = oppositeStreaks - player
         val newStreaks =
@@ -141,8 +140,8 @@ class StreaksFactoryImpl extends StreaksFactory {
  * A snapshot of historical winning and losing streaks along with any current streaks at a given time.
  */
 case class StreaksStatus(
-  winningStreaks: Map[String, Streak],
-  losingStreaks: Map[String, Streak],
+  winningStreaks: Map[Player, Streak],
+  losingStreaks: Map[Player, Streak],
   streaks: Streaks)
 
 object StreaksStatus {

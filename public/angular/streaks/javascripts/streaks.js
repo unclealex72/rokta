@@ -19,7 +19,7 @@ function(Events, Stats) {
           var streakView = {
             index : index,
             size : streakSize,
-            name : streak.playerName,
+            player : streak.player,
             from : _.first(streak.dateTimes),
             to : _.last(streak.dateTimes)
           };

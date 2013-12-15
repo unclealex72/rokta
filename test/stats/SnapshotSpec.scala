@@ -23,7 +23,7 @@
 package stats
 
 import org.specs2.mutable.Specification
-import json.JsonSpec
+import json.JsonMatchers
 import play.api.libs.json.Json._
 import dates.DaysAndTimes
 import scala.collection.SortedMap
@@ -33,12 +33,15 @@ import model.NonPersistedGameDsl
 import stats.Snapshot._
 import org.joda.time.DateTime
 import play.api.libs.json.Json._
+import stats.Snapshot._
+import json.Json._
+import dates.DateTimeJsonCodec._
 
 /**
  * @author alex
  *
  */
-class SnapshotsSpec extends Specification with JsonSpec with DaysAndTimes with NonPersistedGameDsl {
+class SnapshotSpec extends Specification with JsonMatchers with DaysAndTimes with NonPersistedGameDsl {
 
   "Serialising snapshots" should {
     "create the correct JSON" in {
@@ -51,20 +54,22 @@ class SnapshotsSpec extends Specification with JsonSpec with DaysAndTimes with N
       val snapshots: SortedMap[DateTime, Map[String, Snapshot]] = SortedMap(
         (February(5, 2013) at (5 oclock).pm) -> snapshots_one,
         (February(6, 2013) at (11 oclock)) -> snapshots_two)
-      snapshots must serialiseTo(
-        obj(
-          "2013-02-05T17:00:00.000Z" -> 
+      snapshots.toList must serialiseTo(
+        arr(
+          arr(
+            "2013-02-05T17:00:00.000Z",
             obj(
               "Freddie" -> 
                 obj("gamesWon" -> 1, "gamesLost" -> 1, "roundsDuringWinningGames" -> 4, "roundsDuringLosingGames" -> 3), 
               "Brian" -> 
-                obj("gamesWon" -> 1, "gamesLost" -> 1, "roundsDuringWinningGames" -> 1, "roundsDuringLosingGames" -> 2)), 
-          "2013-02-06T11:00:00.000Z" -> 
+                obj("gamesWon" -> 1, "gamesLost" -> 1, "roundsDuringWinningGames" -> 1, "roundsDuringLosingGames" -> 2))),
+          arr(
+            "2013-02-06T11:00:00.000Z",
             obj(
               "John" -> 
                 obj("gamesWon" -> 1, "gamesLost" -> 1, "roundsDuringWinningGames" -> 5, "roundsDuringLosingGames" -> 9), 
               "Roger" -> 
-                obj("gamesWon" -> 1, "gamesLost" -> 1, "roundsDuringWinningGames" -> 10, "roundsDuringLosingGames" -> 1))))
+                obj("gamesWon" -> 1, "gamesLost" -> 1, "roundsDuringWinningGames" -> 10, "roundsDuringLosingGames" -> 1)))))
     }
   }
 

@@ -22,6 +22,8 @@
 
 package stats
 
+import argonaut._, Argonaut._, DecodeResult._
+
 /**
  * A snapshot of the state of how many games a player has won or lost at a given time.
  * @author alex
@@ -62,4 +64,11 @@ object Snapshot {
    */
   def win(rounds: Int) = empty.win(rounds)
   def lose(rounds: Int) = empty.lose(rounds)
+  
+  /**
+   * JSON Serialisation
+   */
+  implicit def snapshotJsonEncode: EncodeJson[Snapshot] = 
+    jencode4L((s: Snapshot) => (s.gamesWon, s.gamesLost, s.roundsDuringWinningGames, s.roundsDuringLosingGames))(
+        "gamesWon", "gamesLost", "roundsDuringWinningGames", "roundsDuringLosingGames")
 }

@@ -1,6 +1,6 @@
 var rokta = angular.module(
   'rokta', 
-  ['rokta.players', 'rokta.game', 'rokta.graph', 'rokta.league', 'rokta.stats',
+  ['rokta.players', 'rokta.game', 'rokta.graph', 'rokta.league', 'rokta.stats', 'rokta.colours',
    'rokta.headtoheads', 'rokta.events', 'rokta.streaks', 'ui.bootstrap', 'ngRoute', 'ngAnimate']);
 
 rokta.config(['$routeProvider',

@@ -19,34 +19,21 @@
  * under the License.
  *
  */
-
 package json
 
-import org.specs2.matcher.Matcher
 import org.specs2.mutable.Specification
-
-import dates.UtcChronology
-import json.Json.objectMapper
-import play.api.libs.json.JsValue
-import play.api.libs.json.{Json => PJson}
+import json.Json._
+import scala.collection.SortedMap
+import argonaut._, Argonaut._
 
 /**
- * A trait that includes a `serialisesTo` matcher to allow serialisation testing.
- * @author alex
- *
+ * Created by alex on 15/12/13.
  */
-trait JsonSpec extends UtcChronology { self: Specification =>
-  
-  /**
-   * Match a JSON object to how it is serialised.
-   */
-  def serialiseTo[A](serialised: => JsValue): Matcher[A] =
-    ((a: A) => PJson.parse(Json(a))) ^^ beEqualTo(serialised)
-    
-  /**
-   * Allow a JSON object within a string be matched against a serialised object.
-   */
-  def deserialiseTo[A: Manifest](deserialised: => A): Matcher[String] = 
-    ((s: String) => Json.read[A](s)) ^^ beEqualTo(deserialised)
-  
+class JsonSpec extends Specification with JsonMatchers {
+
+  "A sorted map" should {
+    "encode all its key value pairs in order" in {
+      SortedMap("Four" -> 4, "Three" -> 3, "Two" -> 2, "One" -> 1).toList must serialiseTo("""[["Four",4],["One",1],["Three",3],["Two",2]]""")
+    }
+  }
 }

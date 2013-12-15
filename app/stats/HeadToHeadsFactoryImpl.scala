@@ -23,6 +23,7 @@
 package stats
 
 import model.Game
+import model.Player
 
 /**
  * The default implementation of [[HeadToHeadsFactory]].
@@ -31,8 +32,8 @@ import model.Game
  */
 class HeadToHeadsFactoryImpl extends HeadToHeadsFactory {
 
-  def apply(games: Iterable[Game]): Map[String, Map[String, Int]] = {
-    games.filter(_.loser.isDefined).foldLeft(Map.empty[String, Map[String, Int]])(cumulateResults)
+  def apply(games: Iterable[Game]): Map[Player, Map[Player, Int]] = {
+    games.filter(_.loser.isDefined).foldLeft(Map.empty[Player, Map[Player, Int]])(cumulateResults)
   }
   
   /**
@@ -41,7 +42,7 @@ class HeadToHeadsFactoryImpl extends HeadToHeadsFactory {
    * @param game The game with the current results.
    * @return A new map with any head to heads contained in the current game.
    */
-  def cumulateResults(headToHeads: Map[String, Map[String, Int]], game: Game): Map[String, Map[String, Int]] = {
+  def cumulateResults(headToHeads: Map[Player, Map[Player, Int]], game: Game): Map[Player, Map[Player, Int]] = {
     val playersLeftInLastRound = game.roundsPlayed.filter{ case (_, rounds) => rounds == game.numberOfRounds }
     val loser = game.loser.get
     if (playersLeftInLastRound.size == 2) {
@@ -54,8 +55,8 @@ class HeadToHeadsFactoryImpl extends HeadToHeadsFactory {
   }
   
   def increment(
-    headToHeads: Map[String, Map[String, Int]], winner: String, loser: String): Map[String, Map[String, Int]] = {
-    val winnersCurrentResults = headToHeads.get(winner).getOrElse(Map.empty[String, Int])
+    headToHeads: Map[Player, Map[Player, Int]], winner: Player, loser: Player): Map[Player, Map[Player, Int]] = {
+    val winnersCurrentResults = headToHeads.get(winner).getOrElse(Map.empty[Player, Int])
     val winnersNewResults = winnersCurrentResults + (loser -> (winnersCurrentResults.get(loser).getOrElse(0) + 1))
     headToHeads + (winner -> winnersNewResults)
   }

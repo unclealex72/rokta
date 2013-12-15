@@ -24,6 +24,7 @@
 package model;
 
 import scala.collection.immutable.Seq
+import argonaut._, Argonaut._, DecodeResult._
 
 /**
  * A grouping of colours, roughly by how close they are to a well known colour.
@@ -329,4 +330,16 @@ object Colour extends PersistableEnumeration[Colour] {
   object SLATE_GRAY extends Colour("SLATE_GRAY", "SlateGray", "#708090", "slate", "gray") with GreyLike with Dark; SLATE_GRAY
   object DARK_SLATE_GRAY extends Colour("DARK_SLATE_GRAY", "DarkSlateGray", "#2F4F4F", "dark", "slate", "gray") with GreyLike with Dark; DARK_SLATE_GRAY
   object BLACK extends Colour("BLACK", "Black", "#000000", "black") with GreyLike with Dark; BLACK
+  
+  /**
+   * JSON serialisation.
+   */
+  implicit val colourEncodeJson: EncodeJson[Colour] =
+    EncodeJson((c: Colour) =>
+      ("dark" := c.darkness == DARK) ->: 
+      ("group" := c.colourGroup.description) ->: 
+      ("name" := c.name.toList) ->:
+      ("htmlName" := c.htmlName) ->:
+      ("rgb" := c.rgb) ->:
+      ("token" := c.persistableToken) ->: jEmptyObject)
 }

@@ -40,15 +40,15 @@ class CurrentResultsFactoryImpl(val _now: Option[Now] = injected) extends Curren
 
   val now = injectIfMissing(_now)
   
-  def apply(games: Iterable[Game]): Map[String, CurrentResults] = {
+  def apply(games: Iterable[Game]): Map[Player, CurrentResults] = {
     val todaysGames = games.filter(g => g.datePlayed.isToday)
-    todaysGames.foldLeft(Map.empty[String, CurrentResults])(currentResultsPerGame)
+    todaysGames.foldLeft(Map.empty[Player, CurrentResults])(currentResultsPerGame)
   }
   
   /**
    * Work out how each game changes the current results.
    */
-  def currentResultsPerGame(currentResults: Map[String, CurrentResults], game: Game): Map[String, CurrentResults] = {
+  def currentResultsPerGame(currentResults: Map[Player, CurrentResults], game: Game): Map[Player, CurrentResults] = {
     game.loser match {
       case Some(loser) => game.participants.foldLeft(currentResults) { (currentResults, player) => 
         val playersCurrentResults = currentResults.get(player).getOrElse(CurrentResults())

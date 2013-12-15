@@ -23,10 +23,13 @@
 package stats
 
 import scala.collection.SortedSet
-
 import org.joda.time.DateTime
-
 import model.JodaDateTime.dateTimeOrdering
+import model.Player
+import argonaut._, Argonaut._
+import model.PlayerNameEncodeJson._
+import json.Json._
+import dates.DateTimeJsonCodec._
 
 /**
  * A streak is a contiguous set of games that a player has either won or lost.
@@ -34,22 +37,25 @@ import model.JodaDateTime.dateTimeOrdering
  *
  */
 case class Streak(
-  playerName: String,
+  player: Player,
   dateTimes: SortedSet[DateTime],
   current: Boolean) {
   
   def candidate: Boolean = dateTimes.size > 1
   
-  def extendTo(dateTime: DateTime): Streak = Streak(playerName, dateTimes + dateTime, current)
+  def extendTo(dateTime: DateTime): Streak = Streak(player, dateTimes + dateTime, current)
 
-  def makeCurrent: Streak = Streak(playerName, dateTimes, true)
+  def makeCurrent: Streak = Streak(player, dateTimes, true)
 }
 
 object Streak {
-  def apply(playerName: String, dateTime: DateTime): Streak = Streak(playerName, SortedSet(dateTime), false)
-  def apply(playerName: String, dateTime: DateTime, dateTimes:DateTime*): Streak = 
-    dateTimes.foldLeft(Streak(playerName, dateTime))((streak, dateTime) => streak.extendTo(dateTime))
+  def apply(player: Player, dateTime: DateTime): Streak = Streak(player, SortedSet(dateTime), false)
+  def apply(player: Player, dateTime: DateTime, dateTimes:DateTime*): Streak = 
+    dateTimes.foldLeft(Streak(player, dateTime))((streak, dateTime) => streak.extendTo(dateTime))
   
   implicit def streakOrdering: Ordering[Streak] = 
-    Ordering.by((s: Streak) => (s.dateTimes.size, s.dateTimes.head, s.playerName)).reverse
+    Ordering.by((s: Streak) => (s.dateTimes.size, s.dateTimes.head, s.player.name)).reverse
+    
+  implicit val streakEncodeJson: EncodeJson[Streak] = 
+    jencode3L((s: Streak) => (s.player, s.dateTimes, s.current))("player", "dateTimes", "current")
 }

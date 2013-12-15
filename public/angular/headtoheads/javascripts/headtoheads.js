@@ -1,14 +1,17 @@
-var headtoheads = angular.module('rokta.headtoheads', ['rokta.events', 'rokta.players', 'rokta.stats', 'rokta.filters']);
+var headtoheads = angular.module('rokta.headtoheads', ['rokta.events', 'rokta.players', 'rokta.stats', 'rokta.filters', 'rokta.colours']);
 
 // A factory to create a HeadToHead object used to create the graph series.
 headtoheads.service('HeadToHeads', [
 function() {
   var service = {
-    create: function(players, headToHeads) {
+    create: function(players, allColours, headToHeads) {
       var activePlayerNames = _(headToHeads).keys().sortBy();
       var activePlayers = 
         _(players).filter(function (player) { return activePlayerNames.contains(player.name); }).indexBy('name').value();
-      var colours = activePlayerNames.map(function(name) { return activePlayers[name].colour.rgb; }).value();
+      var colours = activePlayerNames.map(function(name) {
+        var player = activePlayers[name];
+        return allColours[player.colour].rgb;
+      }).value();
       var playerIndiciesByName = activePlayerNames.reduce(function (playerIndiciesByName, player, idx) {
         playerIndiciesByName[player] = idx;
         return playerIndiciesByName;
@@ -104,10 +107,11 @@ function() {
   };
 }]);
 
-headtoheads.controller('HeadToHeadsCtrl', ['$log', '$scope', 'Events', 'Stats', 'Players', 'HeadToHeads',
-function($log, $scope, Events, Stats, Players, HeadToHeads) {
+headtoheads.controller('HeadToHeadsCtrl', ['$log', '$scope', 'Events', 'Stats', 'Players', 'Colours', 'HeadToHeads',
+function($log, $scope, Events, Stats, Players, Colours, HeadToHeads) {
   Stats.refresh();
-  Events.listenTo($scope, [Stats, Players], function() {
-    $scope.headToHeads = HeadToHeads.create(Players.players, Stats.stats.headToHeads);
+  Colours.refresh();
+  Events.listenTo($scope, [Stats, Players, Colours], function() {
+    $scope.headToHeads = HeadToHeads.create(Players.players, Colours.colourMap, Stats.stats.headToHeads);
   });
 }]);

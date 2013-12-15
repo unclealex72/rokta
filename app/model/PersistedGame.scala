@@ -31,12 +31,14 @@ import org.squeryl.KeyedEntity
 import org.squeryl.annotations.Column
 import org.squeryl.dsl.StatefulManyToOne
 import org.squeryl.dsl.StatefulOneToMany
-
+import argonaut._, Argonaut._
 import dao.EntryPoint.__thisDsl
 import dao.RoktaSchema.anyRef2ActiveTransaction
 import dao.RoktaSchema.gameToRounds
 import dao.RoktaSchema.instigatorToGames
 import model.JodaDateTime.dateTimeOrdering
+import model.Game._
+import scala.collection.SortedMap
 
 /**
  * A game is a single game of Rokta.
@@ -58,20 +60,17 @@ case class PersistedGame(
   @Column("dateplayed")
   val _datePlayed: Timestamp) extends KeyedEntity[Long] {
 
-  /**
-   * The Joda Time version of the date and time the game was played.
-   */
-  lazy val datePlayed: DateTime = new DateTime(_datePlayed)
+  lazy val datePlayed = new DateTime(_datePlayed)
 
   /**
    * The persisted [[Round]] for this game.
    */
-  lazy val rounds: StatefulOneToMany[Round] = gameToRounds.leftStateful(PersistedGame.this)
+  lazy val _rounds: StatefulOneToMany[Round] = gameToRounds.leftStateful(PersistedGame.this)
 
   /**
    * The persisted instigator for this game.
    */
-  lazy val instigator: StatefulManyToOne[PersistedPlayer] = instigatorToGames.rightStateful(PersistedGame.this)
+  lazy val _instigator: StatefulManyToOne[PersistedPlayer] = instigatorToGames.rightStateful(PersistedGame.this)
 
   /**
    * Add a new round to this game.
@@ -79,11 +78,10 @@ case class PersistedGame(
    * @return this.
    */
   def addRound(plays: Map[PersistedPlayer, Hand]): PersistedGame = {
-    rounds.associate((Round(PersistedGame.this, numberOfRounds)).addPlays(plays))
+    _rounds.associate((Round(PersistedGame.this, _rounds.size + 1)).addPlays(plays))
     PersistedGame.this
   }
-  
-  def numberOfRounds: Int = rounds.size + 1
+
 }
 
 object PersistedGame {
@@ -103,5 +101,22 @@ object PersistedGame {
     val game = PersistedGame(0, instigator.id, new Timestamp(datePlayed.toDate().getTime()))
     game.save
     game
+  }
+
+}
+
+object PersistedGameImplicits {
+
+
+  implicit val persistedGameEncodeJson: EncodeJson[PersistedGame] = Game.gameEncodeJson.contramap(toGame)
+
+  /**
+   * Allow a persisted game to be treated like a normal game.
+   */
+  implicit def toGame(pg: PersistedGame): Game = {
+    val rounds = pg._rounds.foldLeft(SortedMap.empty[Int, Map[Player, Hand]]){(rounds, round) =>
+      rounds + (round.round -> round.plays)
+    }
+    new NonPersistedGame(pg.datePlayed, pg._instigator.one.get, rounds)
   }
 }

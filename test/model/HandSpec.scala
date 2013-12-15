@@ -24,12 +24,13 @@ package model
 
 import org.specs2.mutable.Specification
 import model.Hand._
-
+import argonaut._, Argonaut._
+import json.JsonMatchers
 /**
  * @author alex
  *
  */
-class HandSpec extends Specification {
+class HandSpec extends Specification with JsonMatchers {
 
   "The number of different hands" should {
     "equal 3" in {
@@ -71,6 +72,21 @@ class HandSpec extends Specification {
     }
     "beat rock" in {
       PAPER.beats(ROCK) must be equalTo(true)
+    }
+  }
+
+  val cases = Map[Hand, String](ROCK -> "ROCK", SCISSORS -> "SCISSORS", PAPER -> "PAPER")
+  cases.foreach { case (hand, string) =>
+    val serialised = "\"" + string + "\""
+    s"Serialising $hand to JSON" should {
+      s"serialise it to $serialised" in {
+        hand must serialiseTo(serialised)        
+      }
+    }
+    s"Deserialising $serialised from JSON" should {
+      s"deserialise it to $hand" in {
+        serialised.decodeOption[Hand] must be equalTo(Some(hand))
+      }
     }
   }
 }

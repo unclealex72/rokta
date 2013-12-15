@@ -40,7 +40,7 @@ trait NonPersistedGameDsl {
   val john: Player = NonPersistedPlayer("John", "john@queen.com", WHITE)
 
   def at(datePlayed: DateTime, play: Pair[Player, Hand], plays: Pair[Player, Hand]*) = 
-    new GameBuilder(datePlayed, freddie.name, SortedMap.empty[Int, Map[String, Hand]]).and(play, plays :_*)
+    new GameBuilder(datePlayed, freddie, SortedMap.empty[Int, Map[Player, Hand]]).and(play, plays :_*)
 
   implicit class PlayerImplicits(player: Player) {
     
@@ -56,16 +56,16 @@ class GameBuilder(
   /**
    * The player who instigated this game.
    */
-  override val instigator: String,
+  override val instigator: Player,
   /**
    * The actual hands played during the game.
    */
-  override val rounds: SortedMap[Int, Map[String, Hand]]) 
+  override val rounds: SortedMap[Int, Map[Player, Hand]]) 
   extends NonPersistedGame(datePlayed, instigator, rounds) with NonPersistedGameDsl {
 
   def and(play: Pair[Player, Hand], plays: Pair[Player, Hand]*) = {
     val nextRound = rounds.size + 1
-    val round = (Seq(play) ++ plays).foldLeft(Map.empty[String, Hand])((plays, play) => plays + (play._1.name -> play._2))
+    val round = (Seq(play) ++ plays).foldLeft(Map.empty[Player, Hand])((plays, play) => plays + (play._1 -> play._2))
     new GameBuilder(datePlayed, instigator, rounds + (nextRound -> round))
   }
 }

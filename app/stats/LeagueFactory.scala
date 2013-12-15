@@ -23,9 +23,11 @@
 package stats
 
 import scala.collection.SortedMap
-import org.joda.time.DateTime
-import model.Player
 import scala.collection.SortedSet
+
+import org.joda.time.DateTime
+
+import model.Player
 
 /**
  * A trait for generating [[League]]s.
@@ -42,6 +44,6 @@ trait LeagueFactory {
    * @return A league containing the set of [[LeagueRow]]s from top to bottom.
    */
   def apply(
-    snapshots: SortedMap[DateTime, Map[String, Snapshot]], 
-    todaysPlayers: Option[Set[String]], exemptPlayer: Option[String]): SortedSet[LeagueRow]
+    snapshots: SortedMap[DateTime, Map[Player, Snapshot]], 
+    todaysPlayers: Option[Set[Player]], exemptPlayer: Option[Player]): SortedSet[LeagueRow]
 }

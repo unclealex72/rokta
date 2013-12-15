@@ -81,8 +81,8 @@ class SquerylDao extends GameDao with PlayerDao with Transactional {
       where(
         r.gameId === g.id and p.roundId === r.id and p.playerId === pr.id and g.instigatorId === i.id and 
         filter(g)) 
-      select (g, i.name, r.round, pr.name, p._hand) 
-      orderBy(g.id, r.round))
+      select (g, i, r.round, pr, p._hand) 
+      orderBy(g.id, r.round)) map {case (g, i, round, p, h) => (g, i, round, p, Hand(h))}
     SortedSet(gamesInstigatorsRoundsPlayersPlays.groupBy(kv => (kv._1, kv._2)).map(NonPersistedGame(_)).toSeq: _*)
   }
 
@@ -120,13 +120,15 @@ class SquerylDao extends GameDao with PlayerDao with Transactional {
     def newGame(instigator: PersistedPlayer, datePlayed: DateTime): PersistedGame = PersistedGame(instigator, datePlayed)
 
   def uploadGame(datePlayed: DateTime, uploadableGame: UploadableGame) = {
-    val playersByName = allPersistedPlayers.foldLeft(Map.empty[String, PersistedPlayer]) { (map, player) => 
-      map + (player.name -> player) 
+    val players = allPersistedPlayers
+    val persistedPlayer: Player => PersistedPlayer = p => p match {
+      case p: PersistedPlayer => p
+      case p: Player => players.find(_.name == p.name).getOrElse(throw new IllegalArgumentException("Cannot find player " + p.name))
     }
-    val game = newGame(playersByName(uploadableGame.instigator), datePlayed)
+    val game = newGame(persistedPlayer(uploadableGame.instigator), datePlayed)
     uploadableGame.rounds.foldLeft(game) { (game, plays) => 
       val persistablePlays = plays.foldLeft(Map.empty[PersistedPlayer, Hand]){ (persistablePlays, playedHand) =>
-        persistablePlays + (playersByName(playedHand._1) -> Hand(playedHand._2).get)
+        persistablePlays + (persistedPlayer(playedHand._1) -> playedHand._2)
       }
       game.addRound(persistablePlays)
       game

@@ -28,7 +28,7 @@
       </td>
       <td>{{$index + 1}}</td>
       <td>
-        {{row.playerName}}
+        {{row.player}}
         <span ng-if="row.exempt || (!row.currentlyPlaying && current)" ng-class="{'exempt': row.exempt, 'notplaying': !row.currentlyPlaying && current}">
           *
         </span>

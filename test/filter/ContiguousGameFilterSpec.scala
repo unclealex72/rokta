@@ -27,7 +27,7 @@ import org.specs2.mutable.Specification
 import dates.DaysAndTimes
 import dates.UtcChronology
 import json.Json._
-import json.JsonSpec
+import json.JsonMatchers
 import filter.ContiguousGameFilter._
 import dates.IsoChronology
 

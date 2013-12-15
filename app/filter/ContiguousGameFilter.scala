@@ -27,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import argonaut._, Argonaut._, DecodeResult._
 
 /**
  * A [[ContiguousGameFilter]] is used to filter games based, normally, on dates. Filtered games will always be contiguous.
@@ -59,7 +60,8 @@ trait DayLike {
 object DayLikeImplicits {
   
   implicit def toDateTime(day: DayLike): DateTime = new DateTime(day.year, day.month, day.day, 0, 0)
-  
+  implicit val dayLikeEncodeJson: EncodeJson[DayLike] =
+    jencode3L((d: DayLike) => (d.year, d.month, d.day))("year", "month", "day")
 }
 /**
  * A solid implementation of `DayLike`
@@ -177,4 +179,28 @@ object ContiguousGameFilter {
     case MonthGameFilter(year, month) => "d%04d%02d".format(year, month)
     case DayGameFilter(year, month, day) => "d%04d%02d%02d".format(year, month, day)
   }
+  
+  implicit def ContiguousGameFilterEncodeJson: EncodeJson[ContiguousGameFilter] = {
+    
+    import DayLikeImplicits._
+    
+    def jType(ty: String) = ("type" := ty) ->: jEmptyObject
+    def jDayLike(ty: String, year: Option[Int], month: Option[Int], day: Option[Int]) = 
+      Seq(year, month, day).zip(Seq("year", "month", "day")).foldLeft(jType(ty)){(json, field) => 
+        field._1.foldLeft(json)((json, value) => (field._2 := value) ->: json)
+    }
+    
+    EncodeJson{(f: ContiguousGameFilter) => 
+      f match {
+        case YearGameFilter(year) => jDayLike("year", Some(year), None, None)
+        case MonthGameFilter(year, month) => jDayLike("month", Some(year), Some(month), None)
+        case DayGameFilter(year, month, day) => jDayLike("day", Some(year), Some(month), Some(day))
+        case SinceGameFilter(year, month, day) => jDayLike("since", Some(year), Some(month), Some(day))
+        case UntilGameFilter(year, month, day) => jDayLike("until", Some(year), Some(month), Some(day))
+        case BetweenGameFilter(from, to) => 
+          ("from" := from) ->: ("to" := to) ->: jType("between")
+      }
+    }   
+  }
+
 }

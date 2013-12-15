@@ -40,16 +40,16 @@ import dao.RoktaSchema
  */
 class PersistedGameSpec extends Specification with DaysAndTimes with IsoChronology with PersistedGameDsl {
 
-  val freddie = "Freddie"
-  val brian = "Brian"
-  val roger = "Roger"
-  val john = "John"
   val now = September(5, 1972) at (9:> 12)
-
+  type Freddie = Player
+  type Brian = Player
+  type Roger = Player
+  type John = Player
+  
   /**
    * Wrap tests with database creation and transactions
    */
-  def txn[B](block: Game => B)(implicit roundCount: Int) = {
+  def txn[B](block: Game => Freddie => Brian => Roger => John => B)(implicit roundCount: Int) = {
 
     import dao.RoktaSchema._
     import dao.EntryPoint._
@@ -60,106 +60,106 @@ class PersistedGameSpec extends Specification with DaysAndTimes with IsoChronolo
         java.sql.DriverManager.getConnection("jdbc:h2:mem:", "", ""),
         new H2Adapter))
     inTransaction {
-      RoktaSchema.create
-      val freddieMercury  = PersistedPlayer(0, "Freddie", Some("freddie@queen.com"), "BLACK")
-      val brianMay = PersistedPlayer(0, "Brian", Some("brian@queen.com"), "BLUE")
-      val rogerTaylor = PersistedPlayer(0, "Roger", Some("roger@queen.com"), "RED")
-      val johnDeacon = PersistedPlayer(0, "John", Some("john@queen.com"), "WHITE")
+      create
+      val freddie  = PersistedPlayer(0, "Freddie", Some("freddie@queen.com"), "BLACK")
+      val brian = PersistedPlayer(0, "Brian", Some("brian@queen.com"), "BLUE")
+      val roger = PersistedPlayer(0, "Roger", Some("roger@queen.com"), "RED")
+      val john = PersistedPlayer(0, "John", Some("john@queen.com"), "WHITE")
 
-      Seq(freddieMercury, rogerTaylor, brianMay, johnDeacon).foreach { person =>
+      Seq(freddie, roger, brian, john).foreach { person =>
         person.save
       }
       val rounds: Seq[Seq[Pair[PersistedPlayer, Hand]]] = Seq(
-        Seq(freddieMercury plays SCISSORS, rogerTaylor plays SCISSORS, brianMay plays SCISSORS),
-        Seq(freddieMercury plays ROCK, rogerTaylor plays SCISSORS, brianMay plays PAPER),
-        Seq(freddieMercury plays ROCK, rogerTaylor plays ROCK, brianMay plays PAPER),
-        Seq(freddieMercury plays ROCK, rogerTaylor plays SCISSORS)) take (roundCount)
+        Seq(freddie plays SCISSORS, roger plays SCISSORS, brian plays SCISSORS),
+        Seq(freddie plays ROCK, roger plays SCISSORS, brian plays PAPER),
+        Seq(freddie plays ROCK, roger plays ROCK, brian plays PAPER),
+        Seq(freddie plays ROCK, roger plays SCISSORS)) take (roundCount)
         
       val persistedGame: PersistedGame = 
-        rounds.foldLeft(freddieMercury instigatesAt now) { (game, plays) =>
+        rounds.foldLeft(freddie instigatesAt now) { (game, plays) =>
           game and (plays: _*)
         }
       val game = new SquerylDao().filteredGames(g => g.id === persistedGame.id)
-      block(game.head)
+      block(game.head)(freddie)(brian)(roger)(john)
     }
   }
 
   "After one round the game" should {
     implicit val rounds = 1
-    "start at the correct time" in txn { game =>
+    "start at the correct time" in txn { game => freddie => brian => roger => john =>
       game.datePlayed must be equalTo(now)
     }
-    "have all three participants" in txn { game =>
+    "have all three participants" in txn { game => freddie => brian => roger => john =>
       game.participants must contain(brian, roger, freddie).exactly
     }
-    "be instigated by freddie" in txn { game =>
+    "be instigated by freddie" in txn { game => freddie => brian => roger => john =>
       game.instigator must be equalTo(freddie)
     }
-    "have one round" in txn { game => 
+    "have one round" in txn { game => freddie => brian => roger => john => 
       game.numberOfRounds must be equalTo(1)
       game.roundsPlayed must contain(freddie -> 1, brian -> 1, roger -> 1).exactly
     }
-    "have no losers" in txn { game =>
+    "have no losers" in txn { game => freddie => brian => roger => john =>
       game.loser must beNone
     }
   }
 
   "After two rounds the game" should {
     implicit val rounds = 2
-    "start at the correct time" in txn { game =>
+    "start at the correct time" in txn { game => freddie => brian => roger => john =>
       game.datePlayed must be equalTo(now)
     }
-    "have all three participants" in txn { game =>
+    "have all three participants" in txn { game => freddie => brian => roger => john =>
       game.participants must contain(brian, roger, freddie).exactly
     }
-    "be instigated by freddie" in txn { game =>
+    "be instigated by freddie" in txn { game => freddie => brian => roger => john =>
       game.instigator must be equalTo(freddie)
     }
-    "have two rounds" in txn { game => 
+    "have two rounds" in txn { game => freddie => brian => roger => john => 
       game.numberOfRounds must be equalTo(2)
       game.roundsPlayed must contain(freddie -> 2, brian -> 2, roger -> 2).exactly
     }
-    "have no losers" in txn { game =>
+    "have no losers" in txn { game => freddie => brian => roger => john =>
       game.loser must beNone
     }
   }
 
   "After three rounds the game" should {
     implicit val rounds = 3
-    "start at the correct time" in txn { game =>
+    "start at the correct time" in txn { game => freddie => brian => roger => john =>
       game.datePlayed must be equalTo(now)
     }
-    "have all three participants" in txn { game =>
+    "have all three participants" in txn { game => freddie => brian => roger => john =>
       game.participants must contain(brian, roger, freddie).exactly
     }
-    "be instigated by freddie" in txn { game =>
+    "be instigated by freddie" in txn { game => freddie => brian => roger => john =>
       game.instigator must be equalTo(freddie)
     }
-    "have three rounds" in txn { game => 
+    "have three rounds" in txn { game => freddie => brian => roger => john => 
       game.numberOfRounds must be equalTo(3)
       game.roundsPlayed must contain(freddie -> 3, brian -> 3, roger -> 3).exactly
     }
-    "have no losers" in txn { game =>
+    "have no losers" in txn { game => freddie => brian => roger => john =>
       game.loser must beNone
     }
   }
 
   "After four rounds the game" should {
     implicit val rounds = 4
-    "start at the correct time" in txn { game =>
+    "start at the correct time" in txn { game => freddie => brian => roger => john =>
       game.datePlayed must be equalTo(now)
     }
-    "have all three participants" in txn { game =>
+    "have all three participants" in txn { game => freddie => brian => roger => john =>
       game.participants must contain(brian, roger, freddie).exactly
     }
-    "be instigated by freddie" in txn { game =>
+    "be instigated by freddie" in txn { game => freddie => brian => roger => john =>
       game.instigator must be equalTo(freddie)
     }
-    "have four rounds" in txn { game => 
+    "have four rounds" in txn { game => freddie => brian => roger => john => 
       game.numberOfRounds must be equalTo(4)
       game.roundsPlayed must contain(freddie -> 4, brian -> 3, roger -> 4).exactly
     }
-    "be lost by roger" in txn { game =>
+    "be lost by roger" in txn { game => freddie => brian => roger => john =>
       game.loser must beSome(roger)
     }
   }

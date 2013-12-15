@@ -22,6 +22,8 @@
 
 package model
 
+import argonaut._, Argonaut._, DecodeResult._
+
 /**
  * A database independent trait for Rokta players.
  * @author alex
@@ -41,4 +43,33 @@ trait Player {
    * The name of the colour used to represent the player's results in any graphs.
    */
   def colour:  Colour
+
+}
+
+object PlayerFullEncodeJson {
+
+  /**
+   * JSON serialisation.
+   */
+  implicit val playerEncodeJson: EncodeJson[Player] =
+    jencode3L((p: Player) => (p.name, p.email, p.colour.persistableToken))("name", "email", "colour")
+}
+
+object PlayerNameEncodeJson {
+
+  /**
+   * JSON serialisation.
+   */
+  implicit val playerEncodeJson: EncodeJson[Player] = EncodeJson((p: Player) => jString(p.name))
+  
+  /**
+   * JSON serialisation for maps that have players as keys.
+   * 
+   */
+  implicit def playerMapEncodeJson[A](implicit ev: EncodeJson[A]): EncodeJson[Map[Player, A]] = 
+    EncodeJson { (m: Map[Player, A]) =>
+      m.foldLeft(jEmptyObject) { (json, kv) =>
+        (kv._1.name := kv._2) ->: json
+      }
+  }
 }

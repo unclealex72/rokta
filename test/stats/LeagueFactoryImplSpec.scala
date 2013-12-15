@@ -35,12 +35,14 @@ import model.JodaDateTime._
 import org.specs2.mock._
 import dates.IsoChronology
 import dates.DaysAndTimes
+import model.Player
+import model.NonPersistedGameDsl
 
 /**
  * @author alex
  *
  */
-class LeagueFactoryImplSpec extends Specification with Mockito with DaysAndTimes with IsoChronology {
+class LeagueFactoryImplSpec extends Specification with Mockito with DaysAndTimes with IsoChronology with NonPersistedGameDsl {
 
   /**
    * Give tests access to the concrete [[LeagueFactoryImpl]] and mocked [[GapCalculator]]
@@ -61,16 +63,16 @@ class LeagueFactoryImplSpec extends Specification with Mockito with DaysAndTimes
         def snapshots =
           on(
             October(15, 2013) at (11 oclock),
-            "Brian".wins(5).playingRounds(12).loses(1).playingRounds(12),
-            "Roger".wins(4).playingRounds(12).loses(2).playingRounds(12),
-            "Freddie".wins(3).playingRounds(12).loses(3).playingRounds(12),
-            "John".wins(2).playingRounds(12).loses(2).playingRounds(12)) ++
+            brian.wins(5).playingRounds(12).loses(1).playingRounds(12),
+            roger.wins(4).playingRounds(12).loses(2).playingRounds(12),
+            freddie.wins(3).playingRounds(12).loses(3).playingRounds(12),
+            john.wins(2).playingRounds(12).loses(2).playingRounds(12)) ++
             on(
               October(15, 2013) at (15 oclock),
-              "John".wins(5).playingRounds(12).loses(1).playingRounds(12),
-              "Freddie".wins(4).playingRounds(12).loses(2).playingRounds(12),
-              "Roger".wins(3).playingRounds(12).loses(3).playingRounds(12),
-              "Brian".wins(2).playingRounds(12).loses(2).playingRounds(12))
+              john.wins(5).playingRounds(12).loses(1).playingRounds(12),
+              freddie.wins(4).playingRounds(12).loses(2).playingRounds(12),
+              roger.wins(3).playingRounds(12).loses(3).playingRounds(12),
+              brian.wins(2).playingRounds(12).loses(2).playingRounds(12))
 
         val league = leagueFactory.apply(snapshots, None, None)
         league must contain { (leagueRow: LeagueRow) =>
@@ -88,10 +90,10 @@ class LeagueFactoryImplSpec extends Specification with Mockito with DaysAndTimes
         def snapshots =
           on(
             October(15, 2013) at (11 oclock),
-            "Brian".wins(5).playingRounds(12).loses(1).playingRounds(12),
-            "Roger".wins(4).playingRounds(12).loses(2).playingRounds(12),
-            "Freddie".wins(3).playingRounds(12).loses(3).playingRounds(12),
-            "John".wins(2).playingRounds(12).loses(2).playingRounds(12))
+            brian.wins(5).playingRounds(12).loses(1).playingRounds(12),
+            roger.wins(4).playingRounds(12).loses(2).playingRounds(12),
+            freddie.wins(3).playingRounds(12).loses(3).playingRounds(12),
+            john.wins(2).playingRounds(12).loses(2).playingRounds(12))
 
         val league = leagueFactory.apply(snapshots, None, None)
         league must contain { (leagueRow: LeagueRow) =>
@@ -108,18 +110,18 @@ class LeagueFactoryImplSpec extends Specification with Mockito with DaysAndTimes
       (leagueFactory: LeagueFactoryImpl) =>
         (gapCalculator: GapCalculator) =>
           val nonDecoratedLeague = SortedSet[LeagueRow](
-            "Brian".wins(5).playingRounds(12).loses(1).playingRounds(12),
-            "Roger".wins(4).playingRounds(12).loses(2).playingRounds(12),
-            "Freddie".wins(3).playingRounds(12).loses(3).playingRounds(12),
-            "John".wins(2).playingRounds(12).loses(2).playingRounds(12))
+            brian.wins(5).playingRounds(12).loses(1).playingRounds(12),
+            roger.wins(4).playingRounds(12).loses(2).playingRounds(12),
+            freddie.wins(3).playingRounds(12).loses(3).playingRounds(12),
+            john.wins(2).playingRounds(12).loses(2).playingRounds(12))
 
           val decoratedLeague = SortedSet[LeagueRow](
-            "Brian".wins(5).playingRounds(12).loses(1).playingRounds(12).withCurrentlyPlaying(true),
-            "Roger".wins(4).playingRounds(12).loses(2).playingRounds(12),
-            "Freddie".wins(3).playingRounds(12).loses(3).playingRounds(12).withCurrentlyPlaying(true),
-            "John".wins(2).playingRounds(12).loses(2).playingRounds(12))
+            brian.wins(5).playingRounds(12).loses(1).playingRounds(12).withCurrentlyPlaying(true),
+            roger.wins(4).playingRounds(12).loses(2).playingRounds(12),
+            freddie.wins(3).playingRounds(12).loses(3).playingRounds(12).withCurrentlyPlaying(true),
+            john.wins(2).playingRounds(12).loses(2).playingRounds(12))
 
-          leagueFactory.decorateWithCurrent(Set("Brian", "Freddie"))(nonDecoratedLeague) must be equalTo (decoratedLeague)
+          leagueFactory.decorateWithCurrent(Set(brian, freddie))(nonDecoratedLeague) must be equalTo (decoratedLeague)
     }
   }
 
@@ -128,18 +130,18 @@ class LeagueFactoryImplSpec extends Specification with Mockito with DaysAndTimes
       (leagueFactory: LeagueFactoryImpl) =>
         (gapCalculator: GapCalculator) =>
           val nonDecoratedLeague = SortedSet[LeagueRow](
-            "Brian".wins(5).playingRounds(12).loses(1).playingRounds(12).withCurrentlyPlaying(true),
-            "Roger".wins(4).playingRounds(12).loses(2).playingRounds(12),
-            "Freddie".wins(3).playingRounds(12).loses(3).playingRounds(12).withCurrentlyPlaying(true),
-            "John".wins(2).playingRounds(12).loses(2).playingRounds(12))
+            brian.wins(5).playingRounds(12).loses(1).playingRounds(12).withCurrentlyPlaying(true),
+            roger.wins(4).playingRounds(12).loses(2).playingRounds(12),
+            freddie.wins(3).playingRounds(12).loses(3).playingRounds(12).withCurrentlyPlaying(true),
+            john.wins(2).playingRounds(12).loses(2).playingRounds(12))
 
           val decoratedLeague = SortedSet[LeagueRow](
-            "Brian".wins(5).playingRounds(12).loses(1).playingRounds(12).withCurrentlyPlaying(true).withExempt(true),
-            "Roger".wins(4).playingRounds(12).loses(2).playingRounds(12),
-            "Freddie".wins(3).playingRounds(12).loses(3).playingRounds(12).withCurrentlyPlaying(true),
-            "John".wins(2).playingRounds(12).loses(2).playingRounds(12))
+            brian.wins(5).playingRounds(12).loses(1).playingRounds(12).withCurrentlyPlaying(true).withExempt(true),
+            roger.wins(4).playingRounds(12).loses(2).playingRounds(12),
+            freddie.wins(3).playingRounds(12).loses(3).playingRounds(12).withCurrentlyPlaying(true),
+            john.wins(2).playingRounds(12).loses(2).playingRounds(12))
 
-          leagueFactory.decorateWithExemption(Some("Brian"))(nonDecoratedLeague) must be equalTo (decoratedLeague)
+          leagueFactory.decorateWithExemption(Some(brian))(nonDecoratedLeague) must be equalTo (decoratedLeague)
     }
   }
 
@@ -147,16 +149,16 @@ class LeagueFactoryImplSpec extends Specification with Mockito with DaysAndTimes
     "compare the bottom three Set to the Set above them" in mocked {
       (leagueFactory: LeagueFactoryImpl) =>
         (gapCalculator: GapCalculator) =>
-          val brian: LeagueRow = "Brian".wins(5).playingRounds(12).loses(1).playingRounds(12).withCurrentlyPlaying(true)
-          val roger: LeagueRow = "Roger".wins(4).playingRounds(12).loses(2).playingRounds(12).withCurrentlyPlaying(true)
-          val freddie: LeagueRow = "Freddie".wins(3).playingRounds(12).loses(3).playingRounds(12)
-          val john: LeagueRow = "John".wins(2).playingRounds(12).loses(2).playingRounds(12)
-          gapCalculator.calculateGap(brian, roger) returns (Some(1))
-          gapCalculator.calculateGap(roger, freddie) returns (Some(2))
-          gapCalculator.calculateGap(freddie, john) returns (Some(3))
+          val brianL: LeagueRow = brian.wins(5).playingRounds(12).loses(1).playingRounds(12).withCurrentlyPlaying(true)
+          val rogerL: LeagueRow = roger.wins(4).playingRounds(12).loses(2).playingRounds(12).withCurrentlyPlaying(true)
+          val freddieL: LeagueRow = freddie.wins(3).playingRounds(12).loses(3).playingRounds(12)
+          val johnL: LeagueRow = john.wins(2).playingRounds(12).loses(2).playingRounds(12)
+          gapCalculator.calculateGap(brianL, rogerL) returns (Some(1))
+          gapCalculator.calculateGap(rogerL, freddieL) returns (Some(2))
+          gapCalculator.calculateGap(freddieL, johnL) returns (Some(3))
           val decoratedLeague =
-            leagueFactory.decorateWithGap(Set("Brian", "Roger", "Freddie", "John"))(SortedSet(brian, roger, freddie, john))
-          decoratedLeague must contain(brian, roger.withGap(1), freddie.withGap(2), john.withGap(3)).inOrder
+            leagueFactory.decorateWithGap(Set(brian, roger, freddie, john))(SortedSet(brianL, rogerL, freddieL, johnL))
+          decoratedLeague must contain(brianL, rogerL.withGap(1), freddieL.withGap(2), johnL.withGap(3)).inOrder
     }
   }
 
@@ -167,29 +169,29 @@ class LeagueFactoryImplSpec extends Specification with Mockito with DaysAndTimes
           def snapshots =
             on(
               October(15, 2013) at (9 oclock),
-              "Brian".wins(5).playingRounds(12).loses(1).playingRounds(12),
-              "Roger".wins(4).playingRounds(12).loses(2).playingRounds(12),
-              "Freddie".wins(3).playingRounds(12).loses(3).playingRounds(12),
-              "John".wins(1).playingRounds(12).loses(2).playingRounds(12)) ++
+              brian.wins(5).playingRounds(12).loses(1).playingRounds(12),
+              roger.wins(4).playingRounds(12).loses(2).playingRounds(12),
+              freddie.wins(3).playingRounds(12).loses(3).playingRounds(12),
+              john.wins(1).playingRounds(12).loses(2).playingRounds(12)) ++
             on(
               October(15, 2013) at (11 oclock),
-              "Brian".wins(5).playingRounds(12).loses(1).playingRounds(12),
-              "Roger".wins(4).playingRounds(12).loses(2).playingRounds(12),
-              "Freddie".wins(3).playingRounds(12).loses(3).playingRounds(12),
-              "John".wins(2).playingRounds(12).loses(2).playingRounds(12)) ++
+              brian.wins(5).playingRounds(12).loses(1).playingRounds(12),
+              roger.wins(4).playingRounds(12).loses(2).playingRounds(12),
+              freddie.wins(3).playingRounds(12).loses(3).playingRounds(12),
+              john.wins(2).playingRounds(12).loses(2).playingRounds(12)) ++
               on(
                 October(15, 2013) at (15 oclock),
-                "John".wins(5).playingRounds(12).loses(1).playingRounds(12),
-                "Freddie".wins(4).playingRounds(12).loses(2).playingRounds(12),
-                "Roger".wins(3).playingRounds(12).loses(3).playingRounds(12),
-                "Brian".wins(2).playingRounds(12).loses(2).playingRounds(12))
+                john.wins(5).playingRounds(12).loses(1).playingRounds(12),
+                freddie.wins(4).playingRounds(12).loses(2).playingRounds(12),
+                roger.wins(3).playingRounds(12).loses(3).playingRounds(12),
+                brian.wins(2).playingRounds(12).loses(2).playingRounds(12))
           gapCalculator.calculateGap(any[LeagueRow], any[LeagueRow]) returns Some(2)
-          def league = leagueFactory.apply(snapshots, Some(Set("Brian", "Roger")), Some("Freddie"))
+          def league = leagueFactory.apply(snapshots, Some(Set(brian, roger)), Some(freddie))
           league must contain(
-            "John".wins(5).playingRounds(12).loses(1).playingRounds(12).withMovement(-3),
-            "Freddie".wins(4).playingRounds(12).loses(2).playingRounds(12).withMovement(-1).withExempt(true).withGap(2),
-            "Roger".wins(3).playingRounds(12).loses(3).playingRounds(12).withCurrentlyPlaying(true).withMovement(1).withGap(2),
-            "Brian".wins(2).playingRounds(12).loses(2).playingRounds(12).withCurrentlyPlaying(true).withMovement(3).withGap(2)).inOrder
+            john.wins(5).playingRounds(12).loses(1).playingRounds(12).withMovement(-3),
+            freddie.wins(4).playingRounds(12).loses(2).playingRounds(12).withMovement(-1).withExempt(true).withGap(2),
+            roger.wins(3).playingRounds(12).loses(3).playingRounds(12).withCurrentlyPlaying(true).withMovement(1).withGap(2),
+            brian.wins(2).playingRounds(12).loses(2).playingRounds(12).withCurrentlyPlaying(true).withMovement(3).withGap(2)).inOrder
     }
   }
 }
@@ -197,39 +199,39 @@ class LeagueFactoryImplSpec extends Specification with Mockito with DaysAndTimes
 object LeagueFactoryImplSpec {
   // DSL for snapshot and league row creation
 
-  implicit class StringNameImplicits(playerName: String) {
-    def wins(gamesWon: Int) = Wins(playerName, gamesWon)
+  implicit class LeaguePlayerImplicits(player: Player) {
+    def wins(gamesWon: Int) = Wins(player, gamesWon)
   }
 
-  case class Wins(playerName: String, gamesWon: Int) {
+  case class Wins(player: Player, gamesWon: Int) {
     def playingRounds(roundsPlayedInWinningGames: Int) =
-      WinsRounds(playerName, gamesWon, roundsPlayedInWinningGames)
+      WinsRounds(player, gamesWon, roundsPlayedInWinningGames)
   }
 
-  case class WinsRounds(playerName: String, gamesWon: Int, roundsPlayedInWinningGames: Int) {
-    def loses(gamesLost: Int) = Loses(playerName, gamesWon, roundsPlayedInWinningGames, gamesLost)
+  case class WinsRounds(player: Player, gamesWon: Int, roundsPlayedInWinningGames: Int) {
+    def loses(gamesLost: Int) = Loses(player, gamesWon, roundsPlayedInWinningGames, gamesLost)
   }
 
-  case class Loses(playerName: String, gamesWon: Int, roundsPlayedInWinningGames: Int, gamesLost: Int) {
+  case class Loses(player: Player, gamesWon: Int, roundsPlayedInWinningGames: Int, gamesLost: Int) {
     def playingRounds(roundsPlayedInLosingGames: Int) =
-      LeagueRowOrSnapshot(playerName, gamesWon, roundsPlayedInWinningGames, gamesLost, roundsPlayedInLosingGames)
+      LeagueRowOrSnapshot(player, gamesWon, roundsPlayedInWinningGames, gamesLost, roundsPlayedInLosingGames)
   }
 
   case class LeagueRowOrSnapshot(
-    playerName: String, gamesWon: Int, roundsPlayedInWinningGames: Int, gamesLost: Int, roundsPlayedInLosingGames: Int) {
+    player: Player, gamesWon: Int, roundsPlayedInWinningGames: Int, gamesLost: Int, roundsPlayedInLosingGames: Int) {
 
-    def asLeagueRow = LeagueRow(playerName, gamesWon, gamesLost, roundsPlayedInWinningGames, roundsPlayedInLosingGames)
+    def asLeagueRow = LeagueRow(player, gamesWon, gamesLost, roundsPlayedInWinningGames, roundsPlayedInLosingGames)
     def asSnapshot =
-      playerName ->
+      player ->
         Snapshot(gamesWon, gamesLost, roundsPlayedInWinningGames, roundsPlayedInLosingGames)
   }
 
   implicit def LeagueRowOrSnapshotToLeagueRow(leagueRowOrSnapshot: LeagueRowOrSnapshot): LeagueRow =
     leagueRowOrSnapshot.asLeagueRow
 
-  implicit def LeagueRowOrSnapshotToSnapshot(leagueRowOrSnapshot: LeagueRowOrSnapshot): Pair[String, Snapshot] =
+  implicit def LeagueRowOrSnapshotToSnapshot(leagueRowOrSnapshot: LeagueRowOrSnapshot): Pair[Player, Snapshot] =
     leagueRowOrSnapshot.asSnapshot
 
-  def on(dateTime: DateTime, snapshots: Pair[String, Snapshot]*): SortedMap[DateTime, Map[String, Snapshot]] =
-    SortedMap(dateTime -> snapshots.foldLeft(Map.empty[String, Snapshot])(_ + _))
+  def on(dateTime: DateTime, snapshots: Pair[Player, Snapshot]*): SortedMap[DateTime, Map[Player, Snapshot]] =
+    SortedMap(dateTime -> snapshots.foldLeft(Map.empty[Player, Snapshot])(_ + _))
 }

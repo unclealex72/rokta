@@ -23,6 +23,7 @@
 package model
 
 import scala.collection.mutable.{ Map, Seq }
+import argonaut._, Argonaut._, DecodeResult._
 
 /**
  * A base class for enumeration type objects that can be persisted in a database
@@ -34,8 +35,23 @@ trait PersistableEnumeration[E] {
   /**
    * Find an enumeration by its persistable token.
    */
-  def apply(persistableToken: String) = valueMap.get(persistableToken)
+  def unapply(persistableToken: String): Option[E] = valueMap.get(persistableToken)
 
+  def apply(persistableToken: String): E = unapply(persistableToken) match {
+    case Some(e) => e
+    case None => throw new IllegalArgumentException(s"${persistableToken} is not a valid token.");
+  }
+  
+  val defaultJsonDecoder : DecodeJson[E] = DecodeJson {(c: HCursor) => 
+    c.focus.string match {
+      case Some(str) => unapply(str).map(ok(_)).getOrElse(fail(str + " is not a valid token.", c.history))
+      case None => fail("Expected a string for a token.", c.history)
+    }
+  }
+  val defaultJsonEncoder = EncodeJson((e: Value) => jString(e.persistableToken))
+  
+  val defaultJsonField = (e: Value) => e.persistableToken
+  
   trait Value { self: E =>
 
     /**
@@ -51,7 +67,8 @@ trait PersistableEnumeration[E] {
     _valueMap += (this.persistableToken -> this)
 
     implicit def ordering = Ordering.by((v: Value) => v.index)
-  }
+
+}
 
   /**
    * A list of all the registered instances of this type.

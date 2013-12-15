@@ -28,6 +28,8 @@ import scala.collection.SortedSet
 import com.escalatesoft.subcut.inject.AutoInjectable
 import com.escalatesoft.subcut.inject.BindingModule
 import com.escalatesoft.subcut.inject.injected
+import model.Player
+import stats.LeagueRow._
 
 /**
  * The default implementation of [[LeagueFactory]].
@@ -40,21 +42,21 @@ class LeagueFactoryImpl(_gapCalculator: Option[GapCalculator] = injected) extend
   val gapCalculator: GapCalculator = injectIfMissing(_gapCalculator)
 
   def apply(
-    snapshots: SortedMap[DateTime, Map[String, Snapshot]], 
-    todaysStrings: Option[Set[String]], exemptString: Option[String]): SortedSet[LeagueRow] = {
+    snapshots: SortedMap[DateTime, Map[Player, Snapshot]], 
+    todaysPlayers: Option[Set[Player]], exemptPlayer: Option[Player]): SortedSet[LeagueRow] = {
     val leagues = snapshots.takeRight(2).toIndexedSeq.map(_._2).map(generateLeague)
     if (leagues.isEmpty) {
       SortedSet.empty
     } else {
-      if (leagues.size == 1 || todaysStrings.isEmpty) {
-        decorateWithExemption(exemptString)(leagues.last)
+      if (leagues.size == 1 || todaysPlayers.isEmpty) {
+        decorateWithExemption(exemptPlayer)(leagues.last)
       } else {
-        decorate(leagues(1), leagues(0), todaysStrings.get, exemptString)
+        decorate(leagues(1), leagues(0), todaysPlayers.get, exemptPlayer)
       }
     }
   }
 
-  def generateLeague: Map[String, Snapshot] => SortedSet[LeagueRow] = { snapshots =>
+  def generateLeague: Map[Player, Snapshot] => SortedSet[LeagueRow] = { snapshots =>
     snapshots.toSeq.foldLeft(SortedSet.empty[LeagueRow]) { (leagueRows, playerSnapshot) =>
       val (player, snapshot) = playerSnapshot
       leagueRows + LeagueRow(player, snapshot.gamesWon, snapshot.gamesLost,
@@ -65,10 +67,10 @@ class LeagueFactoryImpl(_gapCalculator: Option[GapCalculator] = injected) extend
   def decorate(
     currentLeague: SortedSet[LeagueRow],
     previousLeague: SortedSet[LeagueRow],
-    todaysStrings: Set[String], exemptString: Option[String]): SortedSet[LeagueRow] = {
+    todaysPlayers: Set[Player], exemptPlayer: Option[Player]): SortedSet[LeagueRow] = {
     val decorators =
-      Seq(decorateWithMovement(previousLeague), decorateWithCurrent(todaysStrings),
-        decorateWithExemption(exemptString), decorateWithGap(todaysStrings))
+      Seq(decorateWithMovement(previousLeague), decorateWithCurrent(todaysPlayers),
+        decorateWithExemption(exemptPlayer), decorateWithGap(todaysPlayers))
     decorators.foldLeft(currentLeague)((currentLeague, decorator) => decorator(currentLeague))
   }
 
@@ -78,15 +80,15 @@ class LeagueFactoryImpl(_gapCalculator: Option[GapCalculator] = injected) extend
    */
   def decorateWithMovement(previousLeague: SortedSet[LeagueRow]): SortedSet[LeagueRow] => SortedSet[LeagueRow] = {
     currentLeague =>
-      val previousPositions = positionsForStrings(previousLeague)
-      val currentPositions = positionsForStrings(currentLeague)
+      val previousPositions = positionsForPlayers(previousLeague)
+      val currentPositions = positionsForPlayers(currentLeague)
       currentLeague.map { leagueRow =>
-        val playerName = leagueRow.playerName
-        previousPositions.get(playerName) match {
-          // String didn't play previously
+        val Player = leagueRow.player
+        previousPositions.get(Player) match {
+          // Player didn't play previously
           case None => leagueRow
           // Take the difference of the current and previous positions.
-          case Some(previousPosition) => leagueRow.withMovement(currentPositions(playerName) - previousPosition)
+          case Some(previousPosition) => leagueRow.withMovement(currentPositions(Player) - previousPosition)
         }
       }
   }
@@ -94,49 +96,49 @@ class LeagueFactoryImpl(_gapCalculator: Option[GapCalculator] = injected) extend
   /**
    * Calculate the position of each player in a league
    */
-  def positionsForStrings(league: SortedSet[LeagueRow]): Map[String, Int] =
-    league.zipWithIndex.foldLeft(Map.empty[String, Int]) { (positions, leagueRowAndIndex) =>
+  def positionsForPlayers(league: SortedSet[LeagueRow]): Map[Player, Int] =
+    league.zipWithIndex.foldLeft(Map.empty[Player, Int]) { (positions, leagueRowAndIndex) =>
       val (leagueRow, index) = leagueRowAndIndex
-      positions + (leagueRow.playerName -> index)
+      positions + (leagueRow.player -> index)
     }
 
   /**
    * Decorate league rows for current players.
    */
-  def decorateWithCurrent(todaysStrings: Set[String]): SortedSet[LeagueRow] => SortedSet[LeagueRow] =
-    decorateBoolean(todaysStrings, leagueRow => leagueRow.withCurrentlyPlaying)
+  def decorateWithCurrent(todaysPlayers: Set[Player]): SortedSet[LeagueRow] => SortedSet[LeagueRow] =
+    decorateBoolean(todaysPlayers, leagueRow => leagueRow.withCurrentlyPlaying)
 
   /**
    * Decorate league rows for exempt players.
    */
-  def decorateWithExemption(exemptString: Option[String]): SortedSet[LeagueRow] => SortedSet[LeagueRow] =
-    decorateBoolean(exemptString, leagueRow => leagueRow.withExempt)
+  def decorateWithExemption(exemptPlayer: Option[Player]): SortedSet[LeagueRow] => SortedSet[LeagueRow] =
+    decorateBoolean(exemptPlayer, leagueRow => leagueRow.withExempt)
 
   /**
    * A convenience method for decorating league rows with a boolean value that indicates a player is in a known
    * list of players.
    */
-  def decorateBoolean(players: Traversable[String], decorator: LeagueRow => Boolean => LeagueRow): SortedSet[LeagueRow] => SortedSet[LeagueRow] = { currentLeague =>
+  def decorateBoolean(players: Traversable[Player], decorator: LeagueRow => Boolean => LeagueRow): SortedSet[LeagueRow] => SortedSet[LeagueRow] = { currentLeague =>
     currentLeague.map { leagueRow =>
-      decorator(leagueRow)(players.exists(_ == leagueRow.playerName))
+      decorator(leagueRow)(players.exists(_ == leagueRow.player))
     }
   }
 
   /**
    * Decorate all but the last row with gaps.
    */
-  def decorateWithGap(todaysStrings: Set[String]): SortedSet[LeagueRow] => SortedSet[LeagueRow] = { league =>
+  def decorateWithGap(todaysPlayers: Set[Player]): SortedSet[LeagueRow] => SortedSet[LeagueRow] = { league =>
     // Calculate the gaps by player name.
     val leagueRowPairs = league.toIndexedSeq.sliding(2)
-    val gapsByStringName = leagueRowPairs.foldLeft(Map.empty[String, Option[Int]]) { (gapsByStringName, leagueRows) =>
+    val gapsByPlayer = leagueRowPairs.foldLeft(Map.empty[Player, Option[Int]]) { (gapsByPlayer, leagueRows) =>
       val (topLeagueRow, bottomLeagueRow) = (leagueRows(0), leagueRows(1))
       val gap = gapCalculator.calculateGap(topLeagueRow, bottomLeagueRow)
-      gapsByStringName + (bottomLeagueRow.playerName -> gap)
+      gapsByPlayer + (bottomLeagueRow.player -> gap)
     }
     // Now decorate the original league.
     league.map { leagueRow =>
-      val playerName = leagueRow.playerName
-      gapsByStringName.get(playerName) match {
+      val Player = leagueRow.player
+      gapsByPlayer.get(Player) match {
         case Some(Some(gap)) => leagueRow.withGap(gap)
         case _ => leagueRow
       }

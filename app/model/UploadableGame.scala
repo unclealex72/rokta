@@ -22,6 +22,10 @@
 
 package model
 
+import argonaut.DecodeResult
+import argonaut._, Argonaut._, DecodeResult._
+import Hand._
+
 /**
  * A game that can be uploaded from a browser and then persisted.
  * @author alex
@@ -31,12 +35,26 @@ case class UploadableGame(
   /**
    * The name of the person who instigiated the game.
    */
-  instigator: String,
+  instigator: Player,
   /**
    * The original participants of the game.
    */
-  participants: Seq[String],
+  participants: List[Player],
   /**
    * A sequence of all the rounds played as a map of rounds keyed by player name.
    */
-  rounds: Seq[Map[String, String]])
+  rounds: List[Map[Player, Hand]])
+  
+object UploadableGame {
+  
+  def UploadableGameDecodeJson(playerFactory: String => Player) = {
+    def create(instigator: String, participants: List[String], rounds: List[Map[String, Hand]]): UploadableGame = {
+      val playerRounds = rounds map { round => round.foldLeft(Map.empty[Player, Hand]){ 
+        (round, play) => round + (playerFactory(play._1) -> play._2) }
+      }
+      UploadableGame(playerFactory(instigator), participants.map(playerFactory), playerRounds)
+    }
+    jdecode3L(create)("instigator", "participants", "rounds")
+  }
+  
+}

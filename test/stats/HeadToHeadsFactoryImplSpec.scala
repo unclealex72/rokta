@@ -47,8 +47,8 @@ class HeadToHeadsFactoryImplSpec extends Specification with NonPersistedGameDsl 
       val game = at(September(5, 1972), freddie plays ROCK, brian plays ROCK, roger plays PAPER) and
         (freddie plays PAPER, brian plays SCISSORS)
       val headToHeads = headToHeadsFactory(Seq(game))
-      headToHeads.keys must containTheSameElementsAs(Seq(brian.name))
-      headToHeads(brian.name) must containTheSameElementsAs(Seq(freddie.name -> 1))
+      headToHeads.keys must containTheSameElementsAs(Seq(brian))
+      headToHeads(brian) must containTheSameElementsAs(Seq(freddie -> 1))
     }
   }
 
@@ -57,8 +57,8 @@ class HeadToHeadsFactoryImplSpec extends Specification with NonPersistedGameDsl 
       val game = at(September(5, 1972), freddie plays ROCK, brian plays ROCK, roger plays PAPER) and
         (freddie plays ROCK, brian plays PAPER)
       val headToHeads = headToHeadsFactory(Seq(game, game))
-      headToHeads.keys must containTheSameElementsAs(Seq(brian.name))
-      headToHeads(brian.name) must containTheSameElementsAs(Seq(freddie.name -> 2))
+      headToHeads.keys must containTheSameElementsAs(Seq(brian))
+      headToHeads(brian) must containTheSameElementsAs(Seq(freddie -> 2))
     }
   }
 
@@ -71,8 +71,8 @@ class HeadToHeadsFactoryImplSpec extends Specification with NonPersistedGameDsl 
         at(September(5, 1972), roger plays ROCK, brian plays ROCK, freddie plays PAPER) and
         (roger plays SCISSORS, brian plays ROCK)
       val headToHeads = headToHeadsFactory(Seq(gameA, gameB))
-      headToHeads.keys must containTheSameElementsAs(Seq(brian.name))
-      headToHeads(brian.name) must containTheSameElementsAs(Seq(freddie.name -> 1, roger.name -> 1))
+      headToHeads.keys must containTheSameElementsAs(Seq(brian))
+      headToHeads(brian) must containTheSameElementsAs(Seq(freddie -> 1, roger -> 1))
     }
   }
 
@@ -85,9 +85,9 @@ class HeadToHeadsFactoryImplSpec extends Specification with NonPersistedGameDsl 
         at(September(5, 1972), freddie plays ROCK, brian plays PAPER, roger plays ROCK) and
         (freddie plays PAPER, roger plays ROCK)
       val headToHeads = headToHeadsFactory(Seq(gameA, gameB))
-      headToHeads.keys must containTheSameElementsAs(Seq(brian.name, freddie.name))
-      headToHeads(brian.name) must containTheSameElementsAs(Seq(freddie.name -> 1))
-      headToHeads(freddie.name) must containTheSameElementsAs(Seq(roger.name -> 1))
+      headToHeads.keys must containTheSameElementsAs(Seq(brian, freddie))
+      headToHeads(brian) must containTheSameElementsAs(Seq(freddie -> 1))
+      headToHeads(freddie) must containTheSameElementsAs(Seq(roger -> 1))
     }
   }
 }

@@ -1,11 +1,13 @@
-var graph = angular.module('rokta.graph', ['rokta.events', 'rokta.players', 'rokta.stats', 'rokta.filters', 'rokta.panel']);
+var graph = angular.module('rokta.graph',
+  ['rokta.events', 'rokta.players', 'rokta.stats', 'rokta.filters', 'rokta.panel', 'rokta.colours']);
 
 // A factory to create a Graph object used to create the graph series..
 graph.factory('Graph', [
 function() {
 
-  function Graph(players) {
+  function Graph(players, allColours) {
     this.players = _.indexBy(players, 'name');
+    this.allColours = allColours;
     this.series = [];
     this.colours = [];
   };
@@ -21,7 +23,9 @@ function() {
           data : []
         };
         this.series.push(playersSeries);
-        this.colours.push(this.players[player].colour.rgb);
+        var colourToken = this.players[player].colour;
+        var colour = this.allColours[colourToken];
+        this.colours.push(colour.rgb);
       }
       var dt = new Date(gameDate);
       var x = Date.UTC(dt.getUTCFullYear(), dt.getUTCMonth(), dt.getUTCDate(), dt.getUTCHours(), dt.getUTCMinutes(), dt.getUTCSeconds());
@@ -35,7 +39,9 @@ function() {
       playersSeries.data.push([x, y]);
     },
     populate : function(games) {
-      _.forEach(games, function(snapshots, gameDate) {
+      _.forEach(games, function(dateAndSnapshots) {
+        var gameDate = dateAndSnapshots[0];
+        var snapshots = dateAndSnapshots[1];
         this.addGame(gameDate, snapshots);
       }, this);
     },
@@ -113,13 +119,14 @@ function($log) {
   };
 }]);
 
-graph.controller('GraphCtrl', ['$log', '$scope', 'Events', 'Stats', 'Players', 'Graph',
-function($log, $scope, Events, Stats, Players, Graph) {
+graph.controller('GraphCtrl', ['$log', '$scope', 'Events', 'Stats', 'Players', 'Colours', 'Graph',
+function($log, $scope, Events, Stats, Players, Colours, Graph) {
   Stats.refresh();
-  Events.listenTo($scope, [Stats, Players], function() {
+  Colours.refresh();
+  Events.listenTo($scope, [Stats, Players, Colours], function() {
     var stats = Stats.stats;
     var snapshots = stats.snapshots;
-    var graph = new Graph(Players.players);
+    var graph = new Graph(Players.players, Colours.colourMap);
     graph.populate(snapshots);
     $scope.graph = {
       colours : graph.colours,

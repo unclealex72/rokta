@@ -54,13 +54,16 @@ case class Round(
   /**
    * The [[Play]]s contained in this round
    */
-  lazy val plays: StatefulOneToMany[Play] = RoktaSchema.roundToPlays.leftStateful(this)
+  lazy val _plays: StatefulOneToMany[Play] = RoktaSchema.roundToPlays.leftStateful(this)
+  lazy val plays: Map[Player, Hand] = _plays.foldLeft(Map.empty[Player, Hand]){(plays, play) =>
+    plays + (play.player -> play.hand)
+  }
 
   /**
    * Add plays to this round
    */
   def addPlays(plays: Map[PersistedPlayer, Hand]): Round = {
-    plays.foreach { case (person, hand) => this.plays.associate(Play(this, person, hand)) }
+    plays.foreach { case (person, hand) => this._plays.associate(Play(this, person, hand)) }
     this
   }
 }

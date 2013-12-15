@@ -53,6 +53,8 @@ case class PersistedPlayer(
   @JsonIgnore
 	val _colour:  String) extends KeyedEntity[Long] with Player {
   
-  lazy val colour: Colour = Colour(_colour).getOrElse({ 
-    throw new IllegalStateException(s"${_colour} is not a valid colour.") })
+  lazy val colour: Colour = _colour match {
+    case Colour(colour) => colour
+    case _ => throw new IllegalStateException(s"${_colour} is not a valid colour.")
+  }
 }

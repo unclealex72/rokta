@@ -22,10 +22,10 @@
 
 package json
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import com.fasterxml.jackson.datatype.joda.JodaModule
-import com.fasterxml.jackson.databind.SerializationFeature
+import argonaut._, Argonaut._
+import scala.collection.SortedSet
+import scala.collection.SortedMap
+import scalaz.Validation
 
 /**
  * A global object used to configure Jackson JSON support.
@@ -34,15 +34,20 @@ import com.fasterxml.jackson.databind.SerializationFeature
  */
 object Json {
 
-  /**
-   * The scala aware object mapper to use.
-   */
-  private val objectMapper: ObjectMapper =
-    new ObjectMapper().registerModules(DefaultScalaModule, new JodaModule).
-      disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-  
-  def read[T](json: String)(implicit m: Manifest[T]): T = 
-    objectMapper.readValue(json, m.runtimeClass).asInstanceOf[T]
+  def read[T](json: String)(implicit decoder: DecodeJson[T]): Validation[String, T] =
+    json.decodeValidation[T]
     
-  def apply(a: Any): String = objectMapper.writeValueAsString(a)
+  def apply[A](a: A)(implicit encoder: EncodeJson[A]): String = encoder.encode(a).nospaces
+  
+  /**
+   * JSON serialisation.
+   */
+  implicit def sortedSetEncodeJson[A](implicit e: EncodeJson[A]): EncodeJson[SortedSet[A]] = 
+    EncodeJson((ss: SortedSet[A]) => ss.foldRight(jEmptyArray)((s, json) => e(s) -->>: json))
+
+  /**
+   * JSON serialisation.
+   */
+  implicit def mapEncodeJson[K, V](implicit ek: K => JsonField, ev: EncodeJson[V]): EncodeJson[Map[K, V]] = 
+    EncodeJson((sm: Map[K, V]) => sm.foldLeft(jEmptyObject)((json, kv) => (ek(kv._1), ev(kv._2)) ->: json))
 }

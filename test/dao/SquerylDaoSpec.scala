@@ -189,33 +189,32 @@ class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology 
       freddie.save
       brian.save
       roger.save
-      implicit def personToString(person: PersistedPlayer): String = person.name
       implicit def handToString(hand: Hand): String = hand.persistableToken
       val uploadableGame = 
         UploadableGame(
           freddie, 
-          Seq(freddie, brian, roger),
-          Seq(
-            Map(freddie.name -> ROCK, roger.name -> ROCK, brian.name -> PAPER),
-            Map(freddie.name -> SCISSORS, roger.name -> PAPER)
+          List(freddie, brian, roger),
+          List(
+            Map(freddie -> ROCK, roger -> ROCK, brian -> PAPER),
+            Map(freddie -> SCISSORS, roger -> PAPER)
           )
         )
       val datePlayed = September (5, 2013) at (9 :> 12)
       val id = squerylDao.uploadGame(datePlayed, uploadableGame).id
       val persistedGame = from(games)(g => where(g.id === id) select (g)).single
       persistedGame.id must be equalTo(id)
-      persistedGame.instigator.one must be equalTo(Some(freddie))
+      persistedGame._instigator.one must be equalTo(Some(freddie))
       persistedGame.datePlayed must be equalTo(datePlayed)
-      val rounds = persistedGame.rounds.toSeq.sortBy(round => round.round)
+      val rounds = persistedGame._rounds.toSeq.sortBy(round => round.round)
       rounds must haveSize(2)
       val roundOne = rounds(0)
       roundOne.round must be equalTo(1)
       def bePlay(player: PersistedPlayer, hand: Hand) = 
         ((_:Play).player.name) ^^ equalTo(player.name) and ((_:Play).hand.persistableToken) ^^ equalTo(hand.persistableToken)
-      roundOne.plays.toSeq must contain(bePlay(freddie, ROCK), bePlay(roger, ROCK), bePlay(brian, PAPER))
+      roundOne._plays.toSeq must contain(bePlay(freddie, ROCK), bePlay(roger, ROCK), bePlay(brian, PAPER))
       val roundTwo = rounds(1)
       roundTwo.round must be equalTo(2)
-      roundTwo.plays.toSeq must contain(bePlay(freddie, SCISSORS), bePlay(roger, PAPER))
+      roundTwo._plays.toSeq must contain(bePlay(freddie, SCISSORS), bePlay(roger, PAPER))
     }
   }
 }

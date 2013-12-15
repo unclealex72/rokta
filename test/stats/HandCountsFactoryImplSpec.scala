@@ -27,6 +27,7 @@ import model.NonPersistedGameDsl
 import dates.DaysAndTimes
 import dates.UtcChronology
 import model.Hand._
+import model.Player
 /**
  * @author alex
  *
@@ -36,19 +37,19 @@ class HandCountsFactoryImplSpec extends Specification with NonPersistedGameDsl w
   val handCountsFactory = new HandCountsFactoryImpl
   
   "Adding a hand to an empty handcount" should {
-    val empty = Map.empty[String, HandCount]
+    val empty = Map.empty[Player, HandCount]
     
     "register it for both initial- and all-hand counts if it is from the first round" in {
-      val handCounts = handCountsFactory.countHandsForPlay(1)(empty, (freddie.name, ROCK))
-      handCounts.keySet must contain(freddie.name)
-      val handCount = handCounts(freddie.name)
+      val handCounts = handCountsFactory.countHandsForPlay(1)(empty, (freddie, ROCK))
+      handCounts.keySet must contain(freddie)
+      val handCount = handCounts(freddie)
       handCount.countsForFirstRounds must be equalTo(Map(ROCK -> 1))
       handCount.countsForAllRounds must be equalTo(Map(ROCK -> 1))
     }
     "register it for only all-hand counts if it is not from the first round" in {
-      val handCounts = handCountsFactory.countHandsForPlay(2)(empty, (freddie.name, ROCK))
-      handCounts.keySet must contain(freddie.name)
-      val handCount = handCounts(freddie.name)
+      val handCounts = handCountsFactory.countHandsForPlay(2)(empty, (freddie, ROCK))
+      handCounts.keySet must contain(freddie)
+      val handCount = handCounts(freddie)
       handCount.countsForFirstRounds must beEmpty
       handCount.countsForAllRounds must be equalTo(Map(ROCK -> 1))
     }
@@ -64,10 +65,10 @@ class HandCountsFactoryImplSpec extends Specification with NonPersistedGameDsl w
         (freddie plays SCISSORS, roger plays SCISSORS) and
         (freddie plays PAPER, roger plays SCISSORS)
       handCountsFactory(Seq(gameOne, gameTwo)) must be equalTo(Map(
-        freddie.name -> HandCount(Map(ROCK -> 1, SCISSORS -> 1), Map(ROCK ->2, SCISSORS -> 2, PAPER -> 1)),
-        roger.name -> HandCount(Map(SCISSORS -> 2), Map(ROCK -> 1, SCISSORS -> 4)),
-        brian.name -> HandCount(Map(ROCK -> 1, PAPER -> 1), Map(ROCK -> 2, PAPER -> 1)),
-        john.name -> HandCount(Map(ROCK -> 2), Map(ROCK -> 2, SCISSORS -> 1))
+        freddie -> HandCount(Map(ROCK -> 1, SCISSORS -> 1), Map(ROCK ->2, SCISSORS -> 2, PAPER -> 1)),
+        roger -> HandCount(Map(SCISSORS -> 2), Map(ROCK -> 1, SCISSORS -> 4)),
+        brian -> HandCount(Map(ROCK -> 1, PAPER -> 1), Map(ROCK -> 2, PAPER -> 1)),
+        john -> HandCount(Map(ROCK -> 2), Map(ROCK -> 2, SCISSORS -> 1))
       ))
     }
   }

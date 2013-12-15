@@ -23,6 +23,7 @@
 package stats
 
 import model.Game
+import model.Player
 
 /**
  * A trait used to count the results in rounds where there are just two players.
@@ -36,5 +37,5 @@ trait HeadToHeadsFactory {
    * @return A map containing a count of all the head-to-heads. The first key is the name of the winner and
    * the second the name of the loser.
    */
-  def apply(games: Iterable[Game]): Map[String, Map[String, Int]]
+  def apply(games: Iterable[Game]): Map[Player, Map[Player, Int]]
 }

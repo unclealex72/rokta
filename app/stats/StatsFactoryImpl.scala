@@ -108,7 +108,7 @@ class StatsFactoryImpl(
       now().getYear == year && now().getMonthOfYear == month && now().getDayOfMonth == day
   }
   
-  def findTodaysPlayers(todaysGames: Iterable[Game]): Set[String] = 
+  def findTodaysPlayers(todaysGames: Iterable[Game]): Set[Player] = 
     todaysGames.flatMap(_.participants).toSet
   
 }

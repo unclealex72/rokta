@@ -35,6 +35,8 @@ import dates.Now
 import filter.ContiguousGameFilter
 import json.JsonResults
 import dao.Transactional
+import argonaut._, Argonaut._
+import dates.DateTimeJsonCodec._
 
 /**
  * @author alex
@@ -48,7 +50,7 @@ class StatsController(
 
   val statsFactory = injectIfMissing(_statsFactory)
   val now = injectIfMissing(_now)
-  val tx = injectIfMissing(_tx)
+  implicit val tx = injectIfMissing(_tx)
 
   def stats(filter: String) = filter match {
     case ContiguousGameFilter(gameFilter) => statsForGameFilter(gameFilter)

@@ -36,8 +36,11 @@ import stats.StatsFactory
 import dates.Now
 import filter.ContiguousGameFilter
 import json.JsonResults
+import argonaut._, Argonaut._
+import model.PlayerFullEncodeJson._
 
 /**
+ * A controller for returning all the known players
  * @author alex
  *
  */

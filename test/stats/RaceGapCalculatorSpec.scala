@@ -23,12 +23,13 @@
 package stats
 
 import org.specs2.mutable.Specification
+import model.NonPersistedGameDsl
 
 /**
  * @author alex
  *
  */
-class RaceGapCalculatorSpec extends Specification {
+class RaceGapCalculatorSpec extends Specification with NonPersistedGameDsl {
 
   val gapCalculator = new RaceGapCalculator
 
@@ -110,6 +111,6 @@ class RaceGapCalculatorSpec extends Specification {
     def notExempt = createLeagueRow(false)
     
     def createLeagueRow(exempt: Boolean) = 
-      LeagueRow("Player", gamesPlayed - gamesLost, gamesLost, 0, 0, None, playing, true, None)
+      LeagueRow(freddie, gamesPlayed - gamesLost, gamesLost, 0, 0, None, playing, true, None)
   }
 }

@@ -42,17 +42,15 @@ import play.api.libs.concurrent.Execution.Implicits._
  */
 trait Etag extends Controller {
 
-  self: {
-    val tx: Transactional
-  } =>
-  
-  def calculateETag(): String = tx { personDao => gameDao =>
+  def calculateETag(tx: Transactional): String = tx { personDao => gameDao =>
     gameDao.lastGamePlayed.map(dt => dt.getMillis().toString()).getOrElse("none")
   }
-  
-  def ETag[A](action: Action[A]): Action[A] = 
+
+  def ETag[A](action: Action[A])(implicit tx: Transactional): Action[A] = ETag(calculateETag(tx))(action)
+
+  def ETag[A](etag: String)(action: Action[A]): Action[A] =
     Action.async(action.parser) { implicit request =>
-    val quotedETag = '"' + calculateETag() + '"'
+    val quotedETag = '"' + etag + '"'
     val modified = request.headers.get(HeaderNames.IF_NONE_MATCH) match {
       case None => {
         true

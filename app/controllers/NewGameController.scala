@@ -27,11 +27,14 @@ import com.escalatesoft.subcut.inject.injected
 import dao.Transactional
 import dates.Now
 import json.JsonBodyParser
-import model.UploadableGame
-import play.api.mvc.Action
+import model.{PersistedGame, UploadableGame, Game, Player}
+import model.UploadableGame._
+import model.Game._
+import model.PersistedGameImplicits._
 import json.JsonResults
 import stats.TodaysGamesFactory
 import stats.ExemptPlayerFactory
+import scalaz.{Failure, Success}
 
 /**
  * The controller for creating and persisting new games.
@@ -50,17 +53,28 @@ class NewGameController(
   
   def availablePlayers = AuthorisedAjaxAction { implicit request =>
     val players = (tx { playerDao => gameDao => playerDao.allPlayers }).map(_.name)
-    val exemptPlayer: Option[String] = exemptPlayerFactory(todaysGamesFactory())
+    val exemptPlayer: Option[Player] = exemptPlayerFactory(todaysGamesFactory())
     json(Map(
       "availablePlayers" -> (exemptPlayer match {
-        case Some(exemptPlayer) => players - exemptPlayer
+        case Some(exemptPlayer) => players - exemptPlayer.name
         case None => players
       }),
       "instigators" -> players))
   }
   
-  def uploadGame = AuthorisedAjaxAction(JsonBodyParser[UploadableGame]) { implicit request => 
-    val persistedGame = tx { playerDao => gameDao => gameDao.uploadGame(now(), request.body) }
-    json(persistedGame.id)
+  def uploadGame = {
+    val allPlayersByName = tx { playerDao => gameDao => playerDao.allPlayers.groupBy(_.name) }
+    // Allow unknown players to fail horribly.
+    val playerFactory = (name: String) => allPlayersByName.get(name).flatMap(_.headOption).get
+    implicit val uploadableGameDecodeJson = UploadableGameDecodeJson(playerFactory)
+    AuthorisedAjaxAction(JsonBodyParser[UploadableGame]) { implicit request =>
+      request.body match {
+        case Success(uploadableGame) => tx { playerDao => gameDao =>
+          val persistedGame = gameDao.uploadGame(now(), uploadableGame)
+          json(persistedGame)
+        }
+        case Failure(message) => BadRequest(message)
+      }
+    }
   }
 }

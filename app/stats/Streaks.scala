@@ -23,6 +23,8 @@
 package stats
 
 import scala.collection.SortedSet
+import argonaut._, Argonaut._
+import json.Json._
 
 /**
  * A container to hold winning and losing streaks.
@@ -47,4 +49,10 @@ case class Streaks(
 object Streaks {
   
   def apply(): Streaks = Streaks(SortedSet.empty[Streak], SortedSet.empty[Streak])
+  
+  /**
+   * JSON serialisation
+   */
+  implicit val streaksEncodeJson: EncodeJson[Streaks] =
+    jencode2L((s: Streaks) => (s.winningStreaks, s.losingStreaks))("winningStreaks", "losingStreaks")
 }

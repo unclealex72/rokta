@@ -23,6 +23,7 @@
 package stats
 
 import model.Game
+import model.Player
 
 /**
  * A trait to return the current results for the day.
@@ -31,5 +32,5 @@ import model.Game
  */
 trait CurrentResultsFactory {
 
-  def apply(games: Iterable[Game]): Map[String, CurrentResults]
+  def apply(games: Iterable[Game]): Map[Player, CurrentResults]
 }

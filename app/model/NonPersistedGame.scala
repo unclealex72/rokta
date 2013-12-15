@@ -27,6 +27,7 @@ import model.JodaDateTime._
 import scala.collection.immutable.Map
 import scala.collection.SortedMap
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import model.Hand._
 
 /**
  * A class for [[PersistedGame]] that allows other components to be tested without having to set up a database.
@@ -41,18 +42,18 @@ case class NonPersistedGame(
   /**
    * The player who instigated this game.
    */
-  instigator: String,
+  instigator: Player,
   /**
    * The actual hands played during the game.
    */
-  rounds: SortedMap[Int, Map[String, Hand]]) extends Game
+  rounds: SortedMap[Int, Map[Player, Hand]]) extends Game
 
 object NonPersistedGame {
 
   /**
    * Create a new game from a Squeryl grouped tuple.
    */
-  def apply(info: ((PersistedGame, String), Iterable[(PersistedGame, String, Int, String, String)])): NonPersistedGame = {
+  def apply(info: ((PersistedGame, Player), Iterable[(PersistedGame, Player, Int, Player, Hand)])): NonPersistedGame = {
     val (key, value) = info
     val (persistedGame, instigator) = key
     val rounds = value.groupBy(kv => (kv._1, kv._2, kv._3))
@@ -60,20 +61,19 @@ object NonPersistedGame {
   }
 
   def calculateGame(
-    persistedGame: PersistedGame, instigator: String, 
+    persistedGame: PersistedGame, instigator: Player, 
     gamesInstigatorsRoundsPlayersPlays: 
-      Map[(PersistedGame, String, Int), Iterable[(PersistedGame, String, Int, String, String)]]): NonPersistedGame = {
-    val rounds = gamesInstigatorsRoundsPlayersPlays.foldLeft(SortedMap.empty[Int, Map[String, Hand]]) { (rounds, round) =>
+      Map[(PersistedGame, Player, Int), Iterable[(PersistedGame, Player, Int, Player, Hand)]]): NonPersistedGame = {
+    val rounds = gamesInstigatorsRoundsPlayersPlays.foldLeft(SortedMap.empty[Int, Map[Player, Hand]]) { (rounds, round) =>
       val roundNumber = round._1._3
       val plays =
         round._2
           .groupBy(kv => (kv._1, kv._2, kv._3, kv._4))
-          .foldLeft(Map.empty[String, Hand]) { (plays, play) =>
+          .foldLeft(Map.empty[Player, Hand]) { (plays, play) =>
             val player = play._1._4
             val hand = play._2.headOption.map(_._5).getOrElse(
               throw new IllegalStateException(s"Could not read rounds from game ID ${persistedGame.id}"))
-            plays + (player -> Hand(hand).getOrElse(
-              throw new IllegalStateException(s"${hand} is not a valid hand.")))
+            plays + (player -> hand)
           }
       rounds + (roundNumber -> plays)
     }
