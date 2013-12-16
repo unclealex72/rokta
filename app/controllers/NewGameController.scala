@@ -63,7 +63,7 @@ class NewGameController(
   }
   
   def uploadGame = {
-    val allPlayersByName = tx { playerDao => gameDao => playerDao.allPlayers.groupBy(_.name) }
+    val allPlayersByName: Map[String, Set[Player]] = tx { playerDao => gameDao => playerDao.allPlayers.groupBy(_.name) }
     // Allow unknown players to fail horribly.
     val playerFactory = (name: String) => allPlayersByName.get(name).flatMap(_.headOption).get
     implicit val uploadableGameDecodeJson = UploadableGameDecodeJson(playerFactory)
