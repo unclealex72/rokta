@@ -192,6 +192,9 @@ function() {
                     style: {
                         fontWeight: 'bold',
                         color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                    },
+                    formatter: function() {
+                      return this.total + '%';
                     }
                 }
             },
