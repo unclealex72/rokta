@@ -4,7 +4,14 @@ var headtoheads = angular.module('rokta.headtoheads', ['rokta.events', 'rokta.pl
 headtoheads.service('HeadToHeads', [
 function() {
   var calculatePlayerInfo = function(players, allColours, headToHeads) {
-      var activePlayerNames = _(headToHeads).keys().sortBy();
+      var activePlayerNameCollector = {};
+      _(headToHeads).forIn(function(results, winnersName) {
+        activePlayerNameCollector[winnersName] = true;
+        _(results).forIn(function(res, losersName) {
+          activePlayerNameCollector[losersName] = true;
+        });
+      });
+      var activePlayerNames = _(activePlayerNameCollector).keys().sortBy();
       var activePlayers =
         _(players).filter(function (player) { return activePlayerNames.contains(player.name); }).indexBy('name').value();
       var colours = activePlayerNames.map(function(name) {
@@ -81,17 +88,16 @@ function() {
       var max, min;
       activePlayerNames.forEach(function(winner, idx) {
         _(headToHeads[winner]).forIn(function(wins, loser) {
-          var losersResults = headToHeads[loser]
-          if (losersResults) {
-            var losses = losersResults[winner]
-            if (losses) {
-              var result = parseFloat((100 * wins / (wins + losses)).toFixed(2));
-              max = max ? Math.max(max, result) : result;
-              min = min ? Math.min(min, result) : result;
-              series[playerIndiciesByName[loser]].data[idx] =
-                {y: result, winner: winner, wins: wins, loser: loser, losses: losses};
-            }
+          var losersResults = headToHeads[loser];
+          var losses = _.isUndefined(losersResults) ? 0 : losersResults[winner];
+          if (_.isUndefined(losses)) {
+            losses = 0;
           }
+          var result = parseFloat((100 * wins / (wins + losses)).toFixed(2));
+          max = max ? Math.max(max, result) : result;
+          min = min ? Math.min(min, result) : result;
+          series[playerIndiciesByName[loser]].data[idx] =
+            {y: result, winner: winner, wins: wins, loser: loser, losses: losses};
         });
       });
       return {names: activePlayerNames.value(), colours: colours, series: series, max: max, min: min};
