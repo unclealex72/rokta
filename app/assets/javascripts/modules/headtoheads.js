@@ -81,13 +81,16 @@ function() {
       var max, min;
       activePlayerNames.forEach(function(winner, idx) {
         _(headToHeads[winner]).forIn(function(wins, loser) {
-          var losses = headToHeads[loser][winner]
-          if (losses) {
-            var result = parseFloat((100 * wins / (wins + losses)).toFixed(2));
-            max = max ? Math.max(max, result) : result;
-            min = min ? Math.min(min, result) : result; 
-            series[playerIndiciesByName[loser]].data[idx] = 
-              {y: result, winner: winner, wins: wins, loser: loser, losses: losses};
+          var losersResults = headToHeads[loser]
+          if (losersResults) {
+            var losses = losersResults[winner]
+            if (losses) {
+              var result = parseFloat((100 * wins / (wins + losses)).toFixed(2));
+              max = max ? Math.max(max, result) : result;
+              min = min ? Math.min(min, result) : result;
+              series[playerIndiciesByName[loser]].data[idx] =
+                {y: result, winner: winner, wins: wins, loser: loser, losses: losses};
+            }
           }
         });
       });
