@@ -208,8 +208,11 @@ function() {
                 }
             },
             tooltip: {
-                formatter: function() {
-                    return '<b>'+ this.x + ' ' + this.point.stackTotal + '%</b>';
+              formatter: function() {
+                var playerName = this.x;
+                var playerData = _.find(headToHeads, function(item) { return item.player == playerName; });
+                //alert(angular.toJson(playerData));
+                return '<b>'+ this.x + ' (won ' + playerData.wins + ' of ' + (playerData.wins + playerData.losses) + ')</b>';
                 }
             },
             plotOptions: {
