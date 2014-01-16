@@ -1,18 +1,20 @@
-var events = angular.module('rokta.events', []);
+var events = angular.module('rokta.events', ['restangular']);
 
-events.service('Events', ['$log', '$rootScope', '$http',
-function($log, $rootScope, $http) {
+events.service('Events', ['$log', '$rootScope', 'Restangular',
+function($log, $rootScope, Restangular) {
   var service = {
     refresh : function(event, url, success) {
       $log.info("Calling " + url);
-      $http.get(url).success(function(data, status) {
-        $log.info("Url " + url + " returned status " + status);
+      var onSuccess = function(data) {
         success(data);
         event.initialised = true;
         $rootScope.$broadcast(event.name);
-      }).error(function(data, status) {
-        alert(event.name + ": " + status);
-      });
+      }
+      var onFailure = function(response) {
+        $log.info(event.name + ": " + response.status);
+        alert(event.name + ": " + response.status);
+      };
+      Restangular.oneUrl(event.name, url).get().then(onSuccess, onFailure);
     },
     listenTo : function($scope, events, callback) {
       if (!_.isArray(events)) {

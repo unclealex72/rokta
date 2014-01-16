@@ -128,6 +128,7 @@
 	<script src='@routes.Assets.at("javascripts/ui-bootstrap-tpls-0.7.0.min.js")'></script>
     <script src='//code.highcharts.com/3.0.7/highcharts.js'></script>
     <script src='//code.highcharts.com/3.0.7/highcharts-more.js'></script>
+    <script src='http://cdn.jsdelivr.net/restangular/1.2.0/restangular.min.js'></script>
     @minified=@{ if (play.Play.isProd()) ".min" else "" }
     @for(file <- Map(
       "common" -> Seq("day", "events", "colours", "stats", "players", "panel"),

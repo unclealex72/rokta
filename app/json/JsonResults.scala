@@ -33,6 +33,6 @@ trait JsonResults extends Results {
 
   def json[A](a: A)(implicit encoder: EncodeJson[A]) = 
     Ok(encoder.encode(a).nospaces).withHeaders(
-        CONTENT_TYPE -> "application/json", CACHE_CONTROL -> "max-age=0, no-cache, no-store")
+        CONTENT_TYPE -> "application/json", CACHE_CONTROL -> "max-age=0, no-cache, must-revalidate")
 
 }
