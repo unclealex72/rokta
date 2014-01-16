@@ -41,7 +41,16 @@ case class HandCount(
    * A count of the hands played in all rounds of games.
    */
   countsForAllRounds: Map[Hand, Int]) {
-  
+
+  /**
+   * Add all hands played to a hand count.
+   * @param hands
+   * @return
+   */
+  def ++(hands: Iterable[Hand]): HandCount = hands.zipWithIndex.foldLeft(this){ case(handCount, (hand, idx)) =>
+    handCount + (idx + 1, hand)
+  }
+
   /**
    * Add an extra hand to a hand count
    */

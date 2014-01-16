@@ -53,8 +53,6 @@ import stats.StreaksFactory
 import stats.StreaksFactoryImpl
 import stats.TodaysGamesFactory
 import stats.TodaysGamesFactoryImpl
-import stats.HandCountsFactory
-import stats.HandCountsFactoryImpl
 
 object RoktaBindingModule extends NewBindingModule(module => {
   import module._   // can now use bind directly
@@ -72,7 +70,6 @@ object RoktaBindingModule extends NewBindingModule(module => {
   bind[GapCalculator] toModuleSingle { implicit module => new RaceGapCalculator }
   bind[CurrentResultsFactory] toModuleSingle { implicit module => new CurrentResultsFactoryImpl }
   bind[Now] toSingle(SystemNow())
-  bind[HandCountsFactory] toModuleSingle { implicit module => new HandCountsFactoryImpl }
   bind[StatsFactory] toModuleSingle { implicit module => new StatsFactoryImpl}
   bind[HeadToHeadsFactory] toModuleSingle { implicit module => new HeadToHeadsFactoryImpl }
   bind[ExemptPlayerFactory] toModuleSingle { implicit module => new ExemptPlayerFactoryImpl }

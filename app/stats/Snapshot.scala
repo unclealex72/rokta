@@ -23,6 +23,7 @@
 package stats
 
 import argonaut._, Argonaut._, DecodeResult._
+import model.Hand
 
 /**
  * A snapshot of the state of how many games a player has won or lost at a given time.
@@ -30,6 +31,10 @@ import argonaut._, Argonaut._, DecodeResult._
  *
  */
 case class Snapshot(
+  /**
+   * The current hand count for the player.
+   */
+  val handCount: HandCount,
   /**
    * The number of games a player has won.
    */
@@ -47,9 +52,11 @@ case class Snapshot(
    */
   val roundsDuringLosingGames: Int) {
   
-  def win(rounds: Int): Snapshot = Snapshot(gamesWon + 1, gamesLost, roundsDuringWinningGames + rounds, roundsDuringLosingGames)
+  def win(hands: Hand*): Snapshot =
+    Snapshot(handCount ++ hands, gamesWon + 1, gamesLost, roundsDuringWinningGames + hands.size, roundsDuringLosingGames)
 
-  def lose(rounds: Int): Snapshot = Snapshot(gamesWon, gamesLost + 1, roundsDuringWinningGames, roundsDuringLosingGames + rounds)
+  def lose(hands: Hand*): Snapshot =
+    Snapshot(handCount ++ hands, gamesWon, gamesLost + 1, roundsDuringWinningGames, roundsDuringLosingGames + hands.size)
 }
 
 object Snapshot {
@@ -57,18 +64,18 @@ object Snapshot {
   /**
    * An empty snapshot
    */
-  val empty: Snapshot = Snapshot(0, 0, 0, 0)
+  val empty: Snapshot = Snapshot(HandCount(), 0, 0, 0, 0)
   
   /**
    * Convenience methods for bootstrapping snapshots.
    */
-  def win(rounds: Int) = empty.win(rounds)
-  def lose(rounds: Int) = empty.lose(rounds)
+  def win(hands: Hand*) = empty.win(hands :_*)
+  def lose(hands: Hand*) = empty.lose(hands :_*)
   
   /**
    * JSON Serialisation
    */
   implicit def snapshotJsonEncode: EncodeJson[Snapshot] = 
-    jencode4L((s: Snapshot) => (s.gamesWon, s.gamesLost, s.roundsDuringWinningGames, s.roundsDuringLosingGames))(
-        "gamesWon", "gamesLost", "roundsDuringWinningGames", "roundsDuringLosingGames")
+    jencode5L((s: Snapshot) => (s.handCount, s.gamesWon, s.gamesLost, s.roundsDuringWinningGames, s.roundsDuringLosingGames))(
+        "handCount", "gamesWon", "gamesLost", "roundsDuringWinningGames", "roundsDuringLosingGames")
 }

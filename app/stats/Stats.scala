@@ -69,10 +69,6 @@ case class Stats[G <: Game](
    */
   headToHeads: Map[Player, Map[Player, Int]],
   /**
-   * The count of hands played for each player.
-   */
-  handCounts: Map[Player, HandCount],
-  /**
    * All winning and losing streaks.
    */
   streaks: Streaks,
@@ -93,10 +89,10 @@ case class Stats[G <: Game](
 object Stats {
   
   implicit def statsEncodeJson[G <: Game]: EncodeJson[Stats[G]] =
-    jencode11L((s: Stats[G]) => 
+    jencode10L((s: Stats[G]) =>
       (s.contiguousGameFilter, s.current, s.currentResults, s.league, s.snapshots.toList, s.headToHeads,
-       s.handCounts, s.streaks, s.exemptPlayer, s.lastGame, s.numberOfGamesToday))(
+       s.streaks, s.exemptPlayer, s.lastGame, s.numberOfGamesToday))(
       "contiguousGameFilter", "current", "currentResults", "league", "snapshots", "headToHeads", 
-       "handCounts", "streaks", "exemptPlayer", "lastGame", "numberOfGamesToday")
+       "streaks", "exemptPlayer", "lastGame", "numberOfGamesToday")
 }
 

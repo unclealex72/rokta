@@ -56,14 +56,14 @@ class SnapshotsFactoryImpl extends SnapshotsFactory {
    * Add the result for one [[String]] in one [[Game]] to a [[SnapshotCumulation]]
    */
   def addToSnapshot(game: Game): (SnapshotCumulation, Player) => SnapshotCumulation = { (snapshotCumulation, player) =>
-    val previousSnapshotEntry = snapshotCumulation.cumulativeSnapshot.get(player).getOrElse(Snapshot(0, 0, 0, 0))
+    val previousSnapshotEntry = snapshotCumulation.cumulativeSnapshot.get(player).getOrElse(Snapshot.empty)
     game.loser match {
       case Some(loser) => {
-        val rounds = game.roundsPlayed.find(_._1 == player).map(_._2).getOrElse(0)
+        val hands = game.rounds.values.map(_.get(player)).flatten.toSeq
         val newSnapshotEntry = if (player == loser) {
-          previousSnapshotEntry.lose(rounds)
+          previousSnapshotEntry.lose(hands :_*)
         } else {
-          previousSnapshotEntry.win(rounds)
+          previousSnapshotEntry.win(hands :_*)
         }
         SnapshotCumulation(
           snapshotCumulation.cumulativeSnapshot + (player -> newSnapshotEntry),

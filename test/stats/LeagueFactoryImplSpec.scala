@@ -223,7 +223,7 @@ object LeagueFactoryImplSpec {
     def asLeagueRow = LeagueRow(player, gamesWon, gamesLost, roundsPlayedInWinningGames, roundsPlayedInLosingGames)
     def asSnapshot =
       player ->
-        Snapshot(gamesWon, gamesLost, roundsPlayedInWinningGames, roundsPlayedInLosingGames)
+        Snapshot(HandCount(), gamesWon, gamesLost, roundsPlayedInWinningGames, roundsPlayedInLosingGames)
   }
 
   implicit def LeagueRowOrSnapshotToLeagueRow(leagueRowOrSnapshot: LeagueRowOrSnapshot): LeagueRow =

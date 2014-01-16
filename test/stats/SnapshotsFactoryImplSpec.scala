@@ -52,13 +52,13 @@ class SnapshotsFactoryImplSpec extends Specification with DaysAndTimes with IsoC
     "record their wins if they win" in {
       val newCumulation = snapshotsFactory.addToSnapshot(game)(startingPoint, roger)
       val newSnapshot = newCumulation.cumulativeSnapshot
-      newSnapshot.toSeq must contain(exactly(roger -> win(2)))
+      newSnapshot.toSeq must contain(exactly(roger -> win(PAPER, PAPER)))
       newCumulation.historicalSnapshots.toSeq must be empty
     }
     "record their losses if they lose" in {
       val newCumulation = snapshotsFactory.addToSnapshot(game)(startingPoint, freddie)
       val newSnapshot = newCumulation.cumulativeSnapshot
-      newSnapshot.toSeq must contain(exactly(freddie -> lose(3)))
+      newSnapshot.toSeq must contain(exactly(freddie -> lose(PAPER, ROCK, SCISSORS)))
       newCumulation.historicalSnapshots.toSeq must be empty
     }
   }
@@ -69,31 +69,31 @@ class SnapshotsFactoryImplSpec extends Specification with DaysAndTimes with IsoC
         freddie plays SCISSORS, brian plays ROCK)
     
     val startingPoint = SnapshotCumulation(
-      Map(freddie -> win(1), roger -> lose(3), brian -> win(4)), 
+      Map(freddie -> win(ROCK), roger -> lose(SCISSORS, SCISSORS, PAPER), brian -> win(ROCK, ROCK, PAPER, PAPER)),
       SortedMap.empty[DateTime, Map[Player, Snapshot]])
     "update their wins if they win" in {
       val newCumulation = snapshotsFactory.addToSnapshot(game)(startingPoint, roger)
       val newSnapshot = newCumulation.cumulativeSnapshot
       newSnapshot.toSeq must contain(exactly(
-          freddie -> win(1),
-          roger -> lose(3).win(2),
-          brian -> win(4)))
+          freddie -> win(ROCK),
+          roger -> lose(SCISSORS, SCISSORS, PAPER).win(PAPER, PAPER),
+          brian -> win(ROCK, ROCK, PAPER, PAPER)))
       newCumulation.historicalSnapshots.toSeq must be empty
     }
     "record their losses if they lose" in {
       val newCumulation = snapshotsFactory.addToSnapshot(game)(startingPoint, freddie)
       val newSnapshot = newCumulation.cumulativeSnapshot
       newSnapshot.toSeq must contain(exactly(
-          freddie -> win(1).lose(3),
-          roger -> lose(3),
-          brian -> win(4)))
+          freddie -> win(ROCK).lose(PAPER, ROCK, SCISSORS),
+          roger -> lose(SCISSORS, SCISSORS, PAPER),
+          brian -> win(ROCK, ROCK, PAPER, PAPER)))
       newCumulation.historicalSnapshots.toSeq must be empty
     }
   }
   
   "Adding a game to a snapshot" should {
     val previousSnapshot: Map[Player, Snapshot] = 
-      Map(freddie -> win(2), brian -> lose(3), roger -> lose(4))
+      Map(freddie -> win(ROCK, SCISSORS), brian -> lose(ROCK, PAPER, ROCK), roger -> lose(PAPER, SCISSORS, PAPER, ROCK))
     val startingPoint = SnapshotCumulation(
       previousSnapshot, 
       SortedMap((September(12, 2013) at (11 oclock)) -> previousSnapshot))
@@ -104,7 +104,11 @@ class SnapshotsFactoryImplSpec extends Specification with DaysAndTimes with IsoC
     
     
     val expectedSnapshot: Map[Player, Snapshot] =
-      Map(freddie -> win(2).lose(3), brian -> lose(3).win(3), roger -> lose(4), john -> win(2))
+      Map(
+        freddie -> win(ROCK, SCISSORS).lose(PAPER, ROCK, SCISSORS),
+        brian -> lose(ROCK, PAPER, ROCK).win(PAPER, ROCK, ROCK),
+        roger -> lose(PAPER, SCISSORS, PAPER, ROCK),
+        john -> win(PAPER, PAPER))
     val newCumulation = snapshotsFactory.accumulateSnapshots(startingPoint, game)
     "Add the game data to the latest cumulation" in {
       newCumulation.cumulativeSnapshot must be equalTo(expectedSnapshot)
@@ -114,7 +118,7 @@ class SnapshotsFactoryImplSpec extends Specification with DaysAndTimes with IsoC
         (September(12, 2013) at (11 oclock)) -> previousSnapshot, (September(12, 2013) at (12 oclock)) -> expectedSnapshot)).inOrder
     }
   }
-  
+
   "Getting the snapshot history for three games" should {
     val timeA = September(12, 2013) at (11 oclock)
     val timeB = September(12, 2013) at (15 oclock)
@@ -127,11 +131,22 @@ class SnapshotsFactoryImplSpec extends Specification with DaysAndTimes with IsoC
       at(timeB, brian plays ROCK, roger plays ROCK) and (brian plays PAPER, roger plays SCISSORS)
     val gameC: Game = //freddie losesAt timeC whilst (brian plays 1) and (roger plays 2)
       at(timeC, freddie plays ROCK, roger plays ROCK, brian plays SCISSORS) and (roger plays ROCK, freddie plays SCISSORS)
-    val snapshotA: Map[Player, Snapshot] = Map(freddie -> lose(4), brian -> win(3), roger -> win(4))
-    val snapshotAB: Map[Player, Snapshot] = Map(freddie -> lose(4), brian -> win(3).lose(2), roger -> win(4).win(2))
-    val snapshotABC: Map[Player, Snapshot] = 
-      Map(freddie -> lose(4).lose(2), brian -> win(3).lose(2).win(1), roger -> win(4).win(2).win(2))
-    val snapshots: IndexedSeq[Pair[DateTime, Map[Player, Snapshot]]] = 
+    val snapshotA: Map[Player, Snapshot] =
+      Map(
+        freddie -> lose(PAPER, ROCK,  SCISSORS, SCISSORS),
+        brian -> win(SCISSORS, ROCK, ROCK),
+        roger -> win(ROCK, ROCK, SCISSORS, ROCK))
+    val snapshotAB: Map[Player, Snapshot] =
+      Map(
+        freddie -> lose(PAPER, ROCK,  SCISSORS, SCISSORS),
+        brian -> win(SCISSORS, ROCK, ROCK).lose(ROCK, PAPER),
+        roger -> win(ROCK, ROCK, SCISSORS, ROCK).win(ROCK, SCISSORS))
+    val snapshotABC: Map[Player, Snapshot] =
+      Map(
+        freddie -> lose(PAPER, ROCK,  SCISSORS, SCISSORS).lose(ROCK, SCISSORS),
+        brian -> win(SCISSORS, ROCK, ROCK).lose(ROCK, PAPER).win(SCISSORS),
+        roger -> win(ROCK, ROCK, SCISSORS, ROCK).win(ROCK, SCISSORS).win(ROCK, ROCK))
+    val snapshots: IndexedSeq[Pair[DateTime, Map[Player, Snapshot]]] =
       snapshotsFactory(Seq(gameA, gameB, gameC)).toIndexedSeq
     "record three snapshots" in {
       snapshots must have size(3)
@@ -146,7 +161,7 @@ class SnapshotsFactoryImplSpec extends Specification with DaysAndTimes with IsoC
       snapshots(2) must be equalTo(timeC -> snapshotABC)
     }
   }
-  
+
   implicit def toNameAndSnapshot(playerAndSnapshot: Pair[Player, Snapshot]): Pair[String, Snapshot] =
     playerAndSnapshot._1 -> playerAndSnapshot._2
 }

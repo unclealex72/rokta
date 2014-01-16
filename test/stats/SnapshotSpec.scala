@@ -36,6 +36,7 @@ import play.api.libs.json.Json._
 import stats.Snapshot._
 import json.Json._
 import dates.DateTimeJsonCodec._
+import model.Hand.{PAPER, SCISSORS, ROCK}
 
 /**
  * @author alex
@@ -46,11 +47,11 @@ class SnapshotSpec extends Specification with JsonMatchers with DaysAndTimes wit
   "Serialising snapshots" should {
     "create the correct JSON" in {
       val snapshots_one: Map[String, Snapshot] = Map(
-        freddie -> win(4).lose(3),
-        brian -> win(1).lose(2))
+        freddie -> win(ROCK, ROCK, SCISSORS, PAPER).lose(SCISSORS, ROCK, PAPER),
+        brian -> win(ROCK).lose(SCISSORS, ROCK))
       val snapshots_two: Map[String, Snapshot] = Map(
-        john -> win(5).lose(9),
-        roger -> win(10).lose(1))
+        john -> win(SCISSORS, PAPER, PAPER, ROCK, SCISSORS).lose(ROCK, PAPER, SCISSORS, ROCK, PAPER, SCISSORS, ROCK, PAPER, SCISSORS),
+        roger -> win(ROCK, ROCK, ROCK, ROCK, PAPER, SCISSORS, SCISSORS, SCISSORS, PAPER, ROCK).lose(SCISSORS))
       val snapshots: SortedMap[DateTime, Map[String, Snapshot]] = SortedMap(
         (February(5, 2013) at (5 oclock).pm) -> snapshots_one,
         (February(6, 2013) at (11 oclock)) -> snapshots_two)
@@ -59,17 +60,79 @@ class SnapshotSpec extends Specification with JsonMatchers with DaysAndTimes wit
           arr(
             "2013-02-05T17:00:00.000Z",
             obj(
-              "Freddie" -> 
-                obj("gamesWon" -> 1, "gamesLost" -> 1, "roundsDuringWinningGames" -> 4, "roundsDuringLosingGames" -> 3), 
+              "Freddie" ->
+                obj(
+                  "roundsDuringLosingGames" -> 3,
+                  "roundsDuringWinningGames" -> 4,
+                  "handCount" -> obj(
+                    "countsForAllRounds" -> obj(
+                      "ROCK" -> 3,
+                      "SCISSORS" -> 2,
+                      "PAPER" -> 2
+                    ),
+                    "countsForFirstRounds" -> obj(
+                      "ROCK" -> 1,
+                      "SCISSORS" ->1
+                    )
+                  ),
+                  "gamesLost" -> 1,
+                  "gamesWon" -> 1
+                  ),
               "Brian" -> 
-                obj("gamesWon" -> 1, "gamesLost" -> 1, "roundsDuringWinningGames" -> 1, "roundsDuringLosingGames" -> 2))),
+                obj(
+                  "roundsDuringLosingGames" -> 2,
+                  "roundsDuringWinningGames" -> 1,
+                  "handCount" -> obj(
+                    "countsForAllRounds" -> obj(
+                      "ROCK" -> 2,
+                      "SCISSORS" -> 1
+                    ),
+                    "countsForFirstRounds" -> obj(
+                      "ROCK" -> 1,
+                      "SCISSORS" -> 1
+                    )
+                  ),
+                  "gamesLost" -> 1,
+                  "gamesWon" -> 1
+                  ))),
           arr(
             "2013-02-06T11:00:00.000Z",
             obj(
               "John" -> 
-                obj("gamesWon" -> 1, "gamesLost" -> 1, "roundsDuringWinningGames" -> 5, "roundsDuringLosingGames" -> 9), 
+                obj(
+                  "roundsDuringLosingGames" -> 9,
+                  "roundsDuringWinningGames" -> 5,
+                  "handCount" -> obj(
+                    "countsForAllRounds" -> obj(
+                      "SCISSORS" -> 5,
+                      "PAPER" -> 5,
+                      "ROCK" -> 4
+                    ),
+                    "countsForFirstRounds" -> obj(
+                      "ROCK" -> 1,
+                      "SCISSORS" -> 1
+                    )
+                  ),
+                  "gamesLost" -> 1,
+                  "gamesWon" -> 1
+                  ),
               "Roger" -> 
-                obj("gamesWon" -> 1, "gamesLost" -> 1, "roundsDuringWinningGames" -> 10, "roundsDuringLosingGames" -> 1)))))
+                obj(
+                  "roundsDuringLosingGames" -> 1,
+                  "roundsDuringWinningGames" -> 10,
+                  "handCount" -> obj(
+                    "countsForAllRounds" -> obj(
+                      "ROCK" -> 5,
+                      "PAPER" -> 2,
+                      "SCISSORS" -> 4
+                    ),
+                    "countsForFirstRounds" -> obj(
+                      "SCISSORS" -> 1,
+                      "ROCK" -> 1
+                    )
+                  ),
+                  "gamesLost" -> 1,
+                  "gamesWon" -> 1)))))
     }
   }
 
