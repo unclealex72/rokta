@@ -1,14 +1,18 @@
 var player = angular.module('rokta.player', ['rokta.events', 'rokta.players', 'rokta.stats', 'rokta.filters', 'rokta.colours']);
 
+player.constant('COLOURS', ['#397ed7', '#f0854e', '#d94f79']);
+
 player.service('AllPlayers', [function() {
   var service = function(countType) {
     return function(stats) {
       var mostRecentSnapshot = _.last(_.last(stats.snapshots));
-      var playerNames = _(mostRecentSnapshot).keys().sortBy();
+      var playerNames = _(stats.league).map('player');
       var totalHandsPlayed = {};
       playerNames.forEach(function (playerName) {
         totalHandsPlayed[playerName] =
-          _(mostRecentSnapshot[playerName].handCount[countType]).reduce(function (sum, num) { return sum + num });
+          _(mostRecentSnapshot[playerName].handCount[countType]).reduce(function (sum, num) {
+            return sum + num;
+          });
       });
       var hands = ["ROCK", "SCISSORS", "PAPER"];
       var counts = {};
@@ -32,8 +36,8 @@ player.service('AllPlayers', [function() {
   return { firstRoundCounts: service('countsForFirstRounds'), allRoundCounts: service('countsForAllRounds')};
 }]);
 
-player.directive('roktaHands', [
-function() {
+player.directive('roktaHands', ['COLOURS',
+function(COLOURS) {
   return {
     restrict : 'A',
     scope : {
@@ -44,6 +48,7 @@ function() {
       var drawChart = function() {
         var roktaHands = $scope.roktaHands;
         elem.highcharts({
+            colors: COLOURS,
             chart: {
                 type: 'column'
             },
