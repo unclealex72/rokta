@@ -1,7 +1,7 @@
 var rokta = angular.module(
   'rokta', 
   ['rokta.players', 'rokta.game', 'rokta.graph', 'rokta.league', 'rokta.stats', 'rokta.colours',
-   'rokta.headtoheads', 'rokta.events', 'rokta.streaks', 'ui.bootstrap', 'ngRoute', 'ngAnimate']);
+   'rokta.headtoheads', 'rokta.events', 'rokta.streaks', 'rokta.player', 'ui.bootstrap', 'ngRoute', 'ngAnimate']);
 
 rokta.config(['$routeProvider',
 function($routeProvider) {
@@ -28,6 +28,9 @@ function($routeProvider) {
   }).when('/losingstreaks/page/:page/:filter?', {
     templateUrl : 'assets/angular/streaks/partials/streaks.html',
     controller : 'LosingStreaksCtrl'
+  }).when('/players/:filter?', {
+    templateUrl : 'assets/angular/players/partials/players.html',
+    controller : 'AllPlayersCtrl'
   }).when('/game/:game?', {
     templateUrl : 'assets/angular/game/partials/game.html',
     controller : 'GameCtrl'
@@ -51,7 +54,7 @@ function($scope, Events, Players, $routeParams, $location) {
     return false;
   };
   Events.listenTo($scope, Players, function() {
-    var playersHeader = [{"name" : "Everybody", "link" : players}, {"divider" : true}];
+    var playersHeader = [{"name" : "Everybody", "link" : "players"}, {"divider" : true}];
     var players = _(Players.players).sortBy('name').map('name').map(function(name) {
       return {
         "name" : name,
