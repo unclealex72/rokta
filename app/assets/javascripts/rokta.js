@@ -1,7 +1,7 @@
 var rokta = angular.module(
   'rokta', 
   ['rokta.players', 'rokta.game', 'rokta.graph', 'rokta.league', 'rokta.stats', 'rokta.colours',
-   'rokta.headtoheads', 'rokta.events', 'rokta.streaks', 'rokta.player', 'ui.bootstrap', 'ngRoute', 'ngAnimate']);
+   'rokta.headtoheads', 'rokta.events', 'rokta.streaks', 'rokta.hands', 'ui.bootstrap', 'ngRoute', 'ngAnimate']);
 
 rokta.config(['$routeProvider',
 function($routeProvider) {
@@ -28,9 +28,9 @@ function($routeProvider) {
   }).when('/losingstreaks/page/:page/:filter?', {
     templateUrl : 'assets/angular/streaks/partials/streaks.html',
     controller : 'LosingStreaksCtrl'
-  }).when('/players/:filter?', {
-    templateUrl : 'assets/angular/players/partials/players.html',
-    controller : 'AllPlayersCtrl'
+  }).when('/hands/:filter?', {
+    templateUrl : 'assets/angular/hands/partials/hands.html',
+    controller : 'HandsCtrl'
   }).when('/game/:game?', {
     templateUrl : 'assets/angular/game/partials/game.html',
     controller : 'GameCtrl'
@@ -54,42 +54,34 @@ function($scope, Events, Players, $routeParams, $location) {
     return false;
   };
   Events.listenTo($scope, Players, function() {
-    var playersHeader = [{"name" : "Everybody", "link" : "players"}, {"divider" : true}];
-    var players = _(Players.players).sortBy('name').map('name').map(function(name) {
-      return {
-        "name" : name,
-        "link" : "player/" + name
-      };
-    }).toArray().value();
     $scope.nav = [{
-      "name" : "League",
-      "icon" : "trophy",
-      "link" : "league"
+      "name": "League",
+      "icon": "trophy",
+      "link": "league"
     }, {
-      "name" : "Graph",
-      "icon" : "bar-chart-o",
-      "link" : "graph"
+      "name": "Graph",
+      "icon": "bar-chart-o",
+      "link": "graph"
     }, {
-      "name" : "Filters",
-      "icon" : "adjust",
-      "link" : "filters"
+      "name": "Filters",
+      "icon": "adjust",
+      "link": "filters"
     }, {
-      "name" : "Statistics",
-      "icon" : "edit",
+      "name": "Statistics",
+      "icon": "edit",
       "submenu" : [{
-        "name" : "Winning Streaks",
-        "link" : "winningstreaks"
+        "name": "Winning Streaks",
+        "link": "winningstreaks"
       }, {
-        "name" : "Losing Streaks",
-        "link" : "losingstreaks"
+        "name": "Losing Streaks",
+        "link": "losingstreaks"
       }, {
-        "name" : "Head to Heads",
-        "link" : "headtoheads"
+        "name": "Head to Heads",
+        "link": "headtoheads"
+      }, {
+        "name": "Hand Counts",
+        "link": "hands"
       }]
-    }, {
-      "name" : "Players",
-      "icon" : "edit",
-      "submenu" : _.union(playersHeader, players)
     }];
   });
 }]);

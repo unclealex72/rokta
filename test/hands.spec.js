@@ -1,12 +1,12 @@
 'use strict';
 
 /* jasmine specs for controllers go here */
-describe("The day module's", function() {
+describe("The Hands module's", function() {
 
 
-  beforeEach(module('rokta.player'));
+  beforeEach(module('rokta.hands'));
 
-  describe('AllPlayers service', function(){
+  describe('Hands service', function(){
     var stats = {
       snapshots: [
         [0, {
@@ -46,15 +46,15 @@ describe("The day module's", function() {
     };
     var allPlayers;
     beforeEach(inject(function ($injector) {
-      allPlayers = $injector.get('AllPlayers');
+      hands = $injector.get('Hands');
     }));
   
   	it('should collate first round counts', function() {
-	    var firstRoundCounts = allPlayers.firstRoundCounts(stats);
+	    var firstRoundCounts = hands.firstRoundCounts(stats);
 	    expect(firstRoundCounts).toEqual({categories: ['Tony', 'Andy H'], series: [{name: 'ROCK', data: [0, 0]}, {name: 'SCISSORS', data: [0,100]}, {name: 'PAPER', data: [100, 0]}]});
     });
   	it('should collate all round counts', function() {
-	    var allRoundCounts = allPlayers.allRoundCounts(stats);
+	    var allRoundCounts = hands.allRoundCounts(stats);
 	    expect(allRoundCounts).toEqual({categories: ['Tony', 'Andy H'], series: [{name: 'ROCK', data: [100, 50]}, {name: 'SCISSORS', data: [0, 25]}, {name: 'PAPER', data: [0, 25]}]});
     });
   });

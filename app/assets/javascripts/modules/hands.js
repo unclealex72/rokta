@@ -1,8 +1,8 @@
-var player = angular.module('rokta.player', ['rokta.events', 'rokta.players', 'rokta.stats', 'rokta.filters', 'rokta.colours']);
+var hands = angular.module('rokta.hands', ['rokta.events', 'rokta.players', 'rokta.stats', 'rokta.filters', 'rokta.colours']);
 
-player.constant('COLOURS', ['#397ed7', '#f0854e', '#d94f79']);
+hands.constant('COLOURS', ['#397ed7', '#f0854e', '#d94f79']);
 
-player.service('AllPlayers', [function() {
+hands.service('Hands', [function() {
   var service = function(countType) {
     return function(stats) {
       var mostRecentSnapshot = _.last(_.last(stats.snapshots));
@@ -36,7 +36,7 @@ player.service('AllPlayers', [function() {
   return { firstRoundCounts: service('countsForFirstRounds'), allRoundCounts: service('countsForAllRounds')};
 }]);
 
-player.directive('roktaHands', ['COLOURS',
+hands.directive('roktaHands', ['COLOURS',
 function(COLOURS) {
   return {
     restrict : 'A',
@@ -112,11 +112,11 @@ function(COLOURS) {
   };
 }]);
 
-player.controller('AllPlayersCtrl', ['$scope', 'Events', 'Stats', 'AllPlayers',
-function($scope, Events, Stats, AllPlayers) {
+hands.controller('HandsCtrl', ['$scope', 'Events', 'Stats', 'Hands',
+function($scope, Events, Stats, Hands) {
   Stats.refresh();
   Events.listenTo($scope, [Stats], function() {
-    $scope.firstHands = AllPlayers.firstRoundCounts(Stats.stats);
-    $scope.allHands = AllPlayers.allRoundCounts(Stats.stats);
+    $scope.firstHands = Hands.firstRoundCounts(Stats.stats);
+    $scope.allHands = Hands.allRoundCounts(Stats.stats);
   });
 }]);

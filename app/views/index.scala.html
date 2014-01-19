@@ -122,7 +122,7 @@
 	<script src='//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
 		
 	@for(suffix <- Seq("", "-sanitize", "-route", "-animate")) {
-    <script src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.3/angular@{suffix}.min.js'></script>
+    <script src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular@{suffix}.min.js'></script>
     }
 	<script src='//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.0/lodash.min.js'></script>
 	<script src='@routes.Assets.at("javascripts/ui-bootstrap-tpls-0.7.0.min.js")'></script>
@@ -132,7 +132,7 @@
     @minified=@{ if (play.Play.isProd()) ".min" else "" }
     @for(file <- Map(
       "common" -> Seq("day", "events", "colours", "stats", "players", "panel"),
-      "modules" -> Seq("filters", "league", "streaks", "game", "graph", "headtoheads", "player"),
+      "modules" -> Seq("filters", "league", "streaks", "game", "graph", "headtoheads", "hands"),
       "" -> Seq("rokta")
     )) {
       @for(name <- file._2) {
