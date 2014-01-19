@@ -51,6 +51,7 @@ function($scope, Events, Players, $routeParams, $location) {
     return false;
   };
   Events.listenTo($scope, Players, function() {
+    var playersHeader = [{"name" : "Everybody", "link" : players}, {"divider" : true}];
     var players = _(Players.players).sortBy('name').map('name').map(function(name) {
       return {
         "name" : name,
@@ -85,7 +86,7 @@ function($scope, Events, Players, $routeParams, $location) {
     }, {
       "name" : "Players",
       "icon" : "edit",
-      "submenu" : players
+      "submenu" : _.union(playersHeader, players)
     }];
   });
 }]);

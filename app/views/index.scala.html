@@ -63,8 +63,8 @@
                   </b>
                 </a>
                 <ul ng-if="menu.submenu" class="dropdown-menu">
-                  <li ng-repeat="submenu in menu.submenu">
-                    <a href="javascript:void(0);" ng-click="navigateTo(submenu.link)">{{submenu.name}}</a>
+                  <li ng-repeat="submenu in menu.submenu" ng-class="{'divider' : submenu.divider}">
+                    <a ng-if="!submenu.divider" href="javascript:void(0);" ng-click="navigateTo(submenu.link)">{{submenu.name}}</a>
                   </li>
                 </ul>
               </li>
