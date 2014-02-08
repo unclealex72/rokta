@@ -126,19 +126,21 @@
     }
 	<script src='//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.0/lodash.min.js'></script>
 	<script src='@routes.Assets.at("javascripts/ui-bootstrap-tpls-0.7.0.min.js")'></script>
-    <script src='//code.highcharts.com/3.0.7/highcharts.js'></script>
-    <script src='//code.highcharts.com/3.0.7/highcharts-more.js'></script>
-    <script src='//cdn.jsdelivr.net/restangular/1.2.0/restangular.min.js'></script>
-    @minified=@{ if (play.Play.isProd()) ".min" else "" }
+  <script src='//code.highcharts.com/3.0.7/highcharts.js'></script>
+  <script src='//code.highcharts.com/3.0.7/highcharts-more.js'></script>
+  <script src='//cdn.jsdelivr.net/restangular/1.2.0/restangular.min.js'></script>
+  @if(play.Play.isProd()) {
+    <script src='@routes.Assets.at("javascripts/rokta.min.js")'></script>
+  } else {
     @for(file <- Map(
       "common" -> Seq("day", "events", "colours", "stats", "players", "panel"),
       "modules" -> Seq("filters", "league", "streaks", "game", "graph", "headtoheads", "hands"),
-      "" -> Seq("rokta")
-    )) {
+      "" -> Seq("rokta"))) {
       @for(name <- file._2) {
-    <script src='@routes.Assets.at("javascripts/" + Seq(file._1, name).filter(!_.isEmpty).mkString("/") + minified + ".js")'></script>
+  <script src='@routes.Assets.at("javascripts/" + Seq(file._1, name).filter(!_.isEmpty).mkString("/") + ".js")'></script>
       }
     }
+  }
 
   </body>
 </html>
