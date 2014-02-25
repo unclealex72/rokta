@@ -26,12 +26,14 @@ import json.JsonResults
 import model.Colour
 import com.escalatesoft.subcut.inject._
 import dates.Now
-import org.joda.time.DateTime
+import dao.Transactional
 
 /**
  * Present all known colours to the client.
  */
-class ColoursController(_now: Option[Now] = injected) extends Etag with JsonResults with AutoInjectable {
+class ColoursController(_tx: Option[Transactional] = injected, _now: Option[Now] = injected) extends Etag with JsonResults with AutoInjectable {
+
+  val tx = injectIfMissing(_tx)
 
   /**
    * Treat the colours as constant from installation time.

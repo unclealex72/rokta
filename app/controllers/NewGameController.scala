@@ -27,14 +27,22 @@ import com.escalatesoft.subcut.inject.injected
 import dao.Transactional
 import dates.Now
 import json.JsonBodyParser
-import model.{PersistedGame, UploadableGame, Game, Player}
+import model.{UploadableGame, Player}
 import model.UploadableGame._
-import model.Game._
 import model.PersistedGameImplicits._
 import json.JsonResults
 import stats.TodaysGamesFactory
 import stats.ExemptPlayerFactory
+import akka.actor.{ Actor, Props, actorRef2Scala }
+import akka.pattern.ask
+import akka.util.Timeout
+import play.api.Play.current
+import play.api.libs.concurrent.Akka
+import interactive.{Hello, Message, Game}
+import scala.language.postfixOps
 import scalaz.{Failure, Success}
+import play.api.libs.iteratee.{Iteratee, Enumerator}
+import play.api.mvc.WebSocket
 
 /**
  * The controller for creating and persisting new games.
@@ -50,7 +58,17 @@ class NewGameController(
   val now = injectIfMissing(_now)
   val exemptPlayerFactory = injectIfMissing(_exemptPlayerFactory)
   val todaysGamesFactory = injectIfMissing(_todaysGamesFactory)
-  
+
+  implicit val timeout = Timeout(1000)
+  val game = Akka.system.actorOf(Props(classOf[Game], tx, exemptPlayerFactory, now))
+
+  def nonInteractive = htmlPage("nonInteractive", "NonInteractiveCtrl")
+
+  def interactive = htmlPage("interactive", "InteractiveCtrl")
+
+  def htmlPage(app: String, controller: String) = AuthorisedAction { implicit request =>
+    Ok(views.html.main(loggedInPlayer)(app)(controller)(false))
+  }
   def availablePlayers = AuthorisedAjaxAction { implicit request =>
     val players = (tx { playerDao => gameDao => playerDao.allPlayers }).map(_.name)
     val exemptPlayer: Option[Player] = exemptPlayerFactory(todaysGamesFactory())
@@ -61,7 +79,12 @@ class NewGameController(
       }),
       "instigators" -> players))
   }
-  
+
+  def ws = WebSocket.async { request =>
+    val channelsFuture = game ? Hello
+    channelsFuture.mapTo[(Iteratee[Message, _], Enumerator[Message])]
+  }
+
   def uploadGame = {
     val allPlayersByName: Map[String, Set[Player]] = tx { playerDao => gameDao => playerDao.allPlayers.groupBy(_.name) }
     // Allow unknown players to fail horribly.

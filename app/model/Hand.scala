@@ -83,3 +83,21 @@ object Hand extends PersistableEnumeration[Hand] {
   implicit val handJsonEncoder = defaultJsonEncoder
   implicit val handJsonDecoder = defaultJsonDecoder
 }
+
+/**
+ * An object used to find who has won a round and does not need to play the next round, if any.
+ */
+object Winners {
+
+  def apply(round: Map[String, Hand]): Set[String] = {
+    val playersByHand = round.groupBy {_._2}.map {case (hand,round) => (hand, round.unzip._1)}.toSeq
+    playersByHand.size match {
+      case 2 => {
+        val first = playersByHand.head
+        val second = playersByHand.tail.head
+        (if (first._1.beats(second._1)) first._2 else second._2).toSet
+      }
+      case _ => Set.empty[String]
+    }
+  }
+}

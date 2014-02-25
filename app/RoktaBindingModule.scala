@@ -77,7 +77,6 @@ object RoktaBindingModule extends NewBindingModule(module => {
 
   // Controllers
   bind[StatsController] toModuleSingle { implicit module => new StatsController }
-  bind[HomeController] toModuleSingle { implicit module => new HomeController }
   bind[PlayersController] toModuleSingle { implicit module => new PlayersController }
   bind[ColoursController] toModuleSingle { implicit module => new ColoursController }
   bind[NewGameController] toModuleSingle { implicit module => new NewGameController }

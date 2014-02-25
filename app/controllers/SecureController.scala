@@ -25,12 +25,13 @@ package controllers
 import com.escalatesoft.subcut.inject.injected
 import com.escalatesoft.subcut.inject.AutoInjectable
 import dao.Transactional
-import securesocial.core.SecureSocial
-import securesocial.core.Authorization
-import securesocial.core.Identity
+import securesocial.core._
 import com.escalatesoft.subcut.inject.Injectable
 import com.typesafe.scalalogging.slf4j.Logging
 import json.JsonResults
+import model.Player
+import model.Colour.BLACK
+import scala.Some
 
 /**
  * A class that can be used as a base for controllers that require a valid user to be logged in.
@@ -41,7 +42,26 @@ abstract class SecureController(_tx: Option[Transactional] = injected) extends S
 with Authorization with Injectable {
 
   val tx = injectIfMissing(_tx)
-  
+
+  object Guest extends Player {
+    val name = "Guest"
+    val email: Option[String] = None
+    val colour = BLACK
+  }
+
+  def loggedInPlayer(identity: Identity): Player = {
+    identity.email.flatMap { email =>
+      tx { playerDao => gameDao =>
+        playerDao.allPlayers.find(_.email == Some(email))
+      }
+    }.getOrElse(Guest)
+  }
+
+  def optionallyLoggedInPlayer(implicit request: RequestWithUser[_]): Option[Player] =
+    request.user.map(loggedInPlayer(_))
+  def loggedInPlayer(implicit request: SecuredRequest[_]): Option[Player] =
+    Some(loggedInPlayer(request.user))
+
   /**
    * Check to see if a user has a valid email address.
    */
@@ -61,6 +81,8 @@ with Authorization with Injectable {
   /**
    * Authorised actions require a valid google user.
    */
+  def AuthorisedAction[A] = SecuredAction[A](false, this)
+
   def AuthorisedAjaxAction[A] = SecuredAction[A](true, this)
   
   /**

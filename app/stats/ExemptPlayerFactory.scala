@@ -38,4 +38,10 @@ trait ExemptPlayerFactory {
    * @return The name of the exempt player or none if no-one is exempt.
    */
   def apply(todaysGames: Iterable[Game]) : Option[Player]
+
+  /**
+   * Find who is exempt.
+   * @return The name of the exempt player or none if no-one is exempt.
+   */
+  def apply() : Option[Player]
 }

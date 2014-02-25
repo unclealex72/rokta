@@ -41,12 +41,13 @@ import play.api.libs.concurrent.Execution.Implicits._
  * the resource has not changed.
  */
 trait Etag extends Controller {
+  self: { val tx: Transactional } =>
 
-  def calculateETag(tx: Transactional): String = tx { personDao => gameDao =>
+  def calculateETag(): String = tx { personDao => gameDao =>
     gameDao.lastGamePlayed.map(dt => dt.getMillis().toString()).getOrElse("none")
   }
 
-  def ETag[A](action: Action[A])(implicit tx: Transactional): Action[A] = ETag(calculateETag(tx))(action)
+  def ETag[A](action: Action[A]): Action[A] = ETag(calculateETag())(action)
 
   def ETag[A](etag: String)(action: Action[A]): Action[A] =
     Action.async(action.parser) { implicit request =>

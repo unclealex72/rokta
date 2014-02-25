@@ -1,5 +1,5 @@
-/**
- * Copyright 2013 Alex Jones
+/*
+ * Copyright 2014 Alex Jones
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -15,28 +15,19 @@
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
+ * specific language governing permissions and limitation
  * under the License.
- *
  */
 
-package stats
+package interactive
 
-import scala.collection.Iterable
-import model.Game
-import com.escalatesoft.subcut.inject._
+import org.specs2.mutable.Specification
 
 /**
- * The default implementation of `ExemptPlayerFactory`.
- * @author alex
- *
+ * Created by alex on 21/02/14.
  */
-class ExemptPlayerFactoryImpl(
-  _todaysGamesFactory: Option[TodaysGamesFactory] = injected) extends ExemptPlayerFactory with AutoInjectable {
+class GameSpec extends Specification {
 
-  val todaysGamesFactory = injectIfMissing(_todaysGamesFactory)
+  "state" should { "fail" in { "" mustEqual("xyz") }}
 
-  def apply(todaysGames: Iterable[Game]) = todaysGames.lastOption.flatMap(_.loser)
-
-  def apply() = apply(todaysGamesFactory.apply())
 }

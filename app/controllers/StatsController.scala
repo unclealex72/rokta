@@ -46,11 +46,14 @@ class StatsController(
   _statsFactory: Option[StatsFactory] = injected,
   _now: Option[Now] = injected,
   _tx: Option[Transactional] = injected)
-  extends Etag with JsonResults with AutoInjectable {
+  extends SecureController(_tx) with Etag with JsonResults with AutoInjectable {
 
   val statsFactory = injectIfMissing(_statsFactory)
   val now = injectIfMissing(_now)
-  implicit val tx = injectIfMissing(_tx)
+
+  def index = UserAwareAction { implicit request =>
+    Ok(views.html.main(optionallyLoggedInPlayer)("stats")("StatsCtrl")(true))
+  }
 
   def stats(filter: String) = filter match {
     case ContiguousGameFilter(gameFilter) => statsForGameFilter(gameFilter)

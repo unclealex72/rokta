@@ -22,9 +22,7 @@
 
 package stats
 
-import scala.collection.immutable.Set
-import com.escalatesoft.subcut.inject.AutoInjectable
-import com.escalatesoft.subcut.inject.injected
+import com.escalatesoft.subcut.inject._
 import dates.Now
 import model.Game
 import scala.collection.SortedSet

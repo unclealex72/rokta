@@ -3,8 +3,8 @@
 # ~~~~
 
 # Home page
-GET     /                       @controllers.HomeController.index
-GET     /index.html             @controllers.HomeController.index
+GET     /                       @controllers.StatsController.index
+GET     /index.html             @controllers.StatsController.index
 
 # Stats
 GET     /stats                  @controllers.StatsController.defaultStats
@@ -17,6 +17,9 @@ GET     /players                @controllers.PlayersController.players
 # Colours
 GET     /colours                @controllers.ColoursController.colours
 # New Game
+GET     /interactive            @controllers.NewGameController.interactive
+GET     /nonInteractive         @controllers.NewGameController.nonInteractive
+GET     /ws                     @controllers.NewGameController.ws
 GET     /game                   @controllers.NewGameController.checkAuthorisation
 POST    /game                   @controllers.NewGameController.uploadGame
 GET     /game/availablePlayers  @controllers.NewGameController.availablePlayers
@@ -24,10 +27,14 @@ GET     /game/availablePlayers  @controllers.NewGameController.availablePlayers
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
-# Secure Social
+# SecureSocial
+
+# Override the SecureSocial web page and redirect straight to Google.
+GET     /login                      controllers.SecureRedirectController.redirectToGoogle
 # Login page
-# GET     /login                      securesocial.controllers.LoginPage.login
+GET     /login                      securesocial.controllers.LoginPage.login
 GET     /logout                     securesocial.controllers.LoginPage.logout
+
 # Providers entry points
 GET     /authenticate/$provider<google>     securesocial.controllers.ProviderController.authenticate(provider)
 POST    /authenticate/$provider<google>     securesocial.controllers.ProviderController.authenticateByPost(provider)

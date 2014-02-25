@@ -50,7 +50,6 @@ object Global extends GlobalSettings with Logging {
     }
     
     register[StatsController]
-    register[HomeController]
     register[PlayersController]
     register[ColoursController]
     register[NewGameController]

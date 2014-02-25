@@ -26,6 +26,8 @@ import org.specs2.mutable.Specification
 import model.Hand._
 import argonaut._, Argonaut._
 import json.JsonMatchers
+import play.api.libs.json.{JsString, JsValue}
+
 /**
  * @author alex
  *
@@ -75,18 +77,24 @@ class HandSpec extends Specification with JsonMatchers {
     }
   }
 
-  val cases = Map[Hand, String](ROCK -> "ROCK", SCISSORS -> "SCISSORS", PAPER -> "PAPER")
-  cases.foreach { case (hand, string) =>
-    val serialised = "\"" + string + "\""
-    s"Serialising $hand to JSON" should {
-      s"serialise it to $serialised" in {
-        hand must serialiseTo(serialised)        
-      }
-    }
-    s"Deserialising $serialised from JSON" should {
-      s"deserialise it to $hand" in {
-        serialised.decodeOption[Hand] must be equalTo(Some(hand))
-      }
+  "A round where only one type of hand is played" should {
+    "have no winners" in {
+      Winners(Map("freddie" -> ROCK, "roger" -> ROCK, "brian" -> ROCK)) must beEmpty
     }
   }
+
+  "A round where more than two types of hand are played" should {
+    "have no winners" in {
+      Winners(Map("freddie" -> ROCK, "roger" -> SCISSORS, "brian" -> PAPER, "john" -> PAPER)) must beEmpty
+    }
+  }
+
+  "A round where more exactly two types of hand are played" should {
+    "have winners who have the best hand" in {
+      Winners(Map("freddie" -> ROCK, "roger" -> ROCK, "brian" -> PAPER, "john" -> PAPER)) must contain("brian", "john").exactly
+    }
+  }
+
+  val cases = Map[Hand, String](ROCK -> "\"ROCK\"", SCISSORS -> "\"SCISSORS\"", PAPER -> "\"PAPER\"")
+  testJson(cases)
 }
