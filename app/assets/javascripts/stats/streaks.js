@@ -1,4 +1,5 @@
-var streaks = angular.module('rokta.streaks', ['rokta.stats', 'rokta.events', 'rokta.panel']);
+var streaks = angular.module('rokta.stats.streaks',
+  ['rokta.stats.stats', 'rokta.common.events', 'rokta.common.panel']);
 
 streaks.service('Streaks', ['Events', 'Stats',
 function(Events, Stats) {

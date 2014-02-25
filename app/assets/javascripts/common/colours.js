@@ -1,4 +1,4 @@
-var colours = angular.module('rokta.colours', ['rokta.events']);
+var colours = angular.module('rokta.common.colours', ['rokta.common.events']);
 
 
 colours.service('Colours', ['Events',

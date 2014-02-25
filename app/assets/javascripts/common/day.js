@@ -1,4 +1,4 @@
-var day = angular.module('rokta.day', ['ngSanitize']);
+var day = angular.module('rokta.common.day', ['ngSanitize']);
 
 day.factory('Now', function() { return new Date(); });
 

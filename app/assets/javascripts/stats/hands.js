@@ -1,4 +1,7 @@
-var hands = angular.module('rokta.hands', ['rokta.events', 'rokta.players', 'rokta.stats', 'rokta.filters', 'rokta.colours']);
+var hands = angular.module(
+  'rokta.stats.hands',
+  ['rokta.common.events', 'rokta.common.players', 'rokta.common.colours',
+  'rokta.stats.stats', 'rokta.stats.filters']);
 
 hands.constant('COLOURS', ['#397ed7', '#f0854e', '#d94f79']);
 

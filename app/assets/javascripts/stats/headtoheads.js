@@ -1,4 +1,7 @@
-var headtoheads = angular.module('rokta.headtoheads', ['rokta.events', 'rokta.players', 'rokta.stats', 'rokta.filters', 'rokta.colours']);
+var headtoheads = angular.module(
+  'rokta.stats.headtoheads',
+  ['rokta.common.events', 'rokta.common.players', 'rokta.common.colours',
+   'rokta.stats.stats', 'rokta.stats.filters']);
 
 // A factory to create a HeadToHead object used to create the graph series.
 headtoheads.service('HeadToHeads', [

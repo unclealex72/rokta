@@ -1,4 +1,4 @@
-var game = angular.module('rokta.game', ['rokta.panel']);
+var game = angular.module('rokta.noninteractive.game', ['rokta.common.panel']);
 
 game.constant('ROCK', 'ROCK');
 game.constant('SCISSORS', 'SCISSORS');

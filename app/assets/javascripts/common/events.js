@@ -1,4 +1,4 @@
-var events = angular.module('rokta.events', ['restangular']);
+var events = angular.module('rokta.common.events', ['restangular']);
 
 events.service('Events', ['$log', '$rootScope', 'Restangular',
 function($log, $rootScope, Restangular) {

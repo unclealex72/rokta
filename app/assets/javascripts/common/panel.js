@@ -1,4 +1,4 @@
-var panel = angular.module('rokta.panel', []);
+var panel = angular.module('rokta.common.panel', []);
 
 /**
  * A simple directive to create a bootstap panel.

@@ -1,4 +1,4 @@
-var stats = angular.module('rokta.stats', ['rokta.events', 'rokta.filters']);
+var stats = angular.module('rokta.stats.stats', ['rokta.common.events', 'rokta.stats.filters']);
 
 stats.service('Stats', ['Events', 'CurrentFilter', function(Events, CurrentFilter) {
   var service = {

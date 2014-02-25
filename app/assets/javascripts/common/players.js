@@ -1,4 +1,4 @@
-var players = angular.module('rokta.players', ['rokta.events']);
+var players = angular.module('rokta.common.players', ['rokta.common.events']);
 
 
 players.service('Players', ['Events',
