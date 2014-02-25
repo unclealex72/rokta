@@ -1,4 +1,4 @@
-var game = angular.module('rokta.noninteractive.game', ['rokta.common.panel']);
+var game = angular.module('rokta.noninteractive.game', ['rokta.common.panel', 'rokta.common.routing']);
 
 game.constant('ROCK', 'ROCK');
 game.constant('SCISSORS', 'SCISSORS');
@@ -118,8 +118,8 @@ function(Game, RoundCodec) {
   return service;
 }]);
 
-game.controller('GameCtrl', ['Game', 'GameCodec', '$routeParams', '$scope', '$http', '$location',
-function(Game, GameCodec, $routeParams, $scope, $http, $location) {
+game.controller('GameCtrl', ['Game', 'GameCodec', 'ROUTES', '$routeParams', '$scope', '$http', '$location', '$window',
+function(Game, GameCodec, ROUTES, $routeParams, $scope, $http, $location, $window) {
   $http.get('game').success(function(data, status) {
     $scope.authenticated = true;
     var serialisedGame = $routeParams.game;
@@ -130,7 +130,7 @@ function(Game, GameCodec, $routeParams, $scope, $http, $location) {
         $scope.loser = $scope.game.currentPlayers()[0];        
         $scope.next = function() {
           $http.post('game', $scope.game).success(function(data, status) {
-            $location.path("");
+            $window.location.href = ROUTES.index;
           }).error(function(data, status) {
             alert(status + ": " + angular.toJson(data));
           });

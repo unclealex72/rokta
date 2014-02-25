@@ -1,11 +1,11 @@
-var app = angular.module(
+var statsApp = angular.module(
   'stats',
-  ['rokta.common.players', 'rokta.common.events', 'rokta.common.colours',
+  ['rokta.common.players', 'rokta.common.events', 'rokta.common.colours', 'rokta.common.routing',
    'rokta.stats.graph', 'rokta.stats.league', 'rokta.stats.stats',
    'rokta.stats.headtoheads', 'rokta.stats.streaks', 'rokta.stats.hands',
    'ui.bootstrap', 'ngRoute', 'ngAnimate']);
 
-app.config(['$routeProvider',
+statsApp.config(['$routeProvider',
 function($routeProvider) {
   $routeProvider.when('/league/:filter?', {
     templateUrl : 'assets/angular/league/partials/league.html',
@@ -33,21 +33,18 @@ function($routeProvider) {
   }).when('/hands/:filter?', {
     templateUrl : 'assets/angular/hands/partials/hands.html',
     controller : 'HandsCtrl'
-  }).when('/game/:game?', {
-    templateUrl : 'assets/angular/game/partials/game.html',
-    controller : 'GameCtrl'
   }).otherwise({
     redirectTo : '/league/'
   });
 }]);
 
-app.controller('StatsCtrl', ['Players',
+statsApp.controller('StatsCtrl', ['Players',
 function(Players) {
   Players.refresh();
 }]);
 
-app.controller('NavCtrl', ['$scope', 'Events', 'Players', '$routeParams', '$location',
-function($scope, Events, Players, $routeParams, $location) {
+statsApp.controller('NavCtrl', ['$scope', 'Events', 'Players', 'ROUTES', '$routeParams', '$location',
+function($scope, Events, Players, ROUTES, $routeParams, $location) {
   $scope.navigateTo = function(location) {
     if ($routeParams.filter) {
       location += '/' + $routeParams.filter;
@@ -71,7 +68,7 @@ function($scope, Events, Players, $routeParams, $location) {
     }, {
       "name": "Statistics",
       "icon": "edit",
-      "submenu" : [{
+      "submenu": [{
         "name": "Winning Streaks",
         "link": "winningstreaks"
       }, {
@@ -84,11 +81,21 @@ function($scope, Events, Players, $routeParams, $location) {
         "name": "Hand Counts",
         "link": "hands"
       }]
+    }, {
+      "name": "New Game",
+      "icon": "edit",
+      "submenu": [{
+        "name": "Interactive Game",
+        "href": ROUTES.interactiveGame
+      }, {
+        "name": "Non-interactive Game",
+        "href": ROUTES.nonInteractiveGame
+      }]
     }];
   });
 }]);
 
-app.controller('GameFilterCtrl', ['$scope', 'Events', 'Stats', function($scope, Events, Stats) {
+statsApp.controller('GameFilterCtrl', ['$scope', 'Events', 'Stats', function($scope, Events, Stats) {
   Stats.refresh();
   Events.listenTo($scope, Stats, function() {
     var stats = Stats.stats;

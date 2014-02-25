@@ -87,7 +87,8 @@
             </a>
             <ul ng-if="menu.submenu" class="dropdown-menu">
               <li ng-repeat="submenu in menu.submenu" ng-class="{'divider' : submenu.divider}">
-                <a ng-if="!submenu.divider" href="javascript:void(0);" ng-click="navigateTo(submenu.link)">{{submenu.name}}</a>
+                <a ng-if="submenu.link" href="javascript:void(0);" ng-click="navigateTo(submenu.link)">{{submenu.name}}</a>
+                <a ng-if="!submenu.link" href="{{submenu.href}}">{{submenu.name}}</a>
               </li>
             </ul>
           </li>
@@ -154,11 +155,11 @@
     @player.map(player => Html(playerEncodeJson(player).nospaces)).getOrElse("null"));
 
   angular.module('rokta.common.routing', []).constant(
-    'ROUTE', {
+    'ROUTES', {
       // Web pages
-      "index": "@routes.StatsController.index",
-      "interactiveGame": "@routes.NewGameController.interactive",
-      "nonInteractiveGame": "@routes.NewGameController.nonInteractive",
+      "index": "@routes.StatsController.index.absoluteURL()",
+      "interactiveGame": "@routes.NewGameController.interactive.absoluteURL()",
+      "nonInteractiveGame": "@routes.NewGameController.nonInteractive.absoluteURL()",
       // Ajax
       "stats": "@routes.StatsController.defaultStats",
       "limits": "@routes.StatsController.gameLimits",
