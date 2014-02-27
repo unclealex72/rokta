@@ -13,7 +13,7 @@ GET     /limits                 @controllers.StatsController.gameLimits
 
 # Players
 GET     /players                @controllers.PlayersController.players
-
+GET     /exemptPlayer           @controllers.PlayersController.exemptPlayer
 # Colours
 GET     /colours                @controllers.ColoursController.colours
 # New Game

@@ -28,11 +28,10 @@ import dao.PlayerDao
 import play.api.mvc._
 import dao.Transactional
 import json.Json._
-import stats.SnapshotsFactory
+import stats.{ExemptPlayerFactory, SnapshotsFactory, StatsFactory}
 import filter.YearGameFilter
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import stats.StatsFactory
 import dates.Now
 import filter.ContiguousGameFilter
 import json.JsonResults
@@ -45,13 +44,19 @@ import model.PlayerFullEncodeJson._
  *
  */
 class PlayersController(
-  _tx: Option[Transactional] = injected) 
+  _tx: Option[Transactional] = injected,
+  _exemptPlayerFactory: Option[ExemptPlayerFactory] = injected)
   extends Controller with JsonResults with AutoInjectable {
 
   val tx = injectIfMissing(_tx)
+  val exemptPlayerFactory = injectIfMissing(_exemptPlayerFactory)
 
-  def players = Action { request => 
+  def players = Action { implicit request =>
     val allPlayers = tx { playerDao => gameDao => playerDao.allPlayers }
     json(Map("players" -> allPlayers))
+  }
+
+  def exemptPlayer = Action { implicit request =>
+    json(exemptPlayerFactory.apply())
   }
 }

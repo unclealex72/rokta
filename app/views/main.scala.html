@@ -138,21 +138,25 @@
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src='//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
+@defining(if (play.Play.isProd()) ".min" else "") { min =>
+<script src='//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery@{min}.js'></script>
 
 @for(suffix <- Seq("", "-sanitize", "-route", "-animate")) {
-<script src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular@{suffix}.min.js'></script>
+<script src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular@{suffix}@{min}.js'></script>
 }
-<script src='//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.0/lodash.min.js'></script>
-<script src='@routes.Assets.at("javascripts/ui-bootstrap-tpls-0.7.0.min.js")'></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.0/lodash@{min}.js'></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls@{min}.js'></script>
 <script src='//code.highcharts.com/3.0.7/highcharts.js'></script>
 <script src='//code.highcharts.com/3.0.7/highcharts-more.js'></script>
-<script src='//cdn.jsdelivr.net/restangular/1.2.0/restangular.min.js'></script>
+<script src='//cdn.jsdelivr.net/restangular/1.2.0/restangular@{min}.js'></script>
+}
 <script type="text/javascript">
-  angular.module('rokta.common.authorisation', []).
+  angular.module('rokta.common.auth', []).
   constant(
     'AUTH',
-    @player.map(player => Html(playerEncodeJson(player).nospaces)).getOrElse("null"));
+    //{ name : Math.random().toString(36).substring(7) }
+    @player.map(player => Html(playerEncodeJson(player).nospaces)).getOrElse("null")
+  );
 
   angular.module('rokta.common.routing', []).constant(
     'ROUTES', {
@@ -164,6 +168,7 @@
       "stats": "@routes.StatsController.defaultStats",
       "limits": "@routes.StatsController.gameLimits",
       "players": "@routes.PlayersController.players",
+      "exemptPlayer": "@routes.PlayersController.exemptPlayer",
       "colours": "@routes.ColoursController.colours",
       "upload": "@routes.NewGameController.uploadGame",
       "availablePlayers": "@routes.NewGameController.availablePlayers",
@@ -175,7 +180,7 @@
 <script src='@routes.Assets.at("javascripts/rokta.min.js")'></script>
 } else {
 @for(file <- Map(
-"common" -> Seq("day", "events", "colours", "players", "panel"),
+"common" -> Seq("day", "events", "colours", "players", "panel", "interactive"),
 "stats" -> Seq("stats", "filters", "league", "streaks", "graph", "headtoheads", "hands"),
 "interactive" -> Seq("game"),
 "noninteractive" -> Seq("game"),

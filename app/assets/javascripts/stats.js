@@ -1,6 +1,7 @@
 var statsApp = angular.module(
   'stats',
-  ['rokta.common.players', 'rokta.common.events', 'rokta.common.colours', 'rokta.common.routing',
+  ['rokta.common.players', 'rokta.common.events', 'rokta.common.colours',
+   'rokta.common.routing', 'rokta.common.interactive',
    'rokta.stats.graph', 'rokta.stats.league', 'rokta.stats.stats',
    'rokta.stats.headtoheads', 'rokta.stats.streaks', 'rokta.stats.hands',
    'ui.bootstrap', 'ngRoute', 'ngAnimate']);
@@ -38,8 +39,26 @@ function($routeProvider) {
   });
 }]);
 
-statsApp.controller('StatsCtrl', ['Players',
-function(Players) {
+statsApp.controller('StatsCtrl', ['$window', '$log', '$scope', '$modal', 'Players', 'Interactive', 'ROUTES',
+function($window, $log, $scope, $modal, Players, Interactive, ROUTES) {
+  Interactive.onStateChange(function(state) {
+    if (state.inProgress) {
+      $scope.modalInstance = $modal.open({
+        templateUrl: 'assets/angular/gameinprogress.html'
+      });
+      var gameInProgress = function(redirect) {
+        if (redirect === true) {
+          $window.location.href=ROUTES.interactiveGame;
+        }
+      }
+      $scope.modalInstance.result.then(gameInProgress, gameInProgress);
+    }
+    else {
+      if ($scope.modalInstance) {
+        $scope.modalInstance.close(false);
+      }
+    }
+  });
   Players.refresh();
 }]);
 
