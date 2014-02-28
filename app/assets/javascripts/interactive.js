@@ -25,7 +25,7 @@ function($scope, $location) {
   };
   $scope.nav = [{
     "name": "Cancel",
-    "icon": "cross",
+    "icon": "times",
     "link": "cancel"
   }];
 }]);

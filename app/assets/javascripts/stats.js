@@ -102,7 +102,7 @@ function($scope, Events, Players, ROUTES, $routeParams, $location) {
       }]
     }, {
       "name": "New Game",
-      "icon": "edit",
+      "icon": "play-circle",
       "submenu": [{
         "name": "Interactive Game",
         "href": ROUTES.interactiveGame
