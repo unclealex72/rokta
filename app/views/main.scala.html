@@ -177,7 +177,7 @@
       "upload": "@routes.NewGameController.uploadGame",
       "availablePlayers": "@routes.NewGameController.availablePlayers",
       // Websockets
-      "ws": "@routes.NewGameController.ws.webSocketURL()"
+      "ws": "@routes.NewGameController.ws.webSocketURL(play.Play.isProd())"
     });
 </script>
 @if(play.Play.isProd()) {
