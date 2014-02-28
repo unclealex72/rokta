@@ -37,6 +37,8 @@ import json.JsonResults
 import dao.Transactional
 import argonaut._, Argonaut._
 import dates.DateTimeJsonCodec._
+import com.typesafe.scalalogging.slf4j.Logging
+import play.api.{Play, Application}
 
 /**
  * @author alex

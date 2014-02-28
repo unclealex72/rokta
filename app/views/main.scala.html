@@ -1,5 +1,6 @@
 @(player: Option[model.Player])(app: String)(mainController: String)(showFooter: Boolean)(implicit request: RequestHeader)
 @import _root_.model.PlayerFullEncodeJson._
+@import _root_.play.api.Play
 @import _root_.argonaut._, Argonaut._
 
 <!DOCTYPE html>
@@ -161,9 +162,9 @@
   angular.module('rokta.common.routing', []).constant(
     'ROUTES', {
       // Web pages
-      "index": "@routes.StatsController.index.absoluteURL()",
-      "interactiveGame": "@routes.NewGameController.interactive.absoluteURL()",
-      "nonInteractiveGame": "@routes.NewGameController.nonInteractive.absoluteURL()",
+      "index": "@routes.StatsController.index.absoluteURL(Play.current.configuration.getBoolean("secure").getOrElse(false))",
+      "interactiveGame": "@routes.NewGameController.interactive.absoluteURL(Play.current.configuration.getBoolean("secure").getOrElse(false))",
+      "nonInteractiveGame": "@routes.NewGameController.nonInteractive.absoluteURL(Play.current.configuration.getBoolean("secure").getOrElse(false))",
       // Ajax
       "stats": "@routes.StatsController.defaultStats",
       "limits": "@routes.StatsController.gameLimits",
