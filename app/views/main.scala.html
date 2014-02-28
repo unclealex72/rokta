@@ -155,16 +155,19 @@
   angular.module('rokta.common.auth', []).
   constant(
     'AUTH',
-    //{ name : Math.random().toString(36).substring(7) }
+    @if(play.Play.isProd()) {
+    { name : Math.random().toString(36).substring(7) }
+    } else {
     @player.map(player => Html(playerEncodeJson(player).nospaces)).getOrElse("null")
+    }
   );
 
   angular.module('rokta.common.routing', []).constant(
     'ROUTES', {
       // Web pages
-      "index": "@routes.StatsController.index.absoluteURL(Play.current.configuration.getBoolean("secure").getOrElse(false))",
-      "interactiveGame": "@routes.NewGameController.interactive.absoluteURL(Play.current.configuration.getBoolean("secure").getOrElse(false))",
-      "nonInteractiveGame": "@routes.NewGameController.nonInteractive.absoluteURL(Play.current.configuration.getBoolean("secure").getOrElse(false))",
+      "index": "@routes.StatsController.index.absoluteURL(play.Play.isProd())",
+      "interactiveGame": "@routes.NewGameController.interactive.absoluteURL(play.Play.isProd())",
+      "nonInteractiveGame": "@routes.NewGameController.nonInteractive.absoluteURL(play.Play.isProd())",
       // Ajax
       "stats": "@routes.StatsController.defaultStats",
       "limits": "@routes.StatsController.gameLimits",
