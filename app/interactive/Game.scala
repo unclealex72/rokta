@@ -7,6 +7,7 @@ import dao.Transactional
 import stats.ExemptPlayerFactory
 import model.{Player, UploadableGame, Hand}
 import dates.Now
+import play.api.Play
 
 /**
  * Created by alex on 18/02/14.
@@ -66,7 +67,8 @@ class Game(val tx: Transactional, val exemptPlayerFactory: ExemptPlayerFactory, 
           rounds.toList.map { round =>
             round.foldLeft(Map.empty[Player, Hand])((phs, ph) => phs + (player(ph._1) -> ph._2))
           })
-      gameDao.uploadGame(now(), uploadableGame)
+      // Hack to make sure games don't get uploaded in Prod.
+      //gameDao.uploadGame(now(), uploadableGame)
     }
   }
 }

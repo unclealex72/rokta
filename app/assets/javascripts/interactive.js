@@ -40,14 +40,16 @@ function($scope, $window, Restangular, Interactive, ROUTES, AUTH) {
       $scope.state = state;
       if (state.type == 'waitingForPlayers') {
         $scope.startable = state.players.length >= 2;
+        $scope.joined = _.contains(state.players, AUTH.name);
       }
       if (state.type == 'gameInProgress') {
         $scope.round = state.previousRounds.length + 1;
         $scope.currentPlayers = state.currentPlayers;
         $scope.alreadyPlayed = _.keys(state.currentRound);
         $scope.yetToPlay = _.difference($scope.currentPlayers, $scope.alreadyPlayed);
-        $scope.progressMax = $scope.currentPlayers.length + 1;
-        $scope.progressValue = $scope.alreadyPlayed.length + 1;
+        $scope.progressMax = $scope.currentPlayers.length;
+        $scope.progressValue = $scope.progressMax - $scope.alreadyPlayed.length;
+        $scope.myHand = state.currentRound[AUTH.name];
       }
       $scope.$apply();
     });
@@ -61,18 +63,11 @@ function($scope, $window, Restangular, Interactive, ROUTES, AUTH) {
 interactiveApp.controller('GameCtrl',
 ['$scope', '$location', '$window', 'Interactive',
 function($scope, $location, $window, Interactive) {
-  $scope.instigate = function() {
-    Interactive.instigate();
-  };
-  $scope.join = function() {
-    Interactive.join();
-  };
-  $scope.start = function() {
-    Interactive.start();
-  }
-  $scope.play = function(hand) {
-    Interactive.play(hand);
-  };
+  $scope.instigate = Interactive.instigate;
+  $scope.join = Interactive.join;
+  $scope.start = Interactive.start;
+  $scope.play = Interactive.play;
+  $scope.accept = Interactive.accept;
 }]);
 
 interactiveApp.controller('CancelCtrl', ['$window', 'Interactive', 'ROUTES',
@@ -80,3 +75,16 @@ function ($window, Interactive, ROUTES) {
   Interactive.cancel();
   $window.location.href = ROUTES.index;
 }]);
+
+interactiveApp.directive('roktaInteractiveButton', function() {
+  return {
+    restrict : 'AE',
+    templateUrl : '/assets/angular/interactive/directives/button.html',
+    scope : {
+      busy : '=',
+      waiting : '=',
+      text : '@',
+      ngClick : '&'
+    }
+  };
+});

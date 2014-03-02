@@ -156,9 +156,9 @@
   constant(
     'AUTH',
     @if(play.Play.isProd()) {
-    { name : Math.random().toString(36).substring(7) }
-    } else {
     @player.map(player => Html(playerEncodeJson(player).nospaces)).getOrElse("null")
+    } else {
+    { name : Math.random().toString(36).substring(7) }
     }
   );
 

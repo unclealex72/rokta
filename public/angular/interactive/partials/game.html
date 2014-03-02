@@ -27,41 +27,40 @@
     <div rokta-panel header="Join Game" ng-show="state.type == 'waitingForPlayers'">
       <p ng-show="exempt">You are exempt from this game.</p>
       <p ng-hide="exempt">Please click to join the game:</p>
-      <button
-        ng-disabled="exempt"
-        class="btn btn-primary btn-lg btn-block" ng-click="join()">
-        Join
-      </button>
+      <div rokta-interactive-button waiting="exempt || joined" busy="joined" ng-click="join()"
+        text="Join">
+      </div>
       <p>Please click to start the game:</p>
-      <button
-          ng-disabled="!startable"
-          class="btn btn-primary btn-lg btn-block" ng-click="start()">
-        Start
-      </button>
+      <div rokta-interactive-button waiting="!startable" busy="false"
+           ng-click="start()" text="Start">
+      </div>
     </div>
     <div rokta-panel header="Round {{round}}" ng-show="exempt && state.type == 'gameInProgress'">
       <p>You are currently exempt.</p>
     </div>
     <div rokta-panel header="Round {{round}}" ng-show="!exempt && state.type == 'gameInProgress'">
       <p>Please play:</p>
-      <button
-          ng-disabled="played"
-          class="btn btn-primary btn-lg btn-block" ng-click="play('ROCK')">
-        <span ng-played="@played" ng-hand="ROCK">Rock</span>
-      </button>
-      <button
-          ng-disabled="played"
-          class="btn btn-primary btn-lg btn-block" ng-click="play('SCISSORS')">
-        <span ng-played="@played" ng-hand="ROCK">Scissors</span>
-      </button>
-      <button
-          ng-disabled="played"
-          class="btn btn-primary btn-lg btn-block" ng-click="play('PAPER')">
-        <span ng-played="@played" ng-hand="ROCK">Paper</span>
-      </button>
+      <div rokta-interactive-button waiting="myHand" busy="myHand == 'ROCK'"
+        ng-click="play('ROCK')" text="Rock">
+      </div>
       <p></p>
-      <div progressbar max="progressMax" value="progressValue">
-        {{progressValue}} / {{progressMax}}
+      <div rokta-interactive-button waiting="myHand" busy="myHand == 'SCISSORS'"
+        ng-click="play('SCISSORS')" text="Scissors">
+      </div>
+      <p></p>
+      <div rokta-interactive-button waiting="myHand" busy="myHand == 'PAPER'"
+        ng-click="play('PAPER')" text="Paper">
+      </div>
+      <p></p>
+      <div
+        class="progress-striped active" progressbar animate="false" type="info"
+        value="progressValue / progressMax * 100">
+      </div>
+    </div>
+    <div rokta-panel header="Game Over" ng-show="state.type == 'gameOver'">
+      <p>{{state.loser}} has lost.</p>
+      <div rokta-interactive-button waiting="false" busy="accepted"
+        ng-click="accept()" text="Submit">
       </div>
     </div>
   </div>
