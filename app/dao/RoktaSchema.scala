@@ -25,10 +25,8 @@ package dao
 import org.squeryl.Schema
 
 import dao.EntryPoint._
-import model.PersistedGame
-import model.Play
+import model._
 import model.PersistedPlayer
-import model.Round
 
 object RoktaSchema extends Schema {
 
@@ -52,11 +50,17 @@ object RoktaSchema extends Schema {
   val players = table[PersistedPlayer]("player")
   on(players)(p => declare(
     p.id is (autoIncremented("player_id_seq")),
-    p.name is (unique, indexed),
-    p.email is (unique, indexed)))
+    p.name is (unique, indexed)))
 
+  val emails = table[PersistedEmail]("email")
+  on(emails)(e => declare(
+    e.id is (autoIncremented("email_id_seq")),
+    e.playerId is (indexed),
+    e.email is (unique, indexed)
+  ))
   val instigatorToGames = oneToManyRelation(players, games).via((p, g) => p.id === g.instigatorId)
   val gameToRounds = oneToManyRelation(games, rounds).via((g, r) => g.id === r.gameId)
   val roundToPlays = oneToManyRelation(rounds, plays).via((r, p) => r.id === p.roundId)
-  val playerToPlays = oneToManyRelation(players, plays).via((player, play) => player.id === play.playerId) 
+  val playerToPlays = oneToManyRelation(players, plays).via((player, play) => player.id === play.playerId)
+  val playerToEmails = oneToManyRelation(players, emails).via((player, email) => player.id === email.playerId)
 }

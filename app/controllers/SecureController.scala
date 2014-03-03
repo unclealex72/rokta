@@ -45,14 +45,14 @@ with Authorization with Injectable {
 
   object Guest extends Player {
     val name = "Guest"
-    val email: Option[String] = None
+    val emails: Seq[String] = Seq.empty[String]
     val colour = BLACK
   }
 
   def loggedInPlayer(identity: Identity): Player = {
     identity.email.flatMap { email =>
       tx { playerDao => gameDao =>
-        playerDao.allPlayers.find(_.email == Some(email))
+        playerDao.playerWithEmail(email)
       }
     }.getOrElse(Guest)
   }
@@ -65,8 +65,8 @@ with Authorization with Injectable {
   /**
    * Check to see if a user has a valid email address.
    */
-  def validUser(email: String): Boolean = tx { playerDao => gameDao => 
-    playerDao.allPlayers.exists(_.email == Some(email))
+  def validUser(email: String): Boolean = tx { playerDao => gameDao =>
+    playerDao.playerWithEmail(email).isDefined
   }
   
   def isAuthorized(user: Identity) = {

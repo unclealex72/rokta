@@ -26,6 +26,11 @@ package model
 import org.squeryl.KeyedEntity
 import org.squeryl.annotations.Column
 import com.fasterxml.jackson.annotation.JsonIgnore
+import org.squeryl.dsl.StatefulOneToMany
+import dao.RoktaSchema._
+import dao.EntryPoint._
+import argonaut.EncodeJson
+import scala.collection.SortedMap
 
 /**
  * The representation of a Rokta player.
@@ -41,11 +46,6 @@ case class PersistedPlayer(
    */
   @Column("name")
 	val name: String,
-	/**
-	 * The Google email the player uses to log in.
-	 */
-	@Column("email")
-  val email: Option[String],
   /**
    * The name of the colour used to represent the player's results in any graphs.
    */

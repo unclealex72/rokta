@@ -25,28 +25,14 @@ package dao
 import java.sql.Timestamp
 import scala.collection.SortedSet
 import org.joda.time.DateTime
-import org.squeryl.dsl.NonNumericalExpression
-import org.squeryl.dsl.UnaryAgregateLengthNeutralOp
+import org.squeryl.dsl._
 import org.squeryl.dsl.ast.LogicalBoolean
-import dao.EntryPoint.compute
-import dao.EntryPoint.createOutMapperIntType
-import dao.EntryPoint.dayOfMonth
-import dao.EntryPoint.from
-import dao.EntryPoint.inTransaction
-import dao.EntryPoint.int2ScalarInt
-import dao.EntryPoint.long2ScalarLong
-import dao.EntryPoint.max
-import dao.EntryPoint.min
-import dao.EntryPoint.month
-import dao.EntryPoint.select
-import dao.EntryPoint.timestamp2ScalarTimestamp
-import dao.EntryPoint.unaryOpConv17
-import dao.EntryPoint.where
-import dao.EntryPoint.year
+import dao.EntryPoint._
 import dao.RoktaSchema.{games => tgames}
 import dao.RoktaSchema.{players => tplayers}
 import dao.RoktaSchema.{plays => tplays}
 import dao.RoktaSchema.{rounds => trounds}
+import dao.RoktaSchema.{emails => temails}
 import filter.BetweenGameFilter
 import filter.ContiguousGameFilter
 import filter.DayGameFilter
@@ -62,12 +48,11 @@ import model.PersistedGame
 import model.PersistedPlayer
 import model.Player
 import model.UploadableGame
-import org.squeryl.dsl.Measures
 import filter.Day
 import model.NonPersistedGame
 
 /**
- * The Squeryl implementation of [[GameDao]], [[PersonDao]] and [[Transactional]].
+ * The Squeryl implementation of [[GameDao]], [[PlayerDao]] and [[Transactional]].
  * @author alex
  *
  */
@@ -101,7 +86,7 @@ class SquerylDao extends GameDao with PlayerDao with Transactional {
         month(g._datePlayed) === monthPlayed and dayOfMonth(g._datePlayed) === dayPlayed
       case SinceGameFilter(year, month, day) => g.datePlayed >= Day(year, month, day).withTimeAtStartOfDay
       case UntilGameFilter(year, month, day) => g.datePlayed < Day(year, month, day).withTimeAtStartOfDay.plusDays(1)
-      case BetweenGameFilter(from, to) => 
+      case BetweenGameFilter(from, to) =>
         g.datePlayed between (from.withTimeAtStartOfDay, to.withTimeAtStartOfDay.plusDays(1).minusMillis(1))
     }
   }
@@ -109,7 +94,11 @@ class SquerylDao extends GameDao with PlayerDao with Transactional {
   def allPersistedPlayers: Iterable[PersistedPlayer] = from(tplayers)(p => select(p))
   
   def allPlayers: Set[Player] = allPersistedPlayers.toSet
-  
+
+  def playerWithEmail(email: String): Option[Player] = {
+    from(tplayers, temails)((p, e) => where (p.id === e.playerId and e.email === email) select(p)).headOption
+  }
+
   def limitGamePlayed(f: NonNumericalExpression[Timestamp] => UnaryAgregateLengthNeutralOp[Timestamp]): Option[DateTime] = 
     from(tgames)(g => compute(f(g._datePlayed))).headOption.map(_.measures.get).map(new DateTime(_))
 

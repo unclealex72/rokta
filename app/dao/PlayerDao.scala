@@ -35,4 +35,11 @@ trait PlayerDao {
    * Get all players.
    */
   def allPlayers: Set[Player]
+
+  /**
+   * Get the player with the given email if they exist.
+   * @param email
+   * @return
+   */
+  def playerWithEmail(email: String): Option[Player]
 }

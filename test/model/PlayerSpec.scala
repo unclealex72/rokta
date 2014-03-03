@@ -33,19 +33,12 @@ import json.JsonMatchers
  */
 class PlayerSpec extends Specification with JsonMatchers {
 
-  "A player with no email" should {
+  "A player " should {
     "serialise to an object with two fields." in {
       SimplePlayer("Freddie", None, BLACK) must serialiseTo(
-          """{"name":"Freddie","email":null,"colour":"BLACK"}""")
+          """{"name":"Freddie","colour":"BLACK"}""")
     }
   }
-  
-  "A player with an email" should {
-    "serialise to an object with three fields." in {
-      SimplePlayer("Freddie", Some("freddie@queen.com"), BLACK) must serialiseTo(
-          """{"name":"Freddie","email":"freddie@queen.com","colour":"BLACK"}""")
-    }
-  }
-  
+
   case class SimplePlayer(name: String, email: Option[String], colour: Colour) extends Player
 }

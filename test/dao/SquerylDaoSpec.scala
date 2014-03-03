@@ -30,11 +30,8 @@ import org.squeryl.SessionFactory
 import org.squeryl.adapters.H2Adapter
 import dates.DaysAndTimes
 import dates.IsoChronology
-import model.Game
-import model.PersistedGame
+import model._
 import model.PersistedGame._
-import model.PersistedGameDsl
-import model.PersistedPlayer
 import model.Hand._
 import filter.BetweenGameFilter
 import filter.YearGameFilter
@@ -42,9 +39,11 @@ import filter.SinceGameFilter
 import filter.DayGameFilter
 import filter.MonthGameFilter
 import filter.UntilGameFilter
-import model.UploadableGame
-import model.Hand
-import model.Play
+import model.PersistedPlayer
+import scala.Some
+import filter.MonthGameFilter
+import filter.YearGameFilter
+import filter.BetweenGameFilter
 
 /**
  * @author alex
@@ -86,8 +85,8 @@ class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology 
       import dao.RoktaSchema._
       import dao.EntryPoint._
 
-      val freddie = PersistedPlayer(0, "Freddie", Some("freddie@queen.com"), "BLACK")
-      val brian = PersistedPlayer(0, "Brian", Some("brian@queen.com"), "WHITE")
+      val freddie = PersistedPlayer(0, "Freddie", "BLACK")
+      val brian = PersistedPlayer(0, "Brian", "WHITE")
       freddie.save
       brian.save
 
@@ -183,9 +182,9 @@ class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology 
       import dao.RoktaSchema._
       import dao.EntryPoint._
 
-      val freddie = PersistedPlayer(0, "Freddie", Some("freddie@queen.com"), "BLACK")
-      val brian = PersistedPlayer(0, "Brian", Some("brian@queen.com"), "WHITE")
-      val roger = PersistedPlayer(0, "Roger", Some("roger@queen.com"), "RED")
+      val freddie = PersistedPlayer(0, "Freddie", "BLACK")
+      val brian = PersistedPlayer(0, "Brian", "WHITE")
+      val roger = PersistedPlayer(0, "Roger", "RED")
       freddie.save
       brian.save
       roger.save
@@ -215,6 +214,35 @@ class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology 
       val roundTwo = rounds(1)
       roundTwo.round must be equalTo(2)
       roundTwo._plays.toSeq must contain(bePlay(freddie, SCISSORS), bePlay(roger, PAPER))
+    }
+  }
+
+  "Validating player logins" should {
+    def txn[B](block: SquerylDao => B) = inTxn[B] { squerylDao =>
+
+      import dao.RoktaSchema._
+      import dao.EntryPoint._
+
+      val freddie = PersistedPlayer(0, "Freddie", "BLACK")
+      freddie.save
+      val roger = PersistedPlayer(0, "Roger", "BLUE")
+      roger.save
+      val brian = PersistedPlayer(0, "Brian", "GREEN")
+      brian.save
+      PersistedEmail(freddie, "freddie@queen.com")
+      PersistedEmail(freddie, "faroukh@queen.com")
+      PersistedEmail(brian, "brian@queen.com")
+      block(squerylDao)
+    }
+    "find the correct player for more than one email" in txn { squerylDao =>
+      squerylDao.playerWithEmail("freddie@queen.com").map(_.name) must beSome("Freddie")
+      squerylDao.playerWithEmail("faroukh@queen.com").map(_.name) must beSome("Freddie")
+    }
+    "find the correct player for exactly one email" in txn { squerylDao =>
+      squerylDao.playerWithEmail("brian@queen.com").map(_.name) must beSome("Brian")
+    }
+    "find nothing for an unknown email" in txn { squerylDao =>
+      squerylDao.playerWithEmail("roger@queen.com") must beNone
     }
   }
 }

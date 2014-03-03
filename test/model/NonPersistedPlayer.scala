@@ -26,7 +26,6 @@ package model
  * A player who is not persisted in the database.
  * @author alex
  */
-case class NonPersistedPlayer(val name: String, val _email: String, val colour: Colour) extends Player {
+case class NonPersistedPlayer(val name: String, val colour: Colour) extends Player {
   override def toString = name
-  override def email = Some(_email)
 }

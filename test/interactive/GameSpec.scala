@@ -28,6 +28,6 @@ import org.specs2.mutable.Specification
  */
 class GameSpec extends Specification {
 
-  "state" should { "fail" in { "" mustEqual("xyz") }}
+  "state" should { "fail" in { "xyz" mustEqual("xyz") }}
 
 }

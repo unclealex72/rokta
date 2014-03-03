@@ -34,10 +34,10 @@ trait NonPersistedGameDsl {
   /**
    * Some players
    */
-  val freddie: Player = NonPersistedPlayer("Freddie", "freddie@queen.com", BLACK)
-  val brian: Player = NonPersistedPlayer("Brian", "brian@queen.com", BLUE)
-  val roger: Player = NonPersistedPlayer("Roger", "roger@queen.com", RED)
-  val john: Player = NonPersistedPlayer("John", "john@queen.com", WHITE)
+  val freddie: Player = NonPersistedPlayer("Freddie", BLACK)
+  val brian: Player = NonPersistedPlayer("Brian", BLUE)
+  val roger: Player = NonPersistedPlayer("Roger", RED)
+  val john: Player = NonPersistedPlayer("John", WHITE)
 
   def at(datePlayed: DateTime, play: Pair[Player, Hand], plays: Pair[Player, Hand]*) = 
     new GameBuilder(datePlayed, freddie, SortedMap.empty[Int, Map[Player, Hand]]).and(play, plays :_*)

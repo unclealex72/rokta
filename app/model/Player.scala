@@ -36,10 +36,6 @@ trait Player {
    */
   def name: String
   /**
-   * The Google email the player uses to log in.
-   */
-  def email: Option[String]
-  /**
    * The name of the colour used to represent the player's results in any graphs.
    */
   def colour:  Colour
@@ -52,7 +48,7 @@ object PlayerFullEncodeJson {
    * JSON serialisation.
    */
   implicit val playerEncodeJson: EncodeJson[Player] =
-    jencode3L((p: Player) => (p.name, p.email, p.colour.persistableToken))("name", "email", "colour")
+    jencode2L((p: Player) => (p.name, p.colour.persistableToken))("name", "colour")
 }
 
 object PlayerNameEncodeJson {
