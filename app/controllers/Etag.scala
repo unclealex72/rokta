@@ -35,16 +35,18 @@ import play.api.mvc.Controller
 import scala.concurrent.ExecutionContext
 import dao.Transactional
 import play.api.libs.concurrent.Execution.Implicits._
+import dates.Now
 
 /**
  * A trait for controllers that allows for ETag headers to be queried and a 304 No Content to be returned if
  * the resource has not changed.
  */
 trait Etag extends Controller {
-  self: { val tx: Transactional } =>
+  self: { val tx: Transactional; val now: Now } =>
 
   def calculateETag(): String = tx { personDao => gameDao =>
-    gameDao.lastGamePlayed.map(dt => dt.getMillis().toString()).getOrElse("none")
+    val today = now().toDateMidnight.getMillis
+    gameDao.lastGamePlayed.map(dt => dt.getMillis().toString()).getOrElse("") +  "x" + today.toString
   }
 
   def ETag[A](action: Action[A]): Action[A] = ETag(calculateETag())(action)

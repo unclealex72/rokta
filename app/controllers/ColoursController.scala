@@ -34,11 +34,12 @@ import dao.Transactional
 class ColoursController(_tx: Option[Transactional] = injected, _now: Option[Now] = injected) extends Etag with JsonResults with AutoInjectable {
 
   val tx = injectIfMissing(_tx)
+  val now = injectIfMissing(_now)
 
   /**
    * Treat the colours as constant from installation time.
    */
-  val nowEtag: String = injectIfMissing(_now).apply().toString
+  val nowEtag: String = now().toString
 
   def colours = ETag(nowEtag) {
     Action { request => json(Map("colours" -> Colour.values)) }
