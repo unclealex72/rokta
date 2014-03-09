@@ -4,7 +4,7 @@
 describe("The Hands module's", function() {
 
 
-  beforeEach(module('rokta.hands'));
+  beforeEach(module('rokta.stats.hands'));
 
   describe('Hands service', function(){
     var stats = {

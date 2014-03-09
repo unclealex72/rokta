@@ -3,7 +3,7 @@
 /* jasmine specs for controllers go here */
 describe("The panel module's", function() {
 
-  beforeEach(module('rokta.panel'));
+  beforeEach(module('rokta.common.panel'));
 
   describe('panel directive', function() {
     var builder;

@@ -29,10 +29,11 @@ import securesocial.core._
 import com.escalatesoft.subcut.inject.Injectable
 import com.typesafe.scalalogging.slf4j.Logging
 import json.JsonResults
-import model.Player
+import model.{Colour, NonPersistedPlayer, Player}
 import model.Colour.BLACK
 import scala.Some
-
+import play.api.Play
+import play.api.Play.current
 /**
  * A class that can be used as a base for controllers that require a valid user to be logged in.
  * @author alex
@@ -59,8 +60,16 @@ with Authorization with Injectable {
 
   def optionallyLoggedInPlayer(implicit request: RequestWithUser[_]): Option[Player] =
     request.user.map(loggedInPlayer(_))
+
   def loggedInPlayer(implicit request: SecuredRequest[_]): Option[Player] =
-    Some(loggedInPlayer(request.user))
+    if (!Play.isProd && request.getQueryString("player").isDefined) {
+      request.getQueryString("player").map { name =>
+        NonPersistedPlayer(name, Colour.BLACK)
+      }
+    }
+    else {
+      Some(loggedInPlayer(request.user))
+    }
 
   /**
    * Check to see if a user has a valid email address.

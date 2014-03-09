@@ -3,7 +3,7 @@
 /* jasmine specs for controllers go here */
 describe("The filters module's", function() {
 
-  beforeEach(module('rokta.filters'));
+  beforeEach(module('rokta.stats.filters'));
 
   describe('CurrentFilter service', function() {
     describe('with a filter provided', function() {

@@ -3,7 +3,7 @@
 /* jasmine specs for controllers go here */
 describe("The headtohead module's", function() {
 
-  beforeEach(module('rokta.headtoheads'));
+  beforeEach(module('rokta.stats.headtoheads'));
 
   describe('HeadToHead service', function() {
 

@@ -30,28 +30,66 @@ function($scope, $location) {
   }];
 }]);
 
+interactiveApp.service('GameBuilder', [function() {
+  var service = function(players, previousRounds, currentPlayers, currentRound) {
+    players = _.sortBy(players);
+    var rounds = _.map(previousRounds, function(previousRound) {
+      return _.map(players, function(player) {
+        return previousRound[player] || false;
+      });
+    });
+    if (_.isObject(currentRound)) {
+      rounds.push(_.map(players, function(player) {
+        return _.contains(currentPlayers, player) ? (currentRound[player] ? "PLAYED" : "WAITING") : false;
+      }));
+    }
+    return { players: players, rounds: rounds };
+  };
+  return service;
+}]);
+
+interactiveApp.service('InteractiveGame', ['GameBuilder', 'AUTH', function(GameBuilder, AUTH) {
+  var service = {
+    waitingForPlayers: function(state) {
+      var players = _.sortBy(state.players);
+      return {
+        game: GameBuilder(players, [], [], false),
+        joined: _.contains(state.players, AUTH.name),
+        startable: players.length >= 2
+      };
+    },
+    gameInProgress: function(state) {
+      var players = _.sortBy(state.originalPlayers);
+      return {
+        game: GameBuilder(players, state.previousRounds, state.currentPlayers, state.currentRound),
+        round: state.previousRounds.length + 1,
+        progressMax: state.currentPlayers.length,
+        progressValue: state.currentPlayers.length - _.keys(state.currentRound).length,
+        playing: _.contains(state.currentPlayers, AUTH.name),
+        myHand: state.currentRound[AUTH.name]
+      };
+    },
+    gameOver: function(state) {
+      return {
+        game: GameBuilder(state.players, state.rounds, [], false),
+        loser: state.loser
+      };
+    }
+  };
+  return service;
+}]);
+
 interactiveApp.controller('InteractiveCtrl',
-['$scope', '$window', 'Restangular', 'Interactive', 'ROUTES', 'AUTH',
-function($scope, $window, Restangular, Interactive, ROUTES, AUTH) {
+['$scope', '$window', 'Restangular', 'Interactive', 'InteractiveGame', 'ROUTES', 'AUTH',
+function($scope, $window, Restangular, Interactive, InteractiveGame, ROUTES, AUTH) {
   var onSuccess = function(exemptPlayer) {
     $scope.exemptPlayer = exemptPlayer;
     $scope.exempt = AUTH.name && (exemptPlayer == AUTH.name);
     Interactive.onStateChange(function(state) {
       $scope.state = state;
-      if (state.type == 'waitingForPlayers') {
-        $scope.startable = state.players.length >= 2;
-        $scope.joined = _.contains(state.players, AUTH.name);
+      if (InteractiveGame[state.type]) {
+        _.assign($scope, InteractiveGame[state.type](state));
       }
-      if (state.type == 'gameInProgress') {
-        $scope.round = state.previousRounds.length + 1;
-        $scope.currentPlayers = state.currentPlayers;
-        $scope.alreadyPlayed = _.keys(state.currentRound);
-        $scope.yetToPlay = _.difference($scope.currentPlayers, $scope.alreadyPlayed);
-        $scope.progressMax = $scope.currentPlayers.length;
-        $scope.progressValue = $scope.progressMax - $scope.alreadyPlayed.length;
-        $scope.myHand = state.currentRound[AUTH.name];
-      }
-      $scope.$apply();
     });
   }
   var onFailure = function() {
@@ -70,7 +108,7 @@ function($scope, $location, $window, Interactive) {
   $scope.accept = Interactive.accept;
 }]);
 
-interactiveApp.controller('CancelCtrl', ['$window', 'Interactive', 'ROUTES',
+interactiveApp.controller('CancelCtrl', ['$scope', '$window', 'Interactive', 'ROUTES',
 function ($window, Interactive, ROUTES) {
   Interactive.cancel();
   $window.location.href = ROUTES.index;
@@ -85,6 +123,17 @@ interactiveApp.directive('roktaInteractiveButton', function() {
       waiting : '=',
       text : '@',
       ngClick : '&'
+    }
+  };
+});
+
+interactiveApp.directive('roktaInteractiveGame', function() {
+  return {
+    restrict : 'AE',
+    templateUrl : '/assets/angular/interactive/directives/state.html',
+    scope : {
+      players: '=',
+      rounds: '='
     }
   };
 });

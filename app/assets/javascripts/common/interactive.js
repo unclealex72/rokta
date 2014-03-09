@@ -1,24 +1,35 @@
 var interactive = angular.module('rokta.common.interactive', ['rokta.common.routing', 'rokta.common.auth']);
 
-interactive.service('Interactive', ['$log', 'ROUTES', 'AUTH',
-function($log, ROUTES, AUTH) {
+interactive.service('MessageQueue', ['$log', 'ROUTES', function($log, ROUTES) {
   var ws = new WebSocket(ROUTES.ws);
-  ws.onopen = function(){
+  ws.onopen = function() {
     $log.info("Socket has been opened!");
   };
+  return {
+    onMessage: function(listener) {
+      ws.onmessage = listener;
+    },
+    send: function(message) {
+      ws.send(message);
+    }
+  };
+}]);
+
+interactive.service('Interactive', ['$log', '$rootScope', 'MessageQueue', 'AUTH',
+function($log, $rootScope, MessageQueue, AUTH) {
   var service = {
     onStateChange: function(listener) {
-      ws.onmessage = function(message) {
+      MessageQueue.onMessage(function(message) {
         var state = angular.fromJson(message.data).state;
         _(state).assign({inProgress: state.type != "notStarted"});
         $log.info("Received state: " + angular.toJson(state));
-        listener(state);
-      };
+        $rootScope.$apply(function() { listener(state); });
+      });
     },
     send: function(message) {
       var data = angular.toJson(message);
       $log.info("Sending " + data);
-      ws.send(data);
+      MessageQueue.send(data);
     },
     instigate: function() {
       service.send({type: "instigator", instigator: AUTH.name});

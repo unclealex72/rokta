@@ -18,9 +18,25 @@
   ~ specific language governing permissions and limitation
   ~ under the License.
   -->
-
-<button
-  class="btn btn-primary btn-lg btn-block" ng-disabled="busy || waiting" ng-click="ng-click">
-  <span ng-hide="busy">{{text}}</span>
-  <i ng-show="busy" class="fa fa-spinner fa-spin"></i>
-</button>
+<div rokta-panel header="Game Status">
+  <table class="table">
+    <thead>
+    <tr>
+      <th>#</th>
+      <th ng-repeat="player in players">
+        {{player}}
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="round in rounds track by $index">
+      <td>
+        {{$index + 1}}
+      </td>
+      <td ng-repeat="play in round track by $index">
+        {{play}}
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

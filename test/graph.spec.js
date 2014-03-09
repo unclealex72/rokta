@@ -37,7 +37,7 @@ colours[JOHN_COLOUR] = {rgb: JOHN_RGB};
 /* jasmine specs for controllers go here */
 describe("The graph module's", function() {
 
-  beforeEach(module('rokta.graph'));
+  beforeEach(module('rokta.stats.graph'));
 
   describe('Graph object', function() {
 

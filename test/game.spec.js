@@ -9,7 +9,7 @@ describe("The game module's", function() {
   var ROGER = "ROGER";
   var JOHN = "JOHN";
   
-  beforeEach(module('rokta.game'));
+  beforeEach(module('rokta.noninteractive.game'));
   beforeEach(inject(function ($injector) {
 	ROCK = $injector.get('ROCK');
 	SCISSORS = $injector.get('SCISSORS');

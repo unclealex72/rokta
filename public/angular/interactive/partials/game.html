@@ -65,36 +65,6 @@
     </div>
   </div>
   <div class="col-md-6 hidden-xs">
-    <div rokta-panel header="Current Players" ng-show="state.type == 'waitingForPlayers'">
-      <p ng-show="state.players.length == 0">
-        No-one has joined.
-      </p>
-      <p ng-repeat="player in state.players">
-        {{player}} has joined.
-      </p>
-    </div>
-    <div rokta-panel header="Round Status" ng-show="state.type == 'gameInProgress'">
-      <p ng-repeat="player in yetToPlay">
-        {{player}} has yet to play.
-      </p>
-    </div>
+    <div rokta-interactive-game players="game.players" rounds="game.rounds"></div>
   </div>
 </div>
-    <!--
-<div ng-show="state.type == 'notStarted'">
-  <button class="btn btn-primary" ng-click="instigate()">Instigate</button>
-</div>
-<div ng-show="state.type == 'waitingForPlayers'">
-  <button class="btn btn-primary" ng-click="join()">Join</button>
-  <button class="btn btn-primary" ng-click="start()">Start</button>
-</div>
-<div ng-show="state.type == 'gameInProgress'">
-  <button class="btn btn-primary" ng-click="play('ROCK')">Rock</button>
-  <button class="btn btn-primary" ng-click="play('SCISSORS')">Scissors</button>
-  <button class="btn btn-primary" ng-click="play('PAPER')">Paper</button>
-</div>
-<div ng-show="state.type == 'gameOver'">
-  <button class="btn btn-primary" ng-click="accept()">Accept</button>
-</div>
-<div><code>{{state}}</code></div>
-    -->

@@ -3,7 +3,7 @@
 /* jasmine specs for controllers go here */
 describe("The day module's", function() {
 
-  beforeEach(module('rokta.day'));
+  beforeEach(module('rokta.common.day'));
 
   describe('DateSerialiser service', function(){
 	var dateSerialiser;

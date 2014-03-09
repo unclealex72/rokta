@@ -143,7 +143,7 @@
 <script src='//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery@{min}.js'></script>
 
 @for(suffix <- Seq("", "-sanitize", "-route", "-animate")) {
-<script src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular@{suffix}@{min}.js'></script>
+<script src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular@{suffix}@{min}.js'></script>
 }
 <script src='//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.0/lodash@{min}.js'></script>
 <script src='//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls@{min}.js'></script>
@@ -154,12 +154,7 @@
 <script type="text/javascript">
   angular.module('rokta.common.auth', []).
   constant(
-    'AUTH',
-    @if(play.Play.isProd()) {
-    @player.map(player => Html(playerEncodeJson(player).nospaces)).getOrElse("null")
-    } else {
-    { name : Math.random().toString(36).substring(7) }
-    }
+    'AUTH', @player.map(player => Html(playerEncodeJson(player).nospaces)).getOrElse("null")
   );
 
   angular.module('rokta.common.routing', []).constant(
@@ -186,7 +181,6 @@
 @for(file <- Map(
 "common" -> Seq("day", "events", "colours", "players", "panel", "interactive"),
 "stats" -> Seq("stats", "filters", "league", "streaks", "graph", "headtoheads", "hands"),
-"interactive" -> Seq("game"),
 "noninteractive" -> Seq("game"),
 "" -> Seq("stats", "interactive", "noninteractive"))) {
 @for(name <- file._2) {

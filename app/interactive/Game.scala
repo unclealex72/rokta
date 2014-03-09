@@ -58,7 +58,7 @@ class Game(val tx: Transactional, val exemptPlayerFactory: ExemptPlayerFactory, 
     case UploadGame(instigator, players, rounds) => tx { playerDao => gameDao =>
       val allPlayers = playerDao.allPlayers.groupBy(_.name).mapValues(_.head)
       def player: String => Player = name => allPlayers.get(name).getOrElse(
-        throw new IllegalArgumentException(s"name is not a valid player's email address.")
+        throw new IllegalArgumentException(s"${name} is not a valid player's name.")
       )
       val uploadableGame =
         UploadableGame(
