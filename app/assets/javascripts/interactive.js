@@ -91,7 +91,7 @@ interactiveApp.controller('InteractiveCtrl',
 function($scope, $window, Restangular, Interactive, InteractiveGame, ROUTES, AUTH) {
   var onSuccess = function(exemptPlayer) {
     $scope.exemptPlayer = exemptPlayer;
-    $scope.exempt = AUTH.name && (exemptPlayer == AUTH.name);
+    $scope.exempt = AUTH.name && (exemptPlayer.name == AUTH.name);
     Interactive.onStateChange(function(state) {
       $scope.state = state;
       if (InteractiveGame[state.type]) {

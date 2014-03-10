@@ -20,47 +20,51 @@
   -->
 <div class="row">
   <div class="col-md-6 col-xs-12">
-    <div rokta-panel header="New Game" ng-show="state.type == 'notStarted'">
-      <p>Please click to start a new game:</p>
-      <button class="btn btn-primary btn-lg btn-block" ng-click="instigate()">Instigate</button>
+    <div rokta-panel header="Game in progress" ng-show="exempt">
+      <p>You are exempt; enjoy the show.</p>
     </div>
-    <div rokta-panel header="Join Game" ng-show="state.type == 'waitingForPlayers'">
-      <p ng-show="exempt">You are exempt from this game.</p>
-      <p ng-hide="exempt">Please click to join the game:</p>
-      <div rokta-interactive-button waiting="exempt || joined" busy="joined" ng-click="join()"
-        text="Join">
+    <div ng-hide="exempt">
+      <div rokta-panel header="New Game" ng-show="state.type == 'notStarted'">
+        <p>Please click to start a new game:</p>
+        <button class="btn btn-primary btn-lg btn-block" ng-click="instigate()">Instigate</button>
       </div>
-      <p>Please click to start the game when everyone has joined:</p>
-      <div rokta-interactive-button waiting="!startable" busy="false"
-           ng-click="start()" text="Start">
+      <div rokta-panel header="Join Game" ng-show="state.type == 'waitingForPlayers'">
+        <p>Please click to join the game:</p>
+        <div rokta-interactive-button waiting="exempt || joined" busy="joined" ng-click="join()"
+             text="Join">
+        </div>
+        <p>Please click to start the game when everyone has joined:</p>
+        <div rokta-interactive-button waiting="!startable" busy="false"
+             ng-click="start()" text="Start">
+        </div>
       </div>
-    </div>
-    <div rokta-panel header="Round {{round}}" ng-show="exempt && state.type == 'gameInProgress'">
-      <p>You are currently exempt.</p>
-    </div>
-    <div rokta-panel header="Round {{round}}" ng-show="!exempt && state.type == 'gameInProgress'">
-      <p>Please play:</p>
-      <div rokta-interactive-button waiting="myHand" busy="myHand == 'ROCK'"
-        ng-click="play('ROCK')" text="Rock">
+      <div rokta-panel header="Round {{round}}" ng-show="exempt && state.type == 'gameInProgress'">
+        <p>You are currently exempt.</p>
       </div>
-      <p></p>
-      <div rokta-interactive-button waiting="myHand" busy="myHand == 'SCISSORS'"
-        ng-click="play('SCISSORS')" text="Scissors">
+      <div rokta-panel header="Round {{round}}" ng-show="!exempt && state.type == 'gameInProgress'">
+        <p>Please play:</p>
+        <div rokta-interactive-button waiting="myHand" busy="myHand == 'ROCK'"
+             ng-click="play('ROCK')" text="Rock">
+        </div>
+        <p></p>
+        <div rokta-interactive-button waiting="myHand" busy="myHand == 'SCISSORS'"
+             ng-click="play('SCISSORS')" text="Scissors">
+        </div>
+        <p></p>
+        <div rokta-interactive-button waiting="myHand" busy="myHand == 'PAPER'"
+             ng-click="play('PAPER')" text="Paper">
+        </div>
+        <p></p>
+        <div
+            class="progress-striped active" progressbar animate="false" type="info"
+            value="progressValue / progressMax * 100">
+        </div>
       </div>
-      <p></p>
-      <div rokta-interactive-button waiting="myHand" busy="myHand == 'PAPER'"
-        ng-click="play('PAPER')" text="Paper">
-      </div>
-      <p></p>
-      <div
-        class="progress-striped active" progressbar animate="false" type="info"
-        value="progressValue / progressMax * 100">
-      </div>
-    </div>
-    <div rokta-panel header="Game Over" ng-show="state.type == 'gameOver'">
-      <p>{{state.loser}} has lost.</p>
-      <div rokta-interactive-button waiting="false" busy="accepted"
-        ng-click="accept()" text="Submit">
+      <div rokta-panel header="Game Over" ng-show="state.type == 'gameOver'">
+        <p>{{state.loser}} has lost.</p>
+        <div rokta-interactive-button waiting="false" busy="accepted"
+             ng-click="accept()" text="Submit">
+        </div>
       </div>
     </div>
   </div>
