@@ -108,7 +108,7 @@ function($scope, $location, $window, Interactive) {
   $scope.accept = Interactive.accept;
 }]);
 
-interactiveApp.controller('CancelCtrl', ['$scope', '$window', 'Interactive', 'ROUTES',
+interactiveApp.controller('CancelCtrl', ['$window', 'Interactive', 'ROUTES',
 function ($window, Interactive, ROUTES) {
   Interactive.cancel();
   $window.location.href = ROUTES.index;
