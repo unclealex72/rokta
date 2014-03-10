@@ -67,8 +67,8 @@ class Game(val tx: Transactional, val exemptPlayerFactory: ExemptPlayerFactory, 
           rounds.toList.map { round =>
             round.foldLeft(Map.empty[Player, Hand])((phs, ph) => phs + (player(ph._1) -> ph._2))
           })
-      // Hack to make sure games don't get uploaded in Prod.
-      //gameDao.uploadGame(now(), uploadableGame)
+      gameDao.uploadGame(now(), uploadableGame)
+      self ! Quit
     }
   }
 }

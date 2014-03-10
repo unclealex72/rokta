@@ -46,6 +46,9 @@ function($log, $rootScope, MessageQueue, AUTH) {
     accept: function() {
       service.send({type: "acceptGame"});
     },
+    undo: function() {
+      service.send({type: "back"});
+    },
     cancel: function() {
       service.send({type: "cancel"});
     }

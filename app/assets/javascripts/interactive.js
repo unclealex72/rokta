@@ -9,6 +9,9 @@ function($routeProvider) {
   $routeProvider.when('/coyi', {
     templateUrl : 'assets/angular/interactive/partials/game.html',
     controller : 'GameCtrl'
+  }).when('/undo', {
+    templateUrl : 'assets/angular/interactive/partials/game.html',
+    controller : 'UndoCtrl'
   }).when('/cancel', {
     templateUrl : 'assets/angular/interactive/partials/game.html',
     controller : 'CancelCtrl'
@@ -24,9 +27,13 @@ function($scope, $location) {
     return false;
   };
   $scope.nav = [{
-    "name": "Cancel",
-    "icon": "times",
-    "link": "cancel"
+      "name": "Cancel",
+      "icon": "times",
+      "link": "cancel"
+    }, {
+      "name": "Undo",
+      "icon": "backward",
+      "link": "undo"
   }];
 }]);
 
@@ -99,19 +106,28 @@ function($scope, $window, Restangular, Interactive, InteractiveGame, ROUTES, AUT
 }]);
 
 interactiveApp.controller('GameCtrl',
-['$scope', '$location', '$window', 'Interactive',
-function($scope, $location, $window, Interactive) {
+['$scope', '$location', '$window', 'Interactive', 'ROUTES',
+function($scope, $location, $window, Interactive, ROUTES) {
   $scope.instigate = Interactive.instigate;
   $scope.join = Interactive.join;
   $scope.start = Interactive.start;
   $scope.play = Interactive.play;
-  $scope.accept = Interactive.accept;
+  $scope.accept = function() {
+    Interactive.accept();
+    $window.location.href = ROUTES.index;
+  };
 }]);
 
 interactiveApp.controller('CancelCtrl', ['$window', 'Interactive', 'ROUTES',
 function ($window, Interactive, ROUTES) {
   Interactive.cancel();
   $window.location.href = ROUTES.index;
+}]);
+
+interactiveApp.controller('UndoCtrl', ['$location', 'Interactive',
+function ($location, Interactive) {
+  Interactive.undo();
+  $location.path('/coyi');
 }]);
 
 interactiveApp.directive('roktaInteractiveButton', function() {
