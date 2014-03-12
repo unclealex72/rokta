@@ -46,6 +46,7 @@ sealed abstract class State(val jsonType: String) extends Logging {
 
   val cancel: Action = Quit
   val undo: Action = Undo
+  val echo: Action = Echo
   def consume: IncomingMessage => Either[State, Action]
 }
 
@@ -55,6 +56,7 @@ sealed abstract class State(val jsonType: String) extends Logging {
 case object NotStarted extends State("notStarted") {
   def consume = {
     case Instigator(instigator) => Start(instigator)
+    case SendCurrentState => echo
     case m => noChange(m)
   }
 }
@@ -88,6 +90,7 @@ case class WaitingForPlayers(exemptPlayer: Option[String], instigator: String, p
     }
     case Back => undo
     case Cancel => cancel
+    case SendCurrentState => echo
     case m => noChange(m)
   }
 
@@ -141,6 +144,7 @@ case class GameInProgress(
     }
     case Back => undo
     case Cancel => cancel
+    case SendCurrentState => echo
     case m => noChange(m)
   }
 }
@@ -158,6 +162,7 @@ case class GameOver(
     case AcceptGame => UploadGame(instigator, players, rounds)
     case Back => undo
     case Cancel => cancel
+    case SendCurrentState => echo
     case m => noChange(m)
   }
 }

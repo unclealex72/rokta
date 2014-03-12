@@ -52,6 +52,11 @@ case class CurrentState(state: State) extends Message { val jsonType = "state" }
 case object Back extends IncomingMessage("back")
 
 /**
+ * A message used to echo the current state.
+ */
+case object SendCurrentState extends IncomingMessage("sendCurrentState")
+
+/**
  * A message used to totally cancel the current game.
  */
 case object Cancel extends IncomingMessage("cancel")
@@ -91,6 +96,7 @@ object Message {
     message match {
       case Back => jTypeObject
       case Cancel => jTypeObject
+      case SendCurrentState => jTypeObject
       case Instigator(instigator) => ("instigator" := instigator) ->: jTypeObject
       case NewPlayer(player) => ("player" := player) ->: jTypeObject
       case StartGame => jTypeObject
@@ -104,6 +110,7 @@ object Message {
     (cursor --\ "type").as[String].flatMap { jsonType => jsonType match {
       case "back" => DecodeResult.ok(Back)
       case "cancel" => DecodeResult.ok(Cancel)
+      case "sendCurrentState" => DecodeResult.ok(SendCurrentState)
       case "instigator" => jdecode1L(Instigator.apply)("instigator").decode(cursor)
       case "newPlayer" => jdecode1L(NewPlayer.apply)("player").decode(cursor)
       case "startGame" => DecodeResult.ok(StartGame)

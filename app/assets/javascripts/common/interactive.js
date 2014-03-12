@@ -2,10 +2,13 @@ var interactive = angular.module('rokta.common.interactive', ['rokta.common.rout
 
 interactive.service('MessageQueue', ['$log', 'ROUTES', function($log, ROUTES) {
   var ws = new WebSocket(ROUTES.ws);
-  ws.onopen = function() {
-    $log.info("Socket has been opened!");
-  };
   return {
+    onOpen: function(listener) {
+      ws.onopen = function() {
+        $log.info("Socket has been opened!");
+        listener();
+      }
+    },
     onMessage: function(listener) {
       ws.onmessage = listener;
     },
@@ -19,6 +22,9 @@ interactive.service('Interactive', ['$log', '$rootScope', 'MessageQueue', 'AUTH'
 function($log, $rootScope, MessageQueue, AUTH) {
   var service = {
     onStateChange: function(listener) {
+      MessageQueue.onOpen(function() {
+        service.send({type: "sendCurrentState"});
+      });
       MessageQueue.onMessage(function(message) {
         var state = angular.fromJson(message.data).state;
         _(state).assign({inProgress: state.type != "notStarted"});

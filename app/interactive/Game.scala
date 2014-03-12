@@ -23,7 +23,12 @@ class Game(val tx: Transactional, val exemptPlayerFactory: ExemptPlayerFactory, 
 
   def alterState(newStates: List[State]) {
     state = newStates
-    channel.push(CurrentState(state.head))
+    sendCurrentState()
+  }
+
+  def sendCurrentState() {
+    state.headOption.foreach(current => channel.push(CurrentState(current))
+    )
   }
 
   def addState(newState: State) {
@@ -40,10 +45,13 @@ class Game(val tx: Transactional, val exemptPlayerFactory: ExemptPlayerFactory, 
           case Right(action) => self ! action
         }
       }
-      sender ! (iteratee, Enumerator[Message](CurrentState(state.head)) >>> enumerator)
+      sender ! (iteratee, enumerator)
     }
     case Start(instigator) => {
       addState(WaitingForPlayers(exemptPlayerFactory().map(_.name), instigator))
+    }
+    case Echo => {
+      sendCurrentState()
     }
     case Undo => {
       if (state.nonEmpty) {
@@ -84,6 +92,10 @@ sealed trait Action
  */
 case object Hello extends Action
 
+/**
+ * Tell the actor to resend the current state.
+ */
+case object Echo extends Action
 /**
  * The action used to start a new game.
  */
