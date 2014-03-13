@@ -12,6 +12,7 @@ interactive.service('MessageQueue', ['$log', 'ROUTES', function($log, ROUTES) {
     newws.onerror = ws.onerror;
     newws.onmessage = ws.onmessage;
     newws.onclose = ws.onclose;
+    ws = newws;
   }
   return {
     onOpen: function(listener) {
