@@ -2,10 +2,16 @@ var interactive = angular.module('rokta.common.interactive', ['rokta.common.rout
 
 interactive.service('MessageQueue', ['$log', 'ROUTES', function($log, ROUTES) {
   var ws = new WebSocket(ROUTES.ws);
+  ws.onerror = function(err) {
+    $log.error("The websocket errored " + angular.toJson(err));
+  }
+  ws.onclose = function() {
+    $log.warn("The websocket closed");
+  }
   return {
     onOpen: function(listener) {
       ws.onopen = function() {
-        $log.info("Socket has been opened!");
+        $log.info("The websocket opened!");
         listener();
       }
     },
