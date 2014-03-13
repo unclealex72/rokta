@@ -7,6 +7,11 @@ interactive.service('MessageQueue', ['$log', 'ROUTES', function($log, ROUTES) {
   }
   ws.onclose = function() {
     $log.warn("The websocket closed");
+    var newws = new WebSocket(ROUTES.ws);
+    newws.onopen = ws.onopen;
+    newws.onerror = ws.onerror;
+    newws.onmessage = ws.onmessage;
+    newws.onclose = ws.onclose;
   }
   return {
     onOpen: function(listener) {
