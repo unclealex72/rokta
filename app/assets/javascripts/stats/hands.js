@@ -121,5 +121,6 @@ function($scope, Events, Stats, Hands) {
   Events.listenTo($scope, [Stats], function() {
     $scope.firstHands = Hands.firstRoundCounts(Stats.stats);
     $scope.allHands = Hands.allRoundCounts(Stats.stats);
+    $scope.ready = true;
   });
 }]);

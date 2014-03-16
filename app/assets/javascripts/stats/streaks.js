@@ -34,6 +34,7 @@ function(Events, Stats) {
         $scope.streaksCount = streaks.length;
         $scope.type = type;
         $scope.streaks = streaks;
+        $scope.ready = true;
       });
     }
   };

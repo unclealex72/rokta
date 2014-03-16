@@ -121,6 +121,7 @@ function($scope, Events, Stats) {
     $scope.current = stats.current;
     $scope.league = stats.league;
     $scope.anyGamesPlayedToday = Stats.anyGamesPlayedToday;
+    $scope.ready = true;
   });
 }]);
 
@@ -128,6 +129,7 @@ league.controller('LastGameCtrl', ['$scope', 'Events', 'Stats',
 function($scope, Events, Stats) {
   Events.listenTo($scope, Stats, function() {
     $scope.lastGame = Stats.stats.lastGame;
+    $scope.ready = true;
   });
 }]);
 
@@ -138,6 +140,7 @@ function($scope, Events, Stats, ResultGrouper) {
     $scope.numberOfGamesToday = stats.numberOfGamesToday;
     $scope.gamesWon = ResultGrouper.group(stats.currentResults, "gamesWon");
     $scope.gamesLost = ResultGrouper.group(stats.currentResults, "gamesLost");
+    $scope.ready = true;
   });
 }]);
 
@@ -153,5 +156,6 @@ function($scope, Events, Stats, StreaksGrouper) {
     };
     $scope.winningStreakGroups = groupCurrent(streaks.winningStreaks);
     $scope.losingStreakGroups = groupCurrent(streaks.losingStreaks);
+    $scope.ready = true;
   });
 }]);

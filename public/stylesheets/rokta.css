@@ -40,3 +40,22 @@ body {
 [ng\:cloak], [ng-cloak], .ng-cloak {
   display: none !important;
 }
+
+/*
+ Animate rokta panels
+*/
+
+.rokta-panel {
+  -webkit-transition:all linear 0.5s;
+  transition:all linear 0.5s;
+  opacity:1;
+}
+
+.rokta-panel.ng-hide-add,
+.rokta-panel.ng-hide-remove {
+  display:block!important;
+}
+
+.rokta-panel.ng-hide {
+  opacity:0;
+}

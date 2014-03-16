@@ -248,5 +248,6 @@ function($log, $scope, Events, Stats, Players, Colours, HeadToHeads) {
       HeadToHeads.create(Players.players, Colours.colourMap, Stats.stats.headToHeads);
     $scope.headToHeadAverages =
       HeadToHeads.createAverages(Players.players, Colours.colourMap, Stats.stats.headToHeads);
+    $scope.ready = true;
   });
 }]);

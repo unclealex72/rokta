@@ -15,7 +15,7 @@ function() {
       type: '@'
     },
     template : 
-      '<div class="panel" ng-class="panelClass">' + 
+      '<div class="panel rokta-panel" ng-class="panelClass">' +
         '<div class="panel-heading" ng-if="header">{{header}}</div>' +
         '<div class="panel-body" ng-transclude></div>' +
         '<div class="panel-footer" ng-if="footer">{{footer}}</div>' +

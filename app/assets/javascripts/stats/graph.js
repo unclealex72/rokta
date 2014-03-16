@@ -136,5 +136,6 @@ function($log, $scope, Events, Stats, Players, Colours, Graph) {
       max : graph.yAxisMax,
       min : graph.yAxisMin
     };
+    $scope.ready = true;
   });
 }]);
