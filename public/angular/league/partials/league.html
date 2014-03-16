@@ -1,13 +1,13 @@
 <div class="row">
   <div class="col-md-8">
-    <div rokta-panel header="The league" ng-show="ready">
+    <div rokta-panel header="The league" ng-show="ready" class="fade-in">
       <div rokta-league league="league" current="current && anyGamesPlayedToday">
       </div>
     </div>
   </div>
   <div class="col-md-4">
     <div ng-controller="LastGameCtrl">
-      <div rokta-panel header="The last game" ng-show="ready">
+      <div rokta-panel header="The last game" ng-show="ready" class="fade-in">
         <div ng-bind-html="'It was played on ' + (lastGame.datePlayed | roktaDay)">
         </div>
         <div>
@@ -20,7 +20,7 @@
       </div>
     </div>
     <div ng-controller="TodayCtrl">
-      <div rokta-panel header="Today's results" ng-show="ready">
+      <div rokta-panel header="Today's results" ng-show="ready" class="fade-in">
         <div>
           <span ng-pluralize
           count="numberOfGamesToday"
@@ -32,7 +32,7 @@
       </div>
     </div>
     <div ng-controller="CurrentStreaksCtrl">
-      <div rokta-panel header="Current streaks" ng-show="ready">
+      <div rokta-panel header="Current streaks" ng-show="ready" class="fade-in">
         <div rokta-current-streaks streak-groups="winningStreakGroups" type="winning"></div>
         <div rokta-current-streaks streak-groups="losingStreakGroups" type="losing"></div>
       </div>

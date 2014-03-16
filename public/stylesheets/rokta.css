@@ -42,10 +42,10 @@ body {
 }
 
 /*
- Animate rokta panels
+ Fade in animation
 */
 
-.rokta-panel {
+.fade-in {
   -webkit-transition:all linear 0.5s;
   -moz-transition:all linear 0.5s;
   -o-transition:all linear 0.5s;
@@ -53,11 +53,11 @@ body {
   opacity:1;
 }
 
-.rokta-panel.ng-hide-add,
-.rokta-panel.ng-hide-remove {
+.fade-in.ng-hide-add,
+.fade-in.ng-hide-remove {
   display:block!important;
 }
 
-.rokta-panel.ng-hide {
+.fade-in.ng-hide {
   opacity:0;
 }
