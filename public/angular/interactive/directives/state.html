@@ -34,12 +34,12 @@
         {{$index + 1}}
       </td>
       <td ng-repeat="play in round track by $index">
-        <span ng-show="play == 'ROCK'">R</span>
-        <span ng-show="play == 'SCISSORS'">S</span>
-        <span ng-show="play == 'PAPER'">P</span>
-        <span ng-show="play == 'PLAYED'"><i class="fa fa-check"></i></span>
-        <span ng-show="play == 'WAITING'"><i class="fa fa-times"></i></span>
-        <span ng-hide="play"><i class="fa fa-ellipsis-h"></i></span>
+        <span ng-show="play == 'ROCK'" class="grow">R</span>
+        <span ng-show="play == 'SCISSORS'" class="grow">S</span>
+        <span ng-show="play == 'PAPER'" class="grow">P</span>
+        <span ng-show="play == 'PLAYED'" class="grow"><i class="fa fa-check"></i></span>
+        <span ng-show="play == 'WAITING'" class="grow"><i class="fa fa-times"></i></span>
+        <span ng-hide="play" class="grow"><i class="fa fa-ellipsis-h"></i></span>
       </td>
     </tr>
     </tbody>

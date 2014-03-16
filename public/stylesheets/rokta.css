@@ -61,3 +61,25 @@ body {
 .fade-in.ng-hide {
   opacity:0;
 }
+
+/*
+ Growing text animation
+*/
+
+.grow {
+  -webkit-transition:all linear 0.5s;
+  -moz-transition:all linear 0.5s;
+  -o-transition:all linear 0.5s;
+  transition:all linear 0.5s;
+  opacity:1;
+}
+
+.grow.ng-hide-add,
+.grow.ng-hide-remove {
+  display:inline!important;
+}
+
+.grow.ng-hide {
+  opacity:0;
+  font-size:0;
+}
