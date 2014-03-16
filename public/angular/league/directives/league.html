@@ -18,7 +18,7 @@
       tooltip-html-unsafe="
         Win next: {{ 100 * row.gamesLost / (row.gamesWon + 1 + row.gamesLost) | number:2 }}%,<br/> 
         Lose next: {{ 100 * (row.gamesLost + 1) / (row.gamesWon + 1 + row.gamesLost) | number:2 }}%" 
-      ng-repeat="row in league" 
+      ng-repeat="row in league"
       class="league-row">
       <td>
         <i ng-class="{

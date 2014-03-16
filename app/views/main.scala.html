@@ -129,8 +129,10 @@
 @if(showFooter) {
 <div id="footer">
   <div class="container" ng-controller="GameFilterCtrl">
-    <p ng-cloak class="text-muted credit" ng-bind-html="'You are currently viewing all games ' + (contiguousGameFilter | roktaGame)">
-    </p>
+    <span ng-cloak ng-hide="_eventCount_" class="text-muted credit">
+      You are currently viewing all games {{ contiguousGameFilter | roktaGame }}
+    </span>
+    <i ng-show="_eventCount_" class="fa fa-cog fa-spin"></i>
   </div>
 </div>
 }

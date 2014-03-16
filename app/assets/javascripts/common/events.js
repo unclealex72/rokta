@@ -5,12 +5,15 @@ function($log, $rootScope, Restangular) {
   var service = {
     refresh : function(event, url, success) {
       $log.info("Calling " + url);
+      $rootScope['_eventCount_'] = $rootScope['_eventCount_'] ? $rootScope['_eventCount_'] + 1 : 1;
       var onSuccess = function(data) {
         success(data);
         event.initialised = true;
+        $rootScope['_eventCount_'] = $rootScope['_eventCount_'] - 1;
         $rootScope.$broadcast(event.name);
       }
       var onFailure = function(response) {
+        $rootScope['_eventCount_'] = $rootScope['_eventCount_'] - 1;
         $log.info(event.name + ": " + response.status);
         alert(event.name + ": " + response.status);
       };
@@ -29,7 +32,6 @@ function($log, $rootScope, Restangular) {
         $scope.$on(evt.name, function(evt) {
           runCallbacks();
         });
-        //runCallbacks();
       });
     }
   };

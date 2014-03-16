@@ -1,6 +1,6 @@
 var league = angular.module(
   'rokta.stats.league',
-  ['rokta.common.events', 'rokta.stats.stats', 'rokta.stats.filters', 'rokta.common.panel']);
+  ['rokta.common.events', 'rokta.stats.stats', 'rokta.stats.filters', 'rokta.common.panel', 'ngAnimate']);
 
 league.directive('roktaJoin', function() {
   return {
