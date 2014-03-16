@@ -42,6 +42,34 @@ body {
 }
 
 /*
+ Navbar animation
+*/
+
+.open > a {
+  -webkit-transition:all linear 0.25s;
+  -moz-transition:all linear 0.25s;
+  -o-transition:all linear 0.25s;
+  transition:all linear 0.25s;
+}
+
+.open > .dropdown-menu {
+  -webkit-transform: scale(1, 1);
+  transform: scale(1, 1);
+  opacity:1;
+}
+
+.dropdown-menu {
+  opacity:.3;
+  -webkit-transform-origin: top;
+  transform-origin: top;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+  -webkit-transform: scale(1, 0);
+  display: block;
+  transition: all 0.2s linear;
+  -webkit-transition: all 0.2s linear;
+}
+/*
  Fade in animation
 */
 
