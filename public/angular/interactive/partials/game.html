@@ -24,6 +24,9 @@
       <p>You are exempt; enjoy the show.</p>
     </div>
     <div ng-hide="exempt">
+      <div rokta-panel header="Please Wait" ng-hide="state.type">
+        <p>Waiting for a response for the server. Please wait or try refreshing the page.</p>
+      </div>
       <div rokta-panel header="New Game" ng-show="state.type == 'notStarted'">
         <p>Please click to start a new game:</p>
         <button class="btn btn-primary btn-lg btn-block" ng-click="instigate()">Instigate</button>

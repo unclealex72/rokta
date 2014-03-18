@@ -89,6 +89,7 @@ interactiveApp.service('InteractiveGame', ['GameBuilder', 'AUTH', function(GameB
 interactiveApp.controller('InteractiveCtrl',
 ['$scope', '$window', 'Restangular', 'Interactive', 'InteractiveGame', 'ROUTES', 'AUTH',
 function($scope, $window, Restangular, Interactive, InteractiveGame, ROUTES, AUTH) {
+  $scope.state = { type: false };
   var onSuccess = function(exemptPlayer) {
     $scope.exemptPlayer = exemptPlayer;
     $scope.exempt = AUTH.name && (exemptPlayer.name == AUTH.name);

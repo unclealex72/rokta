@@ -17,7 +17,7 @@ interactive.service('MessageQueue', ['$log', 'ROUTES', function($log, ROUTES) {
   return {
     onOpen: function(listener) {
       ws.onopen = function() {
-        $log.info("The websocket opened!");
+        $log.info("The websocket opened");
         listener();
       }
     },
