@@ -1,0 +1,36 @@
+/*
+ * Cross browser mixins
+ */
+
+.transition(@transition) {
+  -webkit-transition:@transition;
+  -moz-transition:@transition;
+  -o-transition:@transition;
+  -ms-transition:@transition;
+  transition:@transition;
+}
+
+.transform(@transform) {
+  -webkit-transform:@transform;
+  -moz-transform:@transform;
+  -o-transform:@transform;
+  -ms-transform:@transform;
+  transform:@transform;
+}
+
+.transform-origin(@transform-origin) {
+  -webkit-transform-origin:@transform-origin;
+  -moz-transform-origin:@transform-origin;
+  -o-transform-origin:@transform-origin;
+  -ms-transform-origin:@transform-origin;
+  transform-origin:@transform-origin;
+}
+
+.animation-fill-mode(@animation-fill-mode) {
+  -webkit-animation-fill-mode:@animation-fill-mode;
+  -moz-animation-fill-mode:@animation-fill-mode;
+  -o-animation-fill-mode:@animation-fill-mode;
+  -ms-animation-fill-mode:@animation-fill-mode;
+  animation-fill-mode:@animation-fill-mode;
+}
+

@@ -1,3 +1,5 @@
+@import "_mixins.less";
+
 .day-suffix {
   font-size: 70%;
   position: relative;
@@ -46,38 +48,29 @@ body {
 */
 
 .open > a {
-  -webkit-transition:all linear 0.25s;
-  -moz-transition:all linear 0.25s;
-  -o-transition:all linear 0.25s;
-  transition:all linear 0.25s;
+  .transition(all linear 0.25s);
 }
 
 .open > .dropdown-menu {
-  -webkit-transform: scale(1, 1);
-  transform: scale(1, 1);
+  .transform(scale(1, 1));
   opacity:1;
 }
 
 .dropdown-menu {
   opacity:.3;
-  -webkit-transform-origin: top;
-  transform-origin: top;
-  -webkit-animation-fill-mode: forwards;
-  animation-fill-mode: forwards;
-  -webkit-transform: scale(1, 0);
+  .transform-origin(top);
+  .animation-fill-mode(forwards);
+  .transform(scale(1, 0));
   display: block;
-  transition: all 0.2s linear;
-  -webkit-transition: all 0.2s linear;
+  .transition(all 0.2s linear);
 }
+
 /*
  Fade in animation
 */
 
 .fade-in {
-  -webkit-transition:all linear 0.5s;
-  -moz-transition:all linear 0.5s;
-  -o-transition:all linear 0.5s;
-  transition:all linear 0.5s;
+  .transition(all linear 0.5s);
   opacity:1;
 }
 
@@ -95,10 +88,7 @@ body {
 */
 
 .grow {
-  -webkit-transition:all linear 0.5s;
-  -moz-transition:all linear 0.5s;
-  -o-transition:all linear 0.5s;
-  transition:all linear 0.5s;
+  .transition(all linear 0.5s);
   opacity:1;
 }
 
