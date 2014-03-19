@@ -1,6 +1,6 @@
 var interactive = angular.module('rokta.common.interactive', ['rokta.common.routing', 'rokta.common.auth']);
 
-interactive.service('MessageQueue', ['$log', 'ROUTES', function($log, ROUTES) {
+interactive.service('MessageQueue', ['$timeout', '$log', 'ROUTES', function($timeout, $log, ROUTES) {
   var ws = new WebSocket(ROUTES.ws);
   ws.onerror = function(err) {
     $log.error("The websocket errored " + angular.toJson(err));
@@ -14,6 +14,12 @@ interactive.service('MessageQueue', ['$log', 'ROUTES', function($log, ROUTES) {
     newws.onclose = ws.onclose;
     ws = newws;
   }
+  $timeout(function() {
+    if (ws.readyState != WebSocket.OPEN) {
+      $log.warn("The websocket connection timed out. Closing.")
+      ws.close();
+    }
+  }, 1000);
   return {
     onOpen: function(listener) {
       ws.onopen = function() {
