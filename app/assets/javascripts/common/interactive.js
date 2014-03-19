@@ -15,6 +15,7 @@ interactive.service('MessageQueue', ['$timeout', '$log', 'ROUTES', function($tim
     ws = newws;
   }
   $timeout(function() {
+    $log.info("After 1 second the websocket readyState is " + ws.readyState);
     if (ws.readyState != WebSocket.OPEN) {
       $log.warn("The websocket connection timed out. Closing.")
       ws.close();
