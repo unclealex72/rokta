@@ -37,7 +37,29 @@ function($scope, $location) {
   }];
 }]);
 
-interactiveApp.service('GameBuilder', [function() {
+interactiveApp.service('PlayerStatus', [function() {
+  var service = function(originalPlayers, currentPlayers) {
+    var decorator;
+    if (originalPlayers.length == currentPlayers.length) {
+      decorator = function(player) {
+        return "ALL_PLAYING";
+      }
+    }
+    else {
+      decorator = function(player) {
+        return _.contains(currentPlayers, player) ? "LOSING" : "WINNING";
+      }
+    }
+    return function(players) {
+      return _.map(players, function(player) {
+        return { name: player, status: decorator(player) };
+      });
+    };
+  };
+  return service;
+}]);
+
+interactiveApp.service('GameBuilder', ['PlayerStatus', function(PlayerStatus) {
   var service = function(players, previousRounds, currentPlayers, currentRound) {
     players = _.sortBy(players);
     var rounds = _.map(previousRounds, function(previousRound) {
@@ -50,7 +72,7 @@ interactiveApp.service('GameBuilder', [function() {
         return _.contains(currentPlayers, player) ? (currentRound[player] ? "PLAYED" : "WAITING") : false;
       }));
     }
-    return { players: players, rounds: rounds };
+    return { players: PlayerStatus(players, currentPlayers)(players), rounds: rounds };
   };
   return service;
 }]);

@@ -24,7 +24,11 @@
     <tr>
       <th>#</th>
       <th ng-repeat="player in players">
-        {{player}}
+        {{player.name}} <i class="fa"
+        ng-class="{
+          'fa-smile-o': player.status == 'WINNING',
+          'fa-frown-o': player.status == 'LOSING',
+          'fa-meh-o': player.status == 'ALL_PLAYING'}"></i>
       </th>
     </tr>
     </thead>
