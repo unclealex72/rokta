@@ -1,6 +1,7 @@
 var interactive = angular.module('rokta.common.interactive', ['rokta.common.routing', 'rokta.common.auth']);
 
 interactive.service('MessageQueue', ['$timeout', '$log', 'ROUTES', function($timeout, $log, ROUTES) {
+  $log.info("Attempting to connect to the websocket.");
   var ws = new WebSocket(ROUTES.ws);
   ws.onerror = function(err) {
     $log.error("The websocket errored " + angular.toJson(err));
