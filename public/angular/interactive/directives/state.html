@@ -24,11 +24,10 @@
     <tr>
       <th>#</th>
       <th ng-repeat="player in players">
-        {{player.name}} <i class="fa"
-        ng-class="{
-          'fa-smile-o': player.status == 'WINNING',
-          'fa-frown-o': player.status == 'LOSING',
-          'fa-meh-o': player.status == 'ALL_PLAYING'}"></i>
+        {{player.name}}
+        <span rokta-icon if="player.status == 'WINNING'" icon="fa-smile-o"></span>
+        <span rokta-icon if="player.status == 'LOSING'" icon="fa-frown-o"></span>
+        <span rokta-icon if="player.status == 'ALL_PLAYING'" icon="fa-meh-o"></span>
       </th>
     </tr>
     </thead>
@@ -38,12 +37,12 @@
         {{$index + 1}}
       </td>
       <td ng-repeat="play in round track by $index">
-        <span ng-show="play == 'ROCK'" class="grow">R</span>
-        <span ng-show="play == 'SCISSORS'" class="grow">S</span>
-        <span ng-show="play == 'PAPER'" class="grow">P</span>
-        <span ng-show="play == 'PLAYED'" class="grow"><i class="fa fa-check"></i></span>
-        <span ng-show="play == 'WAITING'" class="grow"><i class="fa fa-times"></i></span>
-        <span ng-hide="play" class="grow"><i class="fa fa-ellipsis-h"></i></span>
+        <span rokta-icon if="play == 'ROCK'" icon="fa-globe"></span>
+        <span rokta-icon if="play == 'SCISSORS'" icon="fa-scissors"></span>
+        <span rokta-icon if="play == 'PAPER'" icon="fa-file-o"></span>
+        <span rokta-icon if="play == 'PLAYED'" icon="fa-check"></span>
+        <span rokta-icon if="play == 'WAITING'" icon="fa-times"></span>
+        <span rokta-icon if="!play" icon="fa-ellipsis-h"></span>
       </td>
     </tr>
     </tbody>

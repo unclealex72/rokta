@@ -38,9 +38,14 @@ function($scope, $location) {
 }]);
 
 interactiveApp.service('PlayerStatus', [function() {
-  var service = function(originalPlayers, currentPlayers) {
+  var service = function(originalPlayers, currentPlayers, loser) {
     var decorator;
-    if (originalPlayers.length == currentPlayers.length) {
+    if (loser) {
+      decorator = function(player) {
+        return player == loser ? "LOSING" : "WINNING";
+      }
+    }
+    else if (currentPlayers.length == 0 || originalPlayers.length == currentPlayers.length) {
       decorator = function(player) {
         return "ALL_PLAYING";
       }
@@ -60,7 +65,7 @@ interactiveApp.service('PlayerStatus', [function() {
 }]);
 
 interactiveApp.service('GameBuilder', ['PlayerStatus', function(PlayerStatus) {
-  var service = function(players, previousRounds, currentPlayers, currentRound) {
+  var service = function(players, previousRounds, currentPlayers, currentRound, loser) {
     players = _.sortBy(players);
     var rounds = _.map(previousRounds, function(previousRound) {
       return _.map(players, function(player) {
@@ -72,7 +77,7 @@ interactiveApp.service('GameBuilder', ['PlayerStatus', function(PlayerStatus) {
         return _.contains(currentPlayers, player) ? (currentRound[player] ? "PLAYED" : "WAITING") : false;
       }));
     }
-    return { players: PlayerStatus(players, currentPlayers)(players), rounds: rounds };
+    return { players: PlayerStatus(players, currentPlayers, loser)(players), rounds: rounds };
   };
   return service;
 }]);
@@ -82,7 +87,7 @@ interactiveApp.service('InteractiveGame', ['GameBuilder', 'AUTH', function(GameB
     waitingForPlayers: function(state) {
       var players = _.sortBy(state.players);
       return {
-        game: GameBuilder(players, [], [], false),
+        game: GameBuilder(players, [], [], false, false),
         joined: _.contains(state.players, AUTH.name),
         startable: players.length >= 2
       };
@@ -90,7 +95,7 @@ interactiveApp.service('InteractiveGame', ['GameBuilder', 'AUTH', function(GameB
     gameInProgress: function(state) {
       var players = _.sortBy(state.originalPlayers);
       return {
-        game: GameBuilder(players, state.previousRounds, state.currentPlayers, state.currentRound),
+        game: GameBuilder(players, state.previousRounds, state.currentPlayers, state.currentRound, false),
         round: state.previousRounds.length + 1,
         progressMax: state.currentPlayers.length,
         progressValue: state.currentPlayers.length - _.keys(state.currentRound).length,
@@ -100,7 +105,7 @@ interactiveApp.service('InteractiveGame', ['GameBuilder', 'AUTH', function(GameB
     },
     gameOver: function(state) {
       return {
-        game: GameBuilder(state.players, state.rounds, [], false),
+        game: GameBuilder(state.players, state.rounds, [], false, state.loser),
         loser: state.loser
       };
     }
@@ -152,6 +157,17 @@ function ($location, Interactive) {
   Interactive.undo();
   $location.path('/coyi');
 }]);
+
+interactiveApp.directive('roktaIcon', function() {
+  return {
+    restrict : 'AE',
+    templateUrl : '/assets/angular/interactive/directives/icon.html',
+    scope : {
+      'if': '=',
+      icon: '@'
+    }
+  };
+});
 
 interactiveApp.directive('roktaInteractiveButton', function() {
   return {
