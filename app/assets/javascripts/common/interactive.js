@@ -42,6 +42,7 @@ interactive.service('Interactive', ['$log', '$rootScope', 'MessageQueue', 'AUTH'
 function($log, $rootScope, MessageQueue, AUTH) {
   var service = {
     onStateChange: function(listener) {
+      $log.info("Listening to game state changes.")
       MessageQueue.onOpen(function() {
         $log.info("Requesting current state.");
         service.send({type: "sendCurrentState"});
