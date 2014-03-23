@@ -43,6 +43,7 @@ function($log, $rootScope, MessageQueue, AUTH) {
   var service = {
     onStateChange: function(listener) {
       MessageQueue.onOpen(function() {
+        $log.info("Requesting current state.");
         service.send({type: "sendCurrentState"});
       });
       MessageQueue.onMessage(function(message) {
