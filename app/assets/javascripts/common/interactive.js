@@ -25,6 +25,7 @@ interactive.service('MessageQueue', ['$timeout', '$log', 'ROUTES', function($tim
   return {
     onOpen: function(listener) {
       if (ws.readyState == WebSocket.OPEN) {
+        $log.info("The websocket was already open so calling callback function straight away.")
         listener();
       }
       else {
@@ -43,8 +44,8 @@ interactive.service('MessageQueue', ['$timeout', '$log', 'ROUTES', function($tim
   };
 }]);
 
-interactive.service('Interactive', ['$log', '$rootScope', '$timeout', 'MessageQueue', 'AUTH',
-function($log, $rootScope, $timeout, MessageQueue, AUTH) {
+interactive.service('Interactive', ['$log', '$rootScope', 'MessageQueue', 'AUTH',
+function($log, $rootScope, MessageQueue, AUTH) {
   var service = {
     onStateChange: function(listener) {
       $log.info("Listening to game state changes.");
