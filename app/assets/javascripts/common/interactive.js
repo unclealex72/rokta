@@ -24,9 +24,14 @@ interactive.service('MessageQueue', ['$timeout', '$log', 'ROUTES', function($tim
   }, 1000);
   return {
     onOpen: function(listener) {
-      ws.onopen = function() {
-        $log.info("The websocket opened");
+      if (ws.readyState == WebSocket.OPEN) {
         listener();
+      }
+      else {
+        ws.onopen = function() {
+          $log.info("The websocket opened");
+          listener();
+        }
       }
     },
     onMessage: function(listener) {
@@ -45,7 +50,7 @@ function($log, $rootScope, MessageQueue, AUTH) {
       $log.info("Listening to game state changes.")
       MessageQueue.onOpen(function() {
         $log.info("Requesting current state.");
-        $timeout(function() { service.send({type: "sendCurrentState"}); }, 10);
+        service.send({type: "sendCurrentState"});
       });
       MessageQueue.onMessage(function(message) {
         var state = angular.fromJson(message.data).state;
