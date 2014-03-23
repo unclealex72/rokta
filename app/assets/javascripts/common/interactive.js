@@ -24,15 +24,15 @@ interactive.service('MessageQueue', ['$timeout', '$log', 'ROUTES', function($tim
   }, 1000);
   return {
     onOpen: function(listener) {
-      //if (ws.readyState == WebSocket.OPEN) {
-      //  listener();
-      //}
-      //else {
+      if (ws.readyState == WebSocket.OPEN) {
+        listener();
+      }
+      else {
         ws.onopen = function() {
           $log.info("The websocket opened");
           listener();
         }
-      //}
+      }
     },
     onMessage: function(listener) {
       ws.onmessage = listener;
@@ -47,7 +47,7 @@ interactive.service('Interactive', ['$log', '$rootScope', '$timeout', 'MessageQu
 function($log, $rootScope, MessageQueue, AUTH) {
   var service = {
     onStateChange: function(listener) {
-      $log.info("Listening to game state changes.")
+      $log.info("Listening to game state changes.");
       MessageQueue.onOpen(function() {
         $log.info("Requesting current state.");
         service.send({type: "sendCurrentState"});
