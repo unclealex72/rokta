@@ -69,7 +69,7 @@
               <span class="icon-bar">
               </span>
         </button>
-        <a class="navbar-brand" href="@routes.StatsController.index">Rokta</a>
+        <a class="navbar-brand" ng-class="{'loading': _eventCount_}" href="@routes.StatsController.index">Rokta</a>
       </div>
       <div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
         <ul class="nav navbar-nav">
@@ -128,11 +128,8 @@
 
 @if(showFooter) {
 <div id="footer">
-  <div class="container" ng-controller="GameFilterCtrl">
-    <span ng-cloak ng-hide="_eventCount_" class="text-muted credit">
-      You are currently viewing all games {{ contiguousGameFilter | roktaGame }}
-    </span>
-    <i ng-show="_eventCount_" class="fa fa-cog fa-spin"></i>
+  <div class="container" ng-controller="GameFilterCtrl" ng-cloak ng-hide="_eventCount_">
+    <span class="text-muted credit">You are currently viewing all games {{ contiguousGameFilter | roktaGame }}</span>
   </div>
 </div>
 }
