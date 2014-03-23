@@ -38,14 +38,14 @@ interactive.service('MessageQueue', ['$timeout', '$log', 'ROUTES', function($tim
   };
 }]);
 
-interactive.service('Interactive', ['$log', '$rootScope', 'MessageQueue', 'AUTH',
+interactive.service('Interactive', ['$log', '$rootScope', '$timeout', 'MessageQueue', 'AUTH',
 function($log, $rootScope, MessageQueue, AUTH) {
   var service = {
     onStateChange: function(listener) {
       $log.info("Listening to game state changes.")
       MessageQueue.onOpen(function() {
         $log.info("Requesting current state.");
-        service.send({type: "sendCurrentState"});
+        $timeout(function() { service.send({type: "sendCurrentState"}); }, 10);
       });
       MessageQueue.onMessage(function(message) {
         var state = angular.fromJson(message.data).state;
