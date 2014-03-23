@@ -24,15 +24,15 @@ interactive.service('MessageQueue', ['$timeout', '$log', 'ROUTES', function($tim
   }, 1000);
   return {
     onOpen: function(listener) {
-      if (ws.readyState == WebSocket.OPEN) {
-        listener();
-      }
-      else {
+      //if (ws.readyState == WebSocket.OPEN) {
+      //  listener();
+      //}
+      //else {
         ws.onopen = function() {
           $log.info("The websocket opened");
           listener();
         }
-      }
+      //}
     },
     onMessage: function(listener) {
       ws.onmessage = listener;
