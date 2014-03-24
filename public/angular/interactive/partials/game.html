@@ -31,10 +31,13 @@
       <div rokta-panel header="Game in progress" ng-show="exempt &amp;&amp; state.type != 'notStarted'">
         <p>You are exempt; enjoy the show.</p>
       </div>
+      <div rokta-panel header="Game in progress" ng-show="notPlaying">
+        <p>You are no longer part of this game.</p>
+      </div>
       <div ng-hide="exempt">
         <div rokta-panel header="Join Game" ng-show="state.type == 'waitingForPlayers'">
           <p>Please click to join the game:</p>
-          <div rokta-interactive-button waiting="exempt || joined" busy="joined" ng-click="join()"
+          <div rokta-interactive-button waiting="joined" busy="joined" ng-click="join()"
                text="Join">
           </div>
           <p>Please click to start the game when everyone has joined:</p>
@@ -42,7 +45,7 @@
                ng-click="start()" text="Start">
           </div>
         </div>
-        <div rokta-panel header="Round {{round}}" ng-show="!exempt && state.type == 'gameInProgress'">
+        <div rokta-panel header="Round {{round}}" ng-show="state.type == 'gameInProgress' && playing">
           <p>Please play:</p>
           <div rokta-interactive-button waiting="myHand" busy="myHand == 'ROCK'"
                ng-click="play('ROCK')" text="Rock">
@@ -61,6 +64,10 @@
               value="progressValue / progressMax * 100">
           </div>
         </div>
+        <div rokta-panel header="Round {{round}}" ng-show="state.type == 'gameInProgress' && !playing">
+          <p>You are not involved.</p>
+          <p>Sit back and relax.</p>
+        </div>
         <div rokta-panel header="Game Over" ng-show="state.type == 'gameOver'">
           <p>{{state.loser}} has lost.</p>
           <div rokta-interactive-button waiting="false" busy="accepted"
@@ -70,7 +77,7 @@
       </div>
     </div>
   </div>
-  <div class="col-md-6 hidden-xs">
+  <div class="col-md-6">
     <div rokta-interactive-game players="game.players" rounds="game.rounds"></div>
   </div>
 </div>
