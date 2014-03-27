@@ -43,19 +43,22 @@ statsApp.controller('StatsCtrl', ['$window', '$log', '$scope', '$modal', 'Player
 function($window, $log, $scope, $modal, Players, Interactive, ROUTES) {
   Interactive.onStateChange(function(state) {
     if (state.inProgress) {
-      $scope.modalInstance = $modal.open({
-        templateUrl: 'assets/angular/gameinprogress.html'
-      });
-      var gameInProgress = function(redirect) {
-        if (redirect === true) {
-          $window.location.href=ROUTES.interactiveGame;
+      if (!$scope.modalInstance) {
+        $scope.modalInstance = $modal.open({
+          templateUrl: 'assets/angular/gameinprogress.html'
+        });
+        var gameInProgress = function(redirect) {
+          if (redirect === true) {
+            $window.location.href=ROUTES.interactiveGame;
+          }
         }
+        $scope.modalInstance.result.then(gameInProgress, gameInProgress);
       }
-      $scope.modalInstance.result.then(gameInProgress, gameInProgress);
     }
     else {
       if ($scope.modalInstance) {
         $scope.modalInstance.close(false);
+        $scope.modalInstance = null;
       }
     }
   });
