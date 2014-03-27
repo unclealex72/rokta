@@ -27,6 +27,8 @@
         {{player.name}}
         <span rokta-icon if="player.status == 'WINNING'" icon="happy"></span>
         <span rokta-icon if="player.status == 'LOSING'" icon="unhappy"></span>
+        <span rokta-icon if="player.status == 'LAST_TWO'" icon="worried"></span>
+        <span rokta-icon if="player.status == 'LOSER'" icon="loser"></span>
         <span rokta-icon if="player.status == 'ALL_PLAYING'" icon="neutral"></span>
       </th>
     </tr>

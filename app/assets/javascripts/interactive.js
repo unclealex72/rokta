@@ -42,7 +42,7 @@ interactiveApp.service('PlayerStatus', [function() {
     var decorator;
     if (loser) {
       decorator = function(player) {
-        return player == loser ? "LOSING" : "WINNING";
+        return player == loser ? "LOSER" : "WINNING";
       }
     }
     else if (currentPlayers.length == 0 || originalPlayers.length == currentPlayers.length) {
@@ -52,7 +52,12 @@ interactiveApp.service('PlayerStatus', [function() {
     }
     else {
       decorator = function(player) {
-        return _.contains(currentPlayers, player) ? "LOSING" : "WINNING";
+        if (_.contains(currentPlayers, player)) {
+          return currentPlayers.length == 2 ? "LAST_TWO" : "LOSING";
+        }
+        else {
+          return "WINNING";
+        }
       }
     }
     return function(players) {
