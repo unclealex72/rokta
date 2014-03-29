@@ -49,7 +49,7 @@ function($window, $log, $scope, $modal, Players, Interactive, ROUTES) {
         });
         var gameInProgress = function(redirect) {
           if (redirect === true) {
-            $window.location.href=ROUTES.interactiveGame;
+            $window.location.href=ROUTES.interactiveGame + '#/join';
           }
         }
         $scope.modalInstance.result.then(gameInProgress, gameInProgress);
