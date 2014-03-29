@@ -61,10 +61,10 @@ class PersistedGameSpec extends Specification with DaysAndTimes with IsoChronolo
         new H2Adapter))
     inTransaction {
       create
-      val freddie  = PersistedPlayer(0, "Freddie", "BLACK")
-      val brian = PersistedPlayer(0, "Brian", "BLUE")
-      val roger = PersistedPlayer(0, "Roger", "RED")
-      val john = PersistedPlayer(0, "John", "WHITE")
+      val freddie  = PersistedPlayer("Freddie")
+      val brian = PersistedPlayer("Brian")
+      val roger = PersistedPlayer("Roger")
+      val john = PersistedPlayer("John")
 
       Seq(freddie, roger, brian, john).foreach { person =>
         person.save

@@ -34,11 +34,11 @@ import json.JsonMatchers
 class PlayerSpec extends Specification with JsonMatchers {
 
   "A player " should {
-    "serialise to an object with two fields." in {
-      SimplePlayer("Freddie", None, BLACK) must serialiseTo(
-          """{"name":"Freddie","colour":"BLACK"}""")
+    "serialise to an object with three fields." in {
+      SimplePlayer("Freddie", None, Some("url"), BLACK) must serialiseTo(
+          """{"name":"Freddie","avatarUrl":"url","colour":"BLACK"}""")
     }
   }
 
-  case class SimplePlayer(name: String, email: Option[String], colour: Colour) extends Player
+  case class SimplePlayer(name: String, email: Option[String], avatarUrl: Option[String], colour: Colour) extends Player
 }

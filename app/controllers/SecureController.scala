@@ -47,6 +47,7 @@ with Authorization with Injectable {
   object Guest extends Player {
     val name = "Guest"
     val emails: Seq[String] = Seq.empty[String]
+    val avatarUrl: Option[String] = None
     val colour = BLACK
   }
 

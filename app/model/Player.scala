@@ -36,6 +36,11 @@ trait Player {
    */
   def name: String
   /**
+   * The URL of the player's avatar.
+   * @return
+   */
+  def avatarUrl: Option[String]
+  /**
    * The name of the colour used to represent the player's results in any graphs.
    */
   def colour:  Colour
@@ -48,7 +53,7 @@ object PlayerFullEncodeJson {
    * JSON serialisation.
    */
   implicit val playerEncodeJson: EncodeJson[Player] =
-    jencode2L((p: Player) => (p.name, p.colour.persistableToken))("name", "colour")
+    jencode3L((p: Player) => (p.name, p.avatarUrl, p.colour.persistableToken))("name", "avatarUrl", "colour")
 }
 
 object PlayerNameEncodeJson {

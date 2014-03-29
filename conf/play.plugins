@@ -3,3 +3,4 @@
 9997:securesocial.controllers.DefaultTemplatesPlugin
 9998:security.RoktaUserService
 10002:securesocial.core.providers.GoogleProvider
+10006:AvatarEventListener

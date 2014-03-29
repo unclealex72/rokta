@@ -42,4 +42,11 @@ trait PlayerDao {
    * @return
    */
   def playerWithEmail(email: String): Option[Player]
+
+  /**
+   * Update a player's avatarUrl
+   * @param email
+   * @param avatarUrl
+   */
+  def updateAvatarUrl(email: String, avatarUrl: String): Unit
 }

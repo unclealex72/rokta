@@ -47,6 +47,11 @@ case class PersistedPlayer(
   @Column("name")
 	val name: String,
   /**
+   * The player's avatar URL, if any.
+   */
+  @Column("avatarurl")
+  val avatarUrl: Option[String],
+  /**
    * The name of the colour used to represent the player's results in any graphs.
    */
   @Column("graphingcolour")
@@ -57,4 +62,14 @@ case class PersistedPlayer(
     case Colour(colour) => colour
     case _ => throw new IllegalStateException(s"${_colour} is not a valid colour.")
   }
+}
+
+object PersistedPlayer {
+
+  /**
+   * Create a simple player for testing purposes.
+   * @param name
+   * @return
+   */
+  def apply(name: String): PersistedPlayer = PersistedPlayer(0, name, None, "BLACK")
 }

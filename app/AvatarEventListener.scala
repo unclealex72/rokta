@@ -22,6 +22,7 @@
 import securesocial.core.{LoginEvent, Event, EventListener}
 import play.api.mvc.{Session, RequestHeader}
 import play.api.Application
+import Global.Context._
 
 /**
  * An event listener that will update a player's avatar when they log in.
@@ -34,7 +35,10 @@ class AvatarEventListener(app: Application) extends EventListener {
     event match {
       case e: LoginEvent => {
         val user = e.user
-        user.avatarUrl.foreach { avatarUrl =>
+        user.email.zip(user.avatarUrl).foreach { case (email, avatarUrl) =>
+          tx { playerDao => gameDao =>
+            playerDao.updateAvatarUrl(email, avatarUrl)
+          }
         }
       }
       case _ => // Do nothing

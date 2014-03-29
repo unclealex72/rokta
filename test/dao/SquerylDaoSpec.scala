@@ -85,8 +85,8 @@ class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology 
       import dao.RoktaSchema._
       import dao.EntryPoint._
 
-      val freddie = PersistedPlayer(0, "Freddie", "BLACK")
-      val brian = PersistedPlayer(0, "Brian", "WHITE")
+      val freddie = PersistedPlayer("Freddie")
+      val brian = PersistedPlayer("Brian")
       freddie.save
       brian.save
 
@@ -182,9 +182,9 @@ class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology 
       import dao.RoktaSchema._
       import dao.EntryPoint._
 
-      val freddie = PersistedPlayer(0, "Freddie", "BLACK")
-      val brian = PersistedPlayer(0, "Brian", "WHITE")
-      val roger = PersistedPlayer(0, "Roger", "RED")
+      val freddie = PersistedPlayer("Freddie")
+      val brian = PersistedPlayer("Brian")
+      val roger = PersistedPlayer("Roger")
       freddie.save
       brian.save
       roger.save
@@ -217,17 +217,43 @@ class SquerylDaoSpec extends Specification with DaysAndTimes with IsoChronology 
     }
   }
 
+  "Updating a player's avatar" should {
+    type Freddie = PersistedPlayer
+    type Brian = PersistedPlayer
+
+    def txn[B](block: SquerylDao => Freddie => Brian => B) = inTxn[B] {
+      squerylDao =>
+
+        import dao.RoktaSchema._
+        import dao.EntryPoint._
+
+        val freddie = PersistedPlayer("Freddie")
+        freddie.save
+        val brian = PersistedPlayer("Brian")
+        brian.save
+        PersistedEmail(freddie, "freddie@queen.com")
+        PersistedEmail(brian, "brian@queen.com")
+        block(squerylDao)(freddie)(brian)
+    }
+    "store the new URL" in txn { squerylDao => freddie => brian =>
+      squerylDao.updateAvatarUrl("freddie@queen.com", "url")
+      val newFreddie = squerylDao.playerById(freddie.id).get
+      newFreddie.avatarUrl must beSome("url")
+    }
+
+  }
+
   "Validating player logins" should {
     def txn[B](block: SquerylDao => B) = inTxn[B] { squerylDao =>
 
       import dao.RoktaSchema._
       import dao.EntryPoint._
 
-      val freddie = PersistedPlayer(0, "Freddie", "BLACK")
+      val freddie = PersistedPlayer("Freddie")
       freddie.save
-      val roger = PersistedPlayer(0, "Roger", "BLUE")
+      val roger = PersistedPlayer("Roger")
       roger.save
-      val brian = PersistedPlayer(0, "Brian", "GREEN")
+      val brian = PersistedPlayer("Brian")
       brian.save
       PersistedEmail(freddie, "freddie@queen.com")
       PersistedEmail(freddie, "faroukh@queen.com")

@@ -91,15 +91,7 @@ class SquerylDao extends GameDao with PlayerDao with Transactional {
     }
   }
 
-  def allPersistedPlayers: Iterable[PersistedPlayer] = from(tplayers)(p => select(p))
-  
-  def allPlayers: Set[Player] = allPersistedPlayers.toSet
-
-  def playerWithEmail(email: String): Option[Player] = {
-    from(tplayers, temails)((p, e) => where (p.id === e.playerId and e.email === email) select(p)).headOption
-  }
-
-  def limitGamePlayed(f: NonNumericalExpression[Timestamp] => UnaryAgregateLengthNeutralOp[Timestamp]): Option[DateTime] = 
+  def limitGamePlayed(f: NonNumericalExpression[Timestamp] => UnaryAgregateLengthNeutralOp[Timestamp]): Option[DateTime] =
     from(tgames)(g => compute(f(g._datePlayed))).headOption.map(_.measures.get).map(new DateTime(_))
 
   def firstGamePlayed: Option[DateTime] = limitGamePlayed(min[Timestamp]);
@@ -121,6 +113,24 @@ class SquerylDao extends GameDao with PlayerDao with Transactional {
       }
       game.addRound(persistablePlays)
       game
+    }
+  }
+
+  def allPersistedPlayers: Iterable[PersistedPlayer] = from(tplayers)(p => select(p))
+
+  def allPlayers: Set[Player] = allPersistedPlayers.toSet
+
+  def playerById(id: Long): Option[Player] = {
+    from(tplayers)(p => where (p.id === id) select(p)).headOption
+  }
+
+  def playerWithEmail(email: String): Option[PersistedPlayer] = {
+    from(tplayers, temails)((p, e) => where (p.id === e.playerId and e.email === email) select(p)).headOption
+  }
+
+  def updateAvatarUrl(email: String, avatarUrl: String): Unit = {
+    playerWithEmail(email).foreach { player =>
+      update(tplayers)(p => where(p.id === player.id) set (p.avatarUrl := Some(avatarUrl)))
     }
   }
 }

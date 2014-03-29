@@ -20,6 +20,7 @@
  *
  */
 
+import dao.Transactional
 import org.squeryl.Session
 import org.squeryl.SessionFactory
 import org.squeryl.adapters.H2Adapter
@@ -45,6 +46,9 @@ object Global extends GlobalSettings with Logging {
     implicit val bindingModule = RoktaBindingModule  // use the standard config by default
 
     var controllers = Map.empty[Class[_], Any]
+
+    val tx: Transactional = inject[Transactional]
+
     def register[T <: Controller](implicit m: scala.reflect.Manifest[T]): Unit = {
       controllers += m.runtimeClass -> inject(m)
     }
