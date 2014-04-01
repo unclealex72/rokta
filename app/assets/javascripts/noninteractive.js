@@ -1,6 +1,6 @@
 var nonInteractiveApp = angular.module(
   'nonInteractive',
-  ['rokta.noninteractive.game', 'ui.bootstrap', 'ngRoute', 'ngAnimate']);
+  ['rokta.noninteractive.game', 'rokta.common.avatar', 'ui.bootstrap', 'ngRoute', 'ngAnimate']);
 
 nonInteractiveApp.config(['$routeProvider',
 function($routeProvider) {

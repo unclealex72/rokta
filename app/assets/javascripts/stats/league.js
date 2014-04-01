@@ -112,14 +112,20 @@ league.service('StreaksGrouper', function() {
   return service;
 });
 
-league.controller('LeagueCtrl', ['$scope', 'Events', 'Stats',
-function($scope, Events, Stats) {
+league.controller('LeagueCtrl', ['$scope', 'Events', 'Stats', 'Players',
+function($scope, Events, Stats, Players) {
   Stats.refresh();
-  Events.listenTo($scope, Stats, function() {
+  Events.listenTo($scope, [Stats, Players], function() {
     var stats = Stats.stats;
+    var players = Players.players;
     $scope.contiguousGameFilter = stats.contiguousGameFilter;
     $scope.current = stats.current;
-    $scope.league = stats.league;
+    // Add avatar urls to each league row.
+    $scope.league = _.map(stats.league, function(row) {
+      var player = _.find(players, function(player) { return player.name == row.player; });
+      row.avatarUrl = player.avatarUrl;
+      return row;
+    });
     $scope.anyGamesPlayedToday = Stats.anyGamesPlayedToday;
     $scope.ready = true;
   });

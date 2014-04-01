@@ -102,6 +102,7 @@
             }
             case Some(player) => {
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <span rokta-avatar avatar-url='"@player.avatarUrl.getOrElse("")"'></span>
               @player.name
               <b class="caret">
               </b>
@@ -162,6 +163,8 @@
       "index": "@routes.StatsController.index.absoluteURL(play.Play.isProd())",
       "interactiveGame": "@routes.NewGameController.interactive.absoluteURL(play.Play.isProd())",
       "nonInteractiveGame": "@routes.NewGameController.nonInteractive.absoluteURL(play.Play.isProd())",
+      // Resources
+      "anon" : '@routes.Assets.at("images/anon.png")',
       // Ajax
       "stats": "@routes.StatsController.defaultStats",
       "limits": "@routes.StatsController.gameLimits",
@@ -178,7 +181,7 @@
 <script src='@routes.Assets.at("javascripts/rokta.min.js")'></script>
 } else {
 @for(file <- Map(
-"common" -> Seq("day", "events", "colours", "players", "panel", "interactive"),
+"common" -> Seq("day", "events", "colours", "players", "panel", "interactive", "avatar"),
 "stats" -> Seq("stats", "filters", "league", "streaks", "graph", "headtoheads", "hands"),
 "noninteractive" -> Seq("game"),
 "" -> Seq("stats", "interactive", "noninteractive"))) {

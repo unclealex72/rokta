@@ -1,6 +1,6 @@
 var interactiveApp = angular.module(
   'interactive',
-  ['rokta.common.players', 'rokta.common.panel',
+  ['rokta.common.players', 'rokta.common.panel', 'rokta.common.avatar',
    'rokta.common.routing', 'rokta.common.interactive', 'rokta.common.auth',
    'restangular', 'ui.bootstrap', 'ngRoute', 'ngAnimate']);
 

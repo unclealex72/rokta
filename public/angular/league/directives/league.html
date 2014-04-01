@@ -28,6 +28,7 @@
       </td>
       <td>{{$index + 1}}</td>
       <td>
+        <span rokta-avatar avatar-url="row.avatarUrl"></span>
         {{row.player}}
         <span ng-if="row.exempt || (!row.currentlyPlaying && current)" ng-class="{'exempt': row.exempt, 'notplaying': !row.currentlyPlaying && current}">
           *
