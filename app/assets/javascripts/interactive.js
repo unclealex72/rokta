@@ -204,7 +204,8 @@ interactiveApp.directive('roktaInteractiveGame', function() {
     templateUrl : '/assets/angular/interactive/directives/state.html',
     scope : {
       players: '=',
-      rounds: '='
+      rounds: '=',
+      instigator: '='
     }
   };
 });
