@@ -93,6 +93,11 @@ sealed trait Action
 case object Hello extends Action
 
 /**
+ * Simple keep alive ping.
+ */
+case object KeepAlive extends Action
+
+/**
  * Tell the actor to resend the current state.
  */
 case object Echo extends Action

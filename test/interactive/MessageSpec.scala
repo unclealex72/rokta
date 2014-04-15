@@ -74,6 +74,12 @@ class MessageSpec extends Specification with JsonMatchers {
     """.stripMargin)
 
   testJson[Message](
+    Ping,
+    """
+      |{"type": "ping"}
+    """.stripMargin)
+
+  testJson[Message](
     HandPlayed("freddie", ROCK),
     """
       |{"type":"handPlayed","player":"freddie","hand":"ROCK"}

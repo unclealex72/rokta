@@ -1,12 +1,15 @@
 var interactive = angular.module('rokta.common.interactive', ['rokta.common.routing', 'rokta.common.auth']);
 
 interactive.service('MessageQueue', ['$timeout', '$log', 'ROUTES', function($timeout, $log, ROUTES) {
+  var seconds = function(time) {
+    return 1000 * time;
+  };
   $log.info("Attempting to connect to the websocket.");
   var ws = new WebSocket(ROUTES.ws);
   ws.onerror = function(err) {
     $log.error("The websocket errored " + angular.toJson(err));
   }
-  ws.onclose = function() {
+  var reopen = function() {
     $log.warn("The websocket closed");
     var newws = new WebSocket(ROUTES.ws);
     newws.onopen = ws.onopen;
@@ -15,13 +18,31 @@ interactive.service('MessageQueue', ['$timeout', '$log', 'ROUTES', function($tim
     newws.onclose = ws.onclose;
     ws = newws;
   }
+  ws.onclose = function() {
+    $log.warn("The websocket closed");
+    reopen();
+  };
   $timeout(function() {
     $log.info("After 1 second the websocket readyState is " + ws.readyState);
     if (ws.readyState != WebSocket.OPEN) {
       $log.warn("The websocket connection timed out. Closing.")
       ws.close();
     }
-  }, 1000);
+  }, seconds(1));
+  var keepAlive = function() {
+    $timeout(function() {
+      if (ws.readyState == WebSocket.OPEN) {
+        $log.debug("Sending keep alive ping.")
+        ws.send('{ "type": "ping" }');
+        keepAlive();
+      }
+      else {
+        $log.warn("The web socket was not opened. Reopening.");
+        reopen();
+      }
+    }, seconds(10))
+  }
+  keepAlive();
   return {
     onOpen: function(listener) {
       if (ws.readyState == WebSocket.OPEN) {

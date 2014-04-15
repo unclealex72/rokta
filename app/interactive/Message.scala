@@ -52,6 +52,11 @@ case class CurrentState(state: State) extends Message { val jsonType = "state" }
 case object Back extends IncomingMessage("back")
 
 /**
+ * A keep alive ping message.
+ */
+case object Ping extends IncomingMessage("ping")
+
+/**
  * A message used to echo the current state.
  */
 case object SendCurrentState extends IncomingMessage("sendCurrentState")
@@ -97,6 +102,7 @@ object Message {
       case Back => jTypeObject
       case Cancel => jTypeObject
       case SendCurrentState => jTypeObject
+      case Ping => jTypeObject
       case Instigator(instigator) => ("instigator" := instigator) ->: jTypeObject
       case NewPlayer(player) => ("player" := player) ->: jTypeObject
       case StartGame => jTypeObject
@@ -107,18 +113,20 @@ object Message {
   }
 
   implicit val messageDecodeJson: DecodeJson[Message] = DecodeJson { cursor =>
-    (cursor --\ "type").as[String].flatMap { jsonType => jsonType match {
-      case "back" => DecodeResult.ok(Back)
-      case "cancel" => DecodeResult.ok(Cancel)
-      case "sendCurrentState" => DecodeResult.ok(SendCurrentState)
-      case "instigator" => jdecode1L(Instigator.apply)("instigator").decode(cursor)
-      case "newPlayer" => jdecode1L(NewPlayer.apply)("player").decode(cursor)
-      case "startGame" => DecodeResult.ok(StartGame)
-      case "handPlayed" => jdecode2L(HandPlayed.apply)("player", "hand").decode(cursor)
-      case "acceptGame" => DecodeResult.ok(AcceptGame)
-      case "state" => jdecode1L(CurrentState.apply)("state").decode(cursor)
-      case ty => DecodeResult.fail(s"$ty is not a valid message type", cursor.history)
-    }
+    (cursor --\ "type").as[String].flatMap { jsonType =>
+      jsonType match {
+        case "back" => DecodeResult.ok(Back)
+        case "cancel" => DecodeResult.ok(Cancel)
+        case "ping" => DecodeResult.ok(Ping)
+        case "sendCurrentState" => DecodeResult.ok(SendCurrentState)
+        case "instigator" => jdecode1L(Instigator.apply)("instigator").decode(cursor)
+        case "newPlayer" => jdecode1L(NewPlayer.apply)("player").decode(cursor)
+        case "startGame" => DecodeResult.ok(StartGame)
+        case "handPlayed" => jdecode2L(HandPlayed.apply)("player", "hand").decode(cursor)
+        case "acceptGame" => DecodeResult.ok(AcceptGame)
+        case "state" => jdecode1L(CurrentState.apply)("state").decode(cursor)
+        case ty => DecodeResult.fail(s"$ty is not a valid message type", cursor.history)
+      }
     }
   }
 
