@@ -9,9 +9,6 @@ function($routeProvider) {
   $routeProvider.when('/coyi', {
     templateUrl : 'assets/angular/interactive/partials/game.html',
     controller : 'GameCtrl'
-  }).when('/join', {
-    templateUrl : 'assets/angular/interactive/partials/game.html',
-    controller : 'JoinCtrl'
   }).when('/undo', {
     templateUrl : 'assets/angular/interactive/partials/game.html',
     controller : 'UndoCtrl'
@@ -164,14 +161,6 @@ interactiveApp.controller('UndoCtrl', ['$location', 'Interactive',
 function ($location, Interactive) {
   Interactive.undo();
   $location.path('/coyi');
-}]);
-
-interactiveApp.controller('JoinCtrl', ['$window', 'Interactive', 'ROUTES',
-function ($window, Interactive, ROUTES) {
-  Interactive.onStateChange(function(state) {
-    Interactive.join();
-    $window.location.href = ROUTES.interactiveGame;
-  });
 }]);
 
 interactiveApp.directive('roktaIcon', function() {
