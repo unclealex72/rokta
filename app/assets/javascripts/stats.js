@@ -1,6 +1,6 @@
 var statsApp = angular.module(
   'stats',
-  ['rokta.common.players', 'rokta.common.events', 'rokta.common.colours',
+  ['rokta.common.players', 'rokta.common.events', 'rokta.common.colours', 'rokta.common.notify',
    'rokta.common.routing', 'rokta.common.interactive', 'rokta.common.avatar',
    'rokta.stats.graph', 'rokta.stats.league', 'rokta.stats.stats',
    'rokta.stats.headtoheads', 'rokta.stats.streaks', 'rokta.stats.hands',
@@ -39,8 +39,8 @@ function($routeProvider) {
   });
 }]);
 
-statsApp.controller('StatsCtrl', ['$window', '$log', '$scope', '$modal', 'Players', 'Interactive', 'ROUTES',
-function($window, $log, $scope, $modal, Players, Interactive, ROUTES) {
+statsApp.controller('StatsCtrl', ['$window', '$log', '$scope', '$modal', 'Players', 'Interactive', 'ROUTES', 'Notify',
+function($window, $log, $scope, $modal, Players, Interactive, ROUTES, Notify) {
   Interactive.onStateChange(function(state) {
     if (state.inProgress) {
       if (!$scope.modalInstance) {
@@ -52,6 +52,7 @@ function($window, $log, $scope, $modal, Players, Interactive, ROUTES) {
             $window.location.href=ROUTES.interactiveGame;
           }
         }
+        Notify.show(state.instigator + ' has instigated a new game.')
         $scope.modalInstance.result.then(gameInProgress, gameInProgress);
       }
     }
