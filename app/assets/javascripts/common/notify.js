@@ -16,7 +16,7 @@ function() {
       // Let's check if the user is okay to get some notification
       else if (Notification.permission === "granted") {
         // If it's okay let's create a notification
-        var notification = new Notification("Hi there!");
+        var notification = new Notification(text);
       }
 
       // Otherwise, we need to ask the user for permission
