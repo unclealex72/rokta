@@ -48,11 +48,14 @@ function($window, $log, $scope, $modal, Players, Interactive, ROUTES, Notify) {
           templateUrl: 'assets/angular/gameinprogress.html'
         });
         var gameInProgress = function(redirect) {
+          if (Notify.permissionRequestRequired()) {
+            Notify.show('Rokta can now show you notifications when a new game is instigated.');
+          }
           if (redirect === true) {
             $window.location.href=ROUTES.interactiveGame;
           }
         }
-        Notify.show(state.instigator + ' has instigated a new game.')
+        Notify.show(state.instigator + ' has instigated a new game.');
         $scope.modalInstance.result.then(gameInProgress, gameInProgress);
       }
     }
