@@ -1,6 +1,6 @@
 var interactiveApp = angular.module(
   'interactive',
-  ['rokta.common.players', 'rokta.common.panel', 'rokta.common.avatar',
+  ['rokta.common.players', 'rokta.common.panel', 'rokta.common.avatar', 'rokta.common.notify',
    'rokta.common.routing', 'rokta.common.interactive', 'rokta.common.auth',
    'restangular', 'ui.bootstrap', 'ngRoute', 'ngAnimate']);
 
@@ -139,10 +139,15 @@ function($scope, $window, Restangular, Interactive, InteractiveGame, ROUTES, AUT
 }]);
 
 interactiveApp.controller('GameCtrl',
-['$scope', '$location', '$window', 'Interactive', 'ROUTES',
-function($scope, $location, $window, Interactive, ROUTES) {
+['$scope', '$location', '$window', 'Interactive', 'Notify', 'ROUTES',
+function($scope, $location, $window, Interactive, Notify, ROUTES) {
   $scope.instigate = Interactive.instigate;
-  $scope.join = Interactive.join;
+  $scope.join = function() {
+    if (Notify.permissionRequestRequired()) {
+      Notify.show('Rokta can now show you notifications when a new game is instigated.');
+    }
+    Interactive.join();
+  };
   $scope.start = Interactive.start;
   $scope.play = Interactive.play;
   $scope.accept = function() {
