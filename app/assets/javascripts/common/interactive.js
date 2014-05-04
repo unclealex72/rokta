@@ -9,19 +9,23 @@ interactive.service('MessageQueue', ['$timeout', '$log', 'ROUTES', function($tim
   ws.onerror = function(err) {
     $log.error("The websocket errored " + angular.toJson(err));
   }
-  var reopen = function() {
-    $log.warn("The websocket closed");
+  var reopen = function(message) {
+    $log.warn(message);
+    $timeout(function() {
     var newws = new WebSocket(ROUTES.ws);
     newws.onopen = ws.onopen;
     newws.onerror = ws.onerror;
     newws.onmessage = ws.onmessage;
     newws.onclose = ws.onclose;
     ws = newws;
+    }, seconds(10));
   }
   ws.onclose = function() {
-    $log.warn("The websocket closed");
-    reopen();
+    reopen("The websocket closed");
   };
+  ws.onerror = function() {
+    reopen("The websocket errored");
+  }
   $timeout(function() {
     $log.info("After 1 second the websocket readyState is " + ws.readyState);
     if (ws.readyState != WebSocket.OPEN) {
@@ -36,8 +40,7 @@ interactive.service('MessageQueue', ['$timeout', '$log', 'ROUTES', function($tim
         ws.send('{ "type": "ping" }');
       }
       else {
-        $log.warn("The web socket was not opened. Reopening.");
-        reopen();
+        reopen("The web socket was not opened. Reopening.");
       }
       keepAlive();
     }, seconds(10))
