@@ -34,12 +34,12 @@ interactive.service('MessageQueue', ['$timeout', '$log', 'ROUTES', function($tim
       if (ws.readyState == WebSocket.OPEN) {
         $log.debug("Sending keep alive ping.")
         ws.send('{ "type": "ping" }');
-        keepAlive();
       }
       else {
         $log.warn("The web socket was not opened. Reopening.");
         reopen();
       }
+      keepAlive();
     }, seconds(10))
   }
   keepAlive();
