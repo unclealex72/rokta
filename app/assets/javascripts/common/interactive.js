@@ -36,7 +36,7 @@ interactive.service('MessageQueue', ['$timeout', '$log', 'ROUTES', function($tim
   var keepAlive = function() {
     $timeout(function() {
       if (ws.readyState == WebSocket.OPEN) {
-        $log.debug("Sending keep alive ping.")
+        //$log.debug("Sending keep alive ping.")
         ws.send('{ "type": "ping" }');
       }
       else {
