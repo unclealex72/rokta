@@ -23,8 +23,10 @@
 package stats
 
 import scala.collection.Iterable
-import model.Game
+import model.{Game, Player}
 import com.escalatesoft.subcut.inject._
+import play.api.Play
+import play.api.Play.current
 
 /**
  * The default implementation of `ExemptPlayerFactory`.
@@ -36,7 +38,13 @@ class ExemptPlayerFactoryImpl(
 
   val todaysGamesFactory = injectIfMissing(_todaysGamesFactory)
 
-  def apply(todaysGames: Iterable[Game]) = todaysGames.lastOption.flatMap(_.loser)
+  val enableExemptions: Boolean = Play.configuration.getBoolean("enableExemptions").getOrElse(false)
 
-  def apply() = apply(todaysGamesFactory.apply())
+  private def maybe(maybeExemptPlayer: => Option[Player]): Option[Player] = {
+    if (enableExemptions) maybeExemptPlayer else None
+  }
+
+  def apply(todaysGames: Iterable[Game]) = maybe(todaysGames.lastOption.flatMap(_.loser))
+
+  def apply() = maybe(apply(todaysGamesFactory.apply()))
 }
